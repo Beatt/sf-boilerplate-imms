@@ -3,10 +3,16 @@ easy_admin:
     User:
       class: AppBundle\Entity\User
       controller: AppBundle\Controller\Admin\UserController
+      list:
+        fields:
+          - id
+          - { property: username, label: 'Usuario' }
+          - { property: email, label: 'Correo electrónico' }
+          - { property: active, type: toggle, label: 'Activo' }
       form:
         fields:
-          - { property: 'username', label: 'Usuario' }
-          - { property: 'email', label: 'Correo electrónico' }
-          - { property: 'active', type: 'checkbox' }
-          - { property: 'plainPassword', type: 'text', label: 'Contraseña' }
-          - { property: 'permissions', type: 'entity', type_options: { class: AppBundle\Entity\Permission, query_builder: 'AppBundle\Repository\Admin\AdminRepository::getAll', expanded: true, multiple: true }, label: 'Permisos' }
+          - { property: username, label: 'Usuario' }
+          - { property: email, label: 'Correo electrónico' }
+          - { property: active, type: checkbox }
+          - { property: plainPassword, type: text, label: 'Contraseña' }
+          - { property: permissions, type: entity, type_options: { class: AppBundle\Entity\Permission, query_builder: AppBundle\Repository\Admin\AdminRepository::getAll, expanded: true, multiple: true }, label: 'Permisos' }
