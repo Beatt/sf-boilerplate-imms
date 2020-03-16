@@ -105,7 +105,7 @@ class Permission
      */
     public function setUser(User $user)
     {
-        $this->user = $user;
+        $this->users = $user;
 
         return $this;
     }
