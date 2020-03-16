@@ -41,8 +41,8 @@ class User implements UserInterface, \Serializable
     private $isActive;
 
     /**
-     * @var Permission[]
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permission", mappedBy="user")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permission", inversedBy="users")
+     * @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
      */
     private $permissions;
 

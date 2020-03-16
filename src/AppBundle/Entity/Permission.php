@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,12 +37,21 @@ class Permission
     private $securityRole;
 
     /**
-     * @var User
-     *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", inversedBy="permissions")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @var User[]
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User", mappedBy="permissions")
      */
-    private $user;
+    private $users;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role", inversedBy="permissions")
+     * @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     */
+    private $role;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -101,11 +111,51 @@ class Permission
     }
 
     /**
-     * @return User
+     * @return ArrayCollection
      */
-    public function getUser()
+    public function getUsers()
     {
-        return $this->user;
+        return $this->users;
+    }
+
+    /**
+     * @param User $user
+     * @return Permission
+     */
+    public function addUser(User $user)
+    {
+        if(!$this->users->contains($user)) {
+            $this->users[] = $user;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function removeUser(User $user)
+    {
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * @param Role $role
+     * @return Permission
+     */
+    public function setRole(Role $role = null)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * @return Role
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 
     public function __toString()
