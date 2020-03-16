@@ -68,4 +68,12 @@ swiftmailer:
 
 easy_admin:
     entities:
-        - AppBundle\Entity\Usuarios
+        User:
+            class: AppBundle\Entity\User
+            controller: AppBundle\Controller\Admin\UserController
+            form:
+                fields:
+                    - { property: 'username', label: 'Usuario' }
+                    - { property: 'email', label: 'Correo electrónico' }
+                    - { property: 'active', type: 'checkbox' }
+                    - { property: 'plainPassword', type: 'text', label: 'Contraseña' }
