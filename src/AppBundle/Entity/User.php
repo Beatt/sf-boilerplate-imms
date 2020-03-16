@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -39,11 +40,18 @@ class User implements UserInterface, \Serializable
      */
     private $isActive;
 
+    /**
+     * @var Permission[]
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permission", mappedBy="user")
+     */
+    private $permissions;
+
     private $plainPassword;
 
     public function __construct()
     {
         $this->isActive = true;
+        $this->permissions = new ArrayCollection();
     }
 
     /**
@@ -131,7 +139,13 @@ class User implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        return ['ROLE_ADMIN'];
+        $securityRoles = [];
+
+        foreach($this->permissions as $permission) {
+            $securityRoles[] = $permission->getSecurityRole();
+        }
+
+        return $securityRoles;
     }
 
     public function eraseCredentials()
@@ -172,5 +186,34 @@ class User implements UserInterface, \Serializable
     public function getPlainPassword()
     {
         return $this->plainPassword;
+    }
+
+    /**
+     * @param Permission $permission
+     * @return User
+     */
+    public function addPermission(Permission $permission)
+    {
+        if(!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     */
+    public function removePermission(Permission $permission)
+    {
+        $this->permissions->removeElement($permission);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
     }
 }
