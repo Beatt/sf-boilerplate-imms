@@ -2,6 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
+    - { resource: admin/base.yml }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -65,15 +66,3 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
-
-easy_admin:
-    entities:
-        User:
-            class: AppBundle\Entity\User
-            controller: AppBundle\Controller\Admin\UserController
-            form:
-                fields:
-                    - { property: 'username', label: 'Usuario' }
-                    - { property: 'email', label: 'Correo electrónico' }
-                    - { property: 'active', type: 'checkbox' }
-                    - { property: 'plainPassword', type: 'text', label: 'Contraseña' }
