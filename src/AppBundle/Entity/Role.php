@@ -6,8 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Role
- *
  * @ORM\Table(name="role")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RoleRepository")
  */
