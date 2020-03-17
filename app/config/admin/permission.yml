@@ -1,0 +1,19 @@
+easy_admin:
+  entities:
+    Permission:
+      class: AppBundle\Entity\Permission
+      label: Permisos
+      list:
+        fields:
+          - id
+          - { property: name, label: 'Nombre' }
+          - { property: securityRole, label: 'Rol' }
+          - { property: role.name, label: 'Grupo' }
+      new:
+        fields:
+          - { property: name, label: 'Nombre' }
+          - { property: securityRole, label: 'Rol' }
+      edit:
+        fields:
+          - { property: name, label: 'Nombre' }
+          - { property: securityRole, label: 'Rol' }

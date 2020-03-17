@@ -1,2 +1,4 @@
 imports:
   - { resource: user.yml }
+  - { resource: permission.yml }
+  - { resource: role.yml }

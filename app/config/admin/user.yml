@@ -3,6 +3,7 @@ easy_admin:
     User:
       class: AppBundle\Entity\User
       controller: AppBundle\Controller\Admin\UserController
+      label: Usuarios
       list:
         fields:
           - id

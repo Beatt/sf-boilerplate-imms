@@ -1,0 +1,15 @@
+easy_admin:
+  entities:
+    Role:
+      class: AppBundle\Entity\Role
+      label: Roles
+      list:
+        fields:
+          - id
+          - name
+      new:
+        fields:
+          - { property: name, label: 'Nombre' }
+      edit:
+        fields:
+          - { property: name, label: 'Nombre' }
