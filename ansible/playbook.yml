@@ -101,6 +101,8 @@
         name: postgresql
         state: started
 
+    - set_fact: ansible_python_interpreter="/usr/bin/python"
+
     - name: Install prerequisites for postgresql user
       become: true
       apt:
