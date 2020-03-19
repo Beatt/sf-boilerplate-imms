@@ -1,5 +1,5 @@
 ---
-- hosts: vb
+- hosts: digitalocean
 
   vars_files:
     - ./vars/deploy_vault.yml
