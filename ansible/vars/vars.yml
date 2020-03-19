@@ -1,0 +1,5 @@
+server_name: ciclosclinicosimms.mx
+app_env: prod
+project_deploy_dir: /var/www/html/project
+ansistrano_current_dir: current
+server_document_root: "{{ project_deploy_dir }}/{{ ansistrano_current_dir }}/web"

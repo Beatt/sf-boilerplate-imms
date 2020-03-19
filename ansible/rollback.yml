@@ -1,0 +1,10 @@
+- hosts: digitalocean
+
+  vars_files:
+    - ./vars/vars.yml
+
+  vars:
+    ansistrano_deploy_to: "{{ project_deploy_dir }}"
+
+  roles:
+    - ansistrano.rollback

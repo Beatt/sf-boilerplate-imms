@@ -1,0 +1,63 @@
+---
+- name: Install Composer's dependencies
+  composer:
+    working_dir: "{{ symfony_root_dir }}"
+    no_dev: "{{ 'yes' if ('prod' == app_env) else 'no' }}"
+  #when: code_changed
+  tags:
+    - deploy
+
+- name: Create DB if not exists
+  command: '{{ symfony_console_path }} doctrine:database:create --if-not-exists'
+  register: db_create_result
+  changed_when: db_create_result.stdout is not search('already exists. Skipped')
+  tags:
+    - deploy
+
+- name: Execute migrations
+  command: '{{ symfony_console_path }} doctrine:migrations:migrate --no-interaction'
+  register: db_migrations_result
+  changed_when: db_migrations_result.stdout is not search('No migrations to execute')
+  when: code_changed
+  tags:
+    - deploy
+
+- name: Load data fixtures
+  command: '{{ symfony_console_path }} doctrine:fixtures:load --no-interaction'
+  changed_when: false
+  when: app_env != "prod"
+  tags:
+    - deploy
+
+- name: Install Node dependencies
+  command: yarn install
+  args:
+    chdir: "{{ symfony_root_dir }}"
+  tags:
+    - deploy
+
+- name: Install Webpack Encore assets
+  command: './node_modules/.bin/encore production'
+  args:
+    chdir: "{{ symfony_root_dir }}"
+  #when: code_changed
+  tags:
+    - deploy
+
+- name: Clear cache
+  command: '{{ symfony_console_path }} cache:clear --env={{ app_env }}'
+  #changed_when: false
+  #when: code_changed
+  tags:
+    - deploy
+
+- name: Fix var directory permissions
+  file:
+    path: "{{ symfony_var_dir }}"
+    state: directory
+    mode: 0777
+    recurse: yes
+  #changed_when: false
+  tags:
+    - permissions
+    - deploy

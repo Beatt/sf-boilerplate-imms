@@ -1,0 +1,209 @@
+---
+- hosts: vb
+
+  vars_files:
+    - ./vars/deploy_vault.yml
+    - ./vars/vars.yml
+    - ./vars/deploy_vars.yml
+
+  vars:
+    symfony_root_dir: "{{ project_deploy_dir }}"
+    symfony_public_dir: "{{ server_document_root }}"
+
+  pre_tasks:
+    - name: Update APT package manager repositories cache
+      become: true
+      apt:
+        update_cache: yes
+
+    - name: Upgrade installed packages
+      become: true
+      apt:
+        upgrade: safe
+
+  roles:
+    - nginx
+
+  tasks:
+#    - name: Certbot repository
+#      become: true
+#      apt_repository:
+#        repo: 'ppa:certbot/certbot'
+#
+#    - name: Upgrade installed packages
+#      become: true
+#      apt:
+#        upgrade: safe
+#
+#    - name: Install certbot
+#      become: true
+#      command: 'apt-get install -y python-certbot-nginx'
+#
+#    - name: Install aptitude
+#      become: true
+#      apt:
+#        name: aptitude
+
+    - name: Upgrade installed packages
+      become: true
+      apt:
+        upgrade: safe
+
+    - name: Install low-level utilities
+      become: true
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - zip
+        - unzip
+
+    - name: Install Git VCS
+      become: true
+      apt:
+        name: git
+        state: latest
+
+    - name: Register NodeJS distribution
+      shell: 'curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -'
+      changed_when: false
+
+    - name: Install NodeJS
+      become: true
+      become_user: root
+      command: 'apt-get install -y nodejs'
+
+    - name: Add Yarn APT key
+      become: true
+      apt_key:
+        url: 'https://dl.yarnpkg.com/debian/pubkey.gpg'
+        state: present
+
+    - name: Add Yarn to the source lists
+      become: true
+      lineinfile:
+        path: '/etc/apt/sources.list.d/yarn.list'
+        regexp: 'deb https://dl.yarnpkg.com/debian/ stable main'
+        line: 'deb https://dl.yarnpkg.com/debian/ stable main'
+        create: yes
+
+    - name: Install Yarn package manager
+      become: true
+      apt:
+        name: yarn
+        state: latest
+        update_cache: yes
+
+    - name: Add PHP 5.6 PPA repository
+      become: true
+      apt_repository:
+        repo: 'ppa:ondrej/php'
+
+    - name: Install PHP CLI
+      become: true
+      apt:
+        name: php5.6-cli
+
+    - name: Install Postgresql core
+      become: true
+      apt:
+        name: postgresql
+        force: yes
+
+    - name: Install Postgresql contrib
+      become: true
+      apt:
+        name: postgresql-contrib
+        force: yes
+
+    - name: Start service postgresql, if not started
+      service:
+        name: postgresql
+        state: started
+
+    - name: Install prerequisites for postgresql user
+      become: true
+      apt:
+        name: python-psycopg2
+        state: latest
+
+    - name: Create postgres user
+      become: yes
+      become_user: postgres
+      postgresql_user:
+        name: "{{ database_user }}"
+        password: "{{ database_password }}"
+        role_attr_flags: SUPERUSER
+
+    - name: Install PHP packages
+      become: true
+      apt:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - php5.6-cli
+        - php5.6-curl
+        - php5.6-fpm
+        - php5.6-intl
+        - php5.6-pgsql
+        - php5.6-xml
+        - php5.6-mbstring
+        - php5.6-exif
+        - php5.6-fileinfo
+        - php5.6-gd
+        - php5.6-zip
+
+    - name: Set date.timezone for CLI
+      become: true
+      lineinfile:
+        dest: /etc/php/5.6/cli/php.ini
+        regexp: "date.timezone ="
+        line: "date.timezone = UTC"
+      notify: Restart PHP-FPM
+
+    - name: Set date.timezone for FPM
+      become: true
+      lineinfile:
+        dest: /etc/php/5.6/fpm/php.ini
+        regexp: "date.timezone ="
+        line: "date.timezone = UTC"
+
+    - name: Register code_changed variable
+      set_fact:
+        code_changed: repo_code.changed
+      tags:
+        - deploy
+
+    - name: Download Composer
+      become: true
+      script: scripts/install_composer.sh
+      tags:
+        - deploy
+
+    - name: Move Composer globally
+      become: true
+      command: "mv composer.phar /usr/local/bin/composer"
+      tags:
+        - deploy
+
+    - name: Set Permissions
+      become: true
+      file:
+        path: /usr/local/bin/composer
+        mode: "a+x"
+      tags:
+        - deploy
+
+    - name: Set Permissions to www directory
+      become: true
+      file:
+        path: /var/www
+        state: directory
+        mode: 0777
+        recurse: true
+
+  handlers:
+    - name: Restart PHP-FPM
+      become: true
+      service:
+        name: php5.6-fpm
+        state: restarted

@@ -1,0 +1,36 @@
+---
+- hosts: vb
+
+  vars_files:
+    - ./vars/deploy_vault.yml
+    - ./vars/vars.yml
+    - ./vars/deploy_vars.yml
+
+  roles:
+    - ansistrano.deploy
+
+  vars:
+    release_console_path: "{{ ansistrano_release_path.stdout }}/bin/console"
+    release_var_path: "{{ ansistrano_release_path.stdout }}/var"
+    ansistrano_keep_releases: 3
+    ansistrano_deploy_to: "{{ project_deploy_dir }}"
+    ansistrano_deploy_via: git
+    ansistrano_git_repo: git@github.com:Beatt/sf-boilerplate-imms.git
+    ansistrano_git_branch: master
+    ansistrano_after_symlink_shared_tasks_file: "{{ playbook_dir }}/deploy/after-symlink-shared.yml"
+#    ansistrano_shared_paths:
+#      - node_modules
+
+  environment:
+    APP_ENV: "{{ app_env }}"
+    APP_DEBUG: 0
+    APP_SECRET: "{{ app_secret }}"
+    DATABASE_URL: "{{ database_url }}"
+    AWS_BASE_URL: "{{ aws_base_url }}"
+    MAILER_URL: "{{ mailer_url }}"
+    MAILER_USER: "{{ mailer_user }}"
+    AMAZON_S3_KEY: "{{ amazon_s3_key }}"
+    AMAZON_S3_SECRET: "{{ amazon_s3_secret }}"
+    AMAZON_S3_BUCKET: "{{ amazon_s3_bucket }}"
+    AMAZON_S3_REGION: "{{ amazon_s3_region }}"
+    AMAZON_S3_VERSION: "{{ amazon_s3_version }}"
