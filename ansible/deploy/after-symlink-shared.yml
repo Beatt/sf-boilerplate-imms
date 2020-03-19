@@ -22,67 +22,13 @@
   command: '{{ release_console_path }} doctrine:migrations:migrate --no-interaction'
   register: db_migrations_result
   changed_when: db_migrations_result.stdout is not search("No migrations to execute")
-  #when: code_changed
-
-#- name: Install sylius
-#  command: '{{ release_console_path }} sylius:install -n'
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-
-#- name: Install sylius fixtures
-#  command: '{{ release_console_path }} sylius:fixtures:load -n'
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-
-#- name: Load data fixtures
-#  command: '{{ release_console_path }} doctrine:fixtures:load --no-interaction'
-#  #changed_when: false
-#  #when: app_env != "prod"
-#  tags:
-#    - deploy
-
-#- name: Creates public directory image
-#  file:
-#    path: "{{ ansistrano_release_path.stdout }}/public/media/image"
-#    state: directory
-#    mode: 0777
-#    recurse: true
-
-#- name: Install Node dependencies
-#  command: yarn install
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-#
-#- name: Build sylius assets
-#  command: yarn build
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-#
-#- name: Install Webpack Encore assets
-#  command: './node_modules/.bin/encore production'
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-#
-#- name: Install ckeditor
-#  command: '{{ release_console_path }} ckeditor:install -n'
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-#
-#- name: Install sylius relative
-#  command: '{{ release_console_path }} assets:install --symlink --relative public'
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-#
-#- name: Sylius assets
-#  command: '{{ release_console_path }} sylius:install:assets'
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
-#
-#- name: Sylius thema assets
-#  command: '{{ release_console_path }} sylius:theme:assets:install public'
-#  args:
-#    chdir: '{{ ansistrano_release_path.stdout }}'
 
 - name: Clear the cache
   command: '{{ release_console_path }} cache:clear --env=prod --no-debug'
 
+- name: Setup directory permissions for var/
+  file:
+    path: "{{ release_var_path }}"
+    state: directory
+    mode: 0777
+    recurse: true

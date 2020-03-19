@@ -25,25 +25,6 @@
     - nginx
 
   tasks:
-#    - name: Certbot repository
-#      become: true
-#      apt_repository:
-#        repo: 'ppa:certbot/certbot'
-#
-#    - name: Upgrade installed packages
-#      become: true
-#      apt:
-#        upgrade: safe
-#
-#    - name: Install certbot
-#      become: true
-#      command: 'apt-get install -y python-certbot-nginx'
-#
-#    - name: Install aptitude
-#      become: true
-#      apt:
-#        name: aptitude
-
     - name: Upgrade installed packages
       become: true
       apt:
