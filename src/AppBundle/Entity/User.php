@@ -157,21 +157,13 @@ class User implements UserInterface, \Serializable
     /** @see \Serializable::serialize() */
     public function serialize()
     {
-        return serialize([
-            $this->id,
-            $this->username,
-            $this->password,
-        ]);
+        return serialize($this->getId());
     }
 
     /** @see \Serializable::unserialize() */
     public function unserialize($serialized)
     {
-        list (
-            $this->id,
-            $this->username,
-            $this->password,
-        ) = unserialize($serialized, ['allowed_classes' => false]);
+        $this->id = unserialize($serialized);
     }
 
     /**
