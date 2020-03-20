@@ -22,8 +22,25 @@ class Category
      */
     private $id;
 
-    public function getId()
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=false, length=50)
+     */
+    private $modulo;
+
+    /**
+     * @return string
+     */
+    public function getModulo()
     {
-        return $this->id;
+        return $this->modulo;
+    }
+
+    /**
+     * @param string $modulo
+     */
+    public function setModulo($modulo)
+    {
+        $this->modulo = $modulo;
     }
 }

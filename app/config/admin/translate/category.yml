@@ -4,7 +4,7 @@ easy_admin:
       class: AppBundle\Entity\Translation\Category
     CategoryTranslate:
       class: AppBundle\Entity\Translation\CategoryTranslation
-      label: 'Panel de categoria'
+      label: 'Textos'
       controller: AppBundle\Controller\Admin\Translation\CategoryTranslation
       list:
         fields:
@@ -14,6 +14,7 @@ easy_admin:
           - { property: locale, label: 'Locale' }
       form:
         fields:
+          - { property: modulo, label: 'Modulo', type: choice, type_options: { choices: { 'Modulo de usuarios': 'MODULO_USUARIOS', 'Modulo de universidades': 'MODULO_UNIVERSIDADES' } } }
           - { property: name, label: 'Nombre' }
           - { property: description, label: 'Descripción' }
-          - { property: locale, label: 'Locale' }
+          - { property: locale, label: 'Locale', type: choice, type_options: { expanded: true, multiple: false, choices: {'Español (es)': es, 'Ingles (en)': en} } }

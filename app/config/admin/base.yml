@@ -10,5 +10,4 @@ easy_admin:
       - User
       - Permission
       - Role
-      - label: 'Traducción de textos'
-        children: ['CategoryTranslate']
+      - CategoryTranslate

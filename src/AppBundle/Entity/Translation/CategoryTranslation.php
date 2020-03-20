@@ -32,6 +32,9 @@ class CategoryTranslation
      */
     protected $description;
 
+    /** @var string */
+    private $modulo;
+
     /**
      * @return string
      */
@@ -64,5 +67,21 @@ class CategoryTranslation
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModulo()
+    {
+        return $this->modulo;
+    }
+
+    /**
+     * @param string $modulo
+     */
+    public function setModulo($modulo)
+    {
+        $this->modulo = $modulo;
     }
 }
