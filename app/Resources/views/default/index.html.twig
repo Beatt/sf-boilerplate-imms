@@ -7,10 +7,10 @@
                 <h1><span>Welcome to</span> Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}</h1>
                 <div style="border: 1px solid red;">
                     <h3>Panel de categorias</h3>
-                    {% for category in categoryTranslation %}
-                        <p>{{ category.name }}</p>
-                        <p>{{ category.description }}</p>
-                    {% endfor %}
+                    {% if userTranslation is not null %}
+                        <p>{{ userTranslation.name }}</p>
+                        <p>{{ userTranslation.description }}</p>
+                    {% endif %}
                     <a href="{{ path('homepage') }}?changeLocale=es">Cambiar a español</a>
                     <a href="{{ path('homepage') }}?changeLocale=en">Cambiar a ingles</a>
                 </div>

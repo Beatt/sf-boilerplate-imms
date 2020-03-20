@@ -15,6 +15,6 @@ easy_admin:
       form:
         fields:
           - { property: modulo, label: 'Modulo', type: choice, type_options: { choices: { 'Modulo de usuarios': 'MODULO_USUARIOS', 'Modulo de universidades': 'MODULO_UNIVERSIDADES' } } }
+          - { property: locale, label: 'Locale', type: choice, type_options: { expanded: true, multiple: false, choices: {'Español (es)': es, 'Ingles (en)': en} } }
           - { property: name, label: 'Nombre' }
           - { property: description, label: 'Descripción' }
-          - { property: locale, label: 'Locale', type: choice, type_options: { expanded: true, multiple: false, choices: {'Español (es)': es, 'Ingles (en)': en} } }

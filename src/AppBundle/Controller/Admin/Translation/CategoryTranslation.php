@@ -12,7 +12,12 @@ class CategoryTranslation extends BaseAdminController
      */
     protected function prePersistEntity($categoryTranslation)
     {
-        $category = new Category();
+        $category = $this->getDoctrine()
+            ->getRepository(Category::class)
+            ->findOneBy(['modulo' => $categoryTranslation->getModulo()]);
+
+        if($category === null) $category = new Category();
+
         $category->setModulo($categoryTranslation->getModulo());
         $categoryTranslation->setTranslatable($category);
         $category->mergeNewTranslations();
