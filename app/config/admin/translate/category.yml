@@ -1,0 +1,19 @@
+easy_admin:
+  entities:
+    Category:
+      class: AppBundle\Entity\Translation\Category
+    CategoryTranslate:
+      class: AppBundle\Entity\Translation\CategoryTranslation
+      label: 'Panel de categoria'
+      controller: AppBundle\Controller\Admin\Translation\CategoryTranslation
+      list:
+        fields:
+          - id
+          - { property: name, label: 'Nombre' }
+          - { property: description, label: 'Descripción' }
+          - { property: locale, label: 'Locale' }
+      form:
+        fields:
+          - { property: name, label: 'Nombre' }
+          - { property: description, label: 'Descripción' }
+          - { property: locale, label: 'Locale' }

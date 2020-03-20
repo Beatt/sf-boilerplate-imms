@@ -2,3 +2,13 @@ imports:
   - { resource: user.yml }
   - { resource: permission.yml }
   - { resource: role.yml }
+  - { resource: translate/category.yml }
+
+easy_admin:
+  design:
+    menu:
+      - User
+      - Permission
+      - Role
+      - label: 'Traducción de textos'
+        children: ['CategoryTranslate']

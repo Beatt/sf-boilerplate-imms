@@ -21,4 +21,9 @@ class Category
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }
