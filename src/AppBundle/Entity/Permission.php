@@ -6,8 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Permission
- *
  * @ORM\Table(name="permission")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PermissionRepository")
  */
