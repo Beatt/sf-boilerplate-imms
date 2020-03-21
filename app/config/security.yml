@@ -2,14 +2,14 @@
 # https://symfony.com/doc/current/security.html
 security:
     encoders:
-        AppBundle\Entity\User:
+        AppBundle\Entity\Usuario:
             algorithm: bcrypt
 
     providers:
         user_provider:
             entity:
-                class: AppBundle:User
-                property: username
+                class: AppBundle:Usuario
+                property: usuario
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -26,4 +26,4 @@ security:
                 target: /
 
     access_control:
-        - { path: '^/admin', roles: ROLE_SHOW_USERS }
+        - { path: '^/admin', roles: ROLE_SUPER_ADMIN }
