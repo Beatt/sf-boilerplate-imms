@@ -6,10 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
- * @ORM\Table(name="category")
+ * @ORM\Table(name="seccion")
  * @ORM\Entity
  */
-class Category
+class Seccion
 {
     use ORMBehaviors\Translatable\Translatable;
 

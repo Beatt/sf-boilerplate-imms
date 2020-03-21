@@ -1,0 +1,21 @@
+easy_admin:
+  entities:
+    Section:
+      class: AppBundle\Entity\Translation\Seccion
+    SectionTranslate:
+      class: AppBundle\Entity\Translation\SeccionTranslation
+      label: 'Textos'
+      controller: AppBundle\Controller\Admin\Translation\SectionTranslation
+      list:
+        fields:
+          - id
+          - { property: nombre, label: 'Nombre' }
+          - { property: descripcion, label: 'Descripción' }
+          - { property: locale, label: 'Locale' }
+          - { property: seccion.modulo, label: 'Seccion' }
+      form:
+        fields:
+          - { property: modulo, label: 'Seccion', type: choice, type_options: { choices: { 'Modulo de usuarios': 'MODULO_USUARIOS', 'Modulo de universidades': 'MODULO_UNIVERSIDADES' } } }
+          - { property: locale, label: 'Locale', type: choice, type_options: { expanded: true, multiple: false, choices: {'Español (es)': es, 'Ingles (en)': en} } }
+          - { property: nombre, label: 'Nombre' }
+          - { property: descripcion, label: 'Descripción' }
