@@ -3,6 +3,7 @@ imports:
   - { resource: permission.yml }
   - { resource: role.yml }
   - { resource: translate/section.yml }
+  - { resource: region.yml }
 
 easy_admin:
   design:
@@ -10,4 +11,5 @@ easy_admin:
       - User
       - Permission
       - Role
+      - Region
       - SectionTranslate

@@ -1,0 +1,15 @@
+easy_admin:
+  entities:
+    Region:
+      class: AppBundle\Entity\Region
+      label: 'Región'
+      list:
+        title: 'Región'
+        actions:
+          - { name: 'new', label: 'Crear región' }
+        fields:
+          - id
+          - nombre
+      form:
+        fields:
+          - { property: nombre, label: 'Nombre' }
