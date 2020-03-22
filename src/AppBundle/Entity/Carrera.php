@@ -5,10 +5,10 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="ciclo_academico")
+ * @ORM\Table(name="carrera")
  * @ORM\Entity
  */
-class CicloAcademico
+class Carrera
 {
     /**
      * @var int
@@ -26,6 +26,12 @@ class CicloAcademico
     private $nombre;
 
     /**
+     * @var boolean
+     * @ORM\Column(type="boolean")
+     */
+    private $activo;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -35,7 +41,7 @@ class CicloAcademico
 
     /**
      * @param string $nombre
-     * @return CicloAcademico
+     * @return Carrera
      */
     public function setNombre($nombre)
     {
@@ -50,5 +56,24 @@ class CicloAcademico
     public function getNombre()
     {
         return $this->nombre;
+    }
+
+    /**
+     * @param boolean $activo
+     * @return Carrera
+     */
+    public function setActivo($activo)
+    {
+        $this->activo = $activo;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getActivo()
+    {
+        return $this->activo;
     }
 }
