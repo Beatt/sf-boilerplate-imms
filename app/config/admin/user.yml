@@ -5,6 +5,9 @@ easy_admin:
       controller: AppBundle\Controller\Admin\UserController
       label: Usuarios
       list:
+        title: Usuarios
+        actions:
+          - { name: 'new', label: 'Crear usuario' }
         fields:
           - id
           - { property: usuario, label: 'Usuario' }

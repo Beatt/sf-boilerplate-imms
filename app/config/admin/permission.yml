@@ -4,15 +4,15 @@ easy_admin:
       class: AppBundle\Entity\Permiso
       label: Permisos
       list:
+        title: Permisos
+        actions:
+          - { name: 'new', label: 'Crear permiso' }
         fields:
           - id
           - { property: nombre, label: 'Nombre' }
           - { property: rolSeguridad, label: 'Rol' }
-      new:
-        fields:
-          - { property: nombre, label: 'Nombre' }
-          - { property: rolSeguridad, label: 'Rol' }
-      edit:
+          - { property: descripcion, label: 'Descripción' }
+      form:
         fields:
           - { property: nombre, label: 'Nombre' }
           - { property: rolSeguridad, label: 'Rol' }

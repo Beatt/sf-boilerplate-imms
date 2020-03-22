@@ -7,6 +7,9 @@ easy_admin:
       label: 'Textos'
       controller: AppBundle\Controller\Admin\Translation\SectionTranslation
       list:
+        title: 'Textos'
+        actions:
+          - { name: 'new', label: 'Crear texto' }
         fields:
           - id
           - { property: nombre, label: 'Nombre' }

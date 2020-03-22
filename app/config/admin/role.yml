@@ -4,6 +4,9 @@ easy_admin:
       class: AppBundle\Entity\Rol
       label: Roles
       list:
+        title: Roles
+        actions:
+          - { name: 'new', label: 'Crear rol' }
         fields:
           - id
           - nombre
