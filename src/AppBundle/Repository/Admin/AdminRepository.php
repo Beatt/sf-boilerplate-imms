@@ -3,6 +3,7 @@
 namespace AppBundle\Repository\Admin;
 
 use AppBundle\Repository\PermissionRepository;
+use AppBundle\Repository\RoleRepository;
 use Doctrine\ORM\EntityRepository;
 
 class AdminRepository extends EntityRepository
@@ -11,6 +12,13 @@ class AdminRepository extends EntityRepository
     {
         return $permissionRepository
             ->createQueryBuilder('permission')
-            ->orderBy('permission.name', 'ASC');
+            ->orderBy('permission.rolSeguridad', 'ASC');
+    }
+
+    public static function getAllRoles(RoleRepository $roleRepository)
+    {
+        return $roleRepository
+            ->createQueryBuilder('role')
+            ->orderBy('role.nombre', 'ASC');
     }
 }

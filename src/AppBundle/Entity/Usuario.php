@@ -40,21 +40,21 @@ class Usuario implements UserInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $esActiva;
+    private $esActivo;
 
     /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Rol", inversedBy="usuarios")
      * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
      */
-    private $roles;
+    private $rols;
 
     /** @var string */
     private $plainPassword;
 
     public function __construct()
     {
-        $this->esActiva = true;
-        $this->roles = new ArrayCollection();
+        $this->esActivo = true;
+        $this->rols = new ArrayCollection();
     }
 
     /**
@@ -116,17 +116,17 @@ class Usuario implements UserInterface
     /**
      * @return bool
      */
-    public function isEsActiva()
+    public function isActivo()
     {
-        return $this->esActiva;
+        return $this->esActivo;
     }
 
     /**
-     * @param bool $esActiva
+     * @param bool $esActivo
      */
-    public function setEsActiva($esActiva)
+    public function setEsActivo($esActivo)
     {
-        $this->esActiva = $esActiva;
+        $this->esActivo = $esActivo;
     }
 
     /**
@@ -153,7 +153,7 @@ class Usuario implements UserInterface
         $securityRoles = [];
 
         /** @var Rol $role */
-        foreach($this->roles as $role) {
+        foreach($this->rols as $role) {
 
             /** @var Permiso $permiso */
             foreach($role->getPermisos() as $permiso) {
@@ -197,23 +197,13 @@ class Usuario implements UserInterface
     }
 
     /**
-     * Get esActiva
-     *
-     * @return boolean
-     */
-    public function getEsActiva()
-    {
-        return $this->esActiva;
-    }
-
-    /**
      * @param Rol $role
      * @return Usuario
      */
-    public function addRole(Rol $role)
+    public function addRol(Rol $role)
     {
-        if(!$this->roles->contains($role)) {
-            $this->roles[] = $role;
+        if(!$this->rols->contains($role)) {
+            $this->rols[] = $role;
         }
 
         return $this;
@@ -222,8 +212,16 @@ class Usuario implements UserInterface
     /**
      * @param Rol $role
      */
-    public function removeRole(Rol $role)
+    public function removeRol(Rol $role)
     {
-        $this->roles->removeElement($role);
+        $this->rols->removeElement($role);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRols()
+    {
+        return $this->rols;
     }
 }

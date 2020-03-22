@@ -1,19 +1,19 @@
 easy_admin:
   entities:
     User:
-      class: AppBundle\Entity\User
+      class: AppBundle\Entity\Usuario
       controller: AppBundle\Controller\Admin\UserController
       label: Usuarios
       list:
         fields:
           - id
-          - { property: username, label: 'Usuario' }
-          - { property: email, label: 'Correo electrónico' }
-          - { property: active, type: toggle, label: 'Activo' }
+          - { property: usuario, label: 'Usuario' }
+          - { property: correo, label: 'Correo electrónico' }
+          - { property: activo, type: toggle, label: 'Activo' }
       form:
         fields:
-          - { property: username, label: 'Usuario' }
-          - { property: email, label: 'Correo electrónico' }
-          - { property: active, type: checkbox }
+          - { property: usuario, label: 'Usuario' }
+          - { property: correo, label: 'Correo electrónico' }
+          - { property: activo, type: checkbox }
           - { property: plainPassword, type: text, label: 'Contraseña' }
-          - { property: permissions, type: entity, type_options: { class: AppBundle\Entity\Permission, query_builder: AppBundle\Repository\Admin\AdminRepository::getAll, expanded: true, multiple: true }, label: 'Permisos' }
+          - { property: rols, label: 'Roles', type: entity, type_options: { class: AppBundle\Entity\Rol, choice_label: nombre, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllRoles, expanded: true, multiple: true } }

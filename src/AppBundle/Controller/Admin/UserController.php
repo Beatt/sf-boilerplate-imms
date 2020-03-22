@@ -2,22 +2,22 @@
 
 namespace AppBundle\Controller\Admin;
 
-use AppBundle\Entity\User;
+use AppBundle\Entity\Usuario;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
 
 class UserController extends BaseAdminController
 {
     /**
-     * @param  User $user
+     * @param  Usuario $user
      */
     protected function prePersistEntity($user)
     {
         $encodedPassword = $this->encodePassword($user, $user->getPlainPassword());
-        $user->setPassword($encodedPassword);
+        $user->setContrasena($encodedPassword);
     }
 
     /**
-     * @param  User $user
+     * @param  Usuario $user
      */
     protected function preUpdateEntity($user)
     {
@@ -26,11 +26,11 @@ class UserController extends BaseAdminController
         }
 
         $encodedPassword = $this->encodePassword($user, $user->getPlainPassword());
-        $user->setPassword($encodedPassword);
+        $user->setContrasena($encodedPassword);
     }
 
     /**
-     * @param  User $user
+     * @param  Usuario $user
      * @return string
      */
     private function encodePassword($user, $password)

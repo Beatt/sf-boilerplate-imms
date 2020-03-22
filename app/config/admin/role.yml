@@ -1,15 +1,13 @@
 easy_admin:
   entities:
     Role:
-      class: AppBundle\Entity\Role
+      class: AppBundle\Entity\Rol
       label: Roles
       list:
         fields:
           - id
-          - name
-      new:
+          - nombre
+      form:
         fields:
-          - { property: name, label: 'Nombre' }
-      edit:
-        fields:
-          - { property: name, label: 'Nombre' }
+          - { property: nombre, label: 'Nombre' }
+          - { property: permisos, label: 'Permisos', type: entity, type_options: { class: AppBundle\Entity\Permiso, choice_label: rolSeguridad, query_builder: AppBundle\Repository\Admin\AdminRepository::getAll, expanded: true, multiple: true } }
