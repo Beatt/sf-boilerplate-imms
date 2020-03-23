@@ -12,6 +12,7 @@ imports:
   - { resource: catalogs/institution.yml }
   - { resource: catalogs/academic_level.yml }
   - { resource: catalogs/departament.yml }
+  - { resource: catalogs/agreement.yml }
 
 easy_admin:
   design:
@@ -30,4 +31,5 @@ easy_admin:
           - Institution
           - AcademicLevel
           - Departament
+          - Agreement
       - SectionTranslate
