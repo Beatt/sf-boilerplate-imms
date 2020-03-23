@@ -89,7 +89,7 @@ class Rol
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getUsuarios()
     {
@@ -118,7 +118,7 @@ class Rol
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getPermisos()
     {
