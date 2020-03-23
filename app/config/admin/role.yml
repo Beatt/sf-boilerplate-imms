@@ -13,4 +13,4 @@ easy_admin:
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
-          - { property: permisos, label: 'Permisos', type: entity, type_options: { class: AppBundle\Entity\Permiso, choice_label: rolSeguridad, query_builder: AppBundle\Repository\Admin\AdminRepository::getAll, expanded: true, multiple: true } }
+          - { property: permisos, label: 'Permisos', type: entity, type_options: { class: AppBundle\Entity\Permiso, choice_label: rolSeguridad, query_builder: AppBundle\Repository\Admin\AdminRepository::getAll, expanded: true, multiple: true, by_reference: false } }

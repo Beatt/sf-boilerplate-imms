@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -89,7 +90,7 @@ class Rol
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection
      */
     public function getUsuarios()
     {
@@ -104,6 +105,7 @@ class Rol
     {
         if(!$this->permisos->contains($permiso)) {
             $this->permisos[] = $permiso;
+            $permiso->addRole($this);
         }
 
         return $this;
@@ -111,14 +113,20 @@ class Rol
 
     /**
      * @param Permiso $permiso
+     * @return Rol
      */
     public function removePermiso(Permiso $permiso)
     {
-        $this->permisos->removeElement($permiso);
+        if($this->permisos->contains($permiso)) {
+            $this->permisos->removeElement($permiso);
+            $permiso->removeRole($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection
      */
     public function getPermisos()
     {
