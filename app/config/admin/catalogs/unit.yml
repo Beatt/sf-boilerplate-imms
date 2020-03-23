@@ -1,0 +1,29 @@
+easy_admin:
+  entities:
+    Unit:
+      class: AppBundle\Entity\Unidad
+      label: 'Unidad'
+      list:
+        title: 'Unidad'
+        actions:
+          - { name: 'new', label: 'Crear unidad' }
+        fields:
+          - id
+          - nombre
+          - { property: claveUnidad, label: 'Clave de unidad' }
+          - { property: delegacion.nombre, label: 'Delegación' }
+          - { property: clavePresupuestal, label: 'Clave presupuestal' }
+          - { property: nivelAtencion, label: 'Nivel de atención' }
+          - { property: tipoUnidad.nombre, label: 'Tipo de unidad' }
+          - { property: esUmae, label: 'Es UMAE' }
+          - { property: activo, type: toogle }
+      form:
+        fields:
+          - { property: nombre, label: 'Nombre' }
+          - { property: claveUnidad, label: 'Clave de unidad' }
+          - { property: delegacion, label: 'Delegación' }
+          - { property: clavePresupuestal, label: 'Clave presupuestal' }
+          - { property: nivelAtencion, label: 'Nivel de atención' }
+          - { property: tipoUnidad, label: 'Tipo de unidad' }
+          - { property: esUmae, label: 'Es UMAE' }
+          - activo

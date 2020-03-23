@@ -1,0 +1,29 @@
+easy_admin:
+  entities:
+    Departament:
+      class: AppBundle\Entity\Departamento
+      label: 'Departamento'
+      list:
+        title: 'Departamento'
+        actions:
+          - { name: 'new', label: 'Crear departamento' }
+        fields:
+          - id
+          - nombre
+          - { property: claveDepartamental, label: 'Clave departamental' }
+          - { property: clavePresupuestal, label: 'Clave presupuestal' }
+          - { property: unidad.nombre, label: 'Unidad' }
+          - { property: esUnidad, label: 'Es unidad', type: toggle }
+          - { property: anio, label: 'Año' }
+          - { property: fecha, label: 'Fecha' }
+          - { property: activo, type: toggle }
+      form:
+        fields:
+          - { property: nombre, label: 'Nombre' }
+          - { property: claveDepartamental, label: 'Clave departamental' }
+          - { property: clavePresupuestal, label: 'Clave presupuestal' }
+          - { property: unidad, label: 'Unidad' }
+          - { property: esUnidad, label: 'Es unidad' }
+          - { property: anio, label: 'Año' }
+          - { property: fecha, label: 'Fecha' }
+          - activo

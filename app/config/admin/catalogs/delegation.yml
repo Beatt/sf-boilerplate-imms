@@ -1,0 +1,30 @@
+easy_admin:
+  entities:
+    Delegation:
+      class: AppBundle\Entity\Delegacion
+      label: 'Delegación'
+      list:
+        title: 'Delegación'
+        actions:
+          - { name: 'new', label: 'Crear delegación' }
+        fields:
+          - id
+          - nombre
+          - { property: activo, type: toogle }
+          - { property: claveDelegacional, label: 'Clave delegacional' }
+          - { property: grupoDelegacion, label: 'Grupo delegacional' }
+          - { property: nombreGrupoDelegacion, label: 'Nombre del grupo delegacional' }
+          - { property: latitud, label: 'Latitud' }
+          - { property: altitud, label: 'Altitud' }
+          - { property: fecha, label: 'Fecha de creación' }
+      form:
+        fields:
+          - nombre
+          - { property: claveDelegacional, label: 'Clave delegacional' }
+          - { property: grupoDelegacion, label: 'Grupo delegacional' }
+          - { property: nombreGrupoDelegacion, label: 'Nombre del grupo delegacional' }
+          - { property: latitud, label: 'Latitud' }
+          - { property: altitud, label: 'Altitud' }
+          - { property: fecha, label: 'Fecha de creación' }
+          - { property: activo }
+          - { property: region }

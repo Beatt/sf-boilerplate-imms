@@ -1,0 +1,29 @@
+easy_admin:
+  entities:
+    Institution:
+      class: AppBundle\Entity\Institucion
+      label: 'Institución'
+      list:
+        title: 'Institución'
+        actions:
+          - { name: 'new', label: 'Crear institución' }
+        fields:
+          - id
+          - nombre
+          - { property: telefono, label: 'Teléfono' }
+          - correo
+          - fax
+          - sitioWeb
+          - { property: cedulaIdentificacion, label: 'Cédula de identificación' }
+          - { property: rfc, label: 'RFC' }
+          - { property: direccion, label: 'Dirección' }
+      form:
+        fields:
+          - nombre
+          - { property: telefono, label: 'Teléfono' }
+          - correo
+          - fax
+          - sitioWeb
+          - { property: cedulaIdentificacion, label: 'Cédula de identificación' }
+          - { property: rfc, label: 'RFC' }
+          - { property: direccion, label: 'Dirección' }

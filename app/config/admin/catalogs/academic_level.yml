@@ -1,0 +1,15 @@
+easy_admin:
+  entities:
+    AcademicLevel:
+      class: AppBundle\Entity\NivelAcademico
+      label: 'Nivel académico'
+      list:
+        title: 'Nivel académico'
+        actions:
+          - { name: 'new', label: 'Crear nivel académico' }
+        fields:
+          - id
+          - nombre
+      form:
+        fields:
+          - { property: nombre, label: 'Nombre' }

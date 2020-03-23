@@ -1,0 +1,23 @@
+easy_admin:
+  entities:
+    UnitType:
+      class: AppBundle\Entity\TipoUnidad
+      label: 'Tipo de unidad'
+      list:
+        title: 'Tipo de unidad'
+        actions:
+          - { name: 'new', label: 'Crear tipo de unidad' }
+        fields:
+          - id
+          - nombre
+          - { property: descripcion, label: 'Descripción' }
+          - { property: grupoTipo, label: 'Tipo de grupo' }
+          - { property: grupoNombre, label: 'Nombre de grupo' }
+          - { property: activo, type: toogle }
+      form:
+        fields:
+          - { property: nombre, label: 'Nombre' }
+          - { property: descripcion, label: 'Descripción' }
+          - { property: grupoTipo, label: 'Tipo de grupo' }
+          - { property: grupoNombre, label: 'Nombre de grupo' }
+          - activo
