@@ -10,6 +10,8 @@ imports:
   - { resource: catalogs/unit_type.yml }
   - { resource: catalogs/unit.yml }
   - { resource: catalogs/institution.yml }
+  - { resource: catalogs/academic_level.yml }
+  - { resource: catalogs/departament.yml }
 
 easy_admin:
   design:
@@ -26,4 +28,6 @@ easy_admin:
           - UnitType
           - Unit
           - Institution
+          - AcademicLevel
+          - Departament
       - SectionTranslate
