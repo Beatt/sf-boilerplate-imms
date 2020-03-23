@@ -3,7 +3,13 @@ imports:
   - { resource: permission.yml }
   - { resource: role.yml }
   - { resource: translate/section.yml }
-  - { resource: region.yml }
+  - { resource: catalogs/region.yml }
+  - { resource: catalogs/career.yml }
+  - { resource: catalogs/graduate_school.yml }
+  - { resource: catalogs/delegation.yml }
+  - { resource: catalogs/unit_type.yml }
+  - { resource: catalogs/unit.yml }
+  - { resource: catalogs/institution.yml }
 
 easy_admin:
   design:
@@ -11,5 +17,13 @@ easy_admin:
       - User
       - Permission
       - Role
-      - Region
+      - label: 'Catálogos'
+        children:
+          - Region
+          - Career
+          - GraduateSchool
+          - Delegation
+          - UnitType
+          - Unit
+          - Institution
       - SectionTranslate

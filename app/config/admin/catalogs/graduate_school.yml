@@ -1,0 +1,15 @@
+easy_admin:
+  entities:
+    GraduateSchool:
+      class: AppBundle\Entity\CicloAcademico
+      label: 'Ciclo académico'
+      list:
+        title: 'Ciclo académico'
+        actions:
+          - { name: 'new', label: 'Crear ciclo académico' }
+        fields:
+          - id
+          - nombre
+      form:
+        fields:
+          - { property: nombre, label: 'Nombre' }

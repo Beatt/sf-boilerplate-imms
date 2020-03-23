@@ -1,0 +1,17 @@
+easy_admin:
+  entities:
+    Career:
+      class: AppBundle\Entity\Carrera
+      label: 'Carrera'
+      list:
+        title: 'Carrera'
+        actions:
+          - { name: 'new', label: 'Crear carrera' }
+        fields:
+          - id
+          - nombre
+          - { property: activo, type: toogle }
+      form:
+        fields:
+          - { property: nombre, label: 'Nombre' }
+          - activo
