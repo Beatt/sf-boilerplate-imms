@@ -22,8 +22,8 @@ easy_admin:
           - sector
           - tipo
           - vigencia
-          - { property: gradoAcademico, label: 'Grado académico' }
-          - { property: cicloAcademico, label: 'Ciclo académico' }
-          - { property: carrera, label: 'Carrera' }
-          - { property: institucion, label: 'Institución' }
-          - { property: delegacion, label: 'Delegación' }
+          - { property: gradoAcademico, label: 'Grado académico', type: entity, type_options: { choice_label: nombre } }
+          - { property: cicloAcademico, label: 'Ciclo académico', type: entity, type_options: { choice_label: nombre } }
+          - { property: carrera, label: 'Carrera', type: entity, type_options: { choice_label: nombre } }
+          - { property: institucion, label: 'Institución', type: entity, type_options: { choice_label: nombre } }
+          - { property: delegacion, label: 'Delegación', type: entity, type_options: { choice_label: nombre } }

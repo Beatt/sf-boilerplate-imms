@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Property\CoordinatesProperty;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="delegacion")
@@ -37,6 +38,10 @@ class Delegacion
     /**
      * @var string
      * @ORM\Column(type="string", length=2)
+     * @Assert\Length(
+     *      max = 2,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $claveDelegacional;
 
@@ -62,6 +67,10 @@ class Delegacion
     /**
      * @var string
      * @ORM\Column(type="string", length=5)
+     * @Assert\Length(
+     *      max = 5,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $grupoDelegacion;
 
@@ -76,6 +85,11 @@ class Delegacion
      * @ORM\Column(type="date", length=100)
      */
     private $fecha;
+
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+    }
 
     /**
      * @return integer

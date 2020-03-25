@@ -25,6 +25,5 @@ easy_admin:
           - { property: nombreGrupoDelegacion, label: 'Nombre del grupo delegacional' }
           - { property: latitud, label: 'Latitud' }
           - { property: altitud, label: 'Altitud' }
-          - { property: fecha, label: 'Fecha de creación' }
           - { property: activo }
-          - { property: region }
+          - { property: region, type: entity, type_options: { choice_label: nombre } }

@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="departamento")
@@ -22,18 +23,30 @@ class Departamento
     /**
      * @var string
      * @ORM\Column(type="string", length=30)
+     * @Assert\Length(
+     *      max = 30,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $nombre;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=12)
+     * @Assert\Length(
+     *      max = 12,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $claveDepartamental;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=12)
+     * @Assert\Length(
+     *      max = 12,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $clavePresupuestal;
 
@@ -67,6 +80,11 @@ class Departamento
      * @ORM\Column(type="boolean")
      */
     private $activo;
+
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+    }
 
     /**
      * @return integer

@@ -16,14 +16,20 @@ easy_admin:
           - { property: nivelAtencion, label: 'Nivel de atención' }
           - { property: tipoUnidad.nombre, label: 'Tipo de unidad' }
           - { property: esUmae, label: 'Es UMAE' }
-          - { property: activo, type: toogle }
+          - { property: activo, type: toggle }
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
           - { property: claveUnidad, label: 'Clave de unidad' }
-          - { property: delegacion, label: 'Delegación' }
+          - { property: delegacion, label: 'Delegación', type: entity, type_options: { choice_label: nombre } }
           - { property: clavePresupuestal, label: 'Clave presupuestal' }
           - { property: nivelAtencion, label: 'Nivel de atención' }
-          - { property: tipoUnidad, label: 'Tipo de unidad' }
+          - { property: tipoUnidad, label: 'Tipo de unidad', type: entity, type_options: { choice_label: nombre } }
           - { property: esUmae, label: 'Es UMAE' }
+          - { property: direccion, label: 'Dirección' }
+          - { property: nombreUnidadPrincipal, label: 'Nombre de unidad principal' }
+          - { property: claveUnidadPrincipal, label: 'Clave de unidad principal' }
+          - { property: anio, label: 'Año' }
+          - { property: latitud, label: 'Latitud' }
+          - { property: altitud, label: 'Altitud' }
           - activo

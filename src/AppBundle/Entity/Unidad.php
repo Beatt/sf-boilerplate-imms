@@ -5,6 +5,8 @@ namespace AppBundle\Entity;
 use AppBundle\Entity\Property\CoordinatesProperty;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Table(name="unidad")
  * @ORM\Entity
@@ -31,6 +33,10 @@ class Unidad
     /**
      * @var string
      * @ORM\Column(type="string", length=12)
+     * @Assert\Length(
+     *      max = 12,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $claveUnidad;
 
@@ -44,6 +50,10 @@ class Unidad
     /**
      * @var string
      * @ORM\Column(type="string", length=12)
+     * @Assert\Length(
+     *      max = 12,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $clavePresupuestal;
 
@@ -81,6 +91,10 @@ class Unidad
     /**
      * @var string
      * @ORM\Column(type="string", length=2)
+     * @Assert\Length(
+     *      max = 2,
+     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     * )
      */
     private $claveUnidadPrincipal;
 
@@ -101,6 +115,11 @@ class Unidad
      * @ORM\Column(type="boolean")
      */
     private $activo;
+
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+    }
 
     /**
      * @return integer

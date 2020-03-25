@@ -22,8 +22,7 @@ easy_admin:
           - { property: nombre, label: 'Nombre' }
           - { property: claveDepartamental, label: 'Clave departamental' }
           - { property: clavePresupuestal, label: 'Clave presupuestal' }
-          - { property: unidad, label: 'Unidad' }
+          - { property: unidad, label: 'Unidad', type: entity, type_options: { choice_label: 'nombre' } }
           - { property: esUnidad, label: 'Es unidad' }
           - { property: anio, label: 'Año' }
-          - { property: fecha, label: 'Fecha' }
           - activo

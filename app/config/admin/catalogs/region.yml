@@ -10,6 +10,8 @@ easy_admin:
         fields:
           - id
           - nombre
+          - activo
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
+          - activo

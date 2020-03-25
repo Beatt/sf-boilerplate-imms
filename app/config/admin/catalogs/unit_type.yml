@@ -13,7 +13,7 @@ easy_admin:
           - { property: descripcion, label: 'Descripción' }
           - { property: grupoTipo, label: 'Tipo de grupo' }
           - { property: grupoNombre, label: 'Nombre de grupo' }
-          - { property: activo, type: toogle }
+          - { property: activo, type: toggle }
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
