@@ -2,12 +2,14 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="departamento")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\DepartmentRepository")
  */
 class Departamento
 {
@@ -81,9 +83,15 @@ class Departamento
      */
     private $activo;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="departamentos")
+     */
+    private $usuarios;
+
     public function __construct()
     {
         $this->fecha = new \DateTime();
+        $this->usuarios = new ArrayCollection();
     }
 
     /**
@@ -244,5 +252,36 @@ class Departamento
     public function getUnidad()
     {
         return $this->unidad;
+    }
+
+    /**
+     * @param Usuario $usuario
+     * @return Departamento
+     */
+    public function addUsuario(Usuario $usuario)
+    {
+        if(!$this->usuarios->contains($usuario)) {
+            $this->usuarios[] = $usuario;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Usuario $usuario
+     */
+    public function removeUsuario(Usuario $usuario)
+    {
+        if($this->usuarios->contains($usuario)) {
+            $this->usuarios->removeElement($usuario);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsuarios()
+    {
+        return $this->usuarios;
     }
 }

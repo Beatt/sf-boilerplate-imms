@@ -10,13 +10,23 @@ easy_admin:
           - { name: 'new', label: 'Crear usuario' }
         fields:
           - id
-          - { property: usuario, label: 'Usuario' }
+          - { property: matricula, label: 'Usuario' }
           - { property: correo, label: 'Correo electrónico' }
           - { property: activo, type: toggle, label: 'Activo' }
       form:
         fields:
-          - { property: usuario, label: 'Usuario' }
+          - { property: matricula, label: 'Matrícula' }
+          - { property: nombre, label: 'Nombre' }
+          - { property: apellidoPaterno, label: 'Apellido paterno' }
+          - { property: apellidoMaterno, label: 'Apellido materno' }
+          - { property: regims, label: 'Regims' }
           - { property: correo, label: 'Correo electrónico' }
+          - { property: curp, label: 'CURP' }
+          - { property: rfc, label: 'RFC' }
+          - { property: sexo, label: 'Sexo' }
+          - { property: fechaIngreso, label: 'Fecha de Ingreso' }
+          - { property: categoria, label: 'Categoria', type: entity, type_options: { choice_label: nombre } }
           - { property: activo, type: checkbox }
           - { property: plainPassword, type: text, label: 'Contraseña' }
           - { property: rols, label: 'Roles', type: entity, type_options: { class: AppBundle\Entity\Rol, choice_label: nombre, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllRoles, expanded: true, multiple: true } }
+          - { property: departamentos, label: 'Departamentos', type: entity, type_options: { class: AppBundle\Entity\Departamento, choice_label: nombre, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllDepartments, expanded: true, multiple: true } }

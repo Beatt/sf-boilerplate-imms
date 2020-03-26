@@ -1,6 +1,6 @@
 easy_admin:
   entities:
-    Departament:
+    Department:
       class: AppBundle\Entity\Departamento
       label: 'Departamento'
       list:
