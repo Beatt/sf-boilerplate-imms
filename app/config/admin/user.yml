@@ -10,7 +10,7 @@ easy_admin:
           - { name: 'new', label: 'Crear usuario' }
         fields:
           - id
-          - { property: matricula, label: 'Usuario' }
+          - { property: matricula, label: 'Matrícula', type: text }
           - { property: correo, label: 'Correo electrónico' }
           - { property: activo, type: toggle, label: 'Activo' }
       form:

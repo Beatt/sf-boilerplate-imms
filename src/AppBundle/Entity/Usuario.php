@@ -24,7 +24,7 @@ class Usuario implements UserInterface
     private $id;
 
     /**
-     * @var string
+     * @var integer
      * @ORM\Column(type="integer", unique=true)
      */
     private $matricula;
