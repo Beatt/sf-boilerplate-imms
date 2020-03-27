@@ -2,7 +2,7 @@ imports:
   - { resource: user.yml }
   - { resource: permission.yml }
   - { resource: role.yml }
-  - { resource: translate/section.yml }
+  - { resource: translate.yml }
   - { resource: catalogs/region.yml }
   - { resource: catalogs/career.yml }
   - { resource: catalogs/graduate_school.yml }
@@ -17,6 +17,8 @@ imports:
 
 easy_admin:
   design:
+    form_theme:
+      - 'vertical'
     menu:
       - User
       - Permission
@@ -34,4 +36,4 @@ easy_admin:
           - Department
           - Agreement
           - Category
-      - SectionTranslate
+      - Translate

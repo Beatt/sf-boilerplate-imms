@@ -1,0 +1,17 @@
+easy_admin:
+  entities:
+    Translate:
+      class: AppBundle\Entity\Traductor
+      controller: AppBundle\Controller\Admin\TranslateController
+      label: Traductor
+      list:
+        title: Traductor
+        actions:
+          - { name: 'new', label: 'Crear texto' }
+        fields:
+          - id
+          - locale
+      form:
+        fields:
+          - locale
+          - { property: traductorDTO, label: 'Textos', type: AppBundle\Form\Type\TranslateDTOType }
