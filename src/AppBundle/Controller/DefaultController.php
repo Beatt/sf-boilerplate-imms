@@ -2,7 +2,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Translation\Seccion;
+use AppBundle\Entity\Traductor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +18,14 @@ class DefaultController extends Controller
             $request->setLocale($request->get('changeLocale'));
         }
 
-        $sectionTranslation = $this->getDoctrine()
-            ->getRepository(Seccion::class)
-            ->findOneBy(['modulo' => 'MODULO_USUARIOS']);
+        /** @var Traductor $translate */
+        $translate = $this->getDoctrine()
+            ->getRepository(Traductor::class)
+            ->getTextsByLocale($request->getLocale());
 
         return $this->render('default/index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-            'sectionTranslation' => $sectionTranslation !== null ? $sectionTranslation->translate($request->getLocale()) : null
+            'translate' => $translate !== null ? $translate->getTraductorDTO() : null
         ]);
     }
 }

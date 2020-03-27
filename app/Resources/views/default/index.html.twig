@@ -7,9 +7,10 @@
                 <h1><span>Welcome to</span> Symfony {{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}</h1>
                 <div style="border: 1px solid red;">
                     <h3>Panel de categorias</h3>
-                    {% if sectionTranslation is not null %}
-                        <p>{{ sectionTranslation.nombre }}</p>
-                        <p>{{ sectionTranslation.descripcion }}</p>
+                    {% if translate is not null %}
+                        <p>{{ translate.bar }}</p>
+                        <p>{{ translate.balance }}</p>
+                        <p>{{ translate.active }}</p>
                     {% endif %}
                     <a href="{{ path('homepage') }}?changeLocale=es">Cambiar a español</a>
                     <a href="{{ path('homepage') }}?changeLocale=en">Cambiar a ingles</a>

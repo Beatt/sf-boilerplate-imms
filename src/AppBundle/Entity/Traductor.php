@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="traductor")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TranslateRepository")
  */
 class Traductor
 {
