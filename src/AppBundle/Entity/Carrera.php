@@ -32,6 +32,13 @@ class Carrera
     private $activo;
 
     /**
+     * @var NivelAcademico
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
+     * @ORM\JoinColumn(name="nivel_academico_id", referencedColumnName="id")
+     */
+    private $nivelAcademico;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -75,5 +82,24 @@ class Carrera
     public function getActivo()
     {
         return $this->activo;
+    }
+
+    /**
+     * @param NivelAcademico $nivelAcademico
+     * @return Carrera
+     */
+    public function setNivelAcademico(NivelAcademico $nivelAcademico = null)
+    {
+        $this->nivelAcademico = $nivelAcademico;
+
+        return $this;
+    }
+
+    /**
+     * @return NivelAcademico
+     */
+    public function getNivelAcademico()
+    {
+        return $this->nivelAcademico;
     }
 }

@@ -10,8 +10,10 @@ easy_admin:
         fields:
           - id
           - nombre
-          - { property: activo, type: toogle }
+          - { property: nivelAcademico.nombre, label: 'Nivel académico' }
+          - { property: activo, type: toggle }
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
+          - { property: nivelAcademico, label: 'Nivel académico', type: entity, type_options: { choice_label: nombre } }
           - activo

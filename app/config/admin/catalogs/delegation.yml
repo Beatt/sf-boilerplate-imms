@@ -10,7 +10,7 @@ easy_admin:
         fields:
           - id
           - nombre
-          - { property: activo, type: toogle }
+          - { property: activo, type: toggle }
           - { property: claveDelegacional, label: 'Clave delegacional' }
           - { property: grupoDelegacion, label: 'Grupo delegacional' }
           - { property: nombreGrupoDelegacion, label: 'Nombre del grupo delegacional' }
