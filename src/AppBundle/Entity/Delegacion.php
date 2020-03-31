@@ -39,8 +39,10 @@ class Delegacion
      * @var string
      * @ORM\Column(type="string", length=2)
      * @Assert\Length(
-     *      max = 2,
-     *      maxMessage = "No puede contener más de {{ limit }} carácteres"
+     *     max = 2,
+     *     min = 2,
+     *     maxMessage = "No puede contener más de {{ limit }} carácteres",
+     *     minMessage = "No puede contener menos de {{ limit }} carácteres"
      * )
      */
     private $claveDelegacional;
@@ -54,13 +56,13 @@ class Delegacion
 
     /**
      * @var float
-     * @ORM\Column(type="decimal", precision=24, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4)
      */
     private $latitud;
 
     /**
      * @var float
-     * @ORM\Column(type="decimal", precision=24, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4)
      */
     private $altitud;
 

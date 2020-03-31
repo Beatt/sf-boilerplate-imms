@@ -6,6 +6,7 @@ easy_admin:
       list:
         title: 'Delegación'
         actions:
+          - '-delete'
           - { name: 'new', label: 'Crear delegación' }
         fields:
           - id
