@@ -6,6 +6,7 @@ easy_admin:
       list:
         title: Permisos
         actions:
+          - '-delete'
           - { name: 'new', label: 'Crear permiso' }
         fields:
           - id
@@ -16,3 +17,4 @@ easy_admin:
         fields:
           - { property: nombre, label: 'Nombre' }
           - { property: rolSeguridad, label: 'Rol' }
+          - { property: descripcion, label: 'Descripción' }
