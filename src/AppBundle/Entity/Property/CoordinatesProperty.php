@@ -2,17 +2,19 @@
 
 namespace AppBundle\Entity\Property;
 
+use Doctrine\ORM\Mapping as ORM;
+
 trait CoordinatesProperty
 {
     /**
      * @var float
-     * @ORM\Column(type="decimal", precision=24, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4)
      */
     private $latitud;
 
     /**
      * @var float
-     * @ORM\Column(type="decimal", precision=24, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4)
      */
     private $altitud;
 

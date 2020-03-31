@@ -55,18 +55,6 @@ class Delegacion
     private $region;
 
     /**
-     * @var float
-     * @ORM\Column(type="float", precision=24, scale=4)
-     */
-    private $latitud;
-
-    /**
-     * @var float
-     * @ORM\Column(type="float", precision=24, scale=4)
-     */
-    private $altitud;
-
-    /**
      * @var string
      * @ORM\Column(type="string", length=5)
      * @Assert\Length(
