@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="usuario")
@@ -43,7 +44,7 @@ class Usuario implements UserInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $apellidoMaterno;
 
@@ -61,6 +62,7 @@ class Usuario implements UserInterface
 
     /**
      * @var string
+     * @Assert\Email()
      * @ORM\Column(type="string", length=254, unique=true)
      */
     private $correo;
@@ -120,6 +122,7 @@ class Usuario implements UserInterface
     {
         $this->rols = new ArrayCollection();
         $this->departamentos = new ArrayCollection();
+        $this->fechaIngreso = new \DateTime();
     }
 
     /**
@@ -498,5 +501,53 @@ class Usuario implements UserInterface
     public function getCategoria()
     {
         return $this->categoria;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        $fullName = $this->nombre;
+
+        if($this->apellidoPaterno !== null) {
+            $fullName .= " {$this->apellidoPaterno}";
+        }
+
+        if($this->apellidoMaterno !== null) {
+            $fullName .= " {$this->apellidoMaterno}";
+        }
+
+        return $fullName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAssignRoles()
+    {
+        $roles = [];
+
+        /** @var Rol $rol */
+        foreach($this->rols as $rol) {
+            array_push($roles, $rol->getNombre());
+        }
+
+        return implode($roles);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAssignDepartments()
+    {
+        $departments = [];
+
+        /** @var Rol $rol */
+        foreach($this->departamentos as $departamento) {
+            array_push($departments, $departamento->getNombre());
+        }
+
+        return implode($departments);
     }
 }

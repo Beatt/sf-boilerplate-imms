@@ -9,10 +9,12 @@ easy_admin:
         actions:
           - { name: 'new', label: 'Crear usuario' }
         fields:
-          - id
           - { property: matricula, label: 'Matrícula', type: text }
+          - { property: fullName, label: 'Nombre', type: text }
           - { property: correo, label: 'Correo electrónico' }
-          - { property: activo, type: toggle, label: 'Activo' }
+          - { property: activo, label: 'Activo', type: toggle }
+          - { property: assignRoles, label: 'Roles', type: text }
+          - { property: assignDepartments, label: 'Departamento' }
       form:
         fields:
           - { property: matricula, label: 'Matrícula' }
@@ -23,8 +25,7 @@ easy_admin:
           - { property: correo, label: 'Correo electrónico' }
           - { property: curp, label: 'CURP' }
           - { property: rfc, label: 'RFC' }
-          - { property: sexo, label: 'Sexo' }
-          - { property: fechaIngreso, label: 'Fecha de Ingreso' }
+          - { property: sexo, label: 'Sexo', type: choice, type_options: { choices: { 'Masculino': 'Masculino', 'Femenino': 'Femenino' } } }
           - { property: categoria, label: 'Categoria', type: entity, type_options: { choice_label: nombre } }
           - { property: activo, type: checkbox }
           - { property: plainPassword, type: text, label: 'Contraseña' }
