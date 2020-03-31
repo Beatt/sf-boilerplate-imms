@@ -6,6 +6,7 @@ easy_admin:
       list:
         title: 'Departamento'
         actions:
+          - '-delete'
           - { name: 'new', label: 'Crear departamento' }
         fields:
           - id

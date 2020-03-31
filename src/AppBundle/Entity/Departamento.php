@@ -68,6 +68,12 @@ class Departamento
     /**
      * @var integer
      * @ORM\Column(type="integer")
+     * @Assert\Length(
+     *     max = 4,
+     *     min = 4,
+     *     maxMessage = "No puede contener más de {{ limit }} carácteres",
+     *     minMessage = "No puede contener menos de {{ limit }} carácteres"
+     * )
      */
     private $anio;
 
