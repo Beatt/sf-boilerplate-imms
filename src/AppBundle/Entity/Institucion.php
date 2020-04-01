@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="institucion")
@@ -34,6 +35,7 @@ class Institucion
     /**
      * @var string
      * @ORM\Column(type="string", length=254)
+     * @Assert\Email()
      */
     private $correo;
 
@@ -58,6 +60,12 @@ class Institucion
     /**
      * @var string
      * @ORM\Column(type="string", length=13)
+     * @Assert\Length(
+     *     min="13",
+     *     max="13",
+     *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
      */
     private $rfc;
 
