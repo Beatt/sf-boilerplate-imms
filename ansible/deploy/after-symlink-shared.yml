@@ -12,6 +12,11 @@
     working_dir: '{{ ansistrano_release_path.stdout }}'
     no_dev: no
 
+- name: Install Node dependencies
+  command: yarn install
+  args:
+    chdir: '{{ ansistrano_release_path.stdout }}'
+
 - name: Install Webpack Encore assets
   command: 'yarn encore production'
   args:
