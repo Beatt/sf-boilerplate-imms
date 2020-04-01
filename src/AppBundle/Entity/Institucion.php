@@ -3,11 +3,15 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Table(name="institucion")
  * @ORM\Entity
+ * @Vich\Uploadable
  */
 class Institucion
 {
@@ -56,6 +60,12 @@ class Institucion
      * @ORM\Column(type="string", length=255)
      */
     private $cedulaIdentificacion;
+
+    /**
+     * @Vich\UploadableField(mapping="institucion_cedulas", fileNameProperty="cedulaIdentificacion")
+     * @var File
+     */
+    private $cedulaFile;
 
     /**
      * @var string
@@ -233,5 +243,21 @@ class Institucion
     public function getDireccion()
     {
         return $this->direccion;
+    }
+
+    /**
+     * @return File
+     */
+    public function getCedulaFile()
+    {
+        return $this->cedulaFile;
+    }
+
+    /**
+     * @param UploadedFile $cedulaFile
+     */
+    public function setCedulaFile($cedulaFile)
+    {
+        $this->cedulaFile = $cedulaFile;
     }
 }

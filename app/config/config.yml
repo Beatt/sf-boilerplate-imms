@@ -8,6 +8,7 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
+    app.path.institucion_cedulas: /uploads/files/institucion/cedulas
 
 framework:
     #esi: ~
@@ -75,3 +76,12 @@ doctrine_migrations:
     table_name: migration_versions
     name: Application Migrations
     organize_migrations: false
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+        institucion_cedulas:
+            uri_prefix: '%app.path.institucion_cedulas%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/institucion/cedulas'
+            namer: AppBundle\Service\InstitucionVichNamer
+

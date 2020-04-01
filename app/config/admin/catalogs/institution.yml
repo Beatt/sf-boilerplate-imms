@@ -14,7 +14,7 @@ easy_admin:
           - correo
           - fax
           - sitioWeb
-          - { property: cedulaIdentificacion, label: 'Cédula de identificación' }
+          - { property: cedulaIdentificacion, label: 'Cédula de identificación', template: 'cedula_identificacion.html.twig', base_path: '%app.path.institucion_cedulas%' }
           - { property: rfc, label: 'RFC' }
           - { property: direccion, label: 'Dirección' }
       form:
@@ -24,6 +24,6 @@ easy_admin:
           - correo
           - fax
           - sitioWeb
-          - { property: cedulaIdentificacion, label: 'Cédula de identificación' }
+          - { property: 'cedulaFile', type: 'vich_file', label: 'Cédula de identificación' }
           - { property: rfc, label: 'RFC' }
           - { property: direccion, label: 'Dirección' }
