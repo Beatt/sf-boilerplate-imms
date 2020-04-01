@@ -27,6 +27,12 @@ class Usuario implements UserInterface
     /**
      * @var integer
      * @ORM\Column(type="integer", unique=true)
+     * @Assert\Length(
+     *     min="6",
+     *     max="15",
+     *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
      */
     private $matricula;
 
@@ -82,12 +88,24 @@ class Usuario implements UserInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=18)
+     * @Assert\Length(
+     *     min="18",
+     *     max="18",
+     *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
      */
     private $curp;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=13)
+     * @Assert\Length(
+     *     min="13",
+     *     max="13",
+     *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
      */
     private $rfc;
 
