@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Página de convenios</h2>
+    <div id="convenios"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.CONVENIOS_PROPS = {{ convenios|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/convenio.js') }}"></script>
+{% endblock %}

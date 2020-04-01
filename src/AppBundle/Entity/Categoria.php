@@ -26,6 +26,12 @@ class Categoria
     private $nombre;
 
     /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    private $clave;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -50,5 +56,24 @@ class Categoria
     public function getNombre()
     {
         return $this->nombre;
+    }
+
+    /**
+     * @param string $clave
+     * @return Categoria
+     */
+    public function setClave($clave)
+    {
+        $this->clave = $clave;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClave()
+    {
+        return $this->clave;
     }
 }

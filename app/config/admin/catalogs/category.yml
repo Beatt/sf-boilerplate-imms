@@ -10,6 +10,8 @@ easy_admin:
         fields:
           - id
           - nombre
+          - clave
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
+          - { property: clave, label: 'Clave' }
