@@ -56,6 +56,11 @@
     </div>
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
 {% block stylesheets %}
 <style>
     body { background: #F5F5F5; font: 18px/1.5 sans-serif; }

@@ -12,6 +12,11 @@
     working_dir: '{{ ansistrano_release_path.stdout }}'
     no_dev: no
 
+- name: Install Webpack Encore assets
+  command: 'yarn encore production'
+  args:
+    chdir: '{{ ansistrano_release_path.stdout }}'
+
 - name: Create DB if not exists
   command: '{{ release_console_path }} doctrine:database:create --if-not-exists'
   register: db_create_result
