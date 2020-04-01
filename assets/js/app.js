@@ -1,1 +1,3 @@
-console.log('here')
+document.addEventListener('DOMContentLoaded', function () {
+  console.log('here')
+})
