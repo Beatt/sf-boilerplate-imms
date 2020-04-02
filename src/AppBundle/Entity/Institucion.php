@@ -63,6 +63,10 @@ class Institucion
 
     /**
      * @Vich\UploadableField(mapping="institucion_cedulas", fileNameProperty="cedulaIdentificacion")
+     * @Assert\File(
+     *     maxSize="1000000",
+     *     mimeTypes = {"application/pdf", "application/x-pdf"},
+     * )
      * @var File
      */
     private $cedulaFile;
