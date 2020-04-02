@@ -6,6 +6,15 @@
     mode: 0777
     recurse: true
 
+- name: Creates upload files directory
+  become: true
+  file:
+    path: "{{ ansistrano_release_path.stdout }}/web/uploads/files/institucion/cedulas"
+    state: directory
+    mode: 0777
+    recurse: true
+    follow: yes
+
 - name: Install Composer dependencies
   composer:
     command: install
