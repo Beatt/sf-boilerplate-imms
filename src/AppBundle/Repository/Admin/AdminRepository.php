@@ -2,7 +2,7 @@
 
 namespace AppBundle\Repository\Admin;
 
-use AppBundle\Repository\DepartmentRepository;
+use AppBundle\Repository\DelegationRepository;
 use AppBundle\Repository\PermissionRepository;
 use AppBundle\Repository\RoleRepository;
 use Doctrine\ORM\EntityRepository;
@@ -23,10 +23,10 @@ class AdminRepository extends EntityRepository
             ->orderBy('role.nombre', 'ASC');
     }
 
-    public static function getAllDepartments(DepartmentRepository $departmentRepository)
+    public static function getAllDelegations(DelegationRepository $delegactionRepository)
     {
-        return $departmentRepository
-            ->createQueryBuilder('department')
-            ->orderBy('department.nombre', 'ASC');
+        return $delegactionRepository
+            ->createQueryBuilder('delegation')
+            ->orderBy('delegation.nombre', 'ASC');
     }
 }

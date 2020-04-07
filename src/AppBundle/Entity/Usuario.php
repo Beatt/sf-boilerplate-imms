@@ -80,10 +80,16 @@ class Usuario implements UserInterface
     private $activo;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Departamento", inversedBy="usuarios")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Departamento", inversedBy="usuarios")
      * @ORM\JoinColumn(name="departamento_id", referencedColumnName="id")
      */
-    private $departamentos;
+    private $departamento;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Delegacion", inversedBy="usuariosPorDelegacion")
+     * @ORM\JoinColumn(name="delegacion_id", referencedColumnName="id")
+     */
+    private $delegaciones;
 
     /**
      * @var string
@@ -139,7 +145,7 @@ class Usuario implements UserInterface
     public function __construct()
     {
         $this->rols = new ArrayCollection();
-        $this->departamentos = new ArrayCollection();
+        $this->delegaciones = new ArrayCollection();
         $this->fechaIngreso = new \DateTime();
     }
 
@@ -473,33 +479,18 @@ class Usuario implements UserInterface
      * @param Departamento $departamento
      * @return Usuario
      */
-    public function addDepartamento(Departamento $departamento)
+    public function setDepartamento(Departamento $departamento)
     {
-        if(!$this->departamentos->contains($departamento)) {
-            $this->departamentos[] = $departamento;
-            $departamento->addUsuario($this);
-        }
-
+        $this->departamento = $departamento;
         return $this;
-    }
-
-    /**
-     * @param Departamento $departamento
-     */
-    public function removeDepartamento(Departamento $departamento)
-    {
-        if($this->departamentos->contains($departamento)) {
-            $this->departamentos->removeElement($departamento);
-            $departamento->removeUsuario($this);
-        }
     }
 
     /**
      * @return Collection
      */
-    public function getDepartamentos()
+    public function getDepartamento()
     {
-        return $this->departamentos;
+        return $this->departamento;
     }
 
     /**
@@ -554,18 +545,48 @@ class Usuario implements UserInterface
         return implode($roles);
     }
 
-    /**
-     * @return string
-     */
-    public function getAssignDepartments()
+   /* public function getAssignDepartments()
     {
         $departments = [];
 
-        /** @var Rol $rol */
         foreach($this->departamentos as $departamento) {
             array_push($departments, $departamento->getNombre());
         }
 
         return implode($departments);
+    }*/
+
+
+    /**
+     * @param Delegacion $delegacione
+     * @return Usuario
+     */
+    public function addDelegacione(Delegacion $delegacione)
+    {
+        if(!$this->delegaciones->contains($delegacione)) {
+            $this->delegaciones[] = $delegacione;
+            $delegacione->addUsuario($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Delegacion $delegacione
+     */
+    public function removeDelegacione(Delegacion $delegacione)
+    {
+        if($this->delegaciones->contains($delegacione)) {
+            $this->delegaciones->removeElement($delegacione);
+            $delegacione->removeUsuario($this);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getDelegaciones()
+    {
+        return $this->delegaciones;
     }
 }

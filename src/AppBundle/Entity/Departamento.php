@@ -90,7 +90,7 @@ class Departamento
     private $activo;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="departamentos")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="departamentos")
      */
     private $usuarios;
 

@@ -3,12 +3,14 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Property\CoordinatesProperty;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="delegacion")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\DelegationRepository")
  */
 class Delegacion
 {
@@ -71,6 +73,11 @@ class Delegacion
     private $nombreGrupoDelegacion;
 
     /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="delegaciones")
+     */
+    private $usuarios;
+
+    /**
      * @var \DateTime
      * @ORM\Column(type="date", length=100)
      */
@@ -79,6 +86,7 @@ class Delegacion
     public function __construct()
     {
         $this->fecha = new \DateTime();
+        $this->usuarios = new ArrayCollection();
     }
 
     /**
@@ -220,5 +228,38 @@ class Delegacion
     public function getRegion()
     {
         return $this->region;
+    }
+
+    /**
+     * @param Usuario $usuario
+     * @return Delegacion
+     */
+    public function addUsuario(Usuario $usuario)
+    {
+        if(!$this->usuarios->contains($usuario)) {
+            $this->usuarios[] = $usuario;
+            $usuario->addDelegacione($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Usuario $usuario
+     */
+    public function removeUsuario(Usuario $usuario)
+    {
+        if($this->usuarios->contains($usuario)) {
+            $this->usuarios->removeElement($usuario);
+            $usuario->removeDelegacione($this);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsuarios()
+    {
+        return $this->usuarios;
     }
 }
