@@ -1,3 +1,3 @@
-document.addEventListener('DOMContentLoaded', function () {
-  console.log('here')
-})
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('mi rama')
+});
