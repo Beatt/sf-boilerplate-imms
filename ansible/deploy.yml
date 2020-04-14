@@ -1,6 +1,12 @@
 ---
 - hosts: digitalocean
 
+  vars_prompt:
+    - name: git_branch
+      prompt: 'Enter a branch to deploy'
+      default: master
+      private: no
+
   vars_files:
     - ./vars/deploy_vault.yml
     - ./vars/vars.yml
@@ -16,5 +22,5 @@
     ansistrano_deploy_to: "{{ project_deploy_dir }}"
     ansistrano_deploy_via: git
     ansistrano_git_repo: git@github.com:Beatt/sf-boilerplate-imms.git
-    ansistrano_git_branch: master
+    ansistrano_git_branch: "{{ git_branch }}"
     ansistrano_after_symlink_shared_tasks_file: "{{ playbook_dir }}/deploy/after-symlink-shared.yml"
