@@ -40,7 +40,8 @@ Deploy digitalocean
 --------------
 
 1. cd sf-boilerplate-imms
+2. git pull origin mi-rama
 2. ansible-playbook ansible/deploy.yml -i ansible/hosts.ini --ask-vault-pass
 3. Contraseña: imss1234
-4. Escribir rama a desplegar
+4. Escribir rama a desplegar: mi-rama
 5. Enter
