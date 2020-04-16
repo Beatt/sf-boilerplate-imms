@@ -23,38 +23,40 @@ class Version20200416190634 extends AbstractMigration
         $this->addSQL("ALTER TABLE carrera DROP CONSTRAINT FK_CF1ECD30C21F5FA8");
         $this->addSQL("ALTER TABLE convenio DROP CONSTRAINT FK_25577244DA3426AE");
         $this->addSQL("TRUNCATE TABLE nivel_academico RESTART IDENTITY");
-        $this->addSql("ALTER TABLE carrera ADD CONSTRAINT FK_CF1ECD30C21F5FA8 FOREIGN KEY (nivel_academico_id) REFERENCES nivel_academico (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
-        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244DA3426AE FOREIGN KEY (nivel_id) REFERENCES nivel_academico (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
 
         $this->addSQL("INSERT INTO nivel_academico(id, nombre) VALUES (1, 'Licenciatura')");
         $this->addSQL("INSERT INTO nivel_academico(id, nombre) VALUES (2, 'Técnico')");
+
+        $this->addSql("ALTER TABLE carrera ADD CONSTRAINT FK_CF1ECD30C21F5FA8 FOREIGN KEY (nivel_academico_id) REFERENCES nivel_academico (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
+        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244DA3426AE FOREIGN KEY (nivel_id) REFERENCES nivel_academico (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
 
 
 
         /* CATALOGO REGION */
         $this->addSql("ALTER TABLE delegacion DROP CONSTRAINT FK_E4E12C4B98260155");
         $this->addSQL("TRUNCATE TABLE region RESTART IDENTITY");
-        $this->addSql("ALTER TABLE delegacion ADD CONSTRAINT FK_E4E12C4B98260155 FOREIGN KEY (region_id) REFERENCES region (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
 
         $this->addSQL("INSERT INTO region(id, nombre, activo) VALUES (1, 'Nor-Occidente', true)");
         $this->addSQL("INSERT INTO region(id, nombre, activo) VALUES (2, 'Nor-Este', true)");
         $this->addSQL("INSERT INTO region(id, nombre, activo) VALUES (3, 'Centro-Sur', true)");
         $this->addSQL("INSERT INTO region(id, nombre, activo) VALUES (4, 'Centro-Norte', true)");
 
+        $this->addSql("ALTER TABLE delegacion ADD CONSTRAINT FK_E4E12C4B98260155 FOREIGN KEY (region_id) REFERENCES region (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
+
        
         /* CATALOGO CICLO_ACADEMICO */        
         $this->addSql("ALTER TABLE convenio DROP CONSTRAINT FK_25577244A7D9417F");
         $this->addSQL("TRUNCATE TABLE ciclo_academico RESTART IDENTITY");
-        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244A7D9417F FOREIGN KEY (ciclo_academico_id) REFERENCES ciclo_academico (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
 
         $this->addSQL("INSERT INTO ciclo_academico(id, nombre) VALUES (1, 'Ciclos Clínicos')");
         $this->addSQL("INSERT INTO ciclo_academico(id, nombre) VALUES (2, 'Internado')");
+
+        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244A7D9417F FOREIGN KEY (ciclo_academico_id) REFERENCES ciclo_academico (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
 
 
         /* CATALOGO CARRERA */
         $this->addSql("ALTER TABLE convenio DROP CONSTRAINT FK_25577244C671B40F");
         $this->addSQL("TRUNCATE TABLE carrera RESTART IDENTITY");
-        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244C671B40F FOREIGN KEY (carrera_id) REFERENCES carrera (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
 
         $this->addSQL("INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(1,'ESTOMATOLOGÍA',true,1)");
         $this->addSQL("INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(2,'FARMACIA',true, 1)");
@@ -82,16 +84,14 @@ class Version20200416190634 extends AbstractMigration
         $this->addSQL("INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(24,'TRABAJO SOCIAL',true,2)");
         $this->addSQL("INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(25,'ENFERMERÍA',true,2)");
 
+        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244C671B40F FOREIGN KEY (carrera_id) REFERENCES carrera (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
+
         /* CATALOGO DELEGACION */
 
         $this->addSql("ALTER TABLE convenio DROP CONSTRAINT FK_25577244F4B21EB5");
         $this->addSql("ALTER TABLE usuario_delegacion DROP CONSTRAINT FK_17D166E9F4B21EB5");
         $this->addSql("ALTER TABLE unidad DROP CONSTRAINT FK_F3E6D02FF4B21EB5");
         $this->addSQL("TRUNCATE TABLE delegacion RESTART IDENTITY");        
-        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244F4B21EB5 FOREIGN KEY (delegacion_id) REFERENCES delegacion (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
-        $this->addSql("ALTER TABLE usuario_delegacion ADD CONSTRAINT FK_17D166E9F4B21EB5 FOREIGN KEY (delegacion_id) REFERENCES delegacion (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE");
-        $this->addSql("ALTER TABLE unidad ADD CONSTRAINT FK_F3E6D02FF4B21EB5 FOREIGN KEY (delegacion_id) REFERENCES delegacion (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
-                
 
         $this->addSQL("INSERT INTO delegacion(id, region_id, nombre, activo,  clave_delegacional, latitud, longitud, grupo_delegacion,  nombre_grupo_delegacion, fecha) VALUES(1 , 1 , 'AGUASCALIENTES' ,true,'01',  21.8853, -102.2916, 'AS', 'AGUASCALIENTES',  '2017-05-16 10:43:19.296897'  )");
         $this->addSQL("INSERT INTO delegacion(id, region_id, nombre, activo,  clave_delegacional, latitud, longitud, grupo_delegacion,  nombre_grupo_delegacion, fecha) VALUES(2 , 1 , 'BAJA CALIFORNIA' ,true,'02',  32.6245, -115.4523, 'BC', 'BAJA CALIFORNIA',  '2017-05-16 10:43:19.296897'  )");
@@ -134,6 +134,10 @@ class Version20200416190634 extends AbstractMigration
         $this->addSQL("INSERT INTO delegacion(id, region_id, nombre, activo,  clave_delegacional, latitud, longitud, grupo_delegacion,  nombre_grupo_delegacion, fecha) VALUES(39 ,  null, 'MANDO' ,true,'39',  null, null, 'MAN', 'MANDO',  '2017-05-16 10:43:19.296897'  )");
 
 
+        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244F4B21EB5 FOREIGN KEY (delegacion_id) REFERENCES delegacion (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
+        $this->addSql("ALTER TABLE usuario_delegacion ADD CONSTRAINT FK_17D166E9F4B21EB5 FOREIGN KEY (delegacion_id) REFERENCES delegacion (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE");
+        $this->addSql("ALTER TABLE unidad ADD CONSTRAINT FK_F3E6D02FF4B21EB5 FOREIGN KEY (delegacion_id) REFERENCES delegacion (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
+        
     }
 
     /**
