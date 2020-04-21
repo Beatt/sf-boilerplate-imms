@@ -26,38 +26,38 @@ class Institucion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $nombre;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=16, nullable=true)
      */
     private $telefono;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=254)
+     * @ORM\Column(type="string", length=254, nullable=true)
      * @Assert\Email()
      */
     private $correo;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=254)
+     * @ORM\Column(type="string", length=254, nullable=true)
      */
     private $fax;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $sitioWeb;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $cedulaIdentificacion;
 
@@ -73,7 +73,7 @@ class Institucion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=13)
+     * @ORM\Column(type="string", length=13, nullable=true)
      * @Assert\Length(
      *     min="13",
      *     max="13",
@@ -85,7 +85,7 @@ class Institucion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $direccion;
 
