@@ -8,14 +8,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AgreementController extends Controller
+class ConveniosController extends Controller
 {
 
     /**
-     * @Route("/convenios", name="convenios")
+     * @Route("/instituciones/{id}/convenios", name="convenios#index")
      * @return Response
      */
-    public function index()
+    public function indexAction()
     {
         $lastInstitucion = $this->get('doctrine')->getRepository('AppBundle:Institucion')
             ->findAll();
