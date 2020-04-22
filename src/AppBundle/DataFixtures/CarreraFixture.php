@@ -8,7 +8,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class CareerFixture extends Fixture implements FixtureInterface, DependentFixtureInterface
+class CarreraFixture extends Fixture implements FixtureInterface, DependentFixtureInterface
 {
     const CARRERA_A = 'career_a';
 

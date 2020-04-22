@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class InstitutionFixture extends Fixture implements FixtureInterface
+class InstitucionFixture extends Fixture implements FixtureInterface
 {
     const INSTITUCION_A = 'institucion_a';
 

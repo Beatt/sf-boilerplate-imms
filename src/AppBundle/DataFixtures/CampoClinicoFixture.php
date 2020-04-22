@@ -8,19 +8,19 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class ClinicalFieldFixture extends Fixture implements DependentFixtureInterface
+class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 {
 
     public function load(ObjectManager $manager)
     {
         $this->create(
-            AgreementsFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
+            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             CicloAcademicoFixture::CICLO_A,
             $manager
         );
 
         $this->create(
-            AgreementsFixture::AGREEMENT_LESS_THAN_ONE_YEAR_AND_GREATER_THAN_SIX_MONTHS,
+            ConvenioFixture::AGREEMENT_LESS_THAN_ONE_YEAR_AND_GREATER_THAN_SIX_MONTHS,
             CicloAcademicoFixture::CICLO_B,
             $manager
         );
@@ -29,7 +29,7 @@ class ClinicalFieldFixture extends Fixture implements DependentFixtureInterface
     function getDependencies()
     {
         return[
-            AgreementsFixture::class,
+            ConvenioFixture::class,
             CicloAcademicoFixture::class
         ];
     }

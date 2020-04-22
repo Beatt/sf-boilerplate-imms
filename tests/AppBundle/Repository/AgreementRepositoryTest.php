@@ -2,8 +2,8 @@
 
 namespace Tests\AppBundle\Repository;
 
-use AppBundle\DataFixtures\AgreementsFixture;
-use AppBundle\DataFixtures\InstitutionFixture;
+use AppBundle\DataFixtures\ConvenioFixture;
+use AppBundle\DataFixtures\InstitucionFixture;
 use AppBundle\Entity\Convenio;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,10 +28,10 @@ class AgreementRepositoryTest extends WebTestCase
 
         $entityManager = $this->doctrine->getManager();
 
-        $institutionFixture = new InstitutionFixture();
+        $institutionFixture = new InstitucionFixture();
         $institutionFixture->load($entityManager);
 
-        $agreementsFixture = new AgreementsFixture();
+        $agreementsFixture = new ConvenioFixture();
         $agreementsFixture->load($entityManager);
 
     }
