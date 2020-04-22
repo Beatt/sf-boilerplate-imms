@@ -2,12 +2,12 @@
 
 namespace Tests\AppBundle\Repository;
 
+use AppBundle\DataFixtures\AgreementsFixture;
+use AppBundle\DataFixtures\InstitutionFixture;
 use AppBundle\Entity\Convenio;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Tests\AppBundle\DataFixtures\AgreementsFixture;
-use Tests\AppBundle\DataFixtures\InstitutionFixture;
 
 class AgreementRepositoryTest extends WebTestCase
 {

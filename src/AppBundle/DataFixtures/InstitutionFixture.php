@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\AppBundle\DataFixtures;
+namespace AppBundle\DataFixtures;
 
 use AppBundle\Entity\Institucion;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -9,6 +9,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class InstitutionFixture extends Fixture implements FixtureInterface
 {
+    const INSTITUCION_A = 'institucion_a';
 
     public function load(ObjectManager $manager)
     {
@@ -24,5 +25,7 @@ class InstitutionFixture extends Fixture implements FixtureInterface
 
         $manager->persist($institucion);
         $manager->flush();
+
+        $this->addReference(self::INSTITUCION_A, $institucion);
     }
 }

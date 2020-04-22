@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -230,5 +231,20 @@ class Convenio
     public function getDelegacion()
     {
         return $this->delegacion;
+    }
+
+    public function getLabel()
+    {
+        if($this->vigencia > Carbon::now()->addMonths(12)) {
+            return 'green';
+        }
+        if(
+            $this->vigencia > Carbon::now()->addMonths(6) AND
+            $this->vigencia <= Carbon::now()->addMonths(12)
+        ) {
+            return 'yellow';
+        }
+
+        return 'red';
     }
 }

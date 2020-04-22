@@ -5,9 +5,9 @@ namespace AppBundle\Repository;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityRepository;
 
-class AgreementRepository  extends EntityRepository
+class AgreementRepository  extends EntityRepository implements AgreementRepositoryInterface
 {
-    public function getAgreementsGreaterThanOneYear()
+    /*public function getAgreementsGreaterThanOneYear()
     {
         return $this->createQueryBuilder('agreement')
             ->where('agreement.vigencia > :greater')
@@ -33,5 +33,10 @@ class AgreementRepository  extends EntityRepository
             ->setParameter('less', Carbon::now()->addMonths(6))
             ->getQuery()
             ->getResult();
+    }*/
+
+    function getAll()
+    {
+        return $this->findBy([], ['vigencia' => 'ASC']);
     }
 }
