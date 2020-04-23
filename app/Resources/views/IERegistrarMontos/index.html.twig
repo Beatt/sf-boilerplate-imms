@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <div class='row' style="padding: 25px;">
+            <div class='col-md-1'>
+                <img class='img-responsive' src='https://image.shutterstock.com/image-vector/blank-avatar-photo-place-holder-260nw-1095249842.jpg'/>
+            </div>
+            <div class='col-md-6'>
+                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Institución educativa</p>
+                <div id="ie"></div>
+            </div>
+    </div>
+
+    <hr style="border: 1px solid black" />
+
+    </div>
+
+    <div class='container'>
+        <p style="color: #265c4f; font-size: 24px; font-weight: bold; text-align: center;">Registrar montos</p>
+
+        <div style="display: flex;">
+            <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud:</p><div id="noSolicitud"></div>
+        </div>
+
+        <div class='row'>
+            <div class='col-md-8'>
+                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Se autorizaron 5 de 6 campos clínicos para las carreras de.</p>
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col-md-8'>
+                <p>Cargue el oficio que contenga los montos de inscripición de todas las carreras que comprenden su solicitud de campos clínicos</p>
+
+            </div>
+            <div class='col-md-4'>
+                    <Encabezado estilo='izquierda' title='Cargue Cedula de Identificación Fiscal de la institución educativa' />
+                    <div class="file btn btn-lg btn-primary">
+                        <input type="file" name="file"/>
+                    </div>
+                </div>
+        </div>
+
+        <p>Ingrese el monto correspondiente a cada carrera</p>        
+        
+        <div class='row' id="pagos">
+
+        </div>
+
+        <div id="ie2"></div>
+    </div>
+        
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        window.Carrera = {{ Carrera|json_encode|raw }}
+    </script>
+
+    <script src="{{ asset('build/montos.js') }}"></script>
+
+{% endblock %}
