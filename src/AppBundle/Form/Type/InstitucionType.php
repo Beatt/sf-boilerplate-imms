@@ -13,7 +13,6 @@ class InstitucionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nombre')
             ->add('rfc')
             ->add('direccion')
             ->add('correo')
@@ -27,7 +26,8 @@ class InstitucionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         return $resolver->setDefaults([
-            'data_class' => Institucion::class
+            'data_class' => Institucion::class,
+            'csrf_protection' => false,
         ]);
     }
 }

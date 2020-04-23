@@ -52,14 +52,13 @@ class InstitucionController extends Controller
      */
     public function updateAction($id, Request $request, InstitucionManagerInterface $institucionManager)
     {
-
         $institucion = $this->get('doctrine')->getRepository(Institucion::class)
             ->find($id);
 
         $form = $this->createForm(InstitucionType::class, $institucion, [
             'action' => $this->generateUrl('instituciones#update', [
                 'id' => $id
-            ])
+            ]),
         ]);
 
         $form->handleRequest($request);
@@ -68,14 +67,34 @@ class InstitucionController extends Controller
             $result = $institucionManager->Create($form->getData());
 
             return new JsonResponse([
-                'message' => "¡La información se actualizado correctamente!",
-                'status' => $result ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY
+                'message' => $result ?
+                    "¡La información se actualizado correctamente!" :
+                    '¡Ha ocurrido un problema, intenta más tarde!',
+                'status' => $result ?
+                    Response::HTTP_OK :
+                    Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
 
         return $this->render('institucion_educativa/institucion/update.html.twig', [
             'form' => $form->createView(),
-            'institucion' => $institucion
+            'institucion' => $this->get('serializer')->normalize(
+                $institucion,
+                'json',
+                [
+                    'attributes' => [
+                        'id',
+                        'nombre',
+                        'rfc',
+                        'direccion',
+                        'correo',
+                        'telefono',
+                        'fax',
+                        'sitioWeb',
+                        'cedulaIdentificacion'
+                    ]
+                ]
+            )
         ]);
     }
 }

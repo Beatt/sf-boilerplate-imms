@@ -6,8 +6,10 @@ Encore
   // public path used by the web server to access the output path
   .setPublicPath('/build')
   .addEntry('app', './assets/js/app.js')
+
+  .addEntry('validar-info', './assets/js/institucion_educativa/ValidarInfo/index.js')
+
   .addEntry('solicitudes', './assets/js/IEDetalleSolicitud/solicitudes.js')
-  .addEntry('valinfo', './assets/js/IEValInfo/index.js')
   .addEntry('inicio', './assets/js/IEInicio/index.js')
   .addEntry('multiple', './assets/js/IEDetalleSolicitudMultiple/index.js')
   .addEntry('montos', './assets/js/IERegistrarMontos/index.js')
