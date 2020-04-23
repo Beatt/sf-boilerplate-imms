@@ -39,3 +39,8 @@ services:
     AppBundle\DataFixtures\:
         resource: '../../src/AppBundle/DataFixtures'
 
+    AppBundle\Service\InstitucionManagerInterface:
+        class: AppBundle\Service\InstitucionManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        public: true
