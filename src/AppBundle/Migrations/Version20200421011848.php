@@ -65,17 +65,6 @@ class Version20200421011848 extends AbstractMigration
         }
         $this->addSql("ALTER TABLE departamento ADD CONSTRAINT FK_40E497EB9D01464C FOREIGN KEY (unidad_id) REFERENCES unidad (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
 
-        /* INSTITUCIONES */
-        $this->addSql("ALTER TABLE convenio DROP CONSTRAINT FK_25577244B239FBC6");
-        $this->addSQL("TRUNCATE TABLE institucion RESTART IDENTITY");
-        $SQLFile = __DIR__ . '/../../../db/seeds/institucion.sql';
-        foreach (explode(';', file_get_contents($SQLFile)) as $sql) {
-            if (strlen(trim($sql)) > 0) {
-                $this->addSql($sql);
-            }            
-        }
-        $this->addSql("ALTER TABLE convenio ADD CONSTRAINT FK_25577244B239FBC6 FOREIGN KEY (institucion_id) REFERENCES institucion (id) NOT DEFERRABLE INITIALLY IMMEDIATE");
-
     }
 
     /**
