@@ -43,4 +43,10 @@ services:
         class: AppBundle\Service\InstitucionManager
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '@logger'
         public: true
+
+    AppBundle\Repository\CampoClinicoRepositoryInterface:
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - AppBundle\Repository\CampoClinicoRepository

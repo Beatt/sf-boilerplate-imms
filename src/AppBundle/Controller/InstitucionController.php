@@ -24,23 +24,21 @@ class InstitucionController extends Controller
             ->find($id);
 
         return $this->render('institucion_educativa/institucion/index.html.twig', [
-            'institucion' => new JsonResponse(
-                $this->get('serializer')->normalize(
-                    $institucion,
-                    'json',
-                    [
-                        'attributes' => [
-                            'nombre',
-                            'rfc',
-                            'direccion',
-                            'correo',
-                            'telefono',
-                            'fax',
-                            'sitioWeb',
-                            'cedulaIdentificacion'
-                        ]
+            'institucion' => $this->get('serializer')->normalize(
+                $institucion,
+                'json',
+                [
+                    'attributes' => [
+                        'nombre',
+                        'rfc',
+                        'direccion',
+                        'correo',
+                        'telefono',
+                        'fax',
+                        'sitioWeb',
+                        'cedulaIdentificacion'
                     ]
-                )
+                ]
             )
         ]);
     }
@@ -66,10 +64,11 @@ class InstitucionController extends Controller
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
-            $institucionManager->Create($form->getData());
+            $result = $institucionManager->Create($form->getData());
 
             return new JsonResponse([
-                'isValid' => true
+                'message' => "¡La información se actualizado correctamente!",
+                'status' => $result ? Response::HTTP_OK : Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
         }
 

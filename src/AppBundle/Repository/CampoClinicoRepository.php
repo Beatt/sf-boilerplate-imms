@@ -4,7 +4,7 @@ namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class CampoClinicoRepository extends EntityRepository
+class CampoClinicoRepository extends EntityRepository implements CampoClinicoRepositoryInterface
 {
     /**
      * @param $id

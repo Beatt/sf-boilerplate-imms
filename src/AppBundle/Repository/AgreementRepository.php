@@ -2,10 +2,9 @@
 
 namespace AppBundle\Repository;
 
-use Carbon\Carbon;
 use Doctrine\ORM\EntityRepository;
 
-class AgreementRepository  extends EntityRepository implements AgreementRepositoryInterface
+class AgreementRepository  extends EntityRepository
 {
     /*public function getAgreementsGreaterThanOneYear()
     {
