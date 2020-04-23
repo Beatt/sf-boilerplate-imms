@@ -73,8 +73,7 @@ class InstitucionController extends Controller
         }
 
         return $this->render('institucion_educativa/institucion/create.html.twig', [
-            'form' => $form->createView(),
-            'isValid' => $form->isValid()
+            'form' => $form->createView()
         ]);
     }
 }
