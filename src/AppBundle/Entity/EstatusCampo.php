@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * estatus_campo
  *
  * @ORM\Table(name="estatus_campo")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\estatus_campoRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EstatusCampoRepository")
  */
-class estatus_campo
+class EstatusCampo
 {
     /**
      * @var int
