@@ -12,7 +12,7 @@ class IEController extends Controller
      */
     public function index()
     {
-        return $this->render('IERegistrarMontos/index.html.twig', 
+        return $this->render('IEValInfo/index.html.twig',
         	['name' => 'Instituto universitario de Ciencias Médicas y Humanisticas de Nayarit',
         	 'no' => 'NS_007',
         	 'institucion' => [
@@ -31,7 +31,7 @@ class IEController extends Controller
                 ],
                 [
                   	'grado' => 'Licenciatura',
-                    'carrera' => 'Terapia física'  
+                    'carrera' => 'Terapia física'
                 ]
             ]
         ]);

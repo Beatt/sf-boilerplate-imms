@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\InstitucionEducativa;
 
 use AppBundle\Entity\Institucion;
 use AppBundle\Form\Type\InstitucionType;
@@ -52,6 +52,7 @@ class InstitucionController extends Controller
      */
     public function updateAction($id, Request $request, InstitucionManagerInterface $institucionManager)
     {
+
         $institucion = $this->get('doctrine')->getRepository(Institucion::class)
             ->find($id);
 
@@ -72,8 +73,9 @@ class InstitucionController extends Controller
             ]);
         }
 
-        return $this->render('institucion_educativa/institucion/create.html.twig', [
-            'form' => $form->createView()
+        return $this->render('institucion_educativa/institucion/update.html.twig', [
+            'form' => $form->createView(),
+            'institucion' => $institucion
         ]);
     }
 }
