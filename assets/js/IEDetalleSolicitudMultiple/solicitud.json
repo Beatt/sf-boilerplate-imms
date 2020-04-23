@@ -1,0 +1,38 @@
+[
+    {
+        "sede": "HGZ Tepic",
+        "ciclo": "Ciclo clinico",
+        "nivel": "Licenciatura",
+        "campo": "Terapia Fisica",
+        "camposSolicitados": "6",
+        "camposAprobados": "6",
+        "fechaInicio": "04/02/2020",
+        "fechaTermino": "04/02/2020",
+        "comprobante": "Comprobante 001.pdf",
+        "factura": "CFDI 001"
+    },
+    {
+        "sede": "HGZ Tepic",
+        "ciclo": "Ciclo clinico",
+        "nivel": "Licenciatura",
+        "campo": "Terapia Fisica",
+        "camposSolicitados": "6",
+        "camposAprobados": "6",
+        "fechaInicio": "04/02/2020",
+        "fechaTermino": "04/02/2020",
+        "comprobante": "Comprobante 001.pdf",
+        "factura": "CFDI 001"
+    },
+    {
+        "sede": "HGZ Tepic",
+        "ciclo": "Ciclo clinico",
+        "nivel": "Licenciatura",
+        "campo": "Terapia Fisica",
+        "camposSolicitados": "6",
+        "camposAprobados": "6",
+        "fechaInicio": "04/02/2020",
+        "fechaTermino": "04/02/2020",
+        "comprobante": "Comprobante 001.pdf",
+        "factura": "CFDI 001"
+    }
+]
