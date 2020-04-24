@@ -13,11 +13,13 @@ const ValidarInfo = ({ institucion }) => {
         <div className='col-md-6'>
           <div className='form-group'>
             <label htmlFor="institucion_rfc">RFC</label>
-            <input className='form-control'
+            <input
+              className='form-control'
               type="text"
               name="institucion[rfc]"
               id="institucion_rfc"
               defaultValue={institucion.rfc}
+              required={true}
             />
           </div>
         </div>
@@ -26,11 +28,13 @@ const ValidarInfo = ({ institucion }) => {
         <div className="col-md-12">
           <div className='form-group'>
             <label htmlFor="institucion_direccion">Domicilio</label>
-            <input className='form-control'
+            <input
+              className='form-control'
               type="text"
               name="institucion[direccion]"
               id="institucion_direccion"
               defaultValue={institucion.direccion}
+              required={true}
             />
           </div>
         </div>
@@ -40,11 +44,13 @@ const ValidarInfo = ({ institucion }) => {
         <div className="col-md-4">
           <div className='form-group'>
             <label htmlFor="institucion_correo">Correo</label>
-            <input className='form-control'
+            <input
+              className='form-control'
               type="text"
               name="institucion[correo]"
               id="institucion_correo"
               defaultValue={institucion.correo}
+              required={true}
             />
           </div>
         </div>
@@ -52,19 +58,22 @@ const ValidarInfo = ({ institucion }) => {
         <div className="col-md-4">
           <div className='form-group'>
             <label htmlFor="institucion_telefono">Telefono</label>
-            <input className='form-control'
+            <input
+              className='form-control'
               type="text"
               name="institucion[telefono]"
               id="institucion_telefono"
               defaultValue={institucion.telefono}
+              required={true}
             />
           </div>
         </div>
 
         <div className="col-md-4">
           <div className='form-group'>
-            <label htmlFor="institucion_fax">Fax</label>
-            <input className='form-control'
+            <label htmlFor="institucion_fax">Fax (opcional)</label>
+            <input
+              className='form-control'
               type="text"
               name="institucion[fax]"
               id="institucion_fax"
@@ -75,9 +84,9 @@ const ValidarInfo = ({ institucion }) => {
       </div>
 
       <div className='row'>
-        <div className="col-md-8">
+        <div className="col-md-4">
           <div className='form-group'>
-            <label htmlFor="institucion_sitioWeb">Página web</label>
+            <label htmlFor="institucion_sitioWeb">Página web (opcional)</label>
             <input className='form-control'
               type="text"
               name="institucion[sitioWeb]"
@@ -86,12 +95,13 @@ const ValidarInfo = ({ institucion }) => {
             />
           </div>
         </div>
-        <div className="col-md-4">
-          <label htmlFor="institucion_cedulaFile_file">Cédula de identificación</label>
+        <div className="col-md-8">
+          <label htmlFor="institucion_cedulaFile_file">Cargue Cedula de Identificación Fiscal de la institución educativa</label>
           <input
             type="file"
             name="institucion[cedulaFile][file]"
             id="institucion_cedulaFile_file"
+            required={true}
           />
           <div className="hidden">
             <input
