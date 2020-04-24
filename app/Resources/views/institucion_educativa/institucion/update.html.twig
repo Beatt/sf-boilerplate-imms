@@ -12,19 +12,58 @@
 {% endblock %}
 
 {% block body %}
+
     <div class='container-fluid'>
-        <div class='row'>
-            <div class='col-md-12'>
-                <div id="validar-info"></div>
+        <div class='row' style="padding: 25px;">
+            <div class='col-md-1'>
+                <img class='img-responsive' src='https://image.shutterstock.com/image-vector/blank-avatar-photo-place-holder-260nw-1095249842.jpg'/>
+            </div>
+            <div class='col-md-3'>
+                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Institución educativa</p>
+                <p>Nombre: {{ institucion.nombre }}</p>
             </div>
         </div>
+
+        <hr style="border: 1px solid black" />
     </div>
+
+    <div class='container'>
+        <p style="color: #265c4f; font-size: 24px; font-weight: bold; text-align: center;">Valide su Información de Contacto</p>
+
+        <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Nombre:</p>
+        <p style="margin-top: 10px; font-size: 16px;">{{ institucion.nombre }}</p>
+
+        <div class='row'>
+            <div class='col-md-6'>
+                <p style="margin-top: 10px; font-size: 16px; font-weight: bold; text-align: left;">Convenios vigentes de la institución educativa</p>
+
+                <div id="lista-convenio"></div>
+            </div>
+            <div class='col-md-6' style="padding-top: 50px;">
+                <div style="display: flex;">
+                    <div class="square" style="margin-right: 10px; background-color: LightGreen"></div><p> Convenio está vigente, con fecha de término mayor a un año.</p>
+                </div>
+                <div style="display: flex;">
+                    <div class="square" style="margin-right: 20px; background-color: yellow"></div><p>Convenio vigente, con fecha de término menor a un año pero mayor a 6 meses. El convenio debería estar en trámites de renovación.</p>
+                </div>
+                <div style="display: flex;">
+                    <div class="square" style="margin-right: 10px; background-color: red"></div><p>La vigencia del convenio está por terminar, es necesario actualizar el convenio.</p>
+                </div>
+            </div>
+        </div>
+
+        <p style="margin-top: 10px; font-size: 16px; font-weight: bold; text-align: left;">Información de la institución</p>
+
+        <div id="validar-info"></div>
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
       window.INSTITUCION_PROP = {{ institucion|json_encode|raw }}
+      window.CONVENIOS_PROP = {{ convenios|json_encode|raw }}
     </script>
     <script src="{{ asset('build/validar-info.js') }}"></script>
 

@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
+use AppBundle\Entity\CampoClinico;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -76,8 +78,37 @@ class InstitucionController extends Controller
             ]);
         }
 
+        $campoClinicoRepository = $this->get('doctrine')->getRepository(CampoClinico::class);
+
+        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByInstitucion(
+            $institucion->getId()
+        );
+
         return $this->render('institucion_educativa/institucion/update.html.twig', [
             'form' => $form->createView(),
+            'convenios' => $this->get('serializer')->normalize(
+                $camposClinicos,
+            'json',
+            [
+                'attributes' => [
+                    'id',
+                    'cicloAcademico' => [
+                        'nombre'
+                    ],
+                    'convenio' => [
+                        'id',
+                        'vigencia',
+                        'label',
+                        'carrera' => [
+                            'nombre',
+                            'nivelAcademico' => [
+                                'nombre'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+            ),
             'institucion' => $this->get('serializer')->normalize(
                 $institucion,
                 'json',
@@ -97,4 +128,15 @@ class InstitucionController extends Controller
             )
         ]);
     }
+
+    /**
+     * @Route("/instituciones/misSolicitudes/{id}", name="instituciones#detail")
+     * @param integer $id
+     * @return Response
+     */
+    public function detailAction($id)
+    {
+        return $this->render('institucion_educativa/institucion/detail.html.twig');
+    }
+
 }
