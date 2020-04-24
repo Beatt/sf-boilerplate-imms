@@ -22,7 +22,6 @@ class Version20200420213818 extends AbstractMigration
         $this->addSql("CREATE TABLE expediente (id SERIAL NOT NULL, descripcion TEXT DEFAULT NULL, url_archivo VARCHAR(255) NOT NULL, solicitud_id INT NOT NULL, fecha DATE NOT NULL, PRIMARY KEY(id));");
         $this->addSql("CREATE TABLE estatus_campo (id SERIAL NOT NULL, estatus VARCHAR(50) NOT NULL, PRIMARY KEY(id));");
         $this->addSql("CREATE TABLE pago (id SERIAL NOT NULL, monto NUMERIC(10, 4) NOT NULL, solicitud_id INT NOT NULL, comprobante_pago VARCHAR(100) NOT NULL, referencia_bancaria VARCHAR(100) NOT NULL, validado BOOLEAN NOT NULL, xml VARCHAR(100) NOT NULL, pdf VARCHAR(100) NOT NULL, factura BOOLEAN NOT NULL, observaciones VARCHAR(100) NOT NULL, PRIMARY KEY(id));");
-        $this->addSql("CREATE TABLE campo_clinico (id SERIAL NOT NULL, ciclo_academico_id INT NOT NULL, carrera_id INT NOT NULL, fecha_inicial DATE NOT NULL, fecha_final DATE NOT NULL, horario VARCHAR(100) NOT NULL, promocion VARCHAR(100) NOT NULL, lugares_solicitados INT NOT NULL, lugares_autorizados INT NOT NULL, convenio_id INT NOT NULL, solicitud_id INT NOT NULL, referencia_bancaria VARCHAR(100) DEFAULT NULL, monto DOUBLE PRECISION DEFAULT NULL, id_estatus INT NOT NULL, unidad_id INT NOT NULL, PRIMARY KEY(id));");
     }
 
     /**
@@ -35,7 +34,6 @@ class Version20200420213818 extends AbstractMigration
         $this->addSql("DROP TABLE expediente");
         $this->addSql("DROP TABLE estatus_campo");
         $this->addSql("DROP TABLE pago");
-        $this->addSql("DROP TABLE campo_clinico");
 
     }
 }
