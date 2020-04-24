@@ -6,7 +6,7 @@ const ListConvenios = ({ convenios }) => {
     <div className='list-convenios'>
       <div className='row'>
         <div className='col-md-6'>
-          <p>Convenios vigentes de la institución educativa</p>
+          <p className="mb-10 text-bold">Convenios vigentes de la institución educativa</p>
           <table className='table table-bordered'>
             <thead className='headers'>
             <tr>

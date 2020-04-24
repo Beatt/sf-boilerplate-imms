@@ -2,43 +2,40 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .square {
-            height: 25px;
-            width: 25px;
-            background-color: #555;
-        }
-    </style>
     <link rel="stylesheet" href="{{ asset('build/validar-info.css') }}">
 {% endblock %}
 
 {% block body %}
 
-    <div class='container-fluid'>
-        <div class='row' style="padding: 25px;">
-            <div class='col-md-1'>
-                <img class='img-responsive' src='https://image.shutterstock.com/image-vector/blank-avatar-photo-place-holder-260nw-1095249842.jpg'/>
+    {{ render(controller('AppBundle:InstitucionEducativa\\Institucion:menu', {
+        id: institucion.id
+    })) }}
+
+    <div class="section-md">
+        <div class='container'>
+            <h1 class="text-bold text-center">Valide su Información de Contacto</h1>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-10">
+                        <p class="text-bold">Nombre:</p>
+                        <p>{{ institucion.nombre }}</p>
+                    </div>
+                </div>
             </div>
-            <div class='col-md-3'>
-                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Institución educativa</p>
-                <p>Nombre: {{ institucion.nombre }}</p>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="lista-convenio-component"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div id="validar-info-component"></div>
+                </div>
             </div>
         </div>
-
-        <hr style="border: 1px solid black" />
-    </div>
-
-    <div class='container'>
-        <p style="color: #265c4f; font-size: 24px; font-weight: bold; text-align: center;">Valide su Información de Contacto</p>
-
-        <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Nombre:</p>
-        <p style="margin-top: 10px; font-size: 16px;">{{ institucion.nombre }}</p>
-
-        <div id="lista-convenio"></div>
-
-        <p style="margin-top: 10px; font-size: 16px; font-weight: bold; text-align: left;">Información de la institución</p>
-
-        <div id="validar-info"></div>
     </div>
 
 {% endblock %}

@@ -1,6 +1,29 @@
 @import "variables";
+@import "util";
 
+h1 {
+  font-size: 24px;
+  color: $green-color;
+}
 
-body {
-  background-color: $primary-color;
+h2 {
+  font-size: 18px;
+}
+
+h3 {
+  font-size: 16px;
+}
+
+p,
+label,
+a {
+  font-size: 15px;
+}
+
+.section-md {
+  padding: 50px 0;
+}
+
+.navbar {
+  margin-bottom: 0 !important;
 }

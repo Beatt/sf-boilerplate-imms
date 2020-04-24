@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
-use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Form\Type\InstitucionType;
@@ -139,4 +138,13 @@ class InstitucionController extends Controller
         return $this->render('institucion_educativa/institucion/detail.html.twig');
     }
 
+    public function menuAction($id)
+    {
+        $institucion = $this->get('doctrine')->getRepository(Institucion::class)
+            ->find($id);
+
+        return $this->render('institucion_educativa/institucion/_menu.twig', [
+            'institucion' => $institucion
+        ]);
+    }
 }

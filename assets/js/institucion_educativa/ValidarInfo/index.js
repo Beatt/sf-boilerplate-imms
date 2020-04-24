@@ -10,7 +10,7 @@ const ValidarInfo = ({ institucion }) => {
       encType='multipart/form-data'
     >
       <div className='row'>
-        <div className='col-md-3'>
+        <div className='col-md-6'>
           <div className='form-group'>
             <label htmlFor="institucion_rfc">RFC</label>
             <input className='form-control'
@@ -23,7 +23,7 @@ const ValidarInfo = ({ institucion }) => {
         </div>
       </div>
       <div className='row'>
-        <div className="col-md-9">
+        <div className="col-md-12">
           <div className='form-group'>
             <label htmlFor="institucion_direccion">Domicilio</label>
             <input className='form-control'
@@ -37,7 +37,7 @@ const ValidarInfo = ({ institucion }) => {
       </div>
 
       <div className='row'>
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className='form-group'>
             <label htmlFor="institucion_correo">Correo</label>
             <input className='form-control'
@@ -49,7 +49,7 @@ const ValidarInfo = ({ institucion }) => {
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className='form-group'>
             <label htmlFor="institucion_telefono">Telefono</label>
             <input className='form-control'
@@ -61,7 +61,7 @@ const ValidarInfo = ({ institucion }) => {
           </div>
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className='form-group'>
             <label htmlFor="institucion_fax">Fax</label>
             <input className='form-control'
@@ -75,7 +75,7 @@ const ValidarInfo = ({ institucion }) => {
       </div>
 
       <div className='row'>
-        <div className="col-md-6">
+        <div className="col-md-8">
           <div className='form-group'>
             <label htmlFor="institucion_sitioWeb">Página web</label>
             <input className='form-control'
@@ -86,7 +86,7 @@ const ValidarInfo = ({ institucion }) => {
             />
           </div>
         </div>
-        <div className="col-md-5">
+        <div className="col-md-4">
           <label htmlFor="institucion_cedulaFile_file">Cédula de identificación</label>
           <input
             type="file"
@@ -105,8 +105,9 @@ const ValidarInfo = ({ institucion }) => {
       </div>
 
       <div className='row'>
-        <div className='col-md-9 text-right'>
-          <button type="submit">Guardar</button>
+        <div className="col-md-9"/>
+        <div className='col-md-3'>
+          <button type="submit" className="btn btn-success btn-block">Guardar</button>
         </div>
       </div>
     </form>
@@ -120,13 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
     <ValidarInfo
       institucion={window.INSTITUCION_PROP}
     />,
-    document.getElementById('validar-info')
+    document.getElementById('validar-info-component')
   )
 
   ReactDOM.render(
     <ListConvenios
       convenios={window.CONVENIOS_PROP}
     />,
-    document.getElementById('lista-convenio')
+    document.getElementById('lista-convenio-component')
   )
 })
