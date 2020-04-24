@@ -20,6 +20,12 @@ class Convenio
      */
     private $id;
 
+        /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nombre;
+
     /**
      * @var string
      * @ORM\Column(type="string", length=250)
@@ -33,7 +39,7 @@ class Convenio
     private $tipo;
 
     /**
-     * @var \DateTime
+     * @var \Date
      * @ORM\Column(type="date", length=250)
      */
     private $vigencia;
@@ -41,28 +47,28 @@ class Convenio
     /**
      * @var NivelAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
-     * @ORM\JoinColumn(name="nivel_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="nivel_id", referencedColumnName="id", nullable=true)
      */
     private $gradoAcademico;
 
     /**
      * @var CicloAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CicloAcademico")
-     * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id", nullable=true)
      */
     private $cicloAcademico;
 
     /**
      * @var Carrera
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
-     * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id", nullable=true)
      */
     private $carrera;
 
     /**
      * @var Institucion
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Institucion")
-     * @ORM\JoinColumn(name="institucion_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="institucion_id", referencedColumnName="id", nullable=false)
      */
     private $institucion;
 
