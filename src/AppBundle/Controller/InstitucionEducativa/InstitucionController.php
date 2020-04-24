@@ -4,7 +4,6 @@ namespace AppBundle\Controller\InstitucionEducativa;
 
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\CampoClinico;
-use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,36 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class InstitucionController extends Controller
 {
-    /**
-     * @Route("/instituciones/{id}", name="instituciones#index")
-     * @param integer $id
-     * @return Response
-     */
-    public function indexAction($id)
-    {
-        $institucion = $this->get('doctrine')->getRepository(Institucion::class)
-            ->find($id);
-
-        return $this->render('institucion_educativa/institucion/index.html.twig', [
-            'institucion' => $this->get('serializer')->normalize(
-                $institucion,
-                'json',
-                [
-                    'attributes' => [
-                        'nombre',
-                        'rfc',
-                        'direccion',
-                        'correo',
-                        'telefono',
-                        'fax',
-                        'sitioWeb',
-                        'cedulaIdentificacion'
-                    ]
-                ]
-            )
-        ]);
-    }
-
     /**
      * @Route("/instituciones/{id}/editar", name="instituciones#update", methods={"POST", "GET"})
      * @param integer $id

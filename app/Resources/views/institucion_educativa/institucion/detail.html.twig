@@ -2,13 +2,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .square {
-            height: 25px;
-            width: 25px;
-            background-color: #555;
-        }
-    </style>
 {% endblock %}
 
 {% block body %}
@@ -20,35 +13,26 @@
     <div class="section-md">
         <div class='container-fluid'>
             <div class='container'>
-                <p style="color: #265c4f; font-size: 24px; font-weight: bold; text-align: center;">Detalle de Solicitud
-                    de Campos Clínicos</p>
-
+                <h1 class="text-bold text-center">Detalle de Solicitud de Campos Clínicos</h1>
                 <div style="display: flex;">
-                    <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud: </p>
+                    <p class="text-bold mt-10">No. Solicitud: </p>
                     <div id="noSolicitud"></div>
                 </div>
-
                 <div class='row'>
                     <div class='col-md-6'>
-                        <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Se autorizaron 5 de 6 campos
-                            clínicos.</p>
+                        <p class="mt-10 text-bold">Se autorizaron 5 de 6 campos clínicos.</p>
                     </div>
-                    <div class='col-md-6'>
+                    <div class='col-md-6 text-right'>
                         <input type="text" placeholder="Buscar por.." name="search"/>
                         <button type="submit">Buscar</button>
                     </div>
                 </div>
-
                 <div class='row'>
                     <div class='col-md-12' id="listaSolicitud"></div>
                 </div>
-
-                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Expediente</p>
-
+                <p class="text-bold mt-10">Expediente</p>
                 <div class='row'>
-                    <div class='col-md-12' id="listaExpediente">
-
-                    </div>
+                    <div class='col-md-12' id="listaExpediente"></div>
                 </div>
             </div>
         </div>
