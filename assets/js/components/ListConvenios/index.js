@@ -4,7 +4,7 @@ import './styles.scss'
 const ListConvenios = ({ convenios }) => {
   return (
     <div className='list-convenios'>
-      <div className='row'>
+      <div className='row flex align-items-center'>
         <div className='col-md-6'>
           <p className="mb-10 text-bold">Convenios vigentes de la institución educativa</p>
           <table className='table table-bordered'>
