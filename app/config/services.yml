@@ -35,3 +35,18 @@ services:
 
     AppBundle\Service\InstitucionVichNamer:
         public: true
+
+    AppBundle\DataFixtures\:
+        resource: '../../src/AppBundle/DataFixtures'
+
+    AppBundle\Service\InstitucionManagerInterface:
+        class: AppBundle\Service\InstitucionManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@logger'
+        public: true
+
+    AppBundle\Repository\CampoClinicoRepositoryInterface:
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - AppBundle\Repository\CampoClinicoRepository

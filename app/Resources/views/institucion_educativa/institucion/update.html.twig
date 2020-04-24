@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .square {
+            height: 25px;
+            width: 25px;
+            background-color: #555;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-md-12'>
+                <div id="validar-info"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      window.INSTITUCION_PROP = {{ institucion|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/validar-info.js') }}"></script>
+
+{% endblock %}

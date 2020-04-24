@@ -5,8 +5,6 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CampoClinico
- *
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
@@ -15,115 +13,72 @@ class CampoClinico
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="ciclo_academico_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CicloAcademico")
+     * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id")
      */
-    private $cicloAcademicoId;
+    private $cicloAcademico;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="carrera_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
+     * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
      */
-    private $carreraId;
+    private $carrera;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="fecha_inicial", type="date")
+     * @ORM\Column(type="date")
      */
     private $fechaInicial;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="fecha_final", type="date")
+     * @ORM\Column(type="date")
      */
     private $fechaFinal;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="horario", type="string", length=100)
+     * @ORM\Column(type="string", length=100)
      */
     private $horario;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="promocion", type="string", length=100)
+     * @ORM\Column(type="string", length=100)
      */
     private $promocion;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="lugares_solicitados", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $lugaresSolicitados;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="lugares_autorizados", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $lugaresAutorizados;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="convenio_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Convenio")
+     * @ORM\JoinColumn(name="convenio_id", referencedColumnName="id")
      */
-    private $convenioId;
+    private $convenio;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="solicitud_id", type="integer")
-     */
-    private $solicitudId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="referencia_bancaria", type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100)
      */
     private $referenciaBancaria;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="monto", type="float", nullable=true)
+     * @ORM\Column(type="float", precision=24, scale=4)
      */
     private $monto;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_estatus", type="integer")
-     */
-    private $idEstatus;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="unidad_id", type="integer")
-     */
-    private $unidadId;
-
-
-    /**
-     * Get id
-     *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -131,58 +86,7 @@ class CampoClinico
     }
 
     /**
-     * Set cicloAcademicoId
-     *
-     * @param integer $cicloAcademicoId
-     *
-     * @return CampoClinico
-     */
-    public function setCicloAcademicoId($cicloAcademicoId)
-    {
-        $this->cicloAcademicoId = $cicloAcademicoId;
-
-        return $this;
-    }
-
-    /**
-     * Get cicloAcademicoId
-     *
-     * @return int
-     */
-    public function getCicloAcademicoId()
-    {
-        return $this->cicloAcademicoId;
-    }
-
-    /**
-     * Set carreraId
-     *
-     * @param integer $carreraId
-     *
-     * @return CampoClinico
-     */
-    public function setCarreraId($carreraId)
-    {
-        $this->carreraId = $carreraId;
-
-        return $this;
-    }
-
-    /**
-     * Get carreraId
-     *
-     * @return int
-     */
-    public function getCarreraId()
-    {
-        return $this->carreraId;
-    }
-
-    /**
-     * Set fechaInicial
-     *
      * @param \DateTime $fechaInicial
-     *
      * @return CampoClinico
      */
     public function setFechaInicial($fechaInicial)
@@ -193,8 +97,6 @@ class CampoClinico
     }
 
     /**
-     * Get fechaInicial
-     *
      * @return \DateTime
      */
     public function getFechaInicial()
@@ -203,10 +105,7 @@ class CampoClinico
     }
 
     /**
-     * Set fechaFinal
-     *
      * @param \DateTime $fechaFinal
-     *
      * @return CampoClinico
      */
     public function setFechaFinal($fechaFinal)
@@ -217,8 +116,6 @@ class CampoClinico
     }
 
     /**
-     * Get fechaFinal
-     *
      * @return \DateTime
      */
     public function getFechaFinal()
@@ -227,10 +124,7 @@ class CampoClinico
     }
 
     /**
-     * Set horario
-     *
      * @param string $horario
-     *
      * @return CampoClinico
      */
     public function setHorario($horario)
@@ -241,8 +135,6 @@ class CampoClinico
     }
 
     /**
-     * Get horario
-     *
      * @return string
      */
     public function getHorario()
@@ -251,10 +143,7 @@ class CampoClinico
     }
 
     /**
-     * Set promocion
-     *
      * @param string $promocion
-     *
      * @return CampoClinico
      */
     public function setPromocion($promocion)
@@ -265,8 +154,6 @@ class CampoClinico
     }
 
     /**
-     * Get promocion
-     *
      * @return string
      */
     public function getPromocion()
@@ -275,10 +162,7 @@ class CampoClinico
     }
 
     /**
-     * Set lugaresSolicitados
-     *
      * @param integer $lugaresSolicitados
-     *
      * @return CampoClinico
      */
     public function setLugaresSolicitados($lugaresSolicitados)
@@ -289,9 +173,7 @@ class CampoClinico
     }
 
     /**
-     * Get lugaresSolicitados
-     *
-     * @return int
+     * @return integer
      */
     public function getLugaresSolicitados()
     {
@@ -299,10 +181,7 @@ class CampoClinico
     }
 
     /**
-     * Set lugaresAutorizados
-     *
      * @param integer $lugaresAutorizados
-     *
      * @return CampoClinico
      */
     public function setLugaresAutorizados($lugaresAutorizados)
@@ -313,9 +192,7 @@ class CampoClinico
     }
 
     /**
-     * Get lugaresAutorizados
-     *
-     * @return int
+     * @return integer
      */
     public function getLugaresAutorizados()
     {
@@ -323,58 +200,7 @@ class CampoClinico
     }
 
     /**
-     * Set convenioId
-     *
-     * @param integer $convenioId
-     *
-     * @return CampoClinico
-     */
-    public function setConvenioId($convenioId)
-    {
-        $this->convenioId = $convenioId;
-
-        return $this;
-    }
-
-    /**
-     * Get convenioId
-     *
-     * @return int
-     */
-    public function getConvenioId()
-    {
-        return $this->convenioId;
-    }
-
-    /**
-     * Set solicitudId
-     *
-     * @param integer $solicitudId
-     *
-     * @return CampoClinico
-     */
-    public function setSolicitudId($solicitudId)
-    {
-        $this->solicitudId = $solicitudId;
-
-        return $this;
-    }
-
-    /**
-     * Get solicitudId
-     *
-     * @return int
-     */
-    public function getSolicitudId()
-    {
-        return $this->solicitudId;
-    }
-
-    /**
-     * Set referenciaBancaria
-     *
      * @param string $referenciaBancaria
-     *
      * @return CampoClinico
      */
     public function setReferenciaBancaria($referenciaBancaria)
@@ -385,8 +211,6 @@ class CampoClinico
     }
 
     /**
-     * Get referenciaBancaria
-     *
      * @return string
      */
     public function getReferenciaBancaria()
@@ -395,10 +219,7 @@ class CampoClinico
     }
 
     /**
-     * Set monto
-     *
      * @param float $monto
-     *
      * @return CampoClinico
      */
     public function setMonto($monto)
@@ -409,8 +230,6 @@ class CampoClinico
     }
 
     /**
-     * Get monto
-     *
      * @return float
      */
     public function getMonto()
@@ -419,51 +238,59 @@ class CampoClinico
     }
 
     /**
-     * Set idEstatus
-     *
-     * @param integer $idEstatus
-     *
+     * @param CicloAcademico $cicloAcademico
      * @return CampoClinico
      */
-    public function setIdEstatus($idEstatus)
+    public function setCicloAcademico(CicloAcademico $cicloAcademico = null)
     {
-        $this->idEstatus = $idEstatus;
+        $this->cicloAcademico = $cicloAcademico;
 
         return $this;
     }
 
     /**
-     * Get idEstatus
-     *
-     * @return int
+     * @return CicloAcademico
      */
-    public function getIdEstatus()
+    public function getCicloAcademico()
     {
-        return $this->idEstatus;
+        return $this->cicloAcademico;
     }
 
     /**
-     * Set unidadId
-     *
-     * @param integer $unidadId
-     *
+     * @param Carrera $carrera
      * @return CampoClinico
      */
-    public function setUnidadId($unidadId)
+    public function setCarrera(Carrera $carrera = null)
     {
-        $this->unidadId = $unidadId;
+        $this->carrera = $carrera;
 
         return $this;
     }
 
     /**
-     * Get unidadId
-     *
-     * @return int
+     * @return Carrera
      */
-    public function getUnidadId()
+    public function getCarrera()
     {
-        return $this->unidadId;
+        return $this->carrera;
+    }
+
+    /**
+     * @param Convenio $convenio
+     * @return CampoClinico
+     */
+    public function setConvenio(Convenio $convenio = null)
+    {
+        $this->convenio = $convenio;
+
+        return $this;
+    }
+
+    /**
+     * @return Convenio
+     */
+    public function getConvenio()
+    {
+        return $this->convenio;
     }
 }
-
