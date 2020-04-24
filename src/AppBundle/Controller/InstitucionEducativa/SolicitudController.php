@@ -13,6 +13,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolicitudController extends Controller
 {
     /**
+     * @Route("/instituciones/{id}/solicitudes", methods={"GET"})
+     */
+    public function indexAction()
+    {
+        return $this->render('institucion_educativa/solicitud/index.html.twig', [
+
+        ]);
+    }
+
+    /**
      * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="instituciones#show")
      * @param integer $id
      * @param $solicitudId
@@ -35,7 +45,7 @@ class SolicitudController extends Controller
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($solicitudId);
 
-        return $this->render('institucion_educativa/institucion/detail.html.twig',[
+        return $this->render('institucion_educativa/solicitud/show.html.twig',[
             'institucion' => $institucion,
             'solicitud' => $solicitud,
             'camposClinicos' => $this->get('serializer')->normalize(
