@@ -24,7 +24,7 @@
                     de Campos Clínicos</p>
 
                 <div style="display: flex;">
-                    <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud: </p>
+                    <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud: {{ solicitud.noSolicitud }}</p>
                     <div id="noSolicitud"></div>
                 </div>
 
@@ -59,6 +59,7 @@
     {{ parent() }}
     <script>
       window.SOLICITUD_PROP = {{ camposClinicos|json_encode|raw }}
+      window.EXPEDIENTE_PROP = {{ expediente|json_encode|raw }}
     </script>
     <script src="{{ asset('build/detalle-campos.js') }}"></script>
 {% endblock %}
