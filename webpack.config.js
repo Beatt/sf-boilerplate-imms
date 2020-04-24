@@ -12,6 +12,7 @@ Encore
   .addEntry('inicio', './assets/js/IEInicio/index.js')
   .addEntry('multiple', './assets/js/IEDetalleSolicitudMultiple/index.js')
   .addEntry('montos', './assets/js/IERegistrarMontos/index.js')
+  .addEntry('solicitud-index', './assets/js/institucion_educativa/Solicitud/Index/index.js')
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
   .enableSourceMaps(!Encore.isProduction())

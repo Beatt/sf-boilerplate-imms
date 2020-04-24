@@ -15,10 +15,12 @@ class SolicitudController extends Controller
     /**
      * @Route("/instituciones/{id}/solicitudes", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction($id, InstitucionRepositoryInterface $institucionRepository)
     {
-        return $this->render('institucion_educativa/solicitud/index.html.twig', [
+        $institucion = $institucionRepository->find($id);
 
+        return $this->render('institucion_educativa/solicitud/index.html.twig', [
+            'institucion' => $institucion
         ]);
     }
 

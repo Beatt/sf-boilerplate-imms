@@ -1,21 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom'
 
 const ListaCampos = ({ solicitud }) => {
-    console.log(solicitud)
     return(
         <table className='table table-bordered'>
             <thead className='headers'>
                 <tr>
                     <th>Sede</th>
                     <th>Campo clínico</th>
-                    <th>Nivel</th> 
-                    <th>Carrera</th> 
-                    <th>No. lugares solicitados</th> 
-                    <th>No. lugares autorizados</th> 
-                    <th>Fecha Inicio</th> 
-                    <th>Fecha Termino</th> 
-                    <th>No. de semanas</th> 
+                    <th>Nivel</th>
+                    <th>Carrera</th>
+                    <th>No. lugares solicitados</th>
+                    <th>No. lugares autorizados</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Termino</th>
+                    <th>No. de semanas</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,15 +38,14 @@ const ListaCampos = ({ solicitud }) => {
 }
 
 const ListaExpediente = ({ expediente }) => {
-    console.log(expediente)
     return(
         <table className='table table-bordered'>
             <thead className='headers'>
                 <tr>
                     <th>Documento</th>
                     <th>Fecha</th>
-                    <th>Descripcion</th> 
-                    <th>Archivo</th> 
+                    <th>Descripcion</th>
+                    <th>Archivo</th>
                 </tr>
             </thead>
             <tbody>
