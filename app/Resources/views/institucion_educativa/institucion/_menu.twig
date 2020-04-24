@@ -9,6 +9,7 @@
         width: 60px;
         height: 60px;
     }
+
     .institucion-educativa-menu__content {
         margin-left: 20px;
         height: 60px;
@@ -16,10 +17,27 @@
         justify-content: flex-end;
         flex-direction: column;
     }
+
+    .institucion-educativa__submenu {
+        background-color: whitesmoke;
+        text-align: right;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .institucion-educativa__submenu > * {
+        margin-right: 20px;
+    }
 </style>
 
 <div class='container-fluid'>
     <div class='row'>
+        <div class="institucion-educativa__submenu">
+            <a href="">Perfil</a>
+            <a href="">Cerrar sesión</a>
+        </div>
         <div class="col-md-12 page-cut">
             <div class="institucion-educativa-menu">
                 <img class='img-responsive institucion-educativa-menu__image'
