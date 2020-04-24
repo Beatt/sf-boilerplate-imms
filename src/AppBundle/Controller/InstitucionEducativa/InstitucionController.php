@@ -2,11 +2,9 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
-use AppBundle\Entity\Institucion;
-use AppBundle\Entity\CampoClinico;
-use AppBundle\Entity\Expediente;
-use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\InstitucionType;
+use AppBundle\Repository\CampoClinicoRepositoryInterface;
+use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,12 +19,18 @@ class InstitucionController extends Controller
      * @param integer $id
      * @param Request $request
      * @param InstitucionManagerInterface $institucionManager
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @return Response
      */
-    public function updateAction($id, Request $request, InstitucionManagerInterface $institucionManager)
-    {
-        $institucion = $this->get('doctrine')->getRepository(Institucion::class)
-            ->find($id);
+    public function updateAction(
+        $id,
+        Request $request,
+        InstitucionManagerInterface $institucionManager,
+        InstitucionRepositoryInterface $institucionRepository,
+        CampoClinicoRepositoryInterface $campoClinicoRepository
+    ) {
+        $institucion = $institucionRepository->find($id);
 
         $form = $this->createForm(InstitucionType::class, $institucion, [
             'action' => $this->generateUrl('instituciones#update', [
@@ -49,14 +53,11 @@ class InstitucionController extends Controller
             ]);
         }
 
-        $campoClinicoRepository = $this->get('doctrine')->getRepository(CampoClinico::class);
-
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByInstitucion(
             $institucion->getId()
         );
 
         return $this->render('institucion_educativa/institucion/update.html.twig', [
-            'form' => $form->createView(),
             'convenios' => $this->get('serializer')->normalize(
                 $camposClinicos,
             'json',
@@ -100,79 +101,9 @@ class InstitucionController extends Controller
         ]);
     }
 
-    /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="instituciones#detail")
-     * @param integer $id
-     * @return Response
-     */
-    public function detailAction($id, $solicitudId)
+    public function menuAction($id, InstitucionRepositoryInterface $institucionRepository)
     {
-        $campoClinicoRepository = $this->get('doctrine')->getRepository(CampoClinico::class);
-
-        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
-            $solicitudId
-        );
-
-        $expedienteRepository = $this->get('doctrine')->getRepository(Expediente::class);
-
-        $expedientes = $expedienteRepository->getAllExpedientesByRequest(
-            $solicitudId
-        );
-
-        $institucion = $this->get('doctrine')->getRepository(Institucion::class)
-            ->find($id);
-
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($solicitudId);
-
-        return $this->render('institucion_educativa/institucion/detail.html.twig',[
-            'institucion' => $institucion,
-            'solicitud' => $solicitud,
-            'camposClinicos' => $this->get('serializer')->normalize(
-                $camposClinicos,
-                'json',
-                [
-                    'attributes' => [
-                        'id',
-                        'lugaresSolicitados',
-                        'lugaresAutorizados',
-                        'fechaInicial',
-                        'fechaFinal',
-                        'cicloAcademico' => [
-                            'nombre'
-                        ],
-                        'carrera' => [
-                            'nombre',
-                            'nivelAcademico' => [
-                                'nombre'
-                            ]
-                        ],
-                        'solicitud' => [
-                            'id',
-                            'noSolicitud'
-                        ]
-                    ]
-                ]
-            ),
-            'expediente' => $this->get('serializer')->normalize(
-                $expedientes,
-                'json',
-                [
-                    'attributes' => [
-                        'id',
-                        'descripcion',
-                        'urlArchivo',
-                        'fecha'
-                    ]
-                ]
-            )
-        ]);
-    }
-
-    public function menuAction($id)
-    {
-        $institucion = $this->get('doctrine')->getRepository(Institucion::class)
-            ->find($id);
+        $institucion = $institucionRepository->find($id);
 
         return $this->render('institucion_educativa/institucion/_menu.twig', [
             'institucion' => $institucion
