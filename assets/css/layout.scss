@@ -1,5 +1,6 @@
 @import "variables";
 @import "util";
+@import "components/navbar";
 
 h1 {
   font-size: 24px;
@@ -22,8 +23,4 @@ a {
 
 .section-md {
   padding: 50px 0;
-}
-
-.navbar {
-  margin-bottom: 0 !important;
 }
