@@ -2,13 +2,16 @@
 
 namespace AppBundle\Controller\Came;
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Form\Type\SolicitudType;
+use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SolicitudController extends Controller
+class SolicitudController extends DIEControllerController
 {
     /**
      * @Route("/solicitud", methods={"GET"}, name="solicitud.index")
@@ -34,24 +37,31 @@ class SolicitudController extends Controller
     /**
      * @Route("/solicitud/create", methods={"GET"}, name="solicitud.create")
      */
-    public function createAction()
+    public function createAction(Request $request)
     {
-        return $this->render('came/solicitud/create.html.twig');
+        $form = $this->createForm(SolicitudType::class);
+        $tokenProvider = $this->container->get('security.csrf.token_manager');
+        return $this->render('came/solicitud/create.html.twig', [
+            'form' => $form->createView(),
+            'token' => $tokenProvider->getToken('solicitud_item')->getValue()
+        ]);
     }
 
 
     /**
      * @Route("/api/solicitud", methods={"POST"}, name="solicitud.store")
+     * @param Request $request
+     * @param SolicitudManagerInterface $solicitudManager
      */
-    public function storeAction(Request $request)
+    public function storeAction(Request $request, SolicitudManagerInterface $solicitudManager)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $solicitud = new Solicitud();
-        $solicitud->setEstatus($request->request->get('estatus'));
-        $entityManager->persist($solicitud);
-        $entityManager->flush();
-        $response = new JsonResponse(['status' => true, "message" => "Solicitud creada con éxito", "data" => $solicitud]);
-        return $response;
+        $form = $this->createForm(SolicitudType::class);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $result = $solicitudManager->create($form->getData());
+            return $this->jsonResponse($result);
+        }
+        return $this->jsonErrorResponse($form);
     }
 
     /**
@@ -68,40 +78,36 @@ class SolicitudController extends Controller
                 'Not found for id ' . $id
             );
         }
+        $form = $this->createForm(SolicitudType::class);
+        $tokenProvider = $this->container->get('security.csrf.token_manager');
         return $this->render('came/solicitud/edit.html.twig', [
-            'solicitud' => $this->get('serializer')->normalize(
-                $solicitud,
-                'json',
-                [
-                    'attributes' => [
-                        'id'
-                    ]
-                ]
-            )
+            'form' => $form->createView(),
+            'token' => $tokenProvider->getToken('solicitud_item')->getValue()
         ]);
     }
 
     /**
      * @Route("/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update")
+     * @param Request $request
+     * @param SolicitudManagerInterface $solicitudManager
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, SolicitudManagerInterface $solicitudManager, $id)
     {
         $solicitud = $this->getDoctrine()
             ->getRepository(Solicitud::class)
             ->find($id);
-
         if (!$solicitud) {
             throw $this->createNotFoundException(
                 'Not found for id ' . $id
             );
         }
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $solicitud->setEstatus($request->request->get('estatus'));
-        $entityManager->persist($solicitud);
-
-        $response = new JsonResponse(['status' => true, "message" => "Solicitud Actualizada con éxito"]);
-        return $response;
+        $form = $this->createForm(SolicitudType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $result = $solicitudManager->update($form->getData());
+            return $this->jsonResponse($result);
+        }
+        return $this->jsonErrorResponse($form);
     }
 
     /**
@@ -109,7 +115,6 @@ class SolicitudController extends Controller
      */
     public function showAction($id)
     {
-
         $solicitud = $this->getDoctrine()
             ->getRepository(Solicitud::class)
             ->find($id);

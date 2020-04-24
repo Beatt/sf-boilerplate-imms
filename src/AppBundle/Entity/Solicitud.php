@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Solicitud
@@ -30,7 +31,8 @@ class Solicitud
 
     /**
      * @var \DateTime
-     *
+     * @Assert\NotNull
+     * @Assert\NotBlank
      * @ORM\Column(name="fecha", type="date")
      */
     private $fecha;

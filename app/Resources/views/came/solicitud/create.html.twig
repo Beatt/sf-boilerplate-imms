@@ -16,6 +16,7 @@
         <div class='row'>
             <div class='col-md-12'>
                 <h3>Nueva solicitud</h3>
+                {{ form_widget(form) }}
                 <div id="solicitud-wrapper"></div>
             </div>
         </div>
@@ -24,5 +25,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('build/came_solicitud_create.js') }}"></script>
+    <script>
+        window.CSRF_TOKEN = "{{ token}}"
+    </script>
+    <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 {% endblock %}
