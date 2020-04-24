@@ -78,6 +78,15 @@ class CampoClinico
     private $monto;
 
     /**
+     * @var Solictud
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud")
+     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
+     */
+    private $solicitud;
+
+
+
+    /**
      * @return integer
      */
     public function getId()
@@ -292,5 +301,24 @@ class CampoClinico
     public function getConvenio()
     {
         return $this->convenio;
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return CampoClinico
+     */
+    public function setSolicitud(Solicitud $solicitud = null)
+    {
+        $this->solicitud = $solicitud;
+
+        return $this;
+    }
+
+    /**
+     * @return Solicitud
+     */
+    public function getSolicitud()
+    {
+        return $this->solicitud;
     }
 }

@@ -29,7 +29,7 @@
             <p style="color: #265c4f; font-size: 24px; font-weight: bold; text-align: center;">Detalle de Solicitud de Campos Clínicos</p>
 
         <div style="display: flex;">
-            <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud:</p><div id="noSolicitud"></div>
+            <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud: </p><div id="noSolicitud"></div>
         </div>
 
         <div class='row'>
@@ -60,4 +60,8 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+      window.SOLICITUD_PROP = {{ camposClinicos|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/detalle-campos.js') }}"></script>
 {% endblock %}

@@ -5,6 +5,7 @@ namespace AppBundle\Controller\InstitucionEducativa;
 use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -130,13 +131,46 @@ class InstitucionController extends Controller
     }
 
     /**
-     * @Route("/instituciones/misSolicitudes/{id}", name="instituciones#detail")
+     * @Route("/instituciones/miSolicitud/{id}", name="instituciones#detail")
      * @param integer $id
      * @return Response
      */
     public function detailAction($id)
     {
-        return $this->render('institucion_educativa/institucion/detail.html.twig');
+        $campoClinicoRepository = $this->get('doctrine')->getRepository(CampoClinico::class);
+
+        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
+            $id
+        );
+
+        return $this->render('institucion_educativa/institucion/detail.html.twig',[
+            'camposClinicos' => $this->get('serializer')->normalize(
+                $camposClinicos,
+                'json',
+                [
+                    'attributes' => [
+                        'id',
+                        'lugaresSolicitados',
+                        'lugaresAutorizados',
+                        'fechaInicial',
+                        'fechaFinal',
+                        'cicloAcademico' => [
+                            'nombre'
+                        ],
+                        'carrera' => [
+                            'nombre',
+                            'nivelAcademico' => [
+                                'nombre'
+                            ]
+                        ],
+                        'solicitud' => [
+                            'id',
+                            'noSolicitud'
+                        ]
+                    ]
+                ]
+            )      
+        ]);
     }
 
 }
