@@ -1,5 +1,6 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
+import ListConvenios from "../../components/ListConvenios";
 
 const ValidarInfo = ({ institucion }) => {
   return(
@@ -34,7 +35,7 @@ const ValidarInfo = ({ institucion }) => {
           </div>
         </div>
       </div>
-      
+
       <div className='row'>
         <div className="col-md-3">
           <div className='form-group'>
@@ -74,7 +75,7 @@ const ValidarInfo = ({ institucion }) => {
       </div>
 
       <div className='row'>
-        <div className="col-md-9">
+        <div className="col-md-6">
           <div className='form-group'>
             <label htmlFor="institucion_sitioWeb">Página web</label>
             <input className='form-control'
@@ -85,18 +86,13 @@ const ValidarInfo = ({ institucion }) => {
             />
           </div>
         </div>
-      </div>
-
-      <div className='row'>
-        <div className="col-md-9">
-          <label htmlFor="institucion_cedulaFile_file">Archivo</label>
+        <div className="col-md-5">
+          <label htmlFor="institucion_cedulaFile_file">Cédula de identificación</label>
           <input
             type="file"
             name="institucion[cedulaFile][file]"
             id="institucion_cedulaFile_file"
           />
-        
-      
           <div className="hidden">
             <input
               type="checkbox"
@@ -106,43 +102,16 @@ const ValidarInfo = ({ institucion }) => {
             />
           </div>
         </div>
+      </div>
 
-        <div className='col-md-3'>
+      <div className='row'>
+        <div className='col-md-9 text-right'>
           <button type="submit">Guardar</button>
         </div>
       </div>
     </form>
   )
 }
-
-const ListConvenios = ({ convenios }) => {
-  return(
-    <table className='table table-bordered'>
-      <thead className='headers'>
-          <tr>
-              <th>Número</th>
-              <th>Grado</th>
-              <th>Ciclo</th> 
-              <th>Carrera</th> 
-              <th>Vigencia</th> 
-          </tr>
-      </thead>
-      <tbody>
-      {
-          convenios.map((item) => {
-            console.log(item);
-          return <tr style={{ backgroundColor: item.convenio.label}}>
-              <td>{item.id}</td>
-              <td>{item.convenio.carrera.nivelAcademico.nombre}</td>
-              <td>{item.cicloAcademico.nombre}</td>
-              <td>{item.convenio.carrera.nombre}</td>
-              <td>{item.convenio.vigencia}</td>
-              
-          </tr>
-      })}
-      </tbody>
-  </table>  
-  )}
 
 export default ValidarInfo
 

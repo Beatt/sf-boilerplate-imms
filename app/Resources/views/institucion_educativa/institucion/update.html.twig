@@ -9,6 +9,7 @@
             background-color: #555;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('build/validar-info.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -33,24 +34,7 @@
         <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Nombre:</p>
         <p style="margin-top: 10px; font-size: 16px;">{{ institucion.nombre }}</p>
 
-        <div class='row'>
-            <div class='col-md-6'>
-                <p style="margin-top: 10px; font-size: 16px; font-weight: bold; text-align: left;">Convenios vigentes de la institución educativa</p>
-
-                <div id="lista-convenio"></div>
-            </div>
-            <div class='col-md-6' style="padding-top: 50px;">
-                <div style="display: flex;">
-                    <div class="square" style="margin-right: 10px; background-color: LightGreen"></div><p> Convenio está vigente, con fecha de término mayor a un año.</p>
-                </div>
-                <div style="display: flex;">
-                    <div class="square" style="margin-right: 20px; background-color: yellow"></div><p>Convenio vigente, con fecha de término menor a un año pero mayor a 6 meses. El convenio debería estar en trámites de renovación.</p>
-                </div>
-                <div style="display: flex;">
-                    <div class="square" style="margin-right: 10px; background-color: red"></div><p>La vigencia del convenio está por terminar, es necesario actualizar el convenio.</p>
-                </div>
-            </div>
-        </div>
+        <div id="lista-convenio"></div>
 
         <p style="margin-top: 10px; font-size: 16px; font-weight: bold; text-align: left;">Información de la institución</p>
 
