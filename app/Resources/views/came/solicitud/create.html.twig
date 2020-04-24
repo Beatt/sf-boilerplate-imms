@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .square {
+            height: 25px;
+            width: 25px;
+            background-color: #555;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-md-12'>
+                <h3>Nueva solicitud</h3>
+                <div id="solicitud-wrapper"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/came_solicitud_create.js') }}"></script>
+{% endblock %}

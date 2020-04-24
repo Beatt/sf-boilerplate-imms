@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .square {
+            height: 25px;
+            width: 25px;
+            background-color: #555;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-md-12'>
+                <h3>Tabla de solicitudes</h3>
+                <div id="solicitudes-table"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.SOLICITUDES = {{ solicitudes | json_encode | raw }}
+    </script>
+    <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
+
+{% endblock %}

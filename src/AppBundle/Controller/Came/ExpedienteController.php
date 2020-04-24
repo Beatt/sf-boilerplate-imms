@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\Expediente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

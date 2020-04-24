@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\Solicitud;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,21 +11,39 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolicitudController extends Controller
 {
     /**
-     * @Route("/api/solicitud", methods={"GET"}, name="solicitud.index")
+     * @Route("/solicitud", methods={"GET"}, name="solicitud.index")
      */
-    public function index(Request $request)
+    public function indexAction(Request $request)
     {
         $solicitudes = $this->getDoctrine()
             ->getRepository(Solicitud::class)
             ->findAll();
-        $response = new JsonResponse(['data' => $solicitudes]);
-        return $response;
+        return $this->render('came/solicitud/index.html.twig', [
+            'solicitudes' => $this->get('serializer')->normalize(
+                $solicitudes,
+                'json',
+                [
+                    'attributes' => [
+                        'id'
+                    ]
+                ]
+            )
+        ]);
     }
+
+    /**
+     * @Route("/solicitud/create", methods={"GET"}, name="solicitud.create")
+     */
+    public function createAction()
+    {
+        return $this->render('came/solicitud/create.html.twig');
+    }
+
 
     /**
      * @Route("/api/solicitud", methods={"POST"}, name="solicitud.store")
      */
-    public function store(Request $request)
+    public function storeAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $solicitud = new Solicitud();
@@ -37,9 +55,9 @@ class SolicitudController extends Controller
     }
 
     /**
-     * @Route("/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update")
+     * @Route("/solicitud/{id}", methods={"GET"}, name="solicitud.edit")
      */
-    public function update(Request $request, $id)
+    public function editAction($id)
     {
         $solicitud = $this->getDoctrine()
             ->getRepository(Solicitud::class)
@@ -47,7 +65,34 @@ class SolicitudController extends Controller
 
         if (!$solicitud) {
             throw $this->createNotFoundException(
-                'Not found for id '.$id
+                'Not found for id ' . $id
+            );
+        }
+        return $this->render('came/solicitud/edit.html.twig', [
+            'solicitud' => $this->get('serializer')->normalize(
+                $solicitud,
+                'json',
+                [
+                    'attributes' => [
+                        'id'
+                    ]
+                ]
+            )
+        ]);
+    }
+
+    /**
+     * @Route("/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update")
+     */
+    public function updateAction(Request $request, $id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $id
             );
         }
 
@@ -60,9 +105,9 @@ class SolicitudController extends Controller
     }
 
     /**
-     * @Route("/api/solicitud/{id}", methods={"GET"}, name="solicitud.show")
+     * @Route("/solicitud/{id}", methods={"GET"}, name="solicitud.show")
      */
-    public function show($id)
+    public function showAction($id)
     {
 
         $solicitud = $this->getDoctrine()
@@ -71,17 +116,26 @@ class SolicitudController extends Controller
 
         if (!$solicitud) {
             throw $this->createNotFoundException(
-                'Not found for id '.$id
+                'Not found for id ' . $id
             );
         }
-        $response = new JsonResponse(['data' => $solicitud]);
-        return $response;
+        return $this->render('came/solicitud/show.html.twig', [
+            'solicitud' => $this->get('serializer')->normalize(
+                $solicitud,
+                'json',
+                [
+                    'attributes' => [
+                        'id'
+                    ]
+                ]
+            )
+        ]);
     }
 
     /**
      * @Route("/api/solicitud/{id}", methods={"DELETE"}, name="solicitud.delete")
      */
-    public function delete($id)
+    public function deleteAction($id)
     {
         $solicitud = $this->getDoctrine()
             ->getRepository(Solicitud::class)
@@ -89,7 +143,7 @@ class SolicitudController extends Controller
 
         if (!$solicitud) {
             throw $this->createNotFoundException(
-                'Not found for id '.$id
+                'Not found for id ' . $id
             );
         }
         $entityManager = $this->getDoctrine()->getManager();
