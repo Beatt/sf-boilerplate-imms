@@ -16,8 +16,8 @@ class ConvenioRepository extends EntityRepository implements ConvenioRepositoryI
             ->join('convenio.carrera', 'carrera')
             ->join('carrera.nivelAcademico', 'nivel_academico')
             ->where('convenio.institucion = :id')
-            ->orderBy('convenio.id', 'ASC')
             ->setParameter('id', $id)
+            ->orderBy('covenio.id', 'ASC')
             ->getQuery()
             ->getResult();
     }

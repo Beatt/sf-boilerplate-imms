@@ -12,47 +12,44 @@
 {% endblock %}
 
 {% block body %}
-    <div class='container-fluid'>
-        <div class='row' style="padding: 25px;">
-            <div class='col-md-1'>
-                <img class='img-responsive' src='https://image.shutterstock.com/image-vector/blank-avatar-photo-place-holder-260nw-1095249842.jpg'/>
-            </div>
-            <div class='col-md-3'>
-                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Institución educativa</p>
-                <p>Nombre:</p>
-            </div>
-        </div>
 
-        <hr style="border: 1px solid black" />
+    {{ render(controller('AppBundle:InstitucionEducativa\\Institucion:menu', {
+        id: institucion.id
+    })) }}
 
-        <div class='container'>
-            <p style="color: #265c4f; font-size: 24px; font-weight: bold; text-align: center;">Detalle de Solicitud de Campos Clínicos</p>
+    <div class="section-md">
+        <div class='container-fluid'>
+            <div class='container'>
+                <p style="color: #265c4f; font-size: 24px; font-weight: bold; text-align: center;">Detalle de Solicitud
+                    de Campos Clínicos</p>
 
-        <div style="display: flex;">
-            <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud:</p><div id="noSolicitud"></div>
-        </div>
+                <div style="display: flex;">
+                    <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">No. Solicitud: </p>
+                    <div id="noSolicitud"></div>
+                </div>
 
-        <div class='row'>
-            <div class='col-md-6'>
-                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Se autorizaron 5 de 6 campos clínicos.</p>
-            </div>
-            <div class='col-md-6'>
-                <input type="text" placeholder="Buscar por.." name="search"/>
-                <button type="submit">Buscar</button>
-            </div>
-        </div>
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Se autorizaron 5 de 6 campos
+                            clínicos.</p>
+                    </div>
+                    <div class='col-md-6'>
+                        <input type="text" placeholder="Buscar por.." name="search"/>
+                        <button type="submit">Buscar</button>
+                    </div>
+                </div>
 
-        <div class='row'>
-            <div class='col-md-12' id="listaSolicitud">
+                <div class='row'>
+                    <div class='col-md-12' id="listaSolicitud"></div>
+                </div>
 
-            </div>
-        </div>
-        
-        <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Expediente</p>
+                <p style="margin-top: 10px; font-size: 16px; font-weight: bold;">Expediente</p>
 
-        <div class='row'>
-            <div class='col-md-12' id="listaExpediente">
-                
+                <div class='row'>
+                    <div class='col-md-12' id="listaExpediente">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -60,4 +57,8 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+      window.SOLICITUD_PROP = {{ camposClinicos|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/detalle-campos.js') }}"></script>
 {% endblock %}
