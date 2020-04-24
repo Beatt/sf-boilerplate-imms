@@ -56,8 +56,7 @@ class SolicitudController extends DIEControllerController
             'form' => $form->createView(),
             'token' => $tokenProvider->getToken('solicitud_item')->getValue(),
             'instituciones' => $this->getDoctrine()
-                ->getRepository(Institucion::class)
-                ->findBy()
+                ->getRepository(Institucion::class)->findAll()
         ]);
     }
 
