@@ -15,7 +15,7 @@
             <div class='container'>
                 <h1 class="text-bold text-center">Detalle de Solicitud de Campos Clínicos</h1>
                 <div style="display: flex;">
-                    <p class="text-bold mt-10">No. Solicitud: </p>
+                    <p class="text-bold mt-10">No. Solicitud: {{ solicitud.noSolicitud }}</p>
                     <div id="noSolicitud"></div>
                 </div>
                 <div class='row'>
@@ -43,6 +43,7 @@
     {{ parent() }}
     <script>
       window.SOLICITUD_PROP = {{ camposClinicos|json_encode|raw }}
+      window.EXPEDIENTE_PROP = {{ expediente|json_encode|raw }}
     </script>
     <script src="{{ asset('build/detalle-campos.js') }}"></script>
 {% endblock %}

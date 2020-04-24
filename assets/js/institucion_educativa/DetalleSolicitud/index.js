@@ -38,4 +38,32 @@ const ListaCampos = ({ solicitud }) => {
     )
 }
 
+const ListaExpediente = ({ expediente }) => {
+    console.log(expediente)
+    return(
+        <table className='table table-bordered'>
+            <thead className='headers'>
+                <tr>
+                    <th>Documento</th>
+                    <th>Fecha</th>
+                    <th>Descripcion</th> 
+                    <th>Archivo</th> 
+                </tr>
+            </thead>
+            <tbody>
+            {
+                expediente.map((item) => {
+                return <tr>
+                    <td>Documento</td>
+                    <td>{item.fecha}</td>
+                    <td>{item.descripcion}</td>
+                    <td><a>{item.urlArchivo}</a></td>
+                </tr>
+            })}
+            </tbody>
+        </table>
+    )
+}
+
 ReactDOM.render( <ListaCampos solicitud={window.SOLICITUD_PROP}/>,document.getElementById('listaSolicitud'));
+ReactDOM.render( <ListaExpediente expediente={window.EXPEDIENTE_PROP}/>,document.getElementById('listaExpediente'));

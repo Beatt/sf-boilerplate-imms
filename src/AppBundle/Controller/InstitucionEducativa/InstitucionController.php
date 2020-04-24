@@ -4,6 +4,8 @@ namespace AppBundle\Controller\InstitucionEducativa;
 
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Expediente;
+use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -111,11 +113,21 @@ class InstitucionController extends Controller
             $solicitudId
         );
 
+        $expedienteRepository = $this->get('doctrine')->getRepository(Expediente::class);
+
+        $expedientes = $expedienteRepository->getAllExpedientesByRequest(
+            $solicitudId
+        );
+
         $institucion = $this->get('doctrine')->getRepository(Institucion::class)
             ->find($id);
 
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
         return $this->render('institucion_educativa/institucion/detail.html.twig',[
             'institucion' => $institucion,
+            'solicitud' => $solicitud,
             'camposClinicos' => $this->get('serializer')->normalize(
                 $camposClinicos,
                 'json',
@@ -139,6 +151,18 @@ class InstitucionController extends Controller
                             'id',
                             'noSolicitud'
                         ]
+                    ]
+                ]
+            ),
+            'expediente' => $this->get('serializer')->normalize(
+                $expedientes,
+                'json',
+                [
+                    'attributes' => [
+                        'id',
+                        'descripcion',
+                        'urlArchivo',
+                        'fecha'
                     ]
                 ]
             )
