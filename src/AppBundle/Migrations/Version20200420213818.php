@@ -17,7 +17,7 @@ class Version20200420213818 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
         /* Table solicitud */
-        $this->addSQL("CREATE TABLE solicitud (id SERIAL NOT NULL, no_solicitud VARCHAR(5) NOT NULL, fecha DATE NOT NULL, estatus INT NOT NULL, referencia_bancaria VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id));");
+        $this->addSQL("CREATE TABLE solicitud (id SERIAL NOT NULL, no_solicitud VARCHAR(9) NULL, fecha DATE NOT NULL, estatus INT NOT NULL, referencia_bancaria VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id));");
         $this->addSql("CREATE UNIQUE INDEX UNIQ_96D27CC0415EAE2C ON solicitud (no_solicitud);");
         $this->addSql("CREATE TABLE expediente (id SERIAL NOT NULL, descripcion TEXT DEFAULT NULL, url_archivo VARCHAR(255) NOT NULL, solicitud_id INT NOT NULL, fecha DATE NOT NULL, PRIMARY KEY(id));");
         $this->addSql("CREATE TABLE estatus_campo (id SERIAL NOT NULL, estatus VARCHAR(50) NOT NULL, PRIMARY KEY(id));");

@@ -36,9 +36,6 @@ class ExampleForm extends React.Component{
         event.preventDefault();
         let data = new FormData();
         data.append('solicitud[_token]', this.props.token);
-        data.append('solicitud[fecha][year]', '2015');
-        data.append('solicitud[fecha][month]', '2');
-        data.append('solicitud[fecha][day]', '12');
         fetch(this.props.action, {
             method: this.props.method,
             body: data,

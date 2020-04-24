@@ -3,6 +3,9 @@
 namespace AppBundle\Controller\Came;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Institucion;
+use AppBundle\Entity\NivelAcademico;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\SolicitudType;
 use AppBundle\Service\SolicitudManagerInterface;
@@ -18,16 +21,24 @@ class SolicitudController extends DIEControllerController
      */
     public function indexAction(Request $request)
     {
+        $perPage = $request->query->get('perPage', 10);
+        $page = $request->query->get('page', 1);
         $solicitudes = $this->getDoctrine()
             ->getRepository(Solicitud::class)
-            ->findAll();
+            ->findBy([], [], $perPage, ($page-1) * $perPage);
         return $this->render('came/solicitud/index.html.twig', [
             'solicitudes' => $this->get('serializer')->normalize(
                 $solicitudes,
                 'json',
                 [
                     'attributes' => [
-                        'id'
+                        'id',
+                        'fecha',
+                        'estatus',
+                        'estatusFormatted',
+                        'institucion',
+                        'camposClinicosSolicitados',
+                        'camposClinicosAutorizados',
                     ]
                 ]
             )
@@ -43,7 +54,10 @@ class SolicitudController extends DIEControllerController
         $tokenProvider = $this->container->get('security.csrf.token_manager');
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
-            'token' => $tokenProvider->getToken('solicitud_item')->getValue()
+            'token' => $tokenProvider->getToken('solicitud_item')->getValue(),
+            'instituciones' => $this->getDoctrine()
+                ->getRepository(Institucion::class)
+                ->findBy()
         ]);
     }
 

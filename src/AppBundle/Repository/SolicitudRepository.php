@@ -10,4 +10,5 @@ namespace AppBundle\Repository;
  */
 class SolicitudRepository extends \Doctrine\ORM\EntityRepository
 {
+
 }
