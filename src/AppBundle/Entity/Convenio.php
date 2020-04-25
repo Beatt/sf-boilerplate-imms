@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Carbon\Carbon;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,8 +40,8 @@ class Convenio
     private $tipo;
 
     /**
-     * @var \Date
-     * @ORM\Column(type="date", length=250)
+     * @var DateTime
+     * @ORM\Column(type="date")
      */
     private $vigencia;
 
@@ -88,6 +89,22 @@ class Convenio
     }
 
     /**
+     * @return string
+     */
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    /**
+     * @param string $nombre
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
+
+    /**
      * @param string $sector
      * @return Convenio
      */
@@ -126,7 +143,7 @@ class Convenio
     }
 
     /**
-     * @param \DateTime $vigencia
+     * @param DateTime $vigencia
      * @return Convenio
      */
     public function setVigencia($vigencia)
@@ -137,7 +154,7 @@ class Convenio
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getVigencia()
     {

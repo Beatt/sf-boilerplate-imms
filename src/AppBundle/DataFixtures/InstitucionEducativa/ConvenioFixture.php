@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\Convenio;
 use Carbon\Carbon;
@@ -20,6 +20,7 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
         // MAYOR A UN AÑO
         for ($i = 0; $i < 1; $i++) {
             $convenio = new Convenio();
+            $convenio->setNombre('Convenio a');
             $convenio->setTipo('Tipo a');
             $convenio->setVigencia(Carbon::now()->addMonths(14));
             $convenio->setSector('Sector a');
@@ -34,9 +35,10 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
         // MENOR A UN AÑO Y MAYOR A SEIS MESES
         for ($i = 0; $i < 1; $i++) {
             $convenio = new Convenio();
+            $convenio->setNombre('Convenio b');
             $convenio->setTipo('Tipo a');
             $convenio->setVigencia(Carbon::now()->addMonths(7));
-            $convenio->setSector('Sector a');
+            $convenio->setSector('Sector b');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
 
@@ -47,9 +49,10 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
 
         for ($i = 0; $i < 1; $i++) {
             $convenio = new Convenio();
+            $convenio->setNombre('Convenio c');
             $convenio->setTipo('Tipo a');
             $convenio->setVigencia(Carbon::now()->subMonths(4));
-            $convenio->setSector('Sector a');
+            $convenio->setSector('Sector c');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
 

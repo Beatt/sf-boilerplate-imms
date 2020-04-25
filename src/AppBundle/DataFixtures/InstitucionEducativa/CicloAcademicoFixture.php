@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\CicloAcademico;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -23,6 +23,7 @@ class CicloAcademicoFixture extends Fixture
     {
         $cicloAcademico = new CicloAcademico();
         $cicloAcademico->setNombre($name);
+        $cicloAcademico->setActivo(true);
         $this->addReference($referenceType, $cicloAcademico);
 
         $manager->persist($cicloAcademico);

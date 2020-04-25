@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\Carrera;
 use Doctrine\Bundle\FixturesBundle\Fixture;

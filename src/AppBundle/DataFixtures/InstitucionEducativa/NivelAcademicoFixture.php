@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\NivelAcademico;
 use Doctrine\Bundle\FixturesBundle\Fixture;
