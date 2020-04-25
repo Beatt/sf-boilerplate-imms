@@ -32,9 +32,9 @@ class Unidad
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=15)
      * @Assert\Length(
-     *      max = 12,
+     *      max = 15,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
      * )
      */
@@ -49,9 +49,9 @@ class Unidad
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=15)
      * @Assert\Length(
-     *      max = 12,
+     *      max = 15,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
      * )
      */
@@ -59,7 +59,7 @@ class Unidad
 
     /**
      * @var integer
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $nivelAtencion;
 
@@ -78,19 +78,19 @@ class Unidad
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $direccion;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $nombreUnidadPrincipal;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=2)
+     * @ORM\Column(type="string", length=2, nullable=true)
      * @Assert\Length(
      *      max = 2,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"

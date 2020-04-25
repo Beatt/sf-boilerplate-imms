@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,33 +22,38 @@ class Expediente
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text", length=255, nullable=true)
      */
     private $descripcion;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(type="string", length=255)
      */
     private $urlArchivo;
 
     /**
-     * @var Solictud
+     * @var Solicitud
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(type="date", length=100)
+     * @var int
+     * @ORM\Column(name="solicitud_id", type="integer")
+     */
+    private $solicitudId;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(name="fecha", type="date")
      */
     private $fecha;
 
-
     public function __construct()
     {
-        $this->fecha = new \DateTime();
+        $this->fecha = new DateTime();
     }
 
     /**
@@ -77,26 +83,21 @@ class Expediente
         return $this->descripcion;
     }
 
-
     /**
-     * @param \DateTime $fecha
-     * @return Delegacion
+     * @param DateTime $fecha
      */
     public function setFecha($fecha)
     {
         $this->fecha = $fecha;
-
-        return $this;
     }
 
     /**
      * @param string $urlArchivo
-     * @return Solicitud
+     * @return Expediente
      */
     public function setUrlArchivo($urlArchivo)
     {
         $this->urlArchivo = $urlArchivo;
-
         return $this;
     }
 
@@ -109,10 +110,47 @@ class Expediente
     }
 
     /**
-     * @return \DateTime
+     * @param integer $solicitudId
+     * @return Expediente
+     */
+    public function setSolicitudId($solicitudId)
+    {
+        $this->solicitudId = $solicitudId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSolicitudId()
+    {
+        return $this->solicitudId;
+    }
+
+    /**
+     * @return DateTime
      */
     public function getFecha()
     {
         return $this->fecha;
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return Expediente
+     */
+    public function setSolicitud(Solicitud $solicitud = null)
+    {
+        $this->solicitud = $solicitud;
+
+        return $this;
+    }
+
+    /**
+     * @return Solicitud
+     */
+    public function getSolicitud()
+    {
+        return $this->solicitud;
     }
 }

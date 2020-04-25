@@ -19,7 +19,7 @@ easy_admin:
           - { property: delegacion.nombre, label: 'Delegación' }
       form:
         fields:
-          - sector
+          - { property: sector, label: 'Sector', type: choice, type_options: { choices: { 'Público': 'Público', 'Privado': 'Privado' } } }
           - { property: tipo, label: 'Tipo', type: choice, type_options: { choices: { 'General': 'General', 'Específico': 'Específico' } } }
           - vigencia
           - { property: gradoAcademico, label: 'Grado académico', type: entity, type_options: { choice_label: nombre } }

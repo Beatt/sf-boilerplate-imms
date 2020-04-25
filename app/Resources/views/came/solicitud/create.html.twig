@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .square {
+            height: 25px;
+            width: 25px;
+            background-color: #555;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-md-12'>
+                <h3>Nueva solicitud</h3>
+                {{ form_widget(form) }}
+                <div id="solicitud-wrapper"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.CSRF_TOKEN = "{{ token}}"
+    </script>
+    <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
+{% endblock %}

@@ -25,6 +25,13 @@ class CicloAcademico
      */
     private $nombre;
 
+     /**
+     * @var boolean
+     * @ORM\Column(type="boolean")
+     */
+    private $activo;
+
+
     /**
      * @return integer
      */
@@ -50,5 +57,25 @@ class CicloAcademico
     public function getNombre()
     {
         return $this->nombre;
+    }
+
+
+    /**
+     * @param boolean $activo
+     * @return CicloAcademico
+     */
+    public function setActivo($activo)
+    {
+        $this->activo = $activo;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getActivo()
+    {
+        return $this->activo;
     }
 }

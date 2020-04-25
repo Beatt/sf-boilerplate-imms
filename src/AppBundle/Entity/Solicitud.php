@@ -3,8 +3,11 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 /**
+ * Solicitud
+ *
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
@@ -21,13 +24,14 @@ class Solicitud
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100)
+     *
+     * @ORM\Column(name="no_solicitud", type="string", length=9, unique=true, nullable=true)
      */
     private $noSolicitud;
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="date", length=100)
+     * @ORM\Column(type="date")
      */
     private $fecha;
 
@@ -37,13 +41,12 @@ class Solicitud
      */
     private $estatus;
 
-
     /**
      * @var string
-     * @ORM\Column(type="string", length=100)
+     *
+     * @ORM\Column(name="referencia_bancaria", type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
-
 
     public function __construct()
     {
@@ -51,7 +54,16 @@ class Solicitud
     }
 
     /**
-     * @return integer
+     * @var CampoClinico
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
+     */
+    private $camposClinicos;
+
+
+    /**
+     * Get id
+     *
+     * @return int
      */
     public function getId()
     {
@@ -77,10 +89,9 @@ class Solicitud
         return $this->noSolicitud;
     }
 
-
     /**
      * @param \DateTime $fecha
-     * @return Delegacion
+     * @return Solicitud
      */
     public function setFecha($fecha)
     {
@@ -96,7 +107,6 @@ class Solicitud
     {
         return $this->fecha;
     }
-
 
     /**
      * @param string $estatus
@@ -136,4 +146,68 @@ class Solicitud
         return $this->referenciaBancaria;
     }
 
+    /**
+     * @return int
+     * @throws Exception
+     */
+    public function getDemo()
+    {
+        return random_int(10, 10000);
+    }
+
+    public function getCampoClinicos()
+    {
+        return $this->camposClinicos;
+    }
+
+    public function getCamposClinicosSolicitados()
+    {
+        return count($this->getCampoClinicos());
+    }
+
+    public function getCamposClinicosAutorizados()
+    {
+        $acc = 0;
+        foreach ($this->getCampoClinicos() as $campoClinico) {
+            if($campoClinico->getLugaresAutorizados() > 0){
+                $acc++;
+            }
+        }
+        return $acc;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEstatusFormatted()
+    {
+        $result = '';
+        switch ($this->getEstatus()){
+            case 1:
+                $result = 'Nueva'; break;
+            case 2:
+                $result = 'En espera de registro de montos'; break;
+            case 3:
+                $result = 'En espera de validación'; break;
+            case 4:
+                $result = 'Montos validados'; break;
+            case 5:
+                $result = 'Pago en proceso'; break;
+            case 6:
+                $result = 'En validación FOFOE'; break;
+            case 7:
+                $result = 'Pagado'; break;
+        }
+        return $result;
+    }
+
+    public function getInstitucion()
+    {
+        $result = '';
+        $campos_clinicos = $this->getCampoClinicos();
+        if($campos_clinicos->count() > 0){
+            $result = $campos_clinicos[0]->getConvenio()->getInstitucion()->getNombre();
+        }
+        return $result;
+    }
 }

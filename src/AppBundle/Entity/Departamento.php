@@ -24,9 +24,9 @@ class Departamento
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=100)
      * @Assert\Length(
-     *      max = 30,
+     *      max = 100,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
      * )
      */
@@ -34,9 +34,9 @@ class Departamento
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=15)
      * @Assert\Length(
-     *      max = 12,
+     *      max = 15,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
      * )
      */
@@ -44,9 +44,9 @@ class Departamento
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=15)
      * @Assert\Length(
-     *      max = 12,
+     *      max = 15,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
      * )
      */
@@ -79,7 +79,7 @@ class Departamento
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $fecha;
 

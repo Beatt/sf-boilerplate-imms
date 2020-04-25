@@ -486,7 +486,7 @@ class Usuario implements UserInterface
     }
 
     /**
-     * @return Collection
+     * @return Departamento
      */
     public function getDepartamento()
     {

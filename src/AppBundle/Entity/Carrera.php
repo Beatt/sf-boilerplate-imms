@@ -21,7 +21,7 @@ class Carrera
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=35)
      */
     private $nombre;
 

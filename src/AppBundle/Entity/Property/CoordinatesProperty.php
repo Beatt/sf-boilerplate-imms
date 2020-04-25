@@ -8,15 +8,15 @@ trait CoordinatesProperty
 {
     /**
      * @var float
-     * @ORM\Column(type="float", precision=24, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=true)
      */
     private $latitud;
 
     /**
      * @var float
-     * @ORM\Column(type="float", precision=24, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=true)
      */
-    private $altitud;
+    private $longitud;
 
     /**
      * @param string $latitud
@@ -35,18 +35,18 @@ trait CoordinatesProperty
     }
 
     /**
-     * @param string $altitud
+     * @param string $longitud
      */
-    public function setAltitud($altitud)
+    public function setLongitud($longitud)
     {
-        $this->altitud = $altitud;
+        $this->longitud = $longitud;
     }
 
     /**
      * @return string
      */
-    public function getAltitud()
+    public function getLongitud()
     {
-        return $this->altitud;
+        return $this->longitud;
     }
 }
