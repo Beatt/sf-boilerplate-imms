@@ -78,8 +78,7 @@ class CampoClinico
     private $monto;
 
     /**
-     * @var Solicitud
-     * @ORM\ManyToOne(targetEntity="Solicitud", inversedBy="campos_clinicos")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="camposClinicos")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
@@ -14,8 +15,6 @@ use Exception;
 class Solicitud
 {
     /**
-     * @var int
-     *
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -23,30 +22,29 @@ class Solicitud
     private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="no_solicitud", type="string", length=9, unique=true, nullable=true)
      */
     private $noSolicitud;
 
     /**
-     * @var \DateTime
      * @ORM\Column(type="date")
      */
     private $fecha;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=100)
      */
     private $estatus;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="referencia_bancaria", type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
+     */
+    private $camposClinicos;
 
     public function __construct()
     {
@@ -54,15 +52,6 @@ class Solicitud
     }
 
     /**
-     * @var CampoClinico
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
-     */
-    private $camposClinicos;
-
-
-    /**
-     * Get id
-     *
      * @return int
      */
     public function getId()
@@ -101,11 +90,11 @@ class Solicitud
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
     public function getFecha()
     {
-        return $this->fecha;
+        return $this->fecha->format('d/m/Y');
     }
 
     /**

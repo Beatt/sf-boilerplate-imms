@@ -26,5 +26,10 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        window.CAMPOS_CLINICOS_PROPS = {{ camposClinicos|json_encode|raw }}
+        window.CAMPOS_CLINICOS_TOTAL_PROPS = {{ total|json_encode|raw }}
+        window.INSTITUCION_ID_PROPS = {{ institucion.id|json_encode|raw }}
+    </script>
     <script src="{{ asset('build/solicitud-index.js') }}"></script>
 {% endblock %}

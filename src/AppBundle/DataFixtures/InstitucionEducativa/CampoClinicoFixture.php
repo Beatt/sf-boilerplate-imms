@@ -51,6 +51,8 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setReferenciaBancaria('102012010210');
         $campoClinico->setMonto('100000');
 
+        $campoClinico->setSolicitud($this->getReference(SolicitudFixture::NUEVA));
+
         $manager->persist($campoClinico);
         $manager->flush();
     }

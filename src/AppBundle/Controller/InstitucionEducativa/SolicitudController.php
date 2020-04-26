@@ -2,11 +2,14 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,13 +17,46 @@ class SolicitudController extends Controller
 {
     /**
      * @Route("/instituciones/{id}/solicitudes", methods={"GET"})
+     * @param $id
+     * @param Request $request
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @return Response
      */
-    public function indexAction($id, InstitucionRepositoryInterface $institucionRepository)
-    {
+    public function indexAction(
+        $id,
+        Request $request,
+        InstitucionRepositoryInterface $institucionRepository,
+        CampoClinicoRepositoryInterface $campoClinicoRepository
+    ) {
+        /** @var Institucion $institucion */
         $institucion = $institucionRepository->find($id);
 
+        $isOffsetSet = $request->query->get('offset');
+
+        $offset = max(0, $request->query->getInt('offset', 0));
+
+        $camposClinicos = $campoClinicoRepository->getAllSolicitudesByInstitucion(
+            $institucion->getId(),
+            $offset,
+            '25/04/2020'
+        );
+
+        if(isset($isOffsetSet)) {
+            return new JsonResponse([
+                'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos)
+            ]);
+
+        }
+
+        $camposClinicosTotal = $campoClinicoRepository->getTotalSolicitudesByInstitucion(
+            $institucion->getId()
+        );
+
         return $this->render('institucion_educativa/solicitud/index.html.twig', [
-            'institucion' => $institucion
+            'institucion' => $institucion,
+            'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
+            'total' => $camposClinicosTotal
         ]);
     }
 
@@ -89,5 +125,28 @@ class SolicitudController extends Controller
                 ]
             )
         ]);
+    }
+
+    /**
+     * @param $camposClinicos
+     * @return array
+     */
+    private function getNormalizeSolicitudes($camposClinicos)
+    {
+        return $this->get('serializer')->normalize(
+            $camposClinicos,
+            'json',
+            [
+                'attributes' => [
+                    'id',
+                    'solicitud' => [
+                        'noSolicitud',
+                        'fecha',
+                        'estatus'
+                    ],
+                    'lugaresSolicitados',
+                    'lugaresAutorizados'
+                ]
+            ]);
     }
 }
