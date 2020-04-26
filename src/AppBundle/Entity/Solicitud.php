@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use Carbon\Carbon;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
@@ -49,6 +49,7 @@ class Solicitud
     public function __construct()
     {
         $this->fecha = new \DateTime();
+        $this->camposClinicos = new ArrayCollection();
     }
 
     /**
@@ -198,5 +199,26 @@ class Solicitud
             $result = $campos_clinicos[0]->getConvenio()->getInstitucion()->getNombre();
         }
         return $result;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getNoCamposSolicitados()
+    {
+        return $this->camposClinicos->count();
+    }
+
+    /**
+     * @return integer
+     */
+    public function getNoCamposAutorizados()
+    {
+        /** @var CampoClinico $campoClinico */
+        $noCamposSolicitados = array_filter($this->getCampoClinicos()->toArray(), function (CampoClinico $campoClinico) {
+            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_CREADA;
+        });
+
+        return count($noCamposSolicitados);
     }
 }

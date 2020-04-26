@@ -84,6 +84,12 @@ class CampoClinico
     private $solicitud;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\EstatusCampo")
+     * @ORM\JoinColumn(name="estatus_campo_id", referencedColumnName="id")
+     */
+    private $estatus;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -317,5 +323,24 @@ class CampoClinico
     public function getSolicitud()
     {
         return $this->solicitud;
+    }
+
+    /**
+     * @param EstatusCampo $estatus
+     * @return CampoClinico
+     */
+    public function setEstatus(EstatusCampo $estatus = null)
+    {
+        $this->estatus = $estatus;
+
+        return $this;
+    }
+
+    /**
+     * @return EstatusCampo
+     */
+    public function getEstatus()
+    {
+        return $this->estatus;
     }
 }

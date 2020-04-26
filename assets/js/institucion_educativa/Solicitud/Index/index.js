@@ -70,14 +70,14 @@ const Index = ({ camposClinicosInit, total, institucionId }) => {
               </tr> :
               camposClinicos.map(campoClinico => (
                 <tr>
-                  <th>{campoClinico.solicitud.noSolicitud}</th>
-                  <th>{campoClinico.lugaresSolicitados}</th>
-                  <th>{campoClinico.lugaresAutorizados}</th>
-                  <th>{campoClinico.solicitud.fecha}</th>
-                  <th>{ESTATUS_BUTTON[campoClinico.solicitud.estatus].name}</th>
+                  <th>{campoClinico.noSolicitud}</th>
+                  <th>{campoClinico.noCamposSolicitados}</th>
+                  <th>{campoClinico.noCamposAutorizados}</th>
+                  <th>{campoClinico.fecha}</th>
+                  <th>{ESTATUS_BUTTON[campoClinico.estatus].name}</th>
                   <th>
                     <button className='btn btn-default'>
-                      {ESTATUS_BUTTON[campoClinico.solicitud.estatus].button}
+                      {ESTATUS_BUTTON[campoClinico.estatus].button}
                     </button>
                   </th>
                 </tr>

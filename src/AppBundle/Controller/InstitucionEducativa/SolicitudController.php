@@ -7,6 +7,7 @@ use AppBundle\Entity\Solicitud;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
+use AppBundle\Repository\SolicitudRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,18 +17,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolicitudController extends Controller
 {
     /**
-     * @Route("/instituciones/{id}/solicitudes", methods={"GET"})
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", methods={"GET"})
      * @param $id
+     * @param $solicitudId
      * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
-     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @param SolicitudRepositoryInterface $solicitudRepository
      * @return Response
      */
     public function indexAction(
         $id,
+        $solicitudId,
         Request $request,
         InstitucionRepositoryInterface $institucionRepository,
-        CampoClinicoRepositoryInterface $campoClinicoRepository
+        SolicitudRepositoryInterface $solicitudRepository
     ) {
         /** @var Institucion $institucion */
         $institucion = $institucionRepository->find($id);
@@ -36,10 +39,10 @@ class SolicitudController extends Controller
 
         $offset = max(0, $request->query->getInt('offset', 0));
 
-        $camposClinicos = $campoClinicoRepository->getAllSolicitudesByInstitucion(
-            $institucion->getId(),
+        $camposClinicos = $solicitudRepository->getAllSolicitudesById(
+            $solicitudId,
             $offset,
-            '25/04/2020'
+            null
         );
 
         if(isset($isOffsetSet)) {
@@ -49,14 +52,10 @@ class SolicitudController extends Controller
 
         }
 
-        $camposClinicosTotal = $campoClinicoRepository->getTotalSolicitudesByInstitucion(
-            $institucion->getId()
-        );
-
         return $this->render('institucion_educativa/solicitud/index.html.twig', [
             'institucion' => $institucion,
             'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
-            'total' => $camposClinicosTotal
+            'total' => count($camposClinicos)
         ]);
     }
 
@@ -139,13 +138,11 @@ class SolicitudController extends Controller
             [
                 'attributes' => [
                     'id',
-                    'solicitud' => [
-                        'noSolicitud',
-                        'fecha',
-                        'estatus'
-                    ],
-                    'lugaresSolicitados',
-                    'lugaresAutorizados'
+                    'noSolicitud',
+                    'fecha',
+                    'estatus',
+                    'noCamposSolicitados',
+                    'noCamposAutorizados'
                 ]
             ]);
     }
