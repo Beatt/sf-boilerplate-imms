@@ -141,7 +141,10 @@ class SolicitudController extends Controller
                     'id',
                     'noSolicitud',
                     'fecha',
-                    'estatus',
+                    'estatus' => [
+                        'nombre',
+                        'estatus'
+                    ],
                     'noCamposSolicitados',
                     'noCamposAutorizados'
                 ]

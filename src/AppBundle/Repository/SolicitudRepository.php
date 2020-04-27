@@ -11,13 +11,14 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
     {
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
+            ->join('campos_clinicos.estatus', 'estatus_campo')
             ->join('campos_clinicos.convenio', 'convenio')
             ->where('convenio.institucion = :id')
             ->setParameter('id', $id);
 
         if($search !== null && $search !== '') {
             $queryBuilder = $queryBuilder
-                ->andWhere("LOWER(solicitud.estatus) LIKE LOWER(:search)")
+                ->andWhere("LOWER(estatus_campo.nombre) LIKE LOWER(:search)")
                 ->orWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
                 ->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
                 ->setParameter('search', '%' . $search . '%');

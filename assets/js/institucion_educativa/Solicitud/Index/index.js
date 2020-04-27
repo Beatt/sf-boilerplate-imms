@@ -22,28 +22,22 @@ const Index = (
   }, [currentPage])
 
   const ESTATUS_BUTTON = {
-    nueva: {
-      name: 'Nueva',
-      button: 'Registre montos'
+    solicitud_creada: {
+      button: ''
     },
     en_espera_de_validacion_de_montos: {
-      name: 'En espera de validación de montos',
       button: 'Corrija montos'
     },
     montos_validados: {
-      name: 'Montos validados',
       button: 'Consulte formatos de pago'
     },
     pago_en_proceso: {
-      name: 'Pago en proceso',
       button: 'Cargue comprobante de pago'
     },
     pagado: {
-      name: 'Pagado',
       button: 'Dercargue factura'
     },
     en_validacion_por_fofoe: {
-      name: 'En validación por FOFOE',
       button: 'Corrija montos'
     },
   }
@@ -112,10 +106,10 @@ const Index = (
                   <th>{campoClinico.noCamposSolicitados}</th>
                   <th>{campoClinico.noCamposAutorizados}</th>
                   <th>{campoClinico.fecha}</th>
-                  <th>{ESTATUS_BUTTON[campoClinico.estatus].name}</th>
+                  <th>{campoClinico.estatus.nombre}</th>
                   <th>
                     <button className='btn btn-default'>
-                      {ESTATUS_BUTTON[campoClinico.estatus].button}
+                      {ESTATUS_BUTTON[campoClinico.estatus.estatus].button}
                     </button>
                   </th>
                 </tr>

@@ -18,7 +18,7 @@ class EstatusCampo
     const FORMATOS_DE_PAGO_GENERADOS = 'formatos_de_pago_generados';
     const EN_VALIDACION_POR_FOFOE = 'en_validacion_por_fofoe';
     const PAGO_NO_VALIDO = 'pago_no_valido';
-    const PENDIENTE_CFDI_FOFOE = 'pendiente_cfdi_fofoe';
+    const PENDIENTE_CFDI_POR_FOFOE = 'pendiente_cfdi_por_fofoe';
     const PAGO_VALIDADO = 'pago_validado';
     const CREDENCIALES_GENERADAS = 'credenciales_generadas';
 
@@ -35,6 +35,11 @@ class EstatusCampo
      * @ORM\Column(type="string", length=50)
      */
     private $estatus;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $nombre;
 
     /**
      * @return int
@@ -62,5 +67,23 @@ class EstatusCampo
     {
         return $this->estatus;
     }
-}
 
+    /**
+     * @param string $nombre
+     * @return EstatusCampo
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+}
