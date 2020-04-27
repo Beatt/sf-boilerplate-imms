@@ -85,6 +85,12 @@ class CampoClinico
     private $solicitud;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Unidad")
+     * @ORM\JoinColumn(name="unidad_id", referencedColumnName="id")
+     */
+    private $unidad;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -318,5 +324,24 @@ class CampoClinico
     public function getSolicitud()
     {
         return $this->solicitud;
+    }
+
+    /**
+     * @param Unidad $unidad
+     * @return CampoClinico
+     */
+    public function setUnidad(Unidad $unidad = null)
+    {
+        $this->unidad = $unidad;
+
+        return $this;
+    }
+
+    /**
+     * @return Unidad
+     */
+    public function getUnidad()
+    {
+        return $this->unidad;
     }
 }
