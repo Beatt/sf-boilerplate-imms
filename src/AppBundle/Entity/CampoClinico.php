@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="campo_clinico")
@@ -52,11 +53,13 @@ class CampoClinico
     private $promocion;
 
     /**
+     * @var integer
      * @ORM\Column(type="integer")
      */
     private $lugaresSolicitados;
 
     /**
+     * @var integer
      * @ORM\Column(type="integer")
      */
     private $lugaresAutorizados;
@@ -79,10 +82,17 @@ class CampoClinico
 
     /**
      * @var Solicitud
-     * @ORM\ManyToOne(targetEntity="Solicitud", inversedBy="campos_clinicos")
+     * @ORM\ManyToOne(targetEntity="Solicitud", inversedBy="camposClinicos")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;
+
+    /**
+     * @var Unidad
+     * @ORM\ManyToOne(targetEntity="Unidad", inversedBy="camposClinicos")
+     * @ORM\JoinColumn(name="unidad_id", referencedColumnName="id")
+     */
+    private $unidad;
 
     /**
      * @return integer
@@ -318,5 +328,23 @@ class CampoClinico
     public function getSolicitud()
     {
         return $this->solicitud;
+    }
+
+    /**
+     * @param Unidad $unidad
+     * @return CampoClinico
+     */
+    public function setUnidad(Unidad $unidad = null)
+    {
+        $this->unidad = $unidad;
+
+        return $this;
+    }
+
+    /**
+     * @return Unidad
+     */
+    public function getUnidad(){
+        return $this->unidad;
     }
 }

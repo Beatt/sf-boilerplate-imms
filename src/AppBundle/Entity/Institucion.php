@@ -90,6 +90,12 @@ class Institucion
     private $direccion;
 
     /**
+     * @var Convenio
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Convenio", mappedBy="institucion")
+     */
+    private $convenios;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -263,5 +269,10 @@ class Institucion
     public function setCedulaFile($cedulaFile)
     {
         $this->cedulaFile = $cedulaFile;
+    }
+
+    public function getConvenios()
+    {
+        return $this->convenios;
     }
 }

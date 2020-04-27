@@ -210,4 +210,20 @@ class Solicitud
         }
         return $result;
     }
+
+    public function __toString()
+    {
+        return ''.$this->getId();
+    }
+
+    public function getPagosIndividuales()
+    {
+        $result = false;
+        foreach ($this->getCampoClinicos() as $cc){
+            if($cc->getReferenciaBancaria()){
+                $result = true;
+            }
+        }
+        return $result;
+    }
 }

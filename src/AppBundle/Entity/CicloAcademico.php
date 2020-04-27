@@ -78,4 +78,9 @@ class CicloAcademico
     {
         return $this->activo;
     }
+
+    public function __toString()
+    {
+        return $this->getNombre();
+    }
 }

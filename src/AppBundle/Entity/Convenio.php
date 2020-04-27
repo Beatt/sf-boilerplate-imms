@@ -270,4 +270,9 @@ class Convenio
 
         return 'red';
     }
+
+    public function __toString()
+    {
+        return $this->getNombre();
+    }
 }

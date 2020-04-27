@@ -3,15 +3,12 @@
 namespace AppBundle\Controller\Came;
 
 use AppBundle\Controller\DIEControllerController;
-use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Institucion;
-use AppBundle\Entity\NivelAcademico;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\SolicitudType;
 use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SolicitudController extends DIEControllerController
@@ -51,12 +48,14 @@ class SolicitudController extends DIEControllerController
     public function createAction(Request $request)
     {
         $form = $this->createForm(SolicitudType::class);
-        $tokenProvider = $this->container->get('security.csrf.token_manager');
+        $instituciones = $this->getDoctrine()
+            ->getRepository(Institucion::class)
+            ->findAllPrivate();
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
-            'token' => $tokenProvider->getToken('solicitud_item')->getValue(),
-            'instituciones' => $this->getDoctrine()
-                ->getRepository(Institucion::class)->findAll()
+            'instituciones' => $this->get('serializer')->normalize($instituciones,
+                'json',
+                ['attributes' => ['id', 'nombre']])
         ]);
     }
 
@@ -70,11 +69,8 @@ class SolicitudController extends DIEControllerController
     {
         $form = $this->createForm(SolicitudType::class);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $result = $solicitudManager->create($form->getData());
-            return $this->jsonResponse($result);
-        }
-        return $this->jsonErrorResponse($form);
+        $result = $solicitudManager->create(new Solicitud());
+        return $this->jsonResponse($result);
     }
 
     /**
@@ -91,11 +87,23 @@ class SolicitudController extends DIEControllerController
                 'Not found for id ' . $id
             );
         }
+        $instituciones = $this->getDoctrine()
+            ->getRepository(Institucion::class)
+            ->findAllPrivate();
         $form = $this->createForm(SolicitudType::class);
-        $tokenProvider = $this->container->get('security.csrf.token_manager');
         return $this->render('came/solicitud/edit.html.twig', [
             'form' => $form->createView(),
-            'token' => $tokenProvider->getToken('solicitud_item')->getValue()
+            'instituciones' => $this->get('serializer')->normalize($instituciones,
+                'json',
+                ['attributes' => ['id', 'nombre']]),
+            'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
+                ['attributes' => ['id', 'campoClinicos' => [
+                    'convenio' => [ 'cicloAcademico' => ['id', 'nombre'],
+                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',],
+                        'gradoAcademico'=> ['id', 'nombre']],
+                    'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
+                    'fechaInicial', 'fechaFinal'
+                ]]])
         ]);
     }
 
