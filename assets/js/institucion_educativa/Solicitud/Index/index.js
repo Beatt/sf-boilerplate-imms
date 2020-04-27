@@ -10,12 +10,16 @@ const Index = (
     institucionId,
   }) => {
 
-  const { useState } = React
+  const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState(camposClinicosInit)
   const [ search, setSearch ] = useState('')
   const [ total, setTotal ] = useState(totalInit)
-  const [ currentPage, setCurrentPage ] = useState(0)
+  const [ currentPage, setCurrentPage ] = useState('')
   const [ isLoading, toggleLoading ] = useState(false)
+
+  useEffect(() => {
+    if(currentPage) getCamposClinicos()
+  }, [currentPage])
 
   const ESTATUS_BUTTON = {
     nueva: {
@@ -56,6 +60,8 @@ const Index = (
       .then((res) => {
         setCamposClinicos(res.camposClinicos)
         setTotal(res.total)
+      })
+      .finally(() => {
         toggleLoading(false)
       })
   }
@@ -100,8 +106,8 @@ const Index = (
               <tr>
                 <th className='text-center' colSpan={6}>Cargando información...</th>
               </tr> :
-              camposClinicos.map(campoClinico => (
-                <tr>
+              camposClinicos.map((campoClinico, index) => (
+                <tr key={index}>
                   <th>{campoClinico.noSolicitud}</th>
                   <th>{campoClinico.noCamposSolicitados}</th>
                   <th>{campoClinico.noCamposAutorizados}</th>
@@ -125,11 +131,10 @@ const Index = (
           breakLabel={'...'}
           breakClassName={'break-me'}
           pageCount={total}
-          marginPagesDisplayed={1}
-          pageRangeDisplayed={5}
+          marginPagesDisplayed={5}
+          pageRangeDisplayed={2}
           onPageChange={(currentPage) => {
-            setCurrentPage(currentPage.selected)
-            getCamposClinicos()
+            setCurrentPage(currentPage.selected + 1)
           }}
           containerClassName={'pagination'}
           subContainerClassName={'pages pagination'}

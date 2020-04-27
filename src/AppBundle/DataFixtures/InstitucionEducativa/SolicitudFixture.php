@@ -57,7 +57,7 @@ class SolicitudFixture extends Fixture
     ) {
         $solicitud = new Solicitud();
         $solicitud->setEstatus($typeReference);
-        $solicitud->setNoSolicitud(sprintf('NS_00%s', rand(0, 100)));
+        $solicitud->setNoSolicitud(sprintf('NS_00%s', rand(0, 10000)));
         $solicitud->setFecha($fecha);
         $solicitud->setReferenciaBancaria('10202010220');
 

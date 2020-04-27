@@ -36,7 +36,7 @@ class SolicitudController extends Controller
         $isOffsetSet = $request->query->get('offset');
         $isSearchSet = $request->query->get('search');
 
-        $offset = max(0, $request->query->getInt('offset', 0));
+        $offset = $request->query->getInt('offset', 1);
         $search = $request->query->get('search', null);
 
         $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
@@ -48,7 +48,7 @@ class SolicitudController extends Controller
         if(isset($isOffsetSet) || isset($isSearchSet)) {
             return new JsonResponse([
                 'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
-                'total' => count($camposClinicos)
+                'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
             ]);
 
         }
@@ -56,7 +56,7 @@ class SolicitudController extends Controller
         return $this->render('institucion_educativa/solicitud/index.html.twig', [
             'institucion' => $institucion,
             'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
-            'total' => count($camposClinicos)
+            'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
         ]);
     }
 

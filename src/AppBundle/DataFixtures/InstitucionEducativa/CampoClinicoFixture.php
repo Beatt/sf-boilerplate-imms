@@ -3,6 +3,7 @@
 namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampo;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -10,18 +11,19 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager)
     {
         $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             CicloAcademicoFixture::CICLO_A,
+            EstatusCampo::SOLICITUD_CONFIRMADA,
             $manager
         );
 
         $this->create(
             ConvenioFixture::AGREEMENT_LESS_THAN_ONE_YEAR_AND_GREATER_THAN_SIX_MONTHS,
             CicloAcademicoFixture::CICLO_B,
+            EstatusCampo::SOLICITUD_NO_AUTORIZADA,
             $manager
         );
     }
@@ -37,6 +39,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
     private function create(
         $convenioReference,
         $cicloAcademicoReference,
+        $estatusCampoReference,
         ObjectManager $manager
     ) {
         $campoClinico = new CampoClinico();
@@ -50,6 +53,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setLugaresAutorizados(20);
         $campoClinico->setReferenciaBancaria('102012010210');
         $campoClinico->setMonto('100000');
+        $campoClinico->setEstatus($this->getReference($estatusCampoReference));
 
         $campoClinico->setSolicitud($this->getReference(SolicitudFixture::NUEVA));
 

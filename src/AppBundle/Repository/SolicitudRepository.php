@@ -15,7 +15,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
             ->where('convenio.institucion = :id')
             ->setParameter('id', $id);
 
-        if($search !== null) {
+        if($search !== null && $search !== '') {
             $queryBuilder = $queryBuilder
                 ->andWhere("LOWER(solicitud.estatus) LIKE LOWER(:search)")
                 ->orWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
@@ -25,7 +25,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
 
         $query = $queryBuilder
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
-            ->setFirstResult($offset)
+            ->setFirstResult(($offset-1) * self::PAGINATOR_PER_PAGE)
             ->orderBy('solicitud.fecha', 'DESC')
             ->getQuery();
 
