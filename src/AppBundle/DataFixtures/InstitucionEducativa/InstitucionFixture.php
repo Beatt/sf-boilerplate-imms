@@ -22,6 +22,7 @@ class InstitucionFixture extends Fixture implements FixtureInterface
         $institucion->setSitioWeb('www.instituciona.com');
         $institucion->setCedulaIdentificacion('http://www.localhost/cedulafiscal.pdf');
         $institucion->setDireccion('3 poniente');
+        $institucion->setRepresentante('Representante 1');
 
         $manager->persist($institucion);
         $manager->flush();
