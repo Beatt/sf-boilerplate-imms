@@ -46,13 +46,6 @@ class Convenio
     private $vigencia;
 
     /**
-     * @var NivelAcademico
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
-     * @ORM\JoinColumn(name="nivel_id", referencedColumnName="id", nullable=true)
-     */
-    private $gradoAcademico;
-
-    /**
      * @var CicloAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CicloAcademico")
      * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id", nullable=true)

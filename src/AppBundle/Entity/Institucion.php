@@ -90,6 +90,12 @@ class Institucion
     private $direccion;
 
     /**
+     * @var string
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $representante;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -247,6 +253,25 @@ class Institucion
     public function getDireccion()
     {
         return $this->direccion;
+    }
+
+    /**
+     * @param string $representante
+     * @return Institucion
+     */
+    public function setRepresentante($representante)
+    {
+        $this->direccion = $representante;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepresentante()
+    {
+        return $this->representante;
     }
 
     /**
