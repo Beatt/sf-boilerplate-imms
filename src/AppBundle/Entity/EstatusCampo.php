@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class EstatusCampo
 {
-    const SOLICITUD_CREADA = 'solicitud_creada';
+    const SOLICITUD_CONFIRMADA = 'solicitud_confirmada';
     const SOLICITUD_NO_AUTORIZADA = 'solicitud_no_autorizada';
 
     /**

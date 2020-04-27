@@ -1,11 +1,20 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
+import { solicitudesGet } from "../../api/solicitud";
 
-const Index = ({ camposClinicosInit, total, institucionId }) => {
+const Index = (
+  {
+    camposClinicosInit,
+    totalInit,
+    institucionId,
+  }) => {
 
   const { useState } = React
   const [ camposClinicos, setCamposClinicos ] = useState(camposClinicosInit)
+  const [ search, setSearch ] = useState('')
+  const [ total, setTotal ] = useState(totalInit)
+  const [ currentPage, setCurrentPage ] = useState(0)
   const [ isLoading, toggleLoading ] = useState(false)
 
   const ESTATUS_BUTTON = {
@@ -35,6 +44,22 @@ const Index = ({ camposClinicosInit, total, institucionId }) => {
     },
   }
 
+  function handleSearch() {
+    if(!search) return;
+    getCamposClinicos()
+  }
+
+  function getCamposClinicos() {
+    toggleLoading(true)
+
+    solicitudesGet(institucionId, currentPage, search)
+      .then((res) => {
+        setCamposClinicos(res.camposClinicos)
+        setTotal(res.total)
+        toggleLoading(false)
+      })
+  }
+
   return(
     <div className='row'>
       <div className="col-md-7"/>
@@ -45,9 +70,16 @@ const Index = ({ camposClinicosInit, total, institucionId }) => {
               type="text"
               placeholder='Buscar por...'
               className='input-sm form-control'
+              onChange={({ target }) => setSearch(target.value)}
             />
           </div>
-          <button type="button" className="btn btn-default">Buscar</button>
+          <button
+            type="button"
+            className="btn btn-default"
+            onClick={handleSearch}
+          >
+            Buscar
+          </button>
         </div>
       </div>
       <div className='col-md-12'>
@@ -96,15 +128,8 @@ const Index = ({ camposClinicosInit, total, institucionId }) => {
           marginPagesDisplayed={1}
           pageRangeDisplayed={5}
           onPageChange={(currentPage) => {
-            toggleLoading(true)
-            fetch(`/instituciones/${institucionId}/solicitudes?offset=${currentPage.selected}`)
-              .then(function(response) {
-                return response.json();
-              })
-              .then(function(myJson) {
-                setCamposClinicos(myJson.camposClinicos)
-                toggleLoading(false)
-              });
+            setCurrentPage(currentPage.selected)
+            getCamposClinicos()
           }}
           containerClassName={'pagination'}
           subContainerClassName={'pages pagination'}
@@ -119,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <Index
       camposClinicosInit={window.CAMPOS_CLINICOS_PROPS}
-      total={window.CAMPOS_CLINICOS_TOTAL_PROPS}
+      totalInit={window.CAMPOS_CLINICOS_TOTAL_PROPS}
       institucionId={window.INSTITUCION_ID_PROPS}
     />,
     document.getElementById('solicitud-index-component')

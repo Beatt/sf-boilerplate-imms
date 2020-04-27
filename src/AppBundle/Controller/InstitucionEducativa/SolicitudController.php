@@ -17,9 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolicitudController extends Controller
 {
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", methods={"GET"})
+     * @Route("/instituciones/{id}/solicitudes", methods={"GET"})
      * @param $id
-     * @param $solicitudId
      * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param SolicitudRepositoryInterface $solicitudRepository
@@ -27,7 +26,6 @@ class SolicitudController extends Controller
      */
     public function indexAction(
         $id,
-        $solicitudId,
         Request $request,
         InstitucionRepositoryInterface $institucionRepository,
         SolicitudRepositoryInterface $solicitudRepository
@@ -36,18 +34,21 @@ class SolicitudController extends Controller
         $institucion = $institucionRepository->find($id);
 
         $isOffsetSet = $request->query->get('offset');
+        $isSearchSet = $request->query->get('search');
 
         $offset = max(0, $request->query->getInt('offset', 0));
+        $search = $request->query->get('search', null);
 
-        $camposClinicos = $solicitudRepository->getAllSolicitudesById(
-            $solicitudId,
+        $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
+            $id,
             $offset,
-            null
+            $search
         );
 
-        if(isset($isOffsetSet)) {
+        if(isset($isOffsetSet) || isset($isSearchSet)) {
             return new JsonResponse([
-                'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos)
+                'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
+                'total' => count($camposClinicos)
             ]);
 
         }

@@ -216,7 +216,7 @@ class Solicitud
     {
         /** @var CampoClinico $campoClinico */
         $noCamposSolicitados = array_filter($this->getCampoClinicos()->toArray(), function (CampoClinico $campoClinico) {
-            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_CREADA;
+            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_CONFIRMADA;
         });
 
         return count($noCamposSolicitados);
