@@ -33,7 +33,7 @@ class Carrera
 
     /**
      * @var NivelAcademico
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico", cascade={"persist"})
      * @ORM\JoinColumn(name="nivel_academico_id", referencedColumnName="id")
      */
     private $nivelAcademico;

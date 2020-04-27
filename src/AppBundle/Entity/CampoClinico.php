@@ -300,4 +300,23 @@ class CampoClinico
     {
         return $this->convenio;
     }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return CampoClinico
+     */
+    public function setSolicitud(Solicitud $solicitud = null)
+    {
+        $this->solicitud = $solicitud;
+
+        return $this;
+    }
+
+    /**
+     * @return Solicitud
+     */
+    public function getSolicitud()
+    {
+        return $this->solicitud;
+    }
 }

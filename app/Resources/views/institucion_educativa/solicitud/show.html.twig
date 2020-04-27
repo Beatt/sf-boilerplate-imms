@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {{ render(controller('AppBundle:InstitucionEducativa\\Institucion:menu', {
+        id: institucion.id
+    })) }}
+
+    <div class="section-md">
+        <div class='container-fluid'>
+            <div class='container'>
+                <h1 class="text-bold text-center">Detalle de Solicitud de Campos Clínicos</h1>
+                <div style="display: flex;">
+                    <p class="text-bold mt-10">No. Solicitud: {{ solicitud.noSolicitud }}</p>
+                    <div id="noSolicitud"></div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <p class="mt-10 text-bold">Se autorizaron 5 de 6 campos clínicos.</p>
+                    </div>
+                    <div class='col-md-6 text-right'>
+                        <input type="text" placeholder="Buscar por.." name="search"/>
+                        <button type="submit">Buscar</button>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-12' id="listaSolicitud"></div>
+                </div>
+                <p class="text-bold mt-10">Expediente</p>
+                <div class='row'>
+                    <div class='col-md-12' id="listaExpediente"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      window.SOLICITUD_PROP = {{ camposClinicos|json_encode|raw }}
+      window.EXPEDIENTE_PROP = {{ expediente|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/detalle-campos.js') }}"></script>
+{% endblock %}

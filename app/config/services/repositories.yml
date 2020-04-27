@@ -1,0 +1,24 @@
+services:
+  AppBundle\Repository\CampoClinicoRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\CampoClinico
+
+  AppBundle\Repository\ConvenioRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\Convenio
+
+  AppBundle\Repository\ExpedienteRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\Expediente
+
+  AppBundle\Repository\InstitucionRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\Institucion

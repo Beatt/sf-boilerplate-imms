@@ -3,7 +3,6 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Institucion;
-use Doctrine\ORM\EntityManagerInterface;
 
 interface InstitucionManagerInterface
 {

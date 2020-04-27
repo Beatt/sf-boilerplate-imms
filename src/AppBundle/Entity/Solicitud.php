@@ -3,8 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\Validator\Constraints as Assert;
+use Exception;
 
 /**
  * Solicitud
@@ -17,9 +16,9 @@ class Solicitud
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -32,14 +31,13 @@ class Solicitud
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="fecha", type="date")
+     * @ORM\Column(type="date")
      */
     private $fecha;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="estatus", type="integer")
+     * @var string
+     * @ORM\Column(type="string", length=100)
      */
     private $estatus;
 
@@ -50,9 +48,13 @@ class Solicitud
      */
     private $referenciaBancaria;
 
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+    }
 
     /**
-     * @var array
+     * @var CampoClinico
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
      */
     private $camposClinicos;
@@ -69,10 +71,7 @@ class Solicitud
     }
 
     /**
-     * Set noSolicitud
-     *
      * @param string $noSolicitud
-     *
      * @return Solicitud
      */
     public function setNoSolicitud($noSolicitud)
@@ -83,8 +82,6 @@ class Solicitud
     }
 
     /**
-     * Get noSolicitud
-     *
      * @return string
      */
     public function getNoSolicitud()
@@ -93,10 +90,7 @@ class Solicitud
     }
 
     /**
-     * Set fecha
-     *
      * @param \DateTime $fecha
-     *
      * @return Solicitud
      */
     public function setFecha($fecha)
@@ -107,8 +101,6 @@ class Solicitud
     }
 
     /**
-     * Get fecha
-     *
      * @return \DateTime
      */
     public function getFecha()
@@ -117,10 +109,7 @@ class Solicitud
     }
 
     /**
-     * Set estatus
-     *
-     * @param integer $estatus
-     *
+     * @param string $estatus
      * @return Solicitud
      */
     public function setEstatus($estatus)
@@ -131,9 +120,7 @@ class Solicitud
     }
 
     /**
-     * Get estatus
-     *
-     * @return int
+     * @return string
      */
     public function getEstatus()
     {
@@ -141,10 +128,7 @@ class Solicitud
     }
 
     /**
-     * Set referenciaBancaria
-     *
      * @param string $referenciaBancaria
-     *
      * @return Solicitud
      */
     public function setReferenciaBancaria($referenciaBancaria)
@@ -155,8 +139,6 @@ class Solicitud
     }
 
     /**
-     * Get referenciaBancaria
-     *
      * @return string
      */
     public function getReferenciaBancaria()
@@ -166,6 +148,7 @@ class Solicitud
 
     /**
      * @return int
+     * @throws Exception
      */
     public function getDemo()
     {
@@ -228,4 +211,3 @@ class Solicitud
         return $result;
     }
 }
-

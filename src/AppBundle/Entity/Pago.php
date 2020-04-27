@@ -15,79 +15,77 @@ class Pago
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="monto", type="decimal", precision=10, scale=4)
+     * @ORM\Column(type="decimal", precision=10, scale=4)
      */
     private $monto;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="solicitud_id", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $solicitudId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="comprobante_pago", type="string", length=100)
+     * @ORM\Column(type="string", length=100)
      */
     private $comprobantePago;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="referencia_bancaria", type="string", length=100)
+     * @ORM\Column(type="string", length=100)
      */
     private $referenciaBancaria;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="validado", type="boolean")
+     * @ORM\Column(type="boolean")
      */
     private $validado;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="xml", type="string", length=100)
+     * @ORM\Column(type="string", length=100)
      */
     private $xml;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="pdf", type="string", length=100)
+     * @ORM\Column(type="string", length=100)
      */
     private $pdf;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="factura", type="boolean")
+     * @ORM\Column(type="boolean")
      */
     private $factura;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="observaciones", type="string", length=100)
+     * @ORM\Column(type="string", length=100)
      */
     private $observaciones;
 
 
     /**
-     * Get id
-     *
      * @return int
      */
     public function getId()
@@ -96,10 +94,7 @@ class Pago
     }
 
     /**
-     * Set monto
-     *
      * @param string $monto
-     *
      * @return Pago
      */
     public function setMonto($monto)
@@ -110,8 +105,6 @@ class Pago
     }
 
     /**
-     * Get monto
-     *
      * @return string
      */
     public function getMonto()
@@ -120,10 +113,7 @@ class Pago
     }
 
     /**
-     * Set solicitudId
-     *
      * @param integer $solicitudId
-     *
      * @return Pago
      */
     public function setSolicitudId($solicitudId)
@@ -134,8 +124,6 @@ class Pago
     }
 
     /**
-     * Get solicitudId
-     *
      * @return int
      */
     public function getSolicitudId()
@@ -144,10 +132,7 @@ class Pago
     }
 
     /**
-     * Set comprobantePago
-     *
      * @param string $comprobantePago
-     *
      * @return Pago
      */
     public function setComprobantePago($comprobantePago)
@@ -158,8 +143,6 @@ class Pago
     }
 
     /**
-     * Get comprobantePago
-     *
      * @return string
      */
     public function getComprobantePago()
@@ -168,10 +151,7 @@ class Pago
     }
 
     /**
-     * Set referenciaBancaria
-     *
      * @param string $referenciaBancaria
-     *
      * @return Pago
      */
     public function setReferenciaBancaria($referenciaBancaria)
@@ -182,8 +162,6 @@ class Pago
     }
 
     /**
-     * Get referenciaBancaria
-     *
      * @return string
      */
     public function getReferenciaBancaria()
@@ -192,10 +170,7 @@ class Pago
     }
 
     /**
-     * Set validado
-     *
      * @param boolean $validado
-     *
      * @return Pago
      */
     public function setValidado($validado)
@@ -206,8 +181,6 @@ class Pago
     }
 
     /**
-     * Get validado
-     *
      * @return bool
      */
     public function getValidado()
@@ -216,10 +189,7 @@ class Pago
     }
 
     /**
-     * Set xml
-     *
      * @param string $xml
-     *
      * @return Pago
      */
     public function setXml($xml)
@@ -230,8 +200,6 @@ class Pago
     }
 
     /**
-     * Get xml
-     *
      * @return string
      */
     public function getXml()
@@ -240,10 +208,7 @@ class Pago
     }
 
     /**
-     * Set pdf
-     *
      * @param string $pdf
-     *
      * @return Pago
      */
     public function setPdf($pdf)
@@ -254,8 +219,6 @@ class Pago
     }
 
     /**
-     * Get pdf
-     *
      * @return string
      */
     public function getPdf()
@@ -264,10 +227,7 @@ class Pago
     }
 
     /**
-     * Set factura
-     *
      * @param boolean $factura
-     *
      * @return Pago
      */
     public function setFactura($factura)
@@ -278,8 +238,6 @@ class Pago
     }
 
     /**
-     * Get factura
-     *
      * @return bool
      */
     public function getFactura()
@@ -288,10 +246,7 @@ class Pago
     }
 
     /**
-     * Set observaciones
-     *
      * @param string $observaciones
-     *
      * @return Pago
      */
     public function setObservaciones($observaciones)
@@ -302,8 +257,6 @@ class Pago
     }
 
     /**
-     * Get observaciones
-     *
      * @return string
      */
     public function getObservaciones()

@@ -3,6 +3,9 @@
 parameters:
     #parameter_name: value
 
+imports:
+    - { resource: './services/repositories.yml' }
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -45,8 +48,3 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@logger'
         public: true
-
-    AppBundle\Repository\CampoClinicoRepositoryInterface:
-        factory: ["@doctrine.orm.entity_manager", getRepository]
-        arguments:
-            - AppBundle\Repository\CampoClinicoRepository

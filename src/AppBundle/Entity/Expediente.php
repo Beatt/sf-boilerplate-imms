@@ -2,11 +2,10 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Expediente
- *
  * @ORM\Table(name="expediente")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ExpedienteRepository")
  */
@@ -15,45 +14,50 @@ class Expediente
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="descripcion", type="text", nullable=true)
+     * @ORM\Column(type="text", length=255, nullable=true)
      */
     private $descripcion;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="url_archivo", type="string", length=255)
+     * @ORM\Column(type="string", length=255)
      */
     private $urlArchivo;
 
     /**
+     * @var Solicitud
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud")
+     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
+     */
+    private $solicitud;
+
+    /**
      * @var int
-     *
      * @ORM\Column(name="solicitud_id", type="integer")
      */
     private $solicitudId;
 
     /**
-     * @var \DateTime
-     *
+     * @var DateTime
      * @ORM\Column(name="fecha", type="date")
      */
     private $fecha;
 
+    public function __construct()
+    {
+        $this->fecha = new DateTime();
+    }
 
     /**
-     * Get id
-     *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -61,10 +65,7 @@ class Expediente
     }
 
     /**
-     * Set descripcion
-     *
      * @param string $descripcion
-     *
      * @return Expediente
      */
     public function setDescripcion($descripcion)
@@ -75,8 +76,6 @@ class Expediente
     }
 
     /**
-     * Get descripcion
-     *
      * @return string
      */
     public function getDescripcion()
@@ -85,22 +84,24 @@ class Expediente
     }
 
     /**
-     * Set urlArchivo
-     *
+     * @param DateTime $fecha
+     */
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+    }
+
+    /**
      * @param string $urlArchivo
-     *
      * @return Expediente
      */
     public function setUrlArchivo($urlArchivo)
     {
         $this->urlArchivo = $urlArchivo;
-
         return $this;
     }
 
     /**
-     * Get urlArchivo
-     *
      * @return string
      */
     public function getUrlArchivo()
@@ -109,22 +110,16 @@ class Expediente
     }
 
     /**
-     * Set solicitudId
-     *
      * @param integer $solicitudId
-     *
      * @return Expediente
      */
     public function setSolicitudId($solicitudId)
     {
         $this->solicitudId = $solicitudId;
-
         return $this;
     }
 
     /**
-     * Get solicitudId
-     *
      * @return int
      */
     public function getSolicitudId()
@@ -133,27 +128,29 @@ class Expediente
     }
 
     /**
-     * Set fecha
-     *
-     * @param \DateTime $fecha
-     *
-     * @return Expediente
-     */
-    public function setFecha($fecha)
-    {
-        $this->fecha = $fecha;
-
-        return $this;
-    }
-
-    /**
-     * Get fecha
-     *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getFecha()
     {
         return $this->fecha;
     }
-}
 
+    /**
+     * @param Solicitud $solicitud
+     * @return Expediente
+     */
+    public function setSolicitud(Solicitud $solicitud = null)
+    {
+        $this->solicitud = $solicitud;
+
+        return $this;
+    }
+
+    /**
+     * @return Solicitud
+     */
+    public function getSolicitud()
+    {
+        return $this->solicitud;
+    }
+}
