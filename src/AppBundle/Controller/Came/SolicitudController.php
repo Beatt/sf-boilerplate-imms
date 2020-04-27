@@ -78,7 +78,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitud/{id}", methods={"GET"}, name="solicitud.edit")
+     * @Route("/solicitud/{id}/edit", methods={"GET"}, name="solicitud.edit")
      */
     public function editAction($id)
     {
