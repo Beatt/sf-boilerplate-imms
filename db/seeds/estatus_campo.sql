@@ -1,0 +1,10 @@
+INSERT INTO estatus_campo (estatus) VALUES ('solicitud_creada');
+INSERT INTO estatus_campo (estatus) VALUES ('solicitud_confirmada');
+INSERT INTO estatus_campo (estatus) VALUES ('solicitud_no_autorizada');
+INSERT INTO estatus_campo (estatus) VALUES ('en_validacion_de_montos');
+INSERT INTO estatus_campo (estatus) VALUES ('montos_validados');
+INSERT INTO estatus_campo (estatus) VALUES ('formatos_de_pago_generados');
+INSERT INTO estatus_campo (estatus) VALUES ('en_validacion_por_fofoe');
+INSERT INTO estatus_campo (estatus) VALUES ('pago_no_valido');
+INSERT INTO estatus_campo (estatus) VALUES ('pendiente_cfdi_fofoe');
+INSERT INTO estatus_campo (estatus) VALUES ('pago_validado');
