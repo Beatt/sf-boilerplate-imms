@@ -26,6 +26,7 @@
     {{ parent() }}
     <script>
         window.SOLICITUD = {{ solicitud | json_encode | raw }}
+        window.CONVENIOS = {{ convenios | json_encode | raw }}
     </script>
     <script src="{{ asset('build/came_solicitud_show.js') }}"></script>
 

@@ -81,6 +81,12 @@ class Convenio
     private $delegacion;
 
     /**
+     * @var CampoClinico
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="convenio")
+     */
+    private $camposClinicos;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -269,6 +275,11 @@ class Convenio
         }
 
         return 'red';
+    }
+
+    public function getCampoClinicos()
+    {
+        return $this->camposClinicos;
     }
 
     public function __toString()

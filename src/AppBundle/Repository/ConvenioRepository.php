@@ -21,4 +21,17 @@ class ConvenioRepository extends EntityRepository implements ConvenioRepositoryI
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $solicitud_id
+     */
+    public function getAllBySolicitud($solicitud_id){
+        return $this->createQueryBuilder('convenio')
+            ->join('convenio.camposClinicos', 'campo_clinico')
+            ->join('campo_clinico.solicitud', 'solicitud')
+            ->where('solicitud.id = :solicitud_id')
+            ->setParameter('solicitud_id', $solicitud_id)
+            ->getQuery()
+            ->getResult();
+    }
 }

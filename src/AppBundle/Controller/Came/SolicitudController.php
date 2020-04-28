@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Came;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\SolicitudType;
@@ -55,7 +56,7 @@ class SolicitudController extends DIEControllerController
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones,
                 'json',
-                ['attributes' => ['id', 'nombre']])
+                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax']])
         ]);
     }
 
@@ -95,7 +96,7 @@ class SolicitudController extends DIEControllerController
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones,
                 'json',
-                ['attributes' => ['id', 'nombre']]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax']]),
             'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
                 ['attributes' => ['id', 'campoClinicos' => [
                     'convenio' => [ 'cicloAcademico' => ['id', 'nombre'],
@@ -145,16 +146,30 @@ class SolicitudController extends DIEControllerController
                 'Not found for id ' . $id
             );
         }
+
+        $convenios = $this->getDoctrine()
+            ->getRepository(Convenio::class)
+            ->getAllBySolicitud($solicitud->getId());
+
         return $this->render('came/solicitud/show.html.twig', [
             'solicitud' => $this->get('serializer')->normalize(
-                $solicitud,
-                'json',
-                [
-                    'attributes' => [
-                        'id'
-                    ]
-                ]
-            )
+                $solicitud, 'json', ['attributes' => [
+                        'id',
+                        'campoClinicos' => [
+                            'convenio' => [ 'cicloAcademico' => ['id', 'nombre'],
+                                'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',],
+                                'gradoAcademico'=> ['id', 'nombre']],
+                            'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
+                            'fechaInicial', 'fechaFinal'],
+                        'expediente' => ['id', 'descripcion', 'urlArchivo', 'nombreArchivo', 'fecha'],
+                        'pago' => ['id', 'comprobantePago', 'fecha', 'factura' => ['fechaFacturacion', 'id', 'zip']]]
+            ]),
+            'convenios' =>  $this->get('serializer')->normalize($convenios, 'json', [ 'attributes' => [
+                'cicloAcademico' => ['id', 'nombre'],
+                'id', 'vigencia', 'label',
+                'carrera' => ['id', 'nombre'],
+                'gradoAcademico'=> ['id', 'nombre']]
+            ])
         ]);
     }
 

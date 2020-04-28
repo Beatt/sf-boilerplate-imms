@@ -59,6 +59,11 @@ class Solicitud
      */
     private $camposClinicos;
 
+    /**
+     * @var Expediente
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Expediente", mappedBy="solicitud")
+     */
+    private $expediente;
 
     /**
      * Get id
@@ -225,5 +230,22 @@ class Solicitud
             }
         }
         return $result;
+    }
+
+    /**
+     * @return Expediente
+     */
+    public function getExpediente()
+    {
+        return $this->expediente;
+    }
+
+    /**
+     * @param Expediente $expediente
+     */
+    public function setExpediente(Expediente $expediente)
+    {
+        $this->expediente = $expediente;
+        return $this;
     }
 }
