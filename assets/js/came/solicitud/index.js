@@ -35,7 +35,7 @@ class ExampleForm extends React.Component{
     handleSubmit(event) {
         event.preventDefault();
         let data = new FormData();
-        data.append('solicitud[_token]', this.props.token);
+        data.append('token', this.props.token);
         fetch(this.props.action, {
             method: this.props.method,
             body: data,

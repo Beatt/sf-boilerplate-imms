@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -94,6 +96,17 @@ class Institucion
      * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $representante;
+
+    /**
+     * @var Convenio
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Convenio", mappedBy="institucion")
+     */
+    private $convenios;
+
+    public function __construct()
+    {
+        $this->convenios = new ArrayCollection();
+    }
 
     /**
      * @return integer
@@ -288,5 +301,32 @@ class Institucion
     public function setCedulaFile($cedulaFile)
     {
         $this->cedulaFile = $cedulaFile;
+    }
+
+    /**
+     * @param Convenio $convenio
+     * @return Institucion
+     */
+    public function addConvenio(Convenio $convenio)
+    {
+        $this->convenios[] = $convenio;
+
+        return $this;
+    }
+
+    /**
+     * @param Convenio $convenio
+     */
+    public function removeConvenio(Convenio $convenio)
+    {
+        $this->convenios->removeElement($convenio);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getConvenios()
+    {
+        return $this->convenios;
     }
 }

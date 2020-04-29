@@ -36,14 +36,13 @@ abstract class DIEControllerController extends Controller
     protected function jsonResponse($data)
     {
         $result = $data;
-        $json = [
-            'message' => $result['status'] ?
-                "¡La información se actualizado correctamente!" :
-                '¡Ha ocurrido un problema, intenta más tarde!',
-            'status' => $result['status'] ?
-                Response::HTTP_OK :
-                Response::HTTP_UNPROCESSABLE_ENTITY
-        ];
+        $json = [];
+        if(isset($data['status'])){
+            $result['status'] = $data['status'];
+        }
+        if(isset($data['message'])){
+            $result['message'] = $data['message'];
+        }
         if (isset($result['error'])) {
             $json['error'] = $result['error'];
         }

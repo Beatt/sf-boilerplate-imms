@@ -67,6 +67,12 @@ class Solicitud
     }
 
     /**
+     * @var Expediente
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Expediente", mappedBy="solicitud")
+     */
+    private $expediente;
+
+    /**
      * @return int
      */
     public function getId()
@@ -308,5 +314,39 @@ class Solicitud
     public function getCamposClinicos()
     {
         return $this->camposClinicos;
+    }
+
+    public function __toString()
+    {
+        return ''.$this->getId();
+    }
+
+    public function getPagosIndividuales()
+    {
+        $result = false;
+        foreach ($this->getCampoClinicos() as $cc){
+            if($cc->getReferenciaBancaria()){
+                $result = true;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return Expediente
+     */
+    public function getExpediente()
+    {
+        return $this->expediente;
+    }
+
+    /**
+     * @param Expediente $expediente
+     * @return Solicitud
+     */
+    public function setExpediente(Expediente $expediente)
+    {
+        $this->expediente = $expediente;
+        return $this;
     }
 }

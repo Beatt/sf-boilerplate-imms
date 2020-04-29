@@ -31,7 +31,7 @@ class SolicitudManager implements SolicitudManagerInterface
         $this->entityManager->persist($solicitud);
         try {
             $this->entityManager->flush();
-        } catch(OptimisticLockException $exception) {
+        } catch (OptimisticLockException $exception) {
             $this->logger->critical($exception->getMessage());
             return [
                 'status' => false,
@@ -47,23 +47,22 @@ class SolicitudManager implements SolicitudManagerInterface
     {
         $solicitud->setEstatus(1);
         $solicitud->setFecha(Carbon::now());
-        $this->entityManager->persist($solicitud);
-        $solicitud->setNoSolicitud("NS_".str_pad($solicitud->getId(), 6, '0', STR_PAD_LEFT));
         try {
+            $this->entityManager->persist($solicitud);
             $this->entityManager->flush();
-        } catch(OptimisticLockException $exception) {
+            $solicitud->setNoSolicitud("NS_" . str_pad($solicitud->getId(), 6, '0', STR_PAD_LEFT));
+            $this->entityManager->persist($solicitud);
+            $this->entityManager->flush();
+        } catch (OptimisticLockException $exception) {
             $this->logger->critical($exception->getMessage());
             return [
                 'status' => false,
                 'error' => $exception->getMessage()
             ];
         }
-        $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
         return [
             'status' => true,
-            'object' => ['id' => $solicitud->getId(), 'no_solicitud' => $solicitud->getNoSolicitud()]
+            'object' => ['id' => $solicitud->getId(), 'fecha' => $solicitud->getFecha(), 'no_solicitud' => $solicitud->getNoSolicitud()]
         ];
     }
 }

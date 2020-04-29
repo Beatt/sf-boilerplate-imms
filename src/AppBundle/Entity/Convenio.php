@@ -117,6 +117,12 @@ class Convenio implements GroupSequenceProviderInterface
     }
 
     /**
+     * @var CampoClinico
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="convenio")
+     */
+    private $camposClinicos;
+
+    /**
      * @return integer
      */
     public function getId()
@@ -313,5 +319,15 @@ class Convenio implements GroupSequenceProviderInterface
             'Convenio',
             $this->tipo,
         ];
+    }
+
+    public function getCampoClinicos()
+    {
+        return $this->camposClinicos;
+    }
+
+    public function __toString()
+    {
+        return $this->getNombre();
     }
 }

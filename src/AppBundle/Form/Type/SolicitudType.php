@@ -19,9 +19,7 @@ class SolicitudType extends AbstractType
     {
         return $resolver->setDefaults([
             'data_class' => Solicitud::class,
-            'csrf_protection' => true,
-            'csrf_field_name' => '_token',
-            'csrf_token_id'   => 'solicitud_item',
+            'csrf_protection' => false,
         ]);
     }
 }

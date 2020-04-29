@@ -26,7 +26,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        window.CSRF_TOKEN = "{{ token}}"
+        window.INSTITUCIONES = {{ instituciones | json_encode | raw  }};
     </script>
     <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 {% endblock %}

@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="unidad")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UnidadRepository")
  */
 class Unidad
 {
@@ -121,6 +121,13 @@ class Unidad
      * @ORM\Column(type="boolean")
      */
     private $activo;
+
+    /**
+     * @var CampoClinico
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="unidad")
+     */
+    private $camposClinicos;
+
 
     public function __construct()
     {
@@ -380,5 +387,10 @@ class Unidad
     public function getTipoUnidad()
     {
         return $this->tipoUnidad;
+    }
+
+    public function __toString()
+    {
+        return $this->getNombre();
     }
 }

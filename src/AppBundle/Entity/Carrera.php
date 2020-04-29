@@ -102,4 +102,9 @@ class Carrera
     {
         return $this->nivelAcademico;
     }
+
+    public function __toString()
+    {
+        return $this->getNombre();
+    }
 }

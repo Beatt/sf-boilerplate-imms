@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,11 +53,13 @@ class CampoClinico
     private $promocion;
 
     /**
+     * @var integer
      * @ORM\Column(type="integer")
      */
     private $lugaresSolicitados;
 
     /**
+     * @var integer
      * @ORM\Column(type="integer")
      */
     private $lugaresAutorizados;
@@ -78,6 +81,8 @@ class CampoClinico
     private $monto;
 
     /**
+     * @var Solicitud
+     *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="camposClinicos")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
@@ -90,7 +95,9 @@ class CampoClinico
     private $estatus;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Unidad")
+     * @var Unidad
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Unidad", inversedBy="camposClinicos")
      * @ORM\JoinColumn(name="unidad_id", referencedColumnName="id")
      */
     private $unidad;
@@ -104,7 +111,7 @@ class CampoClinico
     }
 
     /**
-     * @param \DateTime $fechaInicial
+     * @param DateTime $fechaInicial
      * @return CampoClinico
      */
     public function setFechaInicial($fechaInicial)
@@ -115,7 +122,7 @@ class CampoClinico
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getFechaInicial()
     {
@@ -123,7 +130,7 @@ class CampoClinico
     }
 
     /**
-     * @param \DateTime $fechaFinal
+     * @param DateTime $fechaFinal
      * @return CampoClinico
      */
     public function setFechaFinal($fechaFinal)
@@ -134,7 +141,7 @@ class CampoClinico
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getFechaFinal()
     {
@@ -333,7 +340,7 @@ class CampoClinico
 
     /**
      * @param EstatusCampo $estatus
-     * @return CampoClinico
+     * @return void
      */
     public function setEstatus(EstatusCampo $estatus = null)
     {

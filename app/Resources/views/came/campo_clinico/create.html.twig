@@ -15,8 +15,8 @@
     <div class='container-fluid'>
         <div class='row'>
             <div class='col-md-12'>
-                <h3>Editar solicitud</h3>
-                <div id="solicitud-wrapper"></div>
+                <h3>Solo para demo</h3>
+                {{ form_widget(form) }}
             </div>
         </div>
     </div>
@@ -24,10 +24,4 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        window.SOLICITUD = {{ solicitud | json_encode | raw }}
-        window.INSTITUCIONES = {{ instituciones | json_encode | raw  }};
-    </script>
-    <script src="{{ asset('build/came_solicitud_edit.js') }}"></script>
-
 {% endblock %}
