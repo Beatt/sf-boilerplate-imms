@@ -9,43 +9,11 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class SolicitudFixture extends Fixture
 {
-    const NUEVA = 'nueva';
-    const EN_ESPERA_DE_VALIDACION_DE_MONTOS = 'en_espera_de_validacion_de_montos';
-    const MONTOS_VALIDADOS = 'montos_validados';
-    const PAGO_EN_PROCESO = 'pago_en_proceso';
-    const PAGADO = 'pagado';
-    const EN_VALIDACION_POR_FOFOE = 'en_validacion_por_fofoe';
-
     public function load(ObjectManager $manager)
     {
         $this->Create(
-            self::NUEVA,
+            Solicitud::CREADA,
             Carbon::now(),
-            $manager
-        );
-        $this->Create(
-            self::EN_ESPERA_DE_VALIDACION_DE_MONTOS,
-            Carbon::now()->addMonths(4),
-            $manager
-        );
-        $this->Create(
-            self::MONTOS_VALIDADOS,
-            Carbon::now()->addMonths(6),
-            $manager
-        );
-        $this->Create(
-            self::PAGO_EN_PROCESO,
-            Carbon::now()->addMonths(8),
-            $manager
-        );
-        $this->Create(
-            self::PAGADO,
-            Carbon::now()->addMonths(12),
-            $manager
-        );
-        $this->Create(
-            self::EN_VALIDACION_POR_FOFOE,
-            Carbon::now()->addMonths(15),
             $manager
         );
     }
@@ -60,6 +28,7 @@ class SolicitudFixture extends Fixture
         $solicitud->setNoSolicitud(sprintf('NS_00%s', rand(0, 10000)));
         $solicitud->setFecha($fecha);
         $solicitud->setReferenciaBancaria('10202010220');
+        $solicitud->setTipoPago(Solicitud::TIPO_PAGO_UNICO);
 
         $manager->persist($solicitud);
         $manager->flush();

@@ -4,6 +4,7 @@ namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampo;
+use AppBundle\Entity\Solicitud;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -16,14 +17,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             CicloAcademicoFixture::CICLO_A,
-            EstatusCampo::SOLICITUD_CONFIRMADA,
-            $manager
-        );
-
-        $this->create(
-            ConvenioFixture::AGREEMENT_LESS_THAN_ONE_YEAR_AND_GREATER_THAN_SIX_MONTHS,
-            CicloAcademicoFixture::CICLO_B,
-            EstatusCampo::SOLICITUD_NO_AUTORIZADA,
+            EstatusCampo::MONTOS_VALIDADOS,
             $manager
         );
     }
@@ -55,7 +49,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setMonto('100000');
         $campoClinico->setEstatus($this->getReference($estatusCampoReference));
 
-        $campoClinico->setSolicitud($this->getReference(SolicitudFixture::NUEVA));
+        $campoClinico->setSolicitud($this->getReference(Solicitud::CREADA));
 
         $manager->persist($campoClinico);
         $manager->flush();

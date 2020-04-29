@@ -5,41 +5,58 @@ import { solicitudesGet } from "../../api/solicitud";
 
 const Index = (
   {
-    camposClinicosInit,
     totalInit,
     institucionId,
   }) => {
 
   const { useState, useEffect } = React
-  const [ camposClinicos, setCamposClinicos ] = useState(camposClinicosInit)
+  const [ camposClinicos, setCamposClinicos ] = useState([])
   const [ search, setSearch ] = useState('')
+  const [ tipoPago, setTipoPago ] = useState('unico')
   const [ total, setTotal ] = useState(totalInit)
-  const [ currentPage, setCurrentPage ] = useState('')
+  const [ currentPage, setCurrentPage ] = useState(1)
   const [ isLoading, toggleLoading ] = useState(false)
 
   useEffect(() => {
-    if(currentPage) getCamposClinicos()
-  }, [currentPage])
+    if(currentPage !== null || tipoPago !== '') {
+      getCamposClinicos()
+    }
+  }, [currentPage, tipoPago])
 
-  const ESTATUS_BUTTON = {
+  const ESTATUS_TEXTS = {
     solicitud_creada: {
-      button: ''
+      title: 'Nueva',
+      button: 'Registrar montos'
     },
     en_espera_de_validacion_de_montos: {
+      title: '',
       button: 'Corrija montos'
     },
     montos_validados: {
+      title: 'Montos validados',
       button: 'Consulte formatos de pago'
     },
     pago_en_proceso: {
+      title: '',
       button: 'Cargue comprobante de pago'
     },
     pagado: {
+      title: '',
       button: 'Dercargue factura'
     },
     en_validacion_por_fofoe: {
+      title: '',
       button: 'Corrija montos'
     },
+    solicitud_no_autorizada: {
+      title: 'ese',
+      button: 'ese'
+    }
+  }
+
+  const TIPO_PAGO = {
+    UNICO: 'unico',
+    INDIVIDUAL: 'individual'
   }
 
   function handleSearch() {
@@ -50,7 +67,12 @@ const Index = (
   function getCamposClinicos() {
     toggleLoading(true)
 
-    solicitudesGet(institucionId, currentPage, search)
+    solicitudesGet(
+      institucionId,
+      tipoPago,
+      currentPage,
+      search
+    )
       .then((res) => {
         setCamposClinicos(res.camposClinicos)
         setTotal(res.total)
@@ -62,7 +84,49 @@ const Index = (
 
   return(
     <div className='row'>
-      <div className="col-md-7"/>
+      <div className="col-md-3">
+        <div className="form-group">
+          <label htmlFor="">Tipo de pago</label>
+          <div className="row">
+            <div className='col-md-4'>
+              <label htmlFor="tipo_de_pago_unico">Único&nbsp;</label>
+              <input
+                type="radio"
+                id='tipo_de_pago_unico'
+                name='tipoDePago'
+                value={TIPO_PAGO.UNICO}
+                defaultChecked={true}
+                onChange={({ target }) => setTipoPago(target.value)}
+              />
+            </div>
+            <div className='col-md-6'>
+              <label htmlFor="tipo_de_pago_individual">Individual&nbsp;</label>
+              <input
+                type="radio"
+                id='tipo_de_pago_individual'
+                name='tipoDePago'
+                value={TIPO_PAGO.INDIVIDUAL}
+                onChange={({ target }) => setTipoPago(target.value)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-3">
+        <div className="form-group">
+          <label htmlFor="status">Estado</label>
+          <select
+            name=""
+            id="status"
+            className='form-control'
+          >
+            <option value="">Elige una opción</option>
+            <option value="Nueva">Nueva</option>
+            <option value="Some">Some</option>
+          </select>
+        </div>
+      </div>
+      <div className="col-md-1"/>
       <div className='col-md-5 mb-10'>
         <div className='navbar-form navbar-right'>
           <div className="form-group">
@@ -82,58 +146,63 @@ const Index = (
           </button>
         </div>
       </div>
-      <div className='col-md-12'>
-        <table className='table table-bordered'>
-          <thead className='headers'>
-          <tr>
-            <th>No. de solicitud</th>
-            <th>No. de campos clínicos <br/>solicitados</th>
-            <th>No. de campos clínicos <br/>autorizados</th>
-            <th>Fecha de solicitud</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-          </thead>
-          <tbody>
-          {
-            isLoading ?
+
+      <div className="col-md-12">
+        <div className="panel panel-default">
+          <div className="panel-body">
+            <table className='table'>
+              <thead className='headers'>
               <tr>
-                <th className='text-center' colSpan={6}>Cargando información...</th>
-              </tr> :
-              camposClinicos.map((campoClinico, index) => (
-                <tr key={index}>
-                  <th>{campoClinico.noSolicitud}</th>
-                  <th>{campoClinico.noCamposSolicitados}</th>
-                  <th>{campoClinico.noCamposAutorizados}</th>
-                  <th>{campoClinico.fecha}</th>
-                  <th>{campoClinico.estatus.nombre}</th>
-                  <th>
-                    <button className='btn btn-default'>
-                      {ESTATUS_BUTTON[campoClinico.estatus.estatus].button}
-                    </button>
-                  </th>
-                </tr>
-              ))
-          }
-          </tbody>
-        </table>
-      </div>
-      <div className="col-md-12 text-center">
-        <ReactPaginate
-          previousLabel={'Anterior'}
-          nextLabel={'Siguiente'}
-          breakLabel={'...'}
-          breakClassName={'break-me'}
-          pageCount={total}
-          marginPagesDisplayed={5}
-          pageRangeDisplayed={2}
-          onPageChange={(currentPage) => {
-            setCurrentPage(currentPage.selected + 1)
-          }}
-          containerClassName={'pagination'}
-          subContainerClassName={'pages pagination'}
-          activeClassName={'active'}
-        />
+                <th>No. de solicitud</th>
+                <th>No. de campos clínicos <br/>solicitados</th>
+                <th>No. de campos clínicos <br/>autorizados</th>
+                <th>Fecha de solicitud</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              {
+                isLoading ?
+                  <tr>
+                    <th className='text-center' colSpan={6}>Cargando información...</th>
+                  </tr> :
+                  camposClinicos.map((campoClinico, index) => (
+                    <tr key={index}>
+                      <th>{campoClinico.noSolicitud}</th>
+                      <th>{campoClinico.noCamposSolicitados}</th>
+                      <th>{campoClinico.noCamposAutorizados}</th>
+                      <th>{campoClinico.fecha}</th>
+                      <th>{ESTATUS_TEXTS[campoClinico.estatusActual].title}</th>
+                      <th>
+                        <button className='btn btn-default'>
+                          {ESTATUS_TEXTS[campoClinico.estatusActual].button}
+                        </button>
+                      </th>
+                    </tr>
+                  ))
+              }
+              </tbody>
+            </table>
+            <div className="text-center">
+              <ReactPaginate
+                previousLabel={'Anterior'}
+                nextLabel={'Siguiente'}
+                breakLabel={'...'}
+                breakClassName={'break-me'}
+                pageCount={total}
+                marginPagesDisplayed={5}
+                pageRangeDisplayed={2}
+                onPageChange={(currentPage) => {
+                  setCurrentPage(currentPage.selected + 1)
+                }}
+                containerClassName={'pagination'}
+                subContainerClassName={'pages pagination'}
+                activeClassName={'active'}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -142,7 +211,6 @@ const Index = (
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <Index
-      camposClinicosInit={window.CAMPOS_CLINICOS_PROPS}
       totalInit={window.CAMPOS_CLINICOS_TOTAL_PROPS}
       institucionId={window.INSTITUCION_ID_PROPS}
     />,

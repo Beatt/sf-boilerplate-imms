@@ -14,6 +14,14 @@ use Exception;
  */
 class Solicitud
 {
+    const CREADA = 'solicitud_creada';
+    const CONFIRMADA = 'solicitud_confirmada';
+    const EN_VALIDACION_DE_MONTOS = 'en_validacion_de_montos';
+    const MONTOS_INCORRECTOS = 'montos_incorrectos';
+
+    const TIPO_PAGO_INDIVIDUAL = 'individual';
+    const TIPO_PAGO_UNICO = 'unico';
+
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
@@ -45,6 +53,11 @@ class Solicitud
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
      */
     private $camposClinicos;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $tipoPago;
 
     public function __construct()
     {
@@ -104,6 +117,25 @@ class Solicitud
      */
     public function setEstatus($estatus)
     {
+        $estatusCollection = [
+            self::CREADA,
+            self::CONFIRMADA,
+            self::EN_VALIDACION_DE_MONTOS,
+            self::MONTOS_INCORRECTOS
+        ];
+
+        $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
+           return $item === $estatus;
+        });
+
+        if(count($estatusExist) === 0) {
+            throw new \InvalidArgumentException(sprintf(
+                'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
+                $estatus,
+                implode(', ', $estatusCollection)
+            ));
+        }
+
         $this->estatus = $estatus;
 
         return $this;
@@ -216,9 +248,37 @@ class Solicitud
     {
         /** @var CampoClinico $campoClinico */
         $noCamposSolicitados = array_filter($this->getCampoClinicos()->toArray(), function (CampoClinico $campoClinico) {
-            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_CONFIRMADA;
+            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_NO_AUTORIZADA;
         });
 
         return count($noCamposSolicitados);
+    }
+
+    /** @return string */
+    public function getEstatusActual()
+    {
+        if($this->estatus === Solicitud::CREADA) return $this->estatus;
+
+        if($this->tipoPago === self::TIPO_PAGO_UNICO) {
+            /** @var CampoClinico $campoClinico */
+            $campoClinico = $this->getCampoClinicos()->first();
+            return $campoClinico->getEstatus()->getEstatus();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTipoPago()
+    {
+        return $this->tipoPago;
+    }
+
+    /**
+     * @param string $tipoPago
+     */
+    public function setTipoPago($tipoPago)
+    {
+        $this->tipoPago = $tipoPago;
     }
 }

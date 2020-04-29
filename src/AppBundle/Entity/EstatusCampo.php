@@ -10,10 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class EstatusCampo
 {
-    const SOLICITUD_CREADA = 'solicitud_creada';
-    const SOLICITUD_CONFIRMADA = 'solicitud_confirmada';
     const SOLICITUD_NO_AUTORIZADA = 'solicitud_no_autorizada';
-    const EN_VALIDACION_DE_MONTOS = 'en_validacion_de_montos';
     const MONTOS_VALIDADOS = 'montos_validados';
     const FORMATOS_DE_PAGO_GENERADOS = 'formatos_de_pago_generados';
     const EN_VALIDACION_POR_FOFOE = 'en_validacion_por_fofoe';

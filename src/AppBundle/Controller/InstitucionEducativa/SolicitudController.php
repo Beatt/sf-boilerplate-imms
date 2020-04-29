@@ -35,17 +35,24 @@ class SolicitudController extends Controller
 
         $isOffsetSet = $request->query->get('offset');
         $isSearchSet = $request->query->get('search');
+        $isTipoPagoSet = $request->query->get('search');
 
         $offset = $request->query->getInt('offset', 1);
         $search = $request->query->get('search', null);
+        $tipoPago = $request->query->get('tipoPago', 'unico');
 
         $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
             $id,
+            $tipoPago,
             $offset,
             $search
         );
 
-        if(isset($isOffsetSet) || isset($isSearchSet)) {
+        if(
+            isset($isOffsetSet) ||
+            isset($isSearchSet) ||
+            isset($isTipoPagoSet)
+        ) {
             return new JsonResponse([
                 'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
                 'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
@@ -55,7 +62,6 @@ class SolicitudController extends Controller
 
         return $this->render('institucion_educativa/solicitud/index.html.twig', [
             'institucion' => $institucion,
-            'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
             'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
         ]);
     }
@@ -141,10 +147,7 @@ class SolicitudController extends Controller
                     'id',
                     'noSolicitud',
                     'fecha',
-                    'estatus' => [
-                        'nombre',
-                        'estatus'
-                    ],
+                    'estatusActual',
                     'noCamposSolicitados',
                     'noCamposAutorizados'
                 ]

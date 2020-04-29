@@ -1,10 +1,8 @@
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Solicitud creada', 'solicitud_creada');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Solicitud confirmada', 'solicitud_confirmada');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Solicitud no autorizada', 'solicitud_no_autorizada');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('En validación de montos', 'en_validacion_de_montos');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Montos validados', 'montos_validados');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Formatos de pago generados', 'formatos_de_pago_generados');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('En validación por FOFOE', 'en_validacion_por_fofoe');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Pago no valido', 'pago_no_valido');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Pendiente CFDI por FOFOE', 'pendiente_cfdi_por_fofoe');
-INSERT INTO estatus_campo (nombre, estatus) VALUES ('Pago validado', 'pago_validado');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('solicitud_no_autorizada', 'Solicitud no autorizada');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('montos_validados', 'Montos validados');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('formatos_de_pago_generados', 'Formatos de pago generados');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('en_validacion_por_fofoe', 'En validación por FOFOE');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('pago_no_valido', 'Pago no valido');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('pendiente_cfdi_por_fofoe', 'Pendiente CFDI por FOFOE');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('pago_validado', 'Pago validado');
+INSERT INTO estatus_campo (estatus, nombre) VALUES('credenciales_generadas', 'Credenciales generadas');

@@ -12,8 +12,7 @@ class EstatusCampoFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $this->create($manager, EstatusCampo::SOLICITUD_CONFIRMADA, 1);
-        $this->create($manager, EstatusCampo::SOLICITUD_NO_AUTORIZADA, 2);
+        $this->create($manager, EstatusCampo::MONTOS_VALIDADOS, 11);
     }
 
     /**
