@@ -28,7 +28,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
 
         if($search !== null && $search !== '') {
             $queryBuilder = $queryBuilder
-                ->orWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
+                ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
                 ->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
                 ->setParameter('search', '%' . $search . '%')
             ;
