@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
@@ -257,11 +258,11 @@ class Solicitud
     /** @return string */
     public function getEstatusActual()
     {
-        if($this->estatus === Solicitud::CREADA) return $this->estatus;
+        if($this->estatus === Solicitud::CONFIRMADA) return $this->estatus;
 
         if($this->tipoPago === self::TIPO_PAGO_UNICO) {
             /** @var CampoClinico $campoClinico */
-            $campoClinico = $this->getCampoClinicos()->first();
+            $campoClinico = $this->getCamposClinicos()->first();
             return $campoClinico->getEstatus()->getEstatus();
         }
     }
@@ -280,5 +281,32 @@ class Solicitud
     public function setTipoPago($tipoPago)
     {
         $this->tipoPago = $tipoPago;
+    }
+
+    /**
+     * @param CampoClinico $camposClinico
+     * @return Solicitud
+     */
+    public function addCamposClinico(CampoClinico $camposClinico)
+    {
+        $this->camposClinicos[] = $camposClinico;
+
+        return $this;
+    }
+
+    /**
+     * @param CampoClinico $camposClinico
+     */
+    public function removeCamposClinico(CampoClinico $camposClinico)
+    {
+        $this->camposClinicos->removeElement($camposClinico);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getCamposClinicos()
+    {
+        return $this->camposClinicos;
     }
 }

@@ -28,7 +28,7 @@ doctrine:
                 path:     %kernel.cache_dir%/test.db
 
 doctrine_migrations:
-    dir_name: "%kernel.root_dir%/../src/AppBundle/Migrations/Test"
+    dir_name: "%kernel.root_dir%/../tests/AppBundle/Migrations"
     namespace: AppBundle\Migrations\Test
     table_name: migration_versions
     name: Application Migrations
