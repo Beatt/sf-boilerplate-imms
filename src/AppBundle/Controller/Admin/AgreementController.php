@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\File;
 class AgreementController extends BaseAdminController
 {
 
-  const HEADERS = ['nombre', 'sector', 'tipo', 'grado', 'ciclo',
+  const HEADERS = ['consecutivo', 'nombre', 'sector', 'tipo', 'grado', 'ciclo',
           'carrera', 'institucion', 'vigencia', 'delegacion'];
 
     public function cargaAction()
@@ -60,12 +60,13 @@ class AgreementController extends BaseAdminController
 
                 // csv file 
                 $dataFile = file_get_contents($file->getData());
-                $dataFile = preg_replace('/[\x80-\xFF]/', '', $dataFile);
+                //$dataFile = preg_replace('/[\x80-\xFF]/', '', $dataFile);
 
                 $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
 
                 // encoding contents in CSV format
-                $dataCSV = $serializer->decode($dataFile, 'csv', array('OUTPUT_UTF8_BOM_KEY'=> true));
+                $dataCSV = $serializer->decode($dataFile, 'csv');
+                  //, array('OUTPUT_UTF8_BOM_KEY'=> true));
 
                 $data = [];
                 $i=0;
@@ -76,20 +77,21 @@ class AgreementController extends BaseAdminController
                     if (count($errsConv) >0) {
                         foreach ($errsConv as $violation) {
                              $messages .= 
+                             $violation->getPropertyPath().":".
                               $violation->getMessage().";";
                         }
 
                     $this->addFlash(
                         'notice',
-                        'El renglon '.($i+1).' no fue agregado. '.$messages.
-                        ' '.json_encode($row)
+                        'Renglon '.($i+1).' NO agregado. '.$messages.
+                        ' '.implode(",",$row)
                     );
                    } else {
                     $em->persist($conv);
 
                     $this->addFlash(
                         'notice',
-                        'Convenio agreado con id: '.$con->getId()
+                        'Renglon '.($i+1).', convenio agregado con id: '.$con->getId()
                     );
                    }
                    $data[] = array(
@@ -107,11 +109,10 @@ class AgreementController extends BaseAdminController
             'form' => $form->createView(),
             'entity_fields' => $fields,
             'entity' => $entity,
-            'data' => @$data , // $em->getRepository(Convenio::class)->findAll(),
+            'data' => @$data , 
             'headers' => self::HEADERS,
-            'dataFile' => $dataFile
+            'dataFile' => @$dataFile
         );
-
 
         return $this->render('easy_admin/agreement/carga.html.twig', 
             $parameters

@@ -69,7 +69,7 @@ class Convenio implements GroupSequenceProviderInterface
     /**
      * @var \DateTime
      * @ORM\Column(type="date")
-     * @Assert\NotBlank
+     * @Assert\NotBlank(message="Vigencia no debe estar vacìo o debe ser una fecha válida con formato: AAAA-MM-DD")
      */
     private $vigencia;
 

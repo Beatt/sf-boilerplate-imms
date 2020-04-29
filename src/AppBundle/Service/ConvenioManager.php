@@ -28,7 +28,9 @@ class ConvenioManager implements ConvenioManagerInterface
       $conv->setSector(@$data['sector'] );
       $conv->setTipo( @$data['tipo'] );
       if (@$data['vigencia']) {
-        $conv->setVigencia(new DateTime($data['vigencia']));
+        try{
+          $conv->setVigencia(new DateTime($data['vigencia']));
+        } catch(\Exception $e) { }
       }
       $conv->setInstitucion(
         $this->entityManager->getRepository(Institucion::class)
