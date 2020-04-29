@@ -33,6 +33,9 @@ class Convenio implements GroupSequenceProviderInterface
     const TIPO_GENERAL = "General";
     const TIPO_ESPECIFICO = "Específico";
 
+    const SECTORES = [self::SECTOR_PUBLICO, self::SECTOR_PRIVADO];
+    const TIPOS = [self::TIPO_GENERAL, self::TIPO_ESPECIFICO];
+
     /**
      * @var int
      *
