@@ -44,7 +44,7 @@ class ConvenioManager implements ConvenioManagerInterface
         $this->entityManager->getRepository(CicloAcademico::class)
           ->findOneByNombre(@$data['ciclo'] )
       );
-      if (@$data['grado']) {
+/*      if (@$data['grado']) {
         $grado = $this->entityManager->getRepository(NivelAcademico::class)
           ->findOneByNombre($data['grado']);
         $conv->setGradoAcademico($grado);
@@ -55,8 +55,7 @@ class ConvenioManager implements ConvenioManagerInterface
               "nivelAcademico" => $grado )
             )
         );
-
-      }
+      }*/
 
       return $conv;
     }

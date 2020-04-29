@@ -76,9 +76,6 @@ class Convenio implements GroupSequenceProviderInterface
 
     /**
      * @var NivelAcademico
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
-     * @ORM\JoinColumn(name="nivel_id", referencedColumnName="id", nullable=true)
-     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO})
      */
     private $gradoAcademico;
 
@@ -212,8 +209,6 @@ class Convenio implements GroupSequenceProviderInterface
      */
     public function setGradoAcademico(NivelAcademico $gradoAcademico = null)
     {
-        $this->gradoAcademico = $gradoAcademico;
-
         return $this;
     }
 
@@ -222,7 +217,7 @@ class Convenio implements GroupSequenceProviderInterface
      */
     public function getGradoAcademico()
     {
-        return $this->gradoAcademico;
+        return $this->carrera ? $this->carrera->getNivelAcademico() : null;
     }
 
     /**
@@ -251,7 +246,6 @@ class Convenio implements GroupSequenceProviderInterface
     public function setCarrera(Carrera $carrera = null)
     {
         $this->carrera = $carrera;
-
         return $this;
     }
 

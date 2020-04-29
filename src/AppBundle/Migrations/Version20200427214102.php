@@ -15,8 +15,6 @@ class Version20200427214102 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
-        $this->addSql('alter table campo_clinico add column unidad_id integer');
-        $this->addSql('alter table campo_clinico ADD FOREIGN KEY (unidad_id) REFERENCES unidad(id)');
         $this->addSql('alter table campo_clinico add column id_estatus integer');
         $this->addSql('alter table campo_clinico ADD FOREIGN KEY (id_estatus) REFERENCES estatus_campo(id)');
         $this->addSql('alter table campo_clinico alter column promocion drop not null');
