@@ -35,6 +35,7 @@ class NivelAcademicoFixture extends Fixture
         $nivelAcademico = new NivelAcademico();
         $nivelAcademico->setNombre('Nivel academico a');
         $manager->persist($nivelAcademico);
+        $manager->flush();
 
         $this->addReference($typeReference, $nivelAcademico);
     }

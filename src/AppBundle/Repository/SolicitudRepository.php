@@ -42,5 +42,4 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
 
         return new Paginator($query);
     }
-
 }

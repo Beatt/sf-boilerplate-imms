@@ -13,7 +13,7 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud
+class Solicitud implements SolicitudesCampoClinicoInterface
 {
     const CREADA = 'solicitud_creada';
     const CONFIRMADA = 'solicitud_confirmada';
@@ -60,17 +60,17 @@ class Solicitud
      */
     private $tipoPago;
 
-    public function __construct()
-    {
-        $this->fecha = new \DateTime();
-        $this->camposClinicos = new ArrayCollection();
-    }
-
     /**
      * @var Expediente
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Expediente", mappedBy="solicitud")
      */
     private $expediente;
+
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+        $this->camposClinicos = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -253,6 +253,8 @@ class Solicitud
      */
     public function getNoCamposAutorizados()
     {
+        if($this->esSolicitudConfirmada()) return $this->estatus;
+
         /** @var CampoClinico $campoClinico */
         $noCamposSolicitados = array_filter($this->getCampoClinicos()->toArray(), function (CampoClinico $campoClinico) {
             return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_NO_AUTORIZADA;
@@ -264,7 +266,7 @@ class Solicitud
     /** @return string */
     public function getEstatusActual()
     {
-        if($this->estatus === Solicitud::CONFIRMADA) return $this->estatus;
+        if($this->esSolicitudConfirmada()) return $this->estatus;
 
         if($this->tipoPago === self::TIPO_PAGO_UNICO) {
             /** @var CampoClinico $campoClinico */
@@ -295,7 +297,10 @@ class Solicitud
      */
     public function addCamposClinico(CampoClinico $camposClinico)
     {
-        $this->camposClinicos[] = $camposClinico;
+        if(!$this->camposClinicos->contains($camposClinico)) {
+            $this->camposClinicos[] = $camposClinico;
+            $camposClinico->setSolicitud($this);
+        }
 
         return $this;
     }
@@ -348,5 +353,13 @@ class Solicitud
     {
         $this->expediente = $expediente;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    private function esSolicitudConfirmada()
+    {
+        return $this->estatus === Solicitud::CONFIRMADA;
     }
 }
