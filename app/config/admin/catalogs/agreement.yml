@@ -2,6 +2,7 @@ easy_admin:
   entities:
     Agreement:
       class: AppBundle\Entity\Convenio
+      controller: AppBundle\Controller\Admin\AgreementController
       label: 'Convenio'
       list:
         title: 'Convenio'
@@ -18,6 +19,7 @@ easy_admin:
           - { property: institucion.nombre, label: 'Institución' }
           - { property: delegacion.nombre, label: 'Delegación' }
       form:
+        title: 'Crear Convenio'
         fields:
           - { property: sector, label: 'Sector', type: choice, type_options: { choices: { 'Público': 'Público', 'Privado': 'Privado' } } }
           - { property: tipo, label: 'Tipo', type: choice, type_options: { choices: { 'General': 'General', 'Específico': 'Específico' } } }

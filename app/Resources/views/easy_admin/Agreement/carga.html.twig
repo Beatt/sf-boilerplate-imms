@@ -1,0 +1,43 @@
+{# app/Resources/views/easy_admin/Conveio/list.html.twig #}
+{#% extends '@EasyAdmin/default/new.html.twig' %#}
+
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+{% block content_title %}
+    {% apply spaceless %}
+        Carga masiva - Convenios
+    {% endapply %}
+{% endblock %}
+
+{% block main %}
+
+{% block entity_form %}
+
+{{ form_start(form, {'method': 'POST'}) }}
+
+ {{ form_errors(form) }}
+
+  <div class="row col-xs-12 "> 
+      <div class="form-group" >
+    {{ form_row(form.submitFile) }}
+    </div>
+  </div>
+    {{ form_row(form._token) }}
+
+  <div class="row col-xs-12 form-actions stuck">
+    <div class="form-group" >
+      <div id="form-actions-row" >
+        {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-primary action-save'} }) }}
+
+          <a class="btn btn-secondary action-list" title="" href="/admin/?entity=Agreement&amp" target="_self">Volver al listado</a>
+
+      </div>
+    </div>
+  </div>
+
+{{ form_end(form) }}
+
+{% endblock entity_form %}
+
+{% endblock main %}
+

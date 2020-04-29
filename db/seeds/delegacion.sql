@@ -38,3 +38,4 @@ INSERT INTO delegacion(id, region_id, nombre, activo,  clave_delegacional, latit
 INSERT INTO delegacion(id, region_id, nombre, activo,  clave_delegacional, latitud, longitud, grupo_delegacion,  nombre_grupo_delegacion, fecha) VALUES(37 , 3 , 'D F 3 SUR' ,true,'37',  19.369089, -99.120756, 'DFS', 'D F SUR',  '2017-05-16 10:43:19.296897');
 INSERT INTO delegacion(id, region_id, nombre, activo,  clave_delegacional, latitud, longitud, grupo_delegacion,  nombre_grupo_delegacion, fecha) VALUES(38 , 3 , 'D F 4 SUR' ,true,'38',  19.380173, -99.122072, 'DFS', 'D F SUR',  '2017-05-16 10:43:19.296897');
 INSERT INTO delegacion(id, region_id, nombre, activo,  clave_delegacional, latitud, longitud, grupo_delegacion,  nombre_grupo_delegacion, fecha) VALUES(39 ,  null, 'MANDO' ,true,'39',  null, null, 'MAN', 'MANDO',  '2017-05-16 10:43:19.296897');
+SELECT setval('delegacion_id_seq', (SELECT MAX(id) from delegacion));

@@ -120,3 +120,4 @@ INSERT INTO institucion(id, nombre) VALUES(119 , 'Instituto de Estudios Superior
 INSERT INTO institucion(id, nombre) VALUES(120 , 'Instituto Hispano Jaime Sabines' );
 INSERT INTO institucion(id, nombre) VALUES(121 , 'Instituto Regional del Sureste' );
 INSERT INTO institucion(id, nombre) VALUES(122 , 'Universidad Westhill' );
+SELECT setval('institucion_id_seq', (SELECT MAX(id) from institucion));

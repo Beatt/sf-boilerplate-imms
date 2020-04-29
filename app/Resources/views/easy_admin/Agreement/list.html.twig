@@ -1,0 +1,12 @@
+{# app/Resources/views/easy_admin/Conveio/list.html.twig #}
+{% extends '@EasyAdmin/default/list.html.twig' %}
+
+{% block global_actions %}
+  {{ parent() }}
+
+    <div class="button-action">
+      <a class="btn btn-primary" href="{{ path('admin', 
+      _request_parameters|merge({ entity: 'Agreement', action:'carga' }) ) }}"> Carga masiva </a>
+    </div>
+
+{% endblock %}

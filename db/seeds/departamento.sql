@@ -15628,3 +15628,4 @@ INSERT INTO departamento(id, clave_departamental, nombre,  clave_presupuestal, u
 INSERT INTO departamento(id, clave_departamental, nombre,  clave_presupuestal, unidad_id, es_unidad,  anio, fecha,  activo  ) VALUES(15662 , '38UAG40000', 'UNIDAD DE MEDICINA FAMILIAR 164',  '385689252110', 6850, False, 2018, '2017-05-16 10:43:19.296897',  TRUE ); 
 INSERT INTO departamento(id, clave_departamental, nombre,  clave_presupuestal, unidad_id, es_unidad,  anio, fecha,  activo  ) VALUES(15663 , '38UD010000', 'PTO FABRICA EST CHURUBUSCO UMF 15',  '385003262110', 6851, False, 2018, '2017-05-16 10:43:19.296897',  TRUE ); 
 INSERT INTO departamento(id, clave_departamental, nombre,  clave_presupuestal, unidad_id, es_unidad,  anio, fecha,  activo  ) VALUES(15664 , '38UD020000', 'PTO FABRICA TRANSP ELECT DF UMF 15',  '385007262110', 6852, False, 2018, '2017-05-16 10:43:19.296897',  TRUE ); 
+SELECT setval('departamento_id_seq', (SELECT MAX(id) from departamento));
