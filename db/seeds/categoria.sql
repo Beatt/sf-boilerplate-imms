@@ -1186,3 +1186,4 @@ INSERT INTO categoria(id, nombre,  clave) VALUES(1264 , 'JEFE DIV OPERATIVA E0' 
 INSERT INTO categoria(id, nombre,  clave) VALUES(1265 , 'JEFE GRUPO AUDITORIA E3' , '37310880' );
 INSERT INTO categoria(id, nombre,  clave) VALUES(1266 , 'JEFE AREA NIVEL CENTRAL E0' , '37310980' );
 INSERT INTO categoria(id, nombre,  clave) VALUES(1267 , 'SUPERV(A) MTTO AREAS EXTERNAS UMAE E0' , '37311880' );
+SELECT setval('categoria_id_seq', (SELECT MAX(id) from categoria));

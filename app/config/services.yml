@@ -48,3 +48,9 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@logger'
         public: true
+
+    AppBundle\Service\ConvenioManagerInterface:
+        class: AppBundle\Service\ConvenioManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+        public: true

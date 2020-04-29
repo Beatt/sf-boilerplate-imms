@@ -241,3 +241,4 @@ INSERT INTO convenio(id, delegacion_id, nombre, institucion_id, sector, tipo, ci
 INSERT INTO convenio(id, delegacion_id, nombre, institucion_id, sector, tipo, ciclo_academico_id, nivel_id,  carrera_id, vigencia ) VALUES(301 , 28, 'Convenio General Universidad Juárez Autónoma de Tabasco', 86, 'Público',   'General', null, null, null , '2029-03-06'); 
 INSERT INTO convenio(id, delegacion_id, nombre, institucion_id, sector, tipo, ciclo_academico_id, nivel_id,  carrera_id, vigencia ) VALUES(302 , 10, 'Convenio General Universidad Juárez del Estado de Durango', 87, 'Público',   'General', null, null, null , '2029-03-19'); 
 INSERT INTO convenio(id, delegacion_id, nombre, institucion_id, sector, tipo, ciclo_academico_id, nivel_id,  carrera_id, vigencia ) VALUES(304 , 31, 'Convenio General Universidad Veracruzana', 113, 'Público',   'General', null, null, null , '2028-05-20'); 
+SELECT setval('convenio_id_seq', (SELECT MAX(id) from convenio));

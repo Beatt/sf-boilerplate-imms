@@ -35,3 +35,4 @@ INSERT INTO tipo_unidad(id, nombre,  descripcion,  nivel, grupo_tipo, grupo_nomb
 INSERT INTO tipo_unidad(id, nombre,  descripcion,  nivel, grupo_tipo, grupo_nombre, activo) VALUES(35 , 'LRCE' , 'Laboratorio de Citología Exfoliativa',  3, 'AAM' , 'APOYO A LA ATENCIÓN MÉDICA' ,   TRUE  );
 INSERT INTO tipo_unidad(id, nombre,  descripcion,  nivel, grupo_tipo, grupo_nombre, activo) VALUES(36 , 'CEXT' , 'Consulta Externa de la Raza',  3, 'AAM' , 'APOYO A LA ATENCIÓN MÉDICA' ,   TRUE  );
 INSERT INTO tipo_unidad(id, nombre,  descripcion,  nivel, grupo_tipo, grupo_nombre, activo) VALUES(37 , 'UDDX' , 'Unidad de Detección y Diagnóstico ',  3, 'AAM' , 'APOYO A LA ATENCIÓN MÉDICA' ,   TRUE  );
+SELECT setval('tipo_unidad_id_seq', (SELECT MAX(id) from tipo_unidad));

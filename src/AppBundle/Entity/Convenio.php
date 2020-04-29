@@ -4,14 +4,37 @@ namespace AppBundle\Entity;
 
 use Carbon\Carbon;
 use DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * @ORM\Table(name="convenio")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ConvenioRepository")
+ * @Assert\GroupSequenceProvider
+ * @UniqueEntity(
+ *     groups={"Específico"},
+ *     fields={ "institucion", "carrera", "cicloAcademico", "gradoAcademico", "vigencia"},
+ *     errorPath="institucion",
+ *     message="La institución ya tiene registrado un convenio específico con esa vigencia."
+ * )
+ * @UniqueEntity(
+ *     groups={"General"},
+ *     fields={"institucion", "vigencia"},
+ *     errorPath="institucion",
+ *     message="La institución ya tiene registrado un convenio general con esa vigencia."
+ * )
  */
-class Convenio
+class Convenio implements GroupSequenceProviderInterface
 {
+    const SECTOR_PUBLICO = "Público";
+    const SECTOR_PRIVADO = "Privado";
+    const SECTORES = [Convenio::SECTOR_PUBLICO, Convenio::SECTOR_PRIVADO];
+    const TIPO_GENERAL = "General";
+    const TIPO_ESPECIFICO = "Específico";
+    const TIPOS = [Convenio::TIPO_GENERAL, Convenio::TIPO_ESPECIFICO];
+
     /**
      * @var int
      *
@@ -21,7 +44,7 @@ class Convenio
      */
     private $id;
 
-        /**
+    /**
      * @var string
      * @ORM\Column(type="string", length=255)
      */
@@ -30,18 +53,23 @@ class Convenio
     /**
      * @var string
      * @ORM\Column(type="string", length=250)
+     * @Assert\NotBlank
+     * @Assert\Choice(choices=Convenio::SECTORES, message="Sector debe ser Público o Privado")
      */
     private $sector;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=250)
+     * @Assert\NotBlank
+     * @Assert\Choice(choices=Convenio::TIPOS, message="Tipo debe ser General o Específico")
      */
     private $tipo;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
      */
     private $vigencia;
 
@@ -49,6 +77,7 @@ class Convenio
      * @var NivelAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
      * @ORM\JoinColumn(name="nivel_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO})
      */
     private $gradoAcademico;
 
@@ -56,6 +85,7 @@ class Convenio
      * @var CicloAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CicloAcademico")
      * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id", nullable=true)
+     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO})
      */
     private $cicloAcademico;
 
@@ -63,13 +93,15 @@ class Convenio
      * @var Carrera
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id", nullable=true)
-     */
+     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO}, 
+        message="Este valor debería ser un valor del catálogo de Carreras.") */
     private $carrera;
 
     /**
      * @var Institucion
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Institucion")
      * @ORM\JoinColumn(name="institucion_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotBlank
      */
     private $institucion;
 
@@ -77,8 +109,14 @@ class Convenio
      * @var Delegacion
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Delegacion")
      * @ORM\JoinColumn(name="delegacion_id", referencedColumnName="id")
+     * @Assert\NotBlank
      */
     private $delegacion;
+
+    public function __construct()
+    {
+        //$this->vigencia = Carbon::now();
+    }
 
     /**
      * @return integer
@@ -143,7 +181,7 @@ class Convenio
     }
 
     /**
-     * @param DateTime $vigencia
+     * @param \DateTime $vigencia
      * @return Convenio
      */
     public function setVigencia($vigencia)
@@ -154,7 +192,7 @@ class Convenio
     }
 
     /**
-     * @return DateTime
+     * @return Date
      */
     public function getVigencia()
     {
@@ -209,6 +247,11 @@ class Convenio
 
         return $this;
     }
+
+/*    public function setCarrera(string $carrera){
+        $this->carrera = null;
+        return $this;
+    } */
 
     /**
      * @return Carrera
@@ -269,5 +312,13 @@ class Convenio
         }
 
         return 'red';
+    }
+
+    public function getGroupSequence()
+    {
+        return [
+            'Convenio',
+            $this->tipo,
+        ];
     }
 }

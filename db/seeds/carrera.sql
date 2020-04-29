@@ -23,3 +23,4 @@ INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(22,'LABORATOR
 INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(23,'TERAPIA RESPIRATORIA',true,2);
 INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(24,'TRABAJO SOCIAL',true,2);
 INSERT INTO carrera(id, nombre, activo, nivel_academico_id) VALUES(25,'ENFERMERÍA',true,2);
+SELECT setval('carrera_id_seq', (SELECT MAX(id) from carrera));
