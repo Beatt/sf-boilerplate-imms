@@ -7,7 +7,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class SolicitudRepository extends EntityRepository implements SolicitudRepositoryInterface
 {
-    public function getAllSolicitudesByInstitucion($id, $tipoPago, $offset, $search = null)
+    public function getAllSolicitudesByInstitucion($id, $tipoPago, $estatus, $offset, $search = null)
     {
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
@@ -20,11 +20,18 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
             ])
         ;
 
+        if($estatus != 'null') {
+            $queryBuilder = $queryBuilder
+                ->andWhere('campos_clinicos.estatus = :estatus')
+                ->setParameter('estatus', $estatus);
+        }
+
         if($search !== null && $search !== '') {
             $queryBuilder = $queryBuilder
                 ->orWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
                 ->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
-                ->setParameter('search', '%' . $search . '%');
+                ->setParameter('search', '%' . $search . '%')
+            ;
         }
 
         $query = $queryBuilder

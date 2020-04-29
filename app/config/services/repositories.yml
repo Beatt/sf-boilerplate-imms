@@ -28,3 +28,9 @@ services:
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\Solicitud
+
+  AppBundle\Repository\EstatusCampoRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\EstatusCampo

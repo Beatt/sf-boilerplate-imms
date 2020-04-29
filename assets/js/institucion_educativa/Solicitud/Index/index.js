@@ -2,6 +2,8 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import { solicitudesGet } from "../../api/solicitud";
+import { ESTATUS_TEXTS, TIPO_PAGO } from "./constants";
+import {getEstatusCampoClinico} from "../../api/estatusCampo";
 
 const Index = (
   {
@@ -11,53 +13,28 @@ const Index = (
 
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
+  const [ estatusCampo, setEstatusCampo ] = useState([])
   const [ search, setSearch ] = useState('')
+  const [ estatusSelected, setEstatus ] = useState(null)
   const [ tipoPago, setTipoPago ] = useState('unico')
   const [ total, setTotal ] = useState(totalInit)
   const [ currentPage, setCurrentPage ] = useState(1)
   const [ isLoading, toggleLoading ] = useState(false)
 
   useEffect(() => {
-    if(currentPage !== null || tipoPago !== '') {
+    if(
+      currentPage !== null ||
+      tipoPago !== '' ||
+      estatusSelected !== null
+    ) {
       getCamposClinicos()
     }
-  }, [currentPage, tipoPago])
+  }, [currentPage, tipoPago, estatusSelected])
 
-  const ESTATUS_TEXTS = {
-    solicitud_creada: {
-      title: 'Nueva',
-      button: 'Registrar montos'
-    },
-    en_espera_de_validacion_de_montos: {
-      title: '',
-      button: 'Corrija montos'
-    },
-    montos_validados: {
-      title: 'Montos validados',
-      button: 'Consulte formatos de pago'
-    },
-    pago_en_proceso: {
-      title: '',
-      button: 'Cargue comprobante de pago'
-    },
-    pagado: {
-      title: '',
-      button: 'Dercargue factura'
-    },
-    en_validacion_por_fofoe: {
-      title: '',
-      button: 'Corrija montos'
-    },
-    solicitud_no_autorizada: {
-      title: 'ese',
-      button: 'ese'
-    }
-  }
-
-  const TIPO_PAGO = {
-    UNICO: 'unico',
-    INDIVIDUAL: 'individual'
-  }
+  useEffect(() => {
+    getEstatusCampoClinico()
+      .then((res) => setEstatusCampo(res))
+  }, [])
 
   function handleSearch() {
     if(!search) return;
@@ -70,6 +47,7 @@ const Index = (
     solicitudesGet(
       institucionId,
       tipoPago,
+      estatusSelected,
       currentPage,
       search
     )
@@ -119,10 +97,21 @@ const Index = (
             name=""
             id="status"
             className='form-control'
+            onChange={({ target }) =>
+              setEstatus(target.value !== '' ? target.value : null)
+            }
           >
             <option value="">Elige una opción</option>
-            <option value="Nueva">Nueva</option>
-            <option value="Some">Some</option>
+            {
+              estatusCampo.map((estatus) =>
+                <option
+                  value={estatus.id}
+                  key={estatus.id}
+                >
+                  {estatus.nombre}
+                </option>
+              )
+            }
           </select>
         </div>
       </div>
@@ -169,7 +158,7 @@ const Index = (
                   </tr> :
                   camposClinicos.map((campoClinico, index) => (
                     <tr key={index}>
-                      <th>{campoClinico.noSolicitud}</th>
+                      <th><a href="">{campoClinico.noSolicitud}</a></th>
                       <th>{campoClinico.noCamposSolicitados}</th>
                       <th>{campoClinico.noCamposAutorizados}</th>
                       <th>{campoClinico.fecha}</th>

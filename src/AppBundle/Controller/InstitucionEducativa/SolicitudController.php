@@ -36,14 +36,17 @@ class SolicitudController extends Controller
         $isOffsetSet = $request->query->get('offset');
         $isSearchSet = $request->query->get('search');
         $isTipoPagoSet = $request->query->get('search');
+        $isEstatusSet = $request->query->get('estatus');
 
         $offset = $request->query->getInt('offset', 1);
         $search = $request->query->get('search', null);
         $tipoPago = $request->query->get('tipoPago', 'unico');
+        $estatus = $request->query->get('estatus', null);
 
         $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
             $id,
             $tipoPago,
+            $estatus,
             $offset,
             $search
         );
@@ -51,7 +54,8 @@ class SolicitudController extends Controller
         if(
             isset($isOffsetSet) ||
             isset($isSearchSet) ||
-            isset($isTipoPagoSet)
+            isset($isTipoPagoSet) ||
+            isset($isEstatusSet)
         ) {
             return new JsonResponse([
                 'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
