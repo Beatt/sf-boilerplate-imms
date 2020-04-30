@@ -68,8 +68,6 @@ class SolicitudController extends DIEControllerController
      */
     public function storeAction(Request $request, SolicitudManagerInterface $solicitudManager)
     {
-        $form = $this->createForm(SolicitudType::class);
-        $form->handleRequest($request);
         $result = $solicitudManager->create(new Solicitud());
         return $this->jsonResponse($result);
     }
@@ -191,5 +189,50 @@ class SolicitudController extends DIEControllerController
         $entityManager->remove($solicitud);
         $response = new JsonResponse(['status' => true, "message" => "Solicitud Eliminada con éxito"]);
         return $response;
+    }
+
+    /**
+     * @Route("/api/solicitud/terminar/{id}", methods={"POST"}, name="solicitud.terminar")
+     * @param Request $request
+     * @param SolicitudManagerInterface $solicitudManager
+     * @param $id
+     */
+    public function terminarAction(Request $request, SolicitudManagerInterface $solicitudManager, $id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $id
+            );
+        }
+
+        $solicitudManager->finalizar($solicitud);
+        return $this->jsonResponse(['status' => true]);
+    }
+
+    /**
+     * @Route("/api/solicitud/validar_montos/{id}", methods={"POST"}, name="solicitud.validar_montos")
+     * @param Request $request
+     * @param SolicitudManagerInterface $solicitudManager
+     * @param $id
+     */
+    public function validarMontosAction(Request $request, SolicitudManagerInterface $solicitudManager, $id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $id
+            );
+        }
+
+        $result = $solicitudManager->validarMontos($solicitud, $request);
+
+        return $this->jsonResponse($result);
     }
 }

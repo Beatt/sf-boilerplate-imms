@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -64,5 +65,15 @@ class SolicitudManager implements SolicitudManagerInterface
             'status' => true,
             'object' => ['id' => $solicitud->getId(), 'fecha' => $solicitud->getFecha(), 'no_solicitud' => $solicitud->getNoSolicitud()]
         ];
+    }
+
+    public function finalizar(Solicitud $solicitud)
+    {
+
+    }
+
+    public function validarMontos(Solicitud $solicitud, Request $request)
+    {
+
     }
 }
