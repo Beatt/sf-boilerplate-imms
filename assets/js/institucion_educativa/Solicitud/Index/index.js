@@ -111,7 +111,12 @@ const Index = (
                       <th>{campoClinico.tipoPago}</th>
                       <th>{campoClinico.estatusActual}</th>
                       <th>
-                        <button className='btn btn-default'>Ver detalle</button>
+                        <a
+                          className='btn btn-default'
+                          href={`/instituciones/${institucionId}/solicitudes/${campoClinico.id}/campos-clinicos`}
+                        >
+                          Ver detalle
+                        </a>
                       </th>
                     </tr>
                   ))

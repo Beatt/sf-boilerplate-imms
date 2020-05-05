@@ -397,4 +397,12 @@ class CampoClinico implements SolicitudesCampoClinicoInterface
     {
         return $this->solicitud->getNoCamposAutorizados();
     }
+
+    public function getFactura()
+    {
+    }
+
+    public function getComprobante()
+    {
+    }
 }
