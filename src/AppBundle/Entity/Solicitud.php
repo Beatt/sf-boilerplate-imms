@@ -20,7 +20,7 @@ class Solicitud implements SolicitudesCampoClinicoInterface
     const EN_VALIDACION_DE_MONTOS = 'en_validacion_de_montos';
     const MONTOS_INCORRECTOS = 'montos_incorrectos';
 
-    const TIPO_PAGO_INDIVIDUAL = 'individual';
+    const TIPO_PAGO_MULTIPLE = 'multiple';
     const TIPO_PAGO_UNICO = 'unico';
 
     /**

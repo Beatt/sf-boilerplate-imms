@@ -87,7 +87,7 @@ class SolicitudRepositoryTest extends WebTestCase
 
         $solicitud = $this->createSolicitudByEstatus(
             Solicitud::EN_VALIDACION_DE_MONTOS,
-            Solicitud::TIPO_PAGO_INDIVIDUAL
+            Solicitud::TIPO_PAGO_MULTIPLE
         );
         $solicitud->addCamposClinico($campoClinico1);
         $solicitud->addCamposClinico($campoClinico2);

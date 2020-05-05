@@ -8,5 +8,5 @@ interface SolicitudRepositoryInterface extends ObjectRepository
 {
     const PAGINATOR_PER_PAGE = 2;
 
-    function getAllSolicitudesByInstitucion($id, $tipoPago, $estatus, $offset, $search = null);
+    function getAllSolicitudesByInstitucion($id, $tipoPago, $offset, $search = null);
 }
