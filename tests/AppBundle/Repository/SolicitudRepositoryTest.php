@@ -123,7 +123,6 @@ class SolicitudRepositoryTest extends WebTestCase
     }
 
     /**
-     * @param CampoClinico $campoClinico
      * @param $estatus
      * @param string $tipoPago
      * @return Solicitud
@@ -141,7 +140,6 @@ class SolicitudRepositoryTest extends WebTestCase
     }
 
     /**
-     * @param EstatusCampo $estatusCampo
      * @return CampoClinico
      */
     private function createCampoClinico()

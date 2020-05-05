@@ -14,12 +14,31 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $this->create(
+
+        $campoClinico = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             CicloAcademicoFixture::CICLO_A,
             EstatusCampo::MONTOS_VALIDADOS,
             $manager
         );
+
+        $campoClinico1 = $this->create(
+            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
+            CicloAcademicoFixture::CICLO_A,
+            EstatusCampo::MONTOS_VALIDADOS,
+            $manager
+        );
+        $campoClinico2 = $this->create(
+            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
+            CicloAcademicoFixture::CICLO_A,
+            EstatusCampo::EN_VALIDACION_POR_FOFOE,
+            $manager
+        );
+
+        $campoClinico1->setSolicitud($this->getReference(Solicitud::CONFIRMADA));
+        $campoClinico2->setSolicitud($this->getReference(Solicitud::EN_VALIDACION_DE_MONTOS));
+
+        $manager->flush();
     }
 
     function getDependencies()
@@ -30,6 +49,13 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
+    /**
+     * @param $convenioReference
+     * @param $cicloAcademicoReference
+     * @param $estatusCampoReference
+     * @param ObjectManager $manager
+     * @return CampoClinico
+     */
     private function create(
         $convenioReference,
         $cicloAcademicoReference,
@@ -49,9 +75,8 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setMonto('100000');
         $campoClinico->setEstatus($this->getReference($estatusCampoReference));
 
-        $campoClinico->setSolicitud($this->getReference(Solicitud::CREADA));
-
         $manager->persist($campoClinico);
-        $manager->flush();
+
+        return $campoClinico;
     }
 }

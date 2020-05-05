@@ -12,10 +12,18 @@ class SolicitudFixture extends Fixture
     public function load(ObjectManager $manager)
     {
         $this->Create(
-            Solicitud::CREADA,
+            Solicitud::CONFIRMADA,
             Carbon::now(),
             $manager
         );
+
+        $this->Create(
+            Solicitud::EN_VALIDACION_DE_MONTOS,
+            Carbon::now(),
+            $manager
+        );
+
+        $manager->flush();
     }
 
     private function Create(
@@ -31,8 +39,8 @@ class SolicitudFixture extends Fixture
         $solicitud->setTipoPago(Solicitud::TIPO_PAGO_UNICO);
 
         $manager->persist($solicitud);
-        $manager->flush();
-
         $this->addReference($typeReference, $solicitud);
+
+        return $solicitud;
     }
 }
