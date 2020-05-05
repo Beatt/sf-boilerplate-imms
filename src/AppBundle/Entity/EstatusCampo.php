@@ -10,14 +10,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class EstatusCampo
 {
-    const SOLICITUD_NO_AUTORIZADA = 'solicitud_no_autorizada';
+    const EN_VALIDACION_DE_MONTOS = 'en_validacion_de_montos';
+    const MONTOS_INCORRECTOS = 'montos_incorrectos';
     const MONTOS_VALIDADOS = 'montos_validados';
     const FORMATOS_DE_PAGO_GENERADOS = 'formatos_de_pago_generados';
-    const EN_VALIDACION_POR_FOFOE = 'en_validacion_por_fofoe';
+    const CARGANDO_COMPROBANTES = 'cargando_comprobantes';
+    const EN_VALIDACION_FOFOE = 'en_validacion_fofoe';
     const PAGO_NO_VALIDO = 'pago_no_valido';
-    const PENDIENTE_CFDI_POR_FOFOE = 'pendiente_cfdi_por_fofoe';
     const PAGO_VALIDADO = 'pago_validado';
+    const PENDIENTE_FACTURA_FOFOE = 'pendiente_factura_fofoe';
     const CREDENCIALES_GENERADAS = 'credenciales_generadas';
+    const CAMPO_NO_AUTORIZADO = 'campo_no_autorizado';
 
     /**
      * @var int

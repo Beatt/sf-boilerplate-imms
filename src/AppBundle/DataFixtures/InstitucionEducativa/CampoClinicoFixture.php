@@ -14,29 +14,22 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-
-        $campoClinico = $this->create(
-            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            CicloAcademicoFixture::CICLO_A,
-            EstatusCampo::MONTOS_VALIDADOS,
-            $manager
-        );
-
         $campoClinico1 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             CicloAcademicoFixture::CICLO_A,
-            EstatusCampo::MONTOS_VALIDADOS,
+            EstatusCampo::EN_VALIDACION_DE_MONTOS,
             $manager
         );
+        $campoClinico1->setSolicitud($this->getReference(Solicitud::CONFIRMADA));
+
         $campoClinico2 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             CicloAcademicoFixture::CICLO_A,
-            EstatusCampo::EN_VALIDACION_POR_FOFOE,
+            EstatusCampo::EN_VALIDACION_FOFOE,
             $manager
         );
 
-        $campoClinico1->setSolicitud($this->getReference(Solicitud::CONFIRMADA));
-        $campoClinico2->setSolicitud($this->getReference(Solicitud::EN_VALIDACION_DE_MONTOS));
+        $campoClinico2->setSolicitud($this->getReference(Solicitud::EN_PROCESO_DE_PAGO));
 
         $manager->flush();
     }

@@ -17,8 +17,7 @@ class Solicitud implements SolicitudesCampoClinicoInterface
 {
     const CREADA = 'solicitud_creada';
     const CONFIRMADA = 'solicitud_confirmada';
-    const EN_VALIDACION_DE_MONTOS = 'en_validacion_de_montos';
-    const MONTOS_INCORRECTOS = 'montos_incorrectos';
+    const EN_PROCESO_DE_PAGO = 'en_proceso_de_pago';
 
     const TIPO_PAGO_MULTIPLE = 'multiple';
     const TIPO_PAGO_UNICO = 'unico';
@@ -127,8 +126,7 @@ class Solicitud implements SolicitudesCampoClinicoInterface
         $estatusCollection = [
             self::CREADA,
             self::CONFIRMADA,
-            self::EN_VALIDACION_DE_MONTOS,
-            self::MONTOS_INCORRECTOS
+            self::EN_PROCESO_DE_PAGO
         ];
 
         $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
@@ -253,11 +251,9 @@ class Solicitud implements SolicitudesCampoClinicoInterface
      */
     public function getNoCamposAutorizados()
     {
-        if($this->esSolicitudConfirmada()) return $this->estatus;
-
         /** @var CampoClinico $campoClinico */
         $noCamposSolicitados = array_filter($this->getCampoClinicos()->toArray(), function (CampoClinico $campoClinico) {
-            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_NO_AUTORIZADA;
+            return $campoClinico->getLugaresAutorizados() !== 0;
         });
 
         return count($noCamposSolicitados);
@@ -266,12 +262,12 @@ class Solicitud implements SolicitudesCampoClinicoInterface
     /** @return string */
     public function getEstatusActual()
     {
-        if($this->esSolicitudConfirmada()) return $this->estatus;
+        if($this->esSolicitudConfirmada()) return 'Solicitud registrada';
 
         if($this->tipoPago === self::TIPO_PAGO_UNICO) {
             /** @var CampoClinico $campoClinico */
             $campoClinico = $this->getCamposClinicos()->first();
-            return $campoClinico->getEstatus()->getEstatus();
+            return $campoClinico->getEstatus()->getNombre();
         }
     }
 

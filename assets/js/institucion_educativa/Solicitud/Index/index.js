@@ -2,7 +2,7 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import { solicitudesGet } from "../../api/solicitud";
-import { ESTATUS_TEXTS, TIPO_PAGO } from "./constants";
+import { TIPO_PAGO } from "./constants";
 
 const Index = (
   {
@@ -55,8 +55,8 @@ const Index = (
             className='form-control'
             onChange={({ target }) => setTipoPago(target.value)}
           >
-            <option value="unico">Pago único</option>
-            <option value="multiple">Pago multiple</option>
+            <option value={TIPO_PAGO.UNICO}>Pago único</option>
+            <option value={TIPO_PAGO.MULTIPLE}>Pago multiple</option>
           </select>
         </div>
       </div>
@@ -100,7 +100,7 @@ const Index = (
               {
                 isLoading ?
                   <tr>
-                    <th className='text-center' colSpan={6}>Cargando información...</th>
+                    <th className='text-center' colSpan={7}>Cargando información...</th>
                   </tr> :
                   camposClinicos.map((campoClinico, index) => (
                     <tr key={index}>
@@ -109,7 +109,7 @@ const Index = (
                       <th>{campoClinico.noCamposAutorizados}</th>
                       <th>{campoClinico.fecha}</th>
                       <th>{campoClinico.tipoPago}</th>
-                      <th>{ESTATUS_TEXTS[campoClinico.estatusActual].title}</th>
+                      <th>{campoClinico.estatusActual}</th>
                       <th>
                         <button className='btn btn-default'>Ver detalle</button>
                       </th>

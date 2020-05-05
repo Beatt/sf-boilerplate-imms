@@ -18,7 +18,7 @@ class SolicitudFixture extends Fixture
         );
 
         $this->Create(
-            Solicitud::EN_VALIDACION_DE_MONTOS,
+            Solicitud::EN_PROCESO_DE_PAGO,
             Carbon::now(),
             $manager
         );
