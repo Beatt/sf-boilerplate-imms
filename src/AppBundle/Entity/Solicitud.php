@@ -13,12 +13,8 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud implements SolicitudInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
 {
-    const TIPO_PAGO_MULTIPLE = 'Multiple';
-    const TIPO_PAGO_UNICO = 'Único';
-    const TIPO_PAGO_NULL = 'Pendiente de selección';
-
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
