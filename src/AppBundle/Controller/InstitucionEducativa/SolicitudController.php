@@ -39,7 +39,7 @@ class SolicitudController extends Controller
 
         $offset = $request->query->getInt('offset', 1);
         $search = $request->query->get('search', null);
-        $tipoPago = $request->query->get('tipoPago', 'unico');
+        $tipoPago = $request->query->get('tipoPago', null);
 
         $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
             $id,
@@ -147,7 +147,7 @@ class SolicitudController extends Controller
                     'id',
                     'noSolicitud',
                     'fecha',
-                    'estatusActual',
+                    'estatus',
                     'noCamposSolicitados',
                     'noCamposAutorizados',
                     'tipoPago'

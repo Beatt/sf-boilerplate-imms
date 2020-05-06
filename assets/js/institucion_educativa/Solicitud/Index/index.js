@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import { solicitudesGet } from "../../api/solicitud";
 import { TIPO_PAGO } from "./constants";
+import {
+  getActionNameByInstitucionEducativa,
+  getStatusName,
+  isActionDisabledByInstitucionEducativa
+} from "../../../constants";
 
 const Index = (
   {
@@ -13,13 +18,13 @@ const Index = (
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
   const [ search, setSearch ] = useState('')
-  const [ tipoPago, setTipoPago ] = useState('unico')
+  const [ tipoPago, setTipoPago ] = useState(null)
   const [ total, setTotal ] = useState(totalInit)
   const [ currentPage, setCurrentPage ] = useState(1)
   const [ isLoading, toggleLoading ] = useState(false)
 
   useEffect(() => {
-    if(currentPage !== null || tipoPago !== '') getCamposClinicos()
+    if(currentPage !== null || tipoPago !== null) getCamposClinicos()
   }, [currentPage, tipoPago])
 
   function handleSearch() {
@@ -55,6 +60,7 @@ const Index = (
             className='form-control'
             onChange={({ target }) => setTipoPago(target.value)}
           >
+            <option value=''>Ver todos</option>
             <option value={TIPO_PAGO.UNICO}>Pago único</option>
             <option value={TIPO_PAGO.MULTIPLE}>Pago multiple</option>
           </select>
@@ -102,21 +108,21 @@ const Index = (
                   <tr>
                     <th className='text-center' colSpan={7}>Cargando información...</th>
                   </tr> :
-                  camposClinicos.map((campoClinico, index) => (
+                  camposClinicos.map((solicitud, index) => (
                     <tr key={index}>
-                      <th><a href="">{campoClinico.noSolicitud}</a></th>
-                      <th>{campoClinico.noCamposSolicitados}</th>
-                      <th>{campoClinico.noCamposAutorizados}</th>
-                      <th>{campoClinico.fecha}</th>
-                      <th>{campoClinico.tipoPago}</th>
-                      <th>{campoClinico.estatusActual}</th>
+                      <th><a href="">{solicitud.noSolicitud}</a></th>
+                      <th>{solicitud.noCamposSolicitados}</th>
+                      <th>{solicitud.noCamposAutorizados}</th>
+                      <th>{solicitud.fecha}</th>
+                      <th>{solicitud.tipoPago}</th>
+                      <th>{getStatusName(solicitud.estatus)}</th>
                       <th>
-                        <a
+                        <button
                           className='btn btn-default'
-                          href={`/instituciones/${institucionId}/solicitudes/${campoClinico.id}/campos-clinicos`}
+                          disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
                         >
-                          Ver detalle
-                        </a>
+                          {getActionNameByInstitucionEducativa(solicitud.estatus)}
+                        </button>
                       </th>
                     </tr>
                   ))

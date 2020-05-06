@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico implements SolicitudesCampoClinicoInterface
+class CampoClinico
 {
     /**
      * @var int
@@ -371,31 +371,6 @@ class CampoClinico implements SolicitudesCampoClinicoInterface
     public function getUnidad()
     {
         return $this->unidad;
-    }
-
-    public function getNoSolicitud()
-    {
-        return $this->solicitud->getNoSolicitud();
-    }
-
-    public function getFecha()
-    {
-        return $this->solicitud->getFecha();
-    }
-
-    public function getEstatusActual()
-    {
-        return $this->getEstatus()->getEstatus();
-    }
-
-    public function getNoCamposSolicitados()
-    {
-        return $this->solicitud->getNoCamposSolicitados();
-    }
-
-    public function getNoCamposAutorizados()
-    {
-        return $this->solicitud->getNoCamposAutorizados();
     }
 
     public function getFactura()

@@ -13,10 +13,11 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud implements SolicitudInterface, SolicitudesCampoClinicoInterface
+class Solicitud implements SolicitudInterface
 {
     const TIPO_PAGO_MULTIPLE = 'multiple';
     const TIPO_PAGO_UNICO = 'unico';
+    const TIPO_PAGO_NULL = 'Pendiente de selección';
 
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -51,7 +52,7 @@ class Solicitud implements SolicitudInterface, SolicitudesCampoClinicoInterface
     private $camposClinicos;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
     private $tipoPago;
 
@@ -261,24 +262,12 @@ class Solicitud implements SolicitudInterface, SolicitudesCampoClinicoInterface
         return count($noCamposSolicitados);
     }
 
-    /** @return string */
-    public function getEstatusActual()
-    {
-        if($this->esSolicitudConfirmada()) return 'Solicitud registrada';
-
-        if($this->tipoPago === self::TIPO_PAGO_UNICO) {
-            /** @var CampoClinico $campoClinico */
-            $campoClinico = $this->getCamposClinicos()->first();
-            return $campoClinico->getEstatus()->getNombre();
-        }
-    }
-
     /**
      * @return string
      */
     public function getTipoPago()
     {
-        return $this->tipoPago;
+        return $this->tipoPago !== null ? $this->tipoPago : self::TIPO_PAGO_NULL;
     }
 
     /**

@@ -13,12 +13,14 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
             ->join('solicitud.camposClinicos', 'campos_clinicos')
             ->join('campos_clinicos.convenio', 'convenio')
             ->where('convenio.institucion = :id')
-            ->andWhere("solicitud.tipoPago = :tipoPago")
-            ->setParameters([
-                'id' => $id,
-                'tipoPago' => $tipoPago
-            ])
+            ->setParameter('id', $id)
         ;
+
+        if($tipoPago !== 'null' && $tipoPago !== '') {
+            $queryBuilder = $queryBuilder
+                ->andWhere("solicitud.tipoPago = :tipoPago")
+                ->setParameter('tipoPago', $tipoPago);
+        }
 
         if($search !== null && $search !== '') {
             $queryBuilder = $queryBuilder

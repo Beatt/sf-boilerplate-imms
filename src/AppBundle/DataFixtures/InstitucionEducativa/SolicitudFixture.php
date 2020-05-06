@@ -20,7 +20,7 @@ class SolicitudFixture extends Fixture
 
         $this->Create(
             SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME,
-            Carbon::now(),
+            Carbon::now()->addMonths(2),
             $manager
         );
 
@@ -37,9 +37,9 @@ class SolicitudFixture extends Fixture
         $solicitud->setNoSolicitud(sprintf('NS_00%s', rand(0, 10000)));
         $solicitud->setFecha($fecha);
         $solicitud->setReferenciaBancaria('10202010220');
-        $solicitud->setTipoPago(Solicitud::TIPO_PAGO_UNICO);
 
         $manager->persist($solicitud);
+
         $this->addReference($typeReference, $solicitud);
 
         return $solicitud;
