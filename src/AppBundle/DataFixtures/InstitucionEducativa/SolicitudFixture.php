@@ -24,6 +24,13 @@ class SolicitudFixture extends Fixture
             $manager
         );
 
+        $solicitud = $this->Create(
+            SolicitudInterface::CARGANDO_COMPROBANTES,
+            Carbon::now()->addMonths(4),
+            $manager
+        );
+        $solicitud->setTipoPago(Solicitud::TIPO_PAGO_MULTIPLE);
+
         $manager->flush();
     }
 

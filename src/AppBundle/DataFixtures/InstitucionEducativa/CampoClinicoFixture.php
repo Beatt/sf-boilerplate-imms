@@ -29,8 +29,15 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
             EstatusCampo::NUEVO,
             $manager
         );
-
         $campoClinico2->setSolicitud($this->getReference(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME));
+
+        $campoClinico3 = $this->create(
+            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
+            CicloAcademicoFixture::CICLO_B,
+            EstatusCampo::PENDIENTE_DE_PAGO,
+            $manager
+        );
+        $campoClinico3->setSolicitud($this->getReference(SolicitudInterface::CARGANDO_COMPROBANTES));
 
         $manager->flush();
     }

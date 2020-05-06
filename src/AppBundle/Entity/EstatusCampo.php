@@ -25,11 +25,6 @@ class EstatusCampo implements EstatusCampoInterface
     private $estatus;
 
     /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $nombre;
-
-    /**
      * @return int
      */
     public function getId()
@@ -54,24 +49,5 @@ class EstatusCampo implements EstatusCampoInterface
     public function getEstatus()
     {
         return $this->estatus;
-    }
-
-    /**
-     * @param string $nombre
-     * @return EstatusCampo
-     */
-    public function setNombre($nombre)
-    {
-        $this->nombre = $nombre;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNombre()
-    {
-        return $this->nombre;
     }
 }

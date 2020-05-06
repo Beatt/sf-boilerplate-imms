@@ -15,8 +15,8 @@ use Exception;
  */
 class Solicitud implements SolicitudInterface
 {
-    const TIPO_PAGO_MULTIPLE = 'multiple';
-    const TIPO_PAGO_UNICO = 'unico';
+    const TIPO_PAGO_MULTIPLE = 'Multiple';
+    const TIPO_PAGO_UNICO = 'Único';
     const TIPO_PAGO_NULL = 'Pendiente de selección';
 
     /**

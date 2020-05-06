@@ -2,12 +2,11 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import { solicitudesGet } from "../../api/solicitud";
-import { TIPO_PAGO } from "./constants";
+import { TIPO_PAGO } from "../../../constants";
 import {
   getActionNameByInstitucionEducativa,
-  getStatusName,
   isActionDisabledByInstitucionEducativa
-} from "../../../constants";
+} from "../../../utils";
 
 const Index = (
   {
@@ -115,13 +114,13 @@ const Index = (
                       <th>{solicitud.noCamposAutorizados}</th>
                       <th>{solicitud.fecha}</th>
                       <th>{solicitud.tipoPago}</th>
-                      <th>{getStatusName(solicitud.estatus)}</th>
+                      <th>{solicitud.estatus}</th>
                       <th>
                         <button
                           className='btn btn-default'
                           disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
                         >
-                          {getActionNameByInstitucionEducativa(solicitud.estatus)}
+                          {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
                         </button>
                       </th>
                     </tr>

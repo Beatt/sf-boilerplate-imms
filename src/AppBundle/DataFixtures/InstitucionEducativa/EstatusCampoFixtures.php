@@ -12,6 +12,7 @@ class EstatusCampoFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $this->create($manager, EstatusCampo::NUEVO, 1);
+        $this->create($manager, EstatusCampo::PENDIENTE_DE_PAGO, 2);
     }
 
     /**
