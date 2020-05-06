@@ -13,12 +13,8 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud implements SolicitudesCampoClinicoInterface
+class Solicitud implements SolicitudInterface, SolicitudesCampoClinicoInterface
 {
-    const CREADA = 'solicitud_creada';
-    const CONFIRMADA = 'solicitud_confirmada';
-    const EN_PROCESO_DE_PAGO = 'en_proceso_de_pago';
-
     const TIPO_PAGO_MULTIPLE = 'multiple';
     const TIPO_PAGO_UNICO = 'unico';
 
@@ -126,7 +122,13 @@ class Solicitud implements SolicitudesCampoClinicoInterface
         $estatusCollection = [
             self::CREADA,
             self::CONFIRMADA,
-            self::EN_PROCESO_DE_PAGO
+            self::EN_VALIDACION_DE_MONTOS_CAME,
+            self::MONTOS_INCORRECTOS_CAME,
+            self::MONTOS_VALIDADOS_CAME,
+            self::FORMATOS_DE_PAGO_GENERADOS,
+            self::CARGANDO_COMPROBANTES,
+            self::EN_VALIDACION_FOFOE,
+            self::CREDENCIALES_GENERADAS
         ];
 
         $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {

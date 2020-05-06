@@ -3,6 +3,7 @@
 namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -12,13 +13,13 @@ class SolicitudFixture extends Fixture
     public function load(ObjectManager $manager)
     {
         $this->Create(
-            Solicitud::CONFIRMADA,
+            SolicitudInterface::CONFIRMADA,
             Carbon::now(),
             $manager
         );
 
         $this->Create(
-            Solicitud::EN_PROCESO_DE_PAGO,
+            SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME,
             Carbon::now(),
             $manager
         );
