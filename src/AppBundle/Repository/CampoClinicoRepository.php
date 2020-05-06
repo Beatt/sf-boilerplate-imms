@@ -77,4 +77,51 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
 
         return 0;
     }
+
+    function getAllCampos($filtros = [], $per_page=10) {
+      $query =  $this->createQueryBuilder('campo_clinico')
+        ->join('campo_clinico.convenio', 'convenio')
+        ->join('campo_clinico.solicitud', 'solicitud')
+        ->join('convenio.institucion', 'institucion')
+        ->orderBy('institucion.nombre', 'ASC');
+        //->join('convenio.carrera', 'carrera');
+        //->join('carrera.nivelAcademico', 'ciclo_academico');
+
+      if (@$filtros['offset'] && $filtros['offset'] > 0) {
+        $query = $query->setMaxResults($per_page)
+          ->setFirstResult(($filtros['offset']-1) * $per_page);
+      }
+
+        if (@$filtros['search']) {
+          $query = $query
+            ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
+            //->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
+            ->orWhere("LOWER(institucion.nombre) LIKE LOWER(:search)")
+            ->setParameter('search', '%' . $filtros['search'] . '%');
+        }
+
+        if (@$filtros['estatus']) {
+          $query = $query->andWhere('campo_clinico.estatus = :status')
+            ->setParameter('status', $filtros['estatus']);
+        }
+
+        if (@$filtros['cicloAcademico']) {
+          $query = $query->andWhere('carrera.nivelAcademico = :ciclo')
+            ->setParameter('ciclo', $filtros['cicloAcademico']);
+        }
+
+      if (@$filtros['carrera']) {
+        $query = $query->andWhere('convenio.carrera = :carrera')
+          ->setParameter('carrera', $filtros['carrera']);
+      }
+
+      if (@$filtros['delegacion']) {
+        $query = $query->andWhere('convenio.delegacion = :delegacion')
+          ->setParameter('delegacion', $filtros['delegacion']);
+      }
+
+        return $query
+        ->getQuery()
+        ->getResult();
+    }
 }
