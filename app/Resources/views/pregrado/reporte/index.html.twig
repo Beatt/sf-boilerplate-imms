@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-md-12'>
+                <h3>Reporte General de Campos Clínicos</h3>
+                {#{ dump(campos) }#}
+                <div id="reporte-wrapper"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        //window.CAMPOS_CLINICOS = {#{ campos | json_encode | raw }#}
+    </script>
+    <script src="{{ asset('build/pregrado_reporte.js') }}"></script>
+
+{% endblock %}

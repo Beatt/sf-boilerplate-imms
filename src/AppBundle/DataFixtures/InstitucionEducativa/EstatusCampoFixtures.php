@@ -12,7 +12,7 @@ class EstatusCampoFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $this->create($manager, EstatusCampo::MONTOS_VALIDADOS, 11);
+        $this->create($manager, EstatusCampo::MONTOS_VALIDADOS, 2);
     }
 
     /**

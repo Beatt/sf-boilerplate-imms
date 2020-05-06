@@ -14,6 +14,7 @@ Encore
   .addEntry('montos', './assets/js/IERegistrarMontos/index.js')
   .addEntry('solicitud-index', './assets/js/institucion_educativa/Solicitud/Index/index.js')
   .addEntry('came_solicitud_index', './assets/js/came/solicitud/index.js')
+  .addEntry('pregrado_reporte', './assets/js/pregrado/reporte/index.js')
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
   .enableSourceMaps(!Encore.isProduction())
