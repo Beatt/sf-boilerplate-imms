@@ -2,7 +2,7 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import {getCarreras, getCiclosAcademicos, getDelegaciones, getEstatusCampoClinico} from "../api/catalogos";
-import {getCamposClinicos} from "./campos"
+import {getCamposClinicos, getCamposClinicosCSV} from "./campos"
 
 const ContenedorFiltro = ({
                             EtiquetaFiltro, idFiltro, valores, setValSel
@@ -60,10 +60,6 @@ const Filtros = (
       .then((res) => setEstadosSol(res))
   }, []);
 
-  function updCarreraSel(e) {
-    props.setCarreraSel(e);
-  }
-
   return (
     <div className="row">
       <ContenedorFiltro
@@ -96,11 +92,21 @@ const Filtros = (
 }
 
 const Buscador = (
-  props
+props
 ) => {
   return (
-    <div className='col-md-12 mb-10'>
-      <div className='navbar-form navbar-right'>
+    <div className='row'>
+      <div className='col-md-3'>
+        <button
+          type='button'
+          className='btn btn-success'
+          onClick={props.handleExport}
+        >
+          Exportar CSV
+        </button>
+      </div>
+      <div className='col-md-9 mb-15'>
+      <div className='navbar-form navbar-right '>
         <div className="form-group">
           <input
             type="text"
@@ -116,6 +122,7 @@ const Buscador = (
         >
           Buscar
         </button>
+      </div>
       </div>
     </div>
   );
@@ -223,9 +230,15 @@ const Index = () => {
     getCampos()
   }
 
+  function handleExport() {
+    getCamposClinicosCSV(
+      cicloAcademicoSel, delegacionSel, carreraSel,
+      estadoSolSel, search);
+  }
+
   function handlePageClick(e) {
-    //setCurrentPage(  e.selected );
     getCampos( e.selected + 1);
+
   }
 
   function getCampos(pag=1) {
@@ -254,6 +267,7 @@ const Index = () => {
       <Buscador
         setSearch={setSearch}
         handleSearch={handleSearch}
+        handleExport={handleExport}
       />
       <TablaCampos
         isLoading={isLoading} camposClinicos={camposClinicos}

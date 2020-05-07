@@ -129,13 +129,19 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
       // get total pages
       $pagesCount = ceil($totalItems / $pageSize);
 
-
-      // now get one page's items:
-      $campos = $paginator
-        ->getQuery()
-        ->setFirstResult($pageSize * ($page-1)) // set the offset
-        ->setMaxResults($pageSize)
-        ->getResult(); // set the limit}
+      $campos = [];
+      if(@$filtros['export']) {
+        $campos = $paginator
+          ->getQuery()
+          ->getResult();
+      } else {
+        // now get one page's items:
+        $campos = $paginator
+          ->getQuery()
+          ->setFirstResult($pageSize * ($page-1)) // set the offset
+          ->setMaxResults($pageSize) // set the limit}
+          ->getResult();
+      }
 
       return [$campos, $totalItems, $pagesCount];
 

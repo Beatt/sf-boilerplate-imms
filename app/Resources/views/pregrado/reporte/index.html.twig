@@ -18,9 +18,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        //window.CAMPOS_CLINICOS = {#{ campos | json_encode | raw }#}
-    </script>
     <script src="{{ asset('build/pregrado_reporte.js') }}"></script>
 
 {% endblock %}
