@@ -15,17 +15,17 @@ web_profiler:
 swiftmailer:
     disable_delivery: true
 
-#doctrine:
-#    dbal:
-#        default_connection: default
-#        dbname: '%database_name%-test'
 doctrine:
     dbal:
         default_connection: default
-        connections:
-            default:
-                driver:   pdo_sqlite
-                path:     %kernel.cache_dir%/test.db
+        dbname: '%database_name%-test'
+#doctrine:
+#    dbal:
+#        default_connection: default
+#        connections:
+#            default:
+#                driver:   pdo_sqlite
+#                path:     %kernel.cache_dir%/test.db
 
 doctrine_migrations:
     dir_name: "%kernel.root_dir%/../tests/AppBundle/Migrations"

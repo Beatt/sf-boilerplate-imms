@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -328,6 +327,14 @@ class CampoClinico
     public function getUnidad()
     {
         return $this->unidad;
+    }
+
+    public function getFactura()
+    {
+    }
+
+    public function getComprobante()
+    {
     }
 
     public function getWeeks()

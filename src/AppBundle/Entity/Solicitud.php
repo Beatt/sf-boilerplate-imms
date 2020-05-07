@@ -13,16 +13,8 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
 {
-    const CREADA = 'solicitud_creada';
-    const CONFIRMADA = 'solicitud_confirmada';
-    const EN_VALIDACION_DE_MONTOS = 'en_validacion_de_montos';
-    const MONTOS_INCORRECTOS = 'montos_incorrectos';
-
-    const TIPO_PAGO_INDIVIDUAL = 'individual';
-    const TIPO_PAGO_UNICO = 'unico';
-
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
@@ -65,16 +57,16 @@ class Solicitud
      */
     private $tipoPago;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $documento;
+
     public function __construct()
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
     }
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $documento;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -152,8 +144,13 @@ class Solicitud
         $estatusCollection = [
             self::CREADA,
             self::CONFIRMADA,
-            self::EN_VALIDACION_DE_MONTOS,
-            self::MONTOS_INCORRECTOS
+            self::EN_VALIDACION_DE_MONTOS_CAME,
+            self::MONTOS_INCORRECTOS_CAME,
+            self::MONTOS_VALIDADOS_CAME,
+            self::FORMATOS_DE_PAGO_GENERADOS,
+            self::CARGANDO_COMPROBANTES,
+            self::EN_VALIDACION_FOFOE,
+            self::CREDENCIALES_GENERADAS
         ];
 
         $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
@@ -398,22 +395,10 @@ class Solicitud
     {
         /** @var CampoClinico $campoClinico */
         $noCamposSolicitados = array_filter($this->getCampoClinicos()->toArray(), function (CampoClinico $campoClinico) {
-            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_NO_AUTORIZADA;
+            return $campoClinico->getLugaresAutorizados() !== 0;
         });
 
         return count($noCamposSolicitados);
-    }
-
-    /** @return string */
-    public function getEstatusActual()
-    {
-        if($this->estatus === Solicitud::CONFIRMADA) return $this->estatus;
-
-        if($this->tipoPago === self::TIPO_PAGO_UNICO) {
-            /** @var CampoClinico $campoClinico */
-            $campoClinico = $this->getCamposClinicos()->first();
-            return $campoClinico->getEstatus()->getEstatus();
-        }
     }
 
     /**
@@ -421,7 +406,7 @@ class Solicitud
      */
     public function getTipoPago()
     {
-        return $this->tipoPago;
+        return $this->tipoPago !== null ? $this->tipoPago : self::TIPO_PAGO_NULL;
     }
 
     /**
@@ -438,7 +423,10 @@ class Solicitud
      */
     public function addCamposClinico(CampoClinico $camposClinico)
     {
-        $this->camposClinicos[] = $camposClinico;
+        if(!$this->camposClinicos->contains($camposClinico)) {
+            $this->camposClinicos[] = $camposClinico;
+            $camposClinico->setSolicitud($this);
+        }
 
         return $this;
     }
@@ -491,5 +479,13 @@ class Solicitud
     {
         $this->expediente = $expediente;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    private function esSolicitudConfirmada()
+    {
+        return $this->estatus === Solicitud::CONFIRMADA;
     }
 }

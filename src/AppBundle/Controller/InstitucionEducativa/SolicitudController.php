@@ -33,30 +33,17 @@ class SolicitudController extends Controller
         /** @var Institucion $institucion */
         $institucion = $institucionRepository->find($id);
 
-        $isOffsetSet = $request->query->get('offset');
-        $isSearchSet = $request->query->get('search');
-        $isTipoPagoSet = $request->query->get('search');
-        $isEstatusSet = $request->query->get('estatus');
-
-        $offset = $request->query->getInt('offset', 1);
-        $search = $request->query->get('search', null);
-        $tipoPago = $request->query->get('tipoPago', 'unico');
-        $estatus = $request->query->get('estatus', null);
+        list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
+        list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
 
         $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
             $id,
             $tipoPago,
-            $estatus,
             $offset,
             $search
         );
 
-        if(
-            isset($isOffsetSet) ||
-            isset($isSearchSet) ||
-            isset($isTipoPagoSet) ||
-            isset($isEstatusSet)
-        ) {
+        if($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)) {
             return new JsonResponse([
                 'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
                 'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
@@ -109,7 +96,7 @@ class SolicitudController extends Controller
         $totalCampos = count($camposClinicos);
 
         $acc = 0;
-        
+
         foreach ($camposClinicos as $campoClinico) {
             if($campoClinico->getLugaresAutorizados() > 0){
                 $acc++;
@@ -117,7 +104,7 @@ class SolicitudController extends Controller
         }
 
         if(
-            isset($isSearchSet) 
+            isset($isSearchSet)
         ) {
             return new JsonResponse([
                 'totalCampos' => $totalCampos,
@@ -159,7 +146,7 @@ class SolicitudController extends Controller
     ) {
 
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
-            $solicitudId, 
+            $solicitudId,
             null,
             true
         );
@@ -170,7 +157,7 @@ class SolicitudController extends Controller
             ->find($solicitudId);
 
         $acc = 0;
-        
+
         foreach ($camposClinicos as $campoClinico) {
             if($campoClinico->getLugaresAutorizados() > 0){
                 $acc++;
@@ -197,15 +184,51 @@ class SolicitudController extends Controller
             $camposClinicos,
             'json',
             [
-                'attributes' => [ 
+                'attributes' => [
                     'id',
                     'noSolicitud',
                     'fecha',
-                    'estatusActual',
+                    'estatus',
                     'noCamposSolicitados',
-                    'noCamposAutorizados'
+                    'noCamposAutorizados',
+                    'tipoPago'
                 ]
             ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function setFilters(Request $request)
+    {
+        $isOffsetSet = $request->query->get('offset');
+        $isSearchSet = $request->query->get('search');
+        $isTipoPagoSet = $request->query->get('tipoPago');
+        return array($isOffsetSet, $isSearchSet, $isTipoPagoSet);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function initializeFiltersWithDefaultValues(Request $request)
+    {
+        $offset = $request->query->getInt('offset', 1);
+        $search = $request->query->get('search', null);
+        $tipoPago = $request->query->get('tipoPago', null);
+        return array($offset, $search, $tipoPago);
+    }
+
+    /**
+     * @param $isOffsetSet
+     * @param $isSearchSet
+     * @param $isTipoPagoSet
+     * @return bool
+     */
+    private function isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)
+    {
+        return isset($isOffsetSet) || isset($isSearchSet) || isset($isTipoPagoSet);
     }
 
     /**
