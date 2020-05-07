@@ -71,9 +71,10 @@ class SolicitudController extends Controller
     }
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="instituciones#show")
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="instituciones#show", methods={"GET"})
      * @param integer $id
      * @param $solicitudId
+     * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @param ExpedienteRepositoryInterface $expedienteRepository
@@ -82,60 +83,109 @@ class SolicitudController extends Controller
     public function showAction(
         $id,
         $solicitudId,
+        Request $request,
         InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         ExpedienteRepositoryInterface $expedienteRepository
     ) {
-        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest($solicitudId);
-        $expedientes = $expedienteRepository->getAllExpedientesByRequest($solicitudId);
+
+
+        $isSearchSet = $request->query->get('search');
+
+        $search = $request->query->get('search', null);
+
+        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
+            $solicitudId,
+            $search,
+            false
+        );
+
+        $expediente = $expedienteRepository->getAllExpedientesByRequest($solicitudId);
         $institucion = $institucionRepository->find($id);
 
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($solicitudId);
 
+        $totalCampos = count($camposClinicos);
+
+        $acc = 0;
+        
+        foreach ($camposClinicos as $campoClinico) {
+            if($campoClinico->getLugaresAutorizados() > 0){
+                $acc++;
+            }
+        }
+
+        if(
+            isset($isSearchSet) 
+        ) {
+            return new JsonResponse([
+                'totalCampos' => $totalCampos,
+                'autorizado' => $acc,
+                'camposClinicos' => $this->getNormalizeCamposClinicos($camposClinicos)
+            ]);
+
+        }
+
         return $this->render('institucion_educativa/solicitud/show.html.twig',[
             'institucion' => $institucion,
             'solicitud' => $solicitud,
-            'camposClinicos' => $this->get('serializer')->normalize(
-                $camposClinicos,
-                'json',
-                [
-                    'attributes' => [
-                        'id',
-                        'lugaresSolicitados',
-                        'lugaresAutorizados',
-                        'fechaInicial',
-                        'fechaFinal',
-                        'cicloAcademico' => [
-                            'nombre'
-                        ],
-                        'carrera' => [
-                            'nombre',
-                            'nivelAcademico' => [
-                                'nombre'
-                            ]
-                        ],
-                        'solicitud' => [
-                            'id',
-                            'noSolicitud'
-                        ]
-                    ]
-                ]
-            ),
-            'expediente' => $this->get('serializer')->normalize(
-                $expedientes,
-                'json',
-                [
-                    'attributes' => [
-                        'id',
-                        'descripcion',
-                        'urlArchivo',
-                        'fecha'
-                    ]
-                ]
-            )
+            'totalCampos' => $totalCampos,
+            'autorizado' => $acc,
+            'camposClinicos' => $this->getNormalizeCamposClinicos($camposClinicos),
+            'expediente' => $this->getNormalizeExpediente($expediente),
+            'search' => $search
         ]);
     }
+
+
+    /**
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="instituciones#record", methods={"POST", "GET"})
+     * @param integer $id
+     * @param $solicitudId
+     * @param Request $request
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @param ExpedienteRepositoryInterface $expedienteRepository
+     * @return Response
+     */
+    public function recordAction(
+        $id,
+        $solicitudId,
+        Request $request,
+        InstitucionRepositoryInterface $institucionRepository,
+        CampoClinicoRepositoryInterface $campoClinicoRepository,
+        ExpedienteRepositoryInterface $expedienteRepository
+    ) {
+
+        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
+            $solicitudId, 
+            null,
+            true
+        );
+
+        $institucion = $institucionRepository->find($id);
+
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
+        $acc = 0;
+        
+        foreach ($camposClinicos as $campoClinico) {
+            if($campoClinico->getLugaresAutorizados() > 0){
+                $acc++;
+            }
+        }
+
+        return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
+            'institucion' => $institucion,
+            'solicitud' => $solicitud,
+            'autorizado' => $acc,
+            'camposClinicos' => $this->getNormalizeCamposClinicos($camposClinicos)
+        ]);
+    }
+
+
 
     /**
      * @param $camposClinicos
@@ -147,7 +197,7 @@ class SolicitudController extends Controller
             $camposClinicos,
             'json',
             [
-                'attributes' => [
+                'attributes' => [ 
                     'id',
                     'noSolicitud',
                     'fecha',
@@ -156,5 +206,62 @@ class SolicitudController extends Controller
                     'noCamposAutorizados'
                 ]
             ]);
+    }
+
+    /**
+     * @param $camposClinicos
+     * @return array
+     */
+    private function getNormalizeCamposClinicos($camposClinicos)
+    {
+
+        return $this->get('serializer')->normalize(
+            $camposClinicos,
+            'json',
+            [
+                'attributes' => [
+                    'id',
+                    'lugaresSolicitados',
+                    'lugaresAutorizados',
+                    'fechaInicial',
+                    'fechaFinal',
+                    'weeks',
+                    'cicloAcademico' => [
+                        'nombre'
+                    ],
+                    'carrera' => [
+                        'id',
+                        'nombre',
+                        'nivelAcademico' => [
+                            'nombre'
+                        ]
+                    ],
+                    'solicitud' => [
+                        'id',
+                        'noSolicitud',
+                        'estatus'
+                    ],
+                    'unidad' => [
+                        'nombre'
+                    ]
+                ]
+            ]);
+    }
+
+    private function getNormalizeExpediente($expediente)
+    {
+
+        return $this->get('serializer')->normalize(
+            $expediente,
+            'json',
+            [
+                'attributes' => [
+                    'id',
+                    'descripcion',
+                    'urlArchivo',
+                    'fecha'
+                ]
+            ]
+        );
     }
 }

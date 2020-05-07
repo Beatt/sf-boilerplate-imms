@@ -10,6 +10,7 @@
         id: institucion.id
     })) }}
 
+
     <div class="section-md">
         <div class='container-fluid'>
             <div class='container'>
@@ -18,22 +19,16 @@
                     <p class="text-bold mt-10">No. Solicitud: {{ solicitud.noSolicitud }}</p>
                     <div id="noSolicitud"></div>
                 </div>
-                <div class='row'>
-                    <div class='col-md-6'>
-                        <p class="mt-10 text-bold">Se autorizaron 5 de 6 campos clínicos.</p>
-                    </div>
-                    <div class='col-md-6 text-right'>
-                        <input type="text" placeholder="Buscar por.." name="search"/>
-                        <button type="submit">Buscar</button>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="solicitud-index-component"></div>
                     </div>
                 </div>
-                <div class='row'>
-                    <div class='col-md-12' id="listaSolicitud"></div>
+                <div clas="row">
+                <div clas="col-md-12">
+                    <div id="expediente-component"></div>
                 </div>
-                <p class="text-bold mt-10">Expediente</p>
-                <div class='row'>
-                    <div class='col-md-12' id="listaExpediente"></div>
-                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -42,8 +37,12 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-      window.SOLICITUD_PROP = {{ camposClinicos|json_encode|raw }}
+      window.INSTITUCION_PROP = {{ institucion.Id | json_encode | raw }}
+      window.TOTAL_PROP = {{ totalCampos|json_encode|raw }}
+      window.AUTORIZADO_PROP = {{ autorizado|json_encode|raw }}
+      window.SOLICITUD_PROP = {{ solicitud.Id |json_encode|raw }}
       window.EXPEDIENTE_PROP = {{ expediente|json_encode|raw }}
+      window.CAMPOS_PROP = {{ camposClinicos|json_encode|raw }}
     </script>
     <script src="{{ asset('build/detalle-campos.js') }}"></script>
 {% endblock %}

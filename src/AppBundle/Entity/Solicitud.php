@@ -51,12 +51,17 @@ class Solicitud
     private $referenciaBancaria;
 
     /**
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=true)
+     */
+    private $monto;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
      */
     private $camposClinicos;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
     private $tipoPago;
 
@@ -67,11 +72,31 @@ class Solicitud
     }
 
     /**
-     * @var Expediente
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Expediente", mappedBy="solicitud")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $expediente;
+    private $documento;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $urlArchivo;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $validado;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $fechaComprobante;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $observaciones;
+
+    
     /**
      * @return int
      */
@@ -174,6 +199,124 @@ class Solicitud
     {
         return $this->referenciaBancaria;
     }
+
+
+    /**
+     * @param string $documento
+     * @return Solicitud
+     */
+    public function setDocumento($documento)
+    {
+        $this->documento = $documento;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDocumento()
+    {
+        return $this->documento;
+    }
+
+    /**
+     * @param string $url_archivo
+     * @return Solicitud
+     */
+    public function setUrlArchivo($url_archivo)
+    {
+        $this->urlArchivo = $url_archivo;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrlArchivo()
+    {
+        return $this->urlArchivo;
+    }
+
+    
+    /**
+     * @param string $observaciones
+     * @return Solicitud
+     */
+    public function setObservaciones($observaciones)
+    {
+        $this->observaciones = $observaciones;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObservaciones()
+    {
+        return $this->observaciones;
+    }
+
+
+    /**
+     * @param boolean $validado
+     * @return Solicitud
+     */
+    public function setValidado($validado)
+    {
+        $this->validado = $validado;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getValidado()
+    {
+        return $this->validado;
+    }
+
+    /**
+     * @param DateTime $fecha_comprobante
+     * @return Solicitud
+     */
+    public function setFechaComprobante($fecha_comprobante)
+    {
+        $this->fechaComprobante = $fecha_comprobante;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getFechaComprobante()
+    {
+        return $this->fechaComprobante;
+    }
+
+    /**
+     * @param float $monto
+     * @return Solicitud
+     */
+    public function setMonto($monto)
+    {
+        $this->monto = $monto;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMonto()
+    {
+        return $this->monto;
+    }
+
 
     /**
      * @return int
