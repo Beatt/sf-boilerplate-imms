@@ -6,6 +6,7 @@ use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Unidad;
 use AppBundle\Form\Type\SolicitudType;
 use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,11 +53,17 @@ class SolicitudController extends DIEControllerController
         $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
             ->findAllPrivate();
+        $unidades = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->getAllUnidadesByDelegacion();
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
-            'instituciones' => $this->get('serializer')->normalize($instituciones,
-                'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax']])
+            'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
+                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax',
+                    'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'cicloAcademico' => ['id', 'nombre'], 'vigencia'] ]]),
+            'unidades' => $this->get('serializer')->normalize($unidades, 'json',
+                ['attributtes' => ['id', 'nombre']])
         ]);
     }
 

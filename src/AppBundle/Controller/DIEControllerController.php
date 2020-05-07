@@ -37,8 +37,12 @@ abstract class DIEControllerController extends Controller
     {
         $result = $data;
         $json = [];
+        $status = 200;
         if(isset($data['status'])){
             $result['status'] = $data['status'];
+            if(!$data['status']){
+                $status = Response::HTTP_UNPROCESSABLE_ENTITY;
+            }
         }
         if(isset($data['message'])){
             $result['message'] = $data['message'];
@@ -49,7 +53,7 @@ abstract class DIEControllerController extends Controller
         if (isset($data['object'])) {
             $json['data'] = $data['object'];
         }
-        return new JsonResponse($json);
+        return new JsonResponse($json, $status);
 
     }
 

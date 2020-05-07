@@ -9,7 +9,10 @@ class InstitucionRepository extends EntityRepository implements InstitucionRepos
     public function findAllPrivate()
     {
         return $this->createQueryBuilder('institucion')
-            ->join('institucion.convenios', 'convenio')
+            ->innerJoin('institucion.convenios', 'convenio')
+            ->innerJoin('convenio.carrera', 'carrera')
+            ->innerJoin('convenio.cicloAcademico', 'ciclo')
+            ->innerJoin('carrera.nivelAcademico', 'nivelAcademico')
             ->where('convenio.sector = :private')
             ->setParameter('private', 'Privado')
             ->getQuery()

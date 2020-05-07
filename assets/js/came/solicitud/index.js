@@ -1,8 +1,14 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
+import SolicitudCreate from './create';
 
 const CameTableExample = (props) => {
     return (
+        <>
+        <form action="/solicitud" method="get">
+            <label htmlFor="">Filtro</label><input name={'solicitudNo'} type="text"/>
+            <button type={'submit'}>Enviar</button>
+        </form>
       <table className="table">
           <thead>
           <tr>
@@ -19,6 +25,7 @@ const CameTableExample = (props) => {
           </tr>
           </tbody>
       </table>
+            </>
     );
 }
 
@@ -88,10 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if(createDom) {
         ReactDOM.render(
-            <ExampleForm
-                action='/api/solicitud'
-                method={'post'}
-                token={window.CSRF_TOKEN} />, createDom
+            <SolicitudCreate
+                instituciones={window.INSTITUCIONES}
+                unidades={window.UNIDADES}
+            />, createDom
         )
     }
 })

@@ -46,7 +46,7 @@ class SolicitudManager implements SolicitudManagerInterface
 
     public function create(Solicitud $solicitud)
     {
-        $solicitud->setEstatus(1);
+        $solicitud->setEstatus(Solicitud::CREADA);
         $solicitud->setFecha(Carbon::now());
         try {
             $this->entityManager->persist($solicitud);
