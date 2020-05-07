@@ -23,6 +23,7 @@ class CampoClinicoType extends AbstractType
             ->add('lugaresAutorizados')
             ->add('unidad')
             ->add('horario')
+            ->add('asignatura')
         ;
     }
 

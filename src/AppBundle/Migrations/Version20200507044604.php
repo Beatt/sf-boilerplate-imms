@@ -59,7 +59,7 @@ class Version20200507044604 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_F3E6D02F7F6FF902 ON unidad (tipo_unidad_id)');
         $this->addSql('CREATE TABLE monto_carrera (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, monto_inscripcion DOUBLE PRECISION NOT NULL, monto_colegiatura DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_BCC32A561CB9D6E4 ON monto_carrera (solicitud_id)');
-        $this->addSql('CREATE TABLE campo_clinico (id SERIAL NOT NULL, convenio_id INT DEFAULT NULL, solicitud_id INT DEFAULT NULL, estatus_campo_id INT DEFAULT NULL, unidad_id INT DEFAULT NULL, fecha_inicial DATE NOT NULL, fecha_final DATE NOT NULL, horario VARCHAR(100) NOT NULL, promocion VARCHAR(100) NOT NULL, lugares_solicitados INT NOT NULL, lugares_autorizados INT NOT NULL, referencia_bancaria VARCHAR(100) NOT NULL, monto DOUBLE PRECISION DEFAULT NULL, asignatura VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE campo_clinico (id SERIAL NOT NULL, convenio_id INT DEFAULT NULL, solicitud_id INT DEFAULT NULL, estatus_campo_id INT DEFAULT NULL, unidad_id INT DEFAULT NULL, fecha_inicial DATE NOT NULL, fecha_final DATE NOT NULL, horario VARCHAR(100), promocion VARCHAR(100), lugares_solicitados INT NOT NULL, lugares_autorizados INT NOT NULL, referencia_bancaria VARCHAR(100), monto DOUBLE PRECISION DEFAULT NULL, asignatura VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_3307999AF9D43F2A ON campo_clinico (convenio_id)');
         $this->addSql('CREATE INDEX IDX_3307999A1CB9D6E4 ON campo_clinico (solicitud_id)');
         $this->addSql('CREATE INDEX IDX_3307999A44D087A7 ON campo_clinico (estatus_campo_id)');

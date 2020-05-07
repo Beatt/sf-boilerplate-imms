@@ -69,7 +69,20 @@ class SolicitudManager implements SolicitudManagerInterface
 
     public function finalizar(Solicitud $solicitud)
     {
-
+        $solicitud->setEstatus(Solicitud::CONFIRMADA);
+        try {
+            $this->entityManager->persist($solicitud);
+            $this->entityManager->flush();
+        } catch (OptimisticLockException $exception) {
+            $this->logger->critical($exception->getMessage());
+            return [
+                'status' => false,
+                'error' => $exception->getMessage()
+            ];
+        }
+        return [
+            'status' => true
+        ];
     }
 
     public function validarMontos(Solicitud $solicitud, Request $request)

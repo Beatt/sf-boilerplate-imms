@@ -5,10 +5,12 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampo;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -29,6 +31,8 @@ class CampoClinicoManager implements CampoClinicoManagerInterface
     public function create(CampoClinico $campoClinico)
     {
         $campoClinico->setMonto(-1);
+        $estatus = $this->entityManager->getRepository(EstatusCampo::class)->find(1);
+        $campoClinico->setEstatus($estatus);
         $this->entityManager->persist($campoClinico);
         try {
             $this->entityManager->flush();
@@ -40,18 +44,22 @@ class CampoClinicoManager implements CampoClinicoManagerInterface
             ];
         }
         $encoders = [new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
+        $normalizers = [new DateTimeNormalizer(), new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
         return [
             'status' => true,
             'object' => $serializer->normalize($campoClinico, 'json', [
                 'attributes' =>[
                     'id',
-                    'cicloAcademico' => ['id', 'nombre'],
                     'periodo',
                     'unidad' => ['id', 'nombre'],
-                    'lugaresAceptados',
-                    'lugaresSolicitados'
+                    'lugaresAutorizados',
+                    'convenio' => ['id',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'cicloAcademico' => ['id', 'nombre'],
+                    ],
+                    'lugaresSolicitados',
+                    'fechaInicial', 'fechaFinal'
                 ]
             ])
         ];

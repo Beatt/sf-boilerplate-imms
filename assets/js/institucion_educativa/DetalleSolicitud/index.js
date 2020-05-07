@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import { solicitudesGet } from "../api/camposClinicos";
-import { ESTATUS_TEXTS } from "../Solicitud/Index/constants";
+// import { ESTATUS_TEXTS } from "../Solicitud/Index/constants";
 
 const ListaCampos = ({
     institucion,
