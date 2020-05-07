@@ -88,7 +88,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $observaciones;
 
-    
+
     /**
      * @return int
      */
@@ -141,7 +141,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     public function setEstatus($estatus)
     {
-        $estatusCollection = [
+        $allowedStatus = [
             self::CREADA,
             self::CONFIRMADA,
             self::EN_VALIDACION_DE_MONTOS_CAME,
@@ -153,15 +153,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
             self::CREDENCIALES_GENERADAS
         ];
 
-        $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
-           return $item === $estatus;
-        });
-
-        if(count($estatusExist) === 0) {
+        if(!in_array($estatus, $allowedStatus)) {
             throw new \InvalidArgumentException(sprintf(
                 'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
                 $estatus,
-                implode(', ', $estatusCollection)
+                implode(', ', $allowedStatus)
             ));
         }
 
@@ -236,7 +232,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         return $this->urlArchivo;
     }
 
-    
+
     /**
      * @param string $observaciones
      * @return Solicitud
@@ -461,24 +457,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
             }
         }
         return $result;
-    }
-
-    /**
-     * @return Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
-
-    /**
-     * @param Expediente $expediente
-     * @return Solicitud
-     */
-    public function setExpediente(Expediente $expediente)
-    {
-        $this->expediente = $expediente;
-        return $this;
     }
 
     /**

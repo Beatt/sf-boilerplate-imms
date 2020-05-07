@@ -31,8 +31,10 @@ class CampoClinico extends Controller
                     'json',
                     [
                         'attributes' => [
-                            'cicloAcademico' => [
-                                'nombre'
+                            'unidad' => [
+                                'tipoUnidad' => [
+                                    'nombre'
+                                ]
                             ],
                             'convenio' => [
                                 'carrera' => [
@@ -40,6 +42,9 @@ class CampoClinico extends Controller
                                     'nivelAcademico' => [
                                         'nombre'
                                     ]
+                                ],
+                                'cicloAcademico' => [
+                                    'nombre'
                                 ]
                             ],
                             'lugaresSolicitados',

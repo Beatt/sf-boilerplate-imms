@@ -18,6 +18,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico1 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             EstatusCampo::NUEVO,
+            UnidadFixture::UNIDAD_A,
             $manager
         );
         $campoClinico1->setSolicitud($this->getReference(Solicitud::CONFIRMADA));
@@ -25,6 +26,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico2 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             EstatusCampo::NUEVO,
+            UnidadFixture::UNIDAD_A,
             $manager
         );
         $campoClinico2->setSolicitud($this->getReference(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME));
@@ -32,6 +34,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico3 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
             EstatusCampo::PENDIENTE_DE_PAGO,
+            UnidadFixture::UNIDAD_B,
             $manager
         );
         $campoClinico3->setSolicitud($this->getReference(SolicitudInterface::CARGANDO_COMPROBANTES));
@@ -50,16 +53,17 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
     /**
      * @param $convenioReference
      * @param $estatusCampoReference
+     * @param $unidadTypeReference
      * @param ObjectManager $manager
      * @return CampoClinico
      */
     private function create(
         $convenioReference,
         $estatusCampoReference,
+        $unidadTypeReference,
         ObjectManager $manager
     ) {
         $campoClinico = new CampoClinico();
-        $campoClinico->setConvenio($this->getReference($convenioReference));
         $campoClinico->setFechaInicial(Carbon::now());
         $campoClinico->setFechaFinal(Carbon::now()->addMonths(8));
         $campoClinico->setHorario('10am a 14:00pm');
@@ -69,6 +73,8 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setReferenciaBancaria('102012010210');
         $campoClinico->setMonto('100000');
         $campoClinico->setEstatus($this->getReference($estatusCampoReference));
+        $campoClinico->setConvenio($this->getReference($convenioReference));
+        $campoClinico->setUnidad($this->getReference($unidadTypeReference));
 
         $manager->persist($campoClinico);
 
