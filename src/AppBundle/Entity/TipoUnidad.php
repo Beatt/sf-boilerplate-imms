@@ -82,6 +82,14 @@ class TipoUnidad
         return $this->nombre;
     }
 
+  /**
+   * @return string
+   */
+  public function getDisplayName() {
+    return $this->nombre
+      . " - " . $this->descripcion;
+  }
+
     /**
      * @param boolean $activo
      * @return TipoUnidad

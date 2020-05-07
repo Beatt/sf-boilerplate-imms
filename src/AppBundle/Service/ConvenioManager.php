@@ -24,12 +24,20 @@ class ConvenioManager implements ConvenioManagerInterface
     public function processDataCSV($data)
     {
       $conv = new Convenio();
-      $conv->setNombre( @$data['﻿nombre']);
+      $conv->setNombre( @$data['﻿nombre'] ?: '');
+      $conv->setNumero( @$data['numero'] ?: '');
       $conv->setSector(@$data['sector'] );
       $conv->setTipo( @$data['tipo'] );
       if (@$data['vigencia']) {
         try{
-          $conv->setVigencia(new DateTime($data['vigencia']));
+          $formats = ["Y-m-d", "Y/m/d", "d-m-Y", "d/m/Y"];
+          foreach ($formats as $format) {
+            $d = DateTime::createFromFormat($format, $data['vigencia']);
+            if ($d && $d->format($format) === $data['vigencia']) {
+              $conv->setVigencia($d);
+              break;
+            }
+          }
         } catch(\Exception $e) { }
       }
       $conv->setInstitucion(
@@ -44,18 +52,11 @@ class ConvenioManager implements ConvenioManagerInterface
         $this->entityManager->getRepository(CicloAcademico::class)
           ->findOneByNombre(@$data['ciclo'] )
       );
-/*      if (@$data['grado']) {
-        $grado = $this->entityManager->getRepository(NivelAcademico::class)
-          ->findOneByNombre($data['grado']);
-        $conv->setGradoAcademico($grado);
-        $conv->setCarrera(
+
+      $conv->setCarrera(
         $this->entityManager->getRepository(Carrera::class)
-          ->findOneBy(
-            array("nombre" => mb_strtoupper(@$data['carrera']),
-              "nivelAcademico" => $grado )
-            )
-        );
-      }*/
+          ->findOneByNombre( mb_strtoupper(@$data['carrera']))
+      );
 
       return $conv;
     }

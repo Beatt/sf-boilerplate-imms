@@ -211,7 +211,7 @@ const Index = () => {
   const [delegacionSel, setDelegacionSel] = useState(null)
   const [estadoSolSel, setEstadoSolSel] = useState(null)
 
-  const perPage = 5;
+  const perPage = 2;
 
   useEffect(() => {
     getCampos(1);

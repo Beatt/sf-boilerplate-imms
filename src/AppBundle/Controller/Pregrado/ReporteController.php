@@ -4,20 +4,22 @@ namespace AppBundle\Controller\Pregrado;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\CampoClinico;
-use AppBundle\Repository\SolicitudRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Serializer;
 
 class ReporteController extends DIEControllerController
 {
     /**
-     * @Route("/pregrado/reporte", methods={"GET"}, name="pregrado.reporte.show")
+     * @Route("/pregrado/reporte/", methods={"GET"}, name="pregrado.reporte.show")
      */
     public function showAction(Request $request)
     {
 
-        $campos = ["page", "limit", "search", "estatus", "cicloAcademico", "delegacion", "carrera"];
+        $campos = ["page", "limit", "search", "estatus", "cicloAcademico", "delegacion",
+          "carrera", "export"];
         $isSomeValueSet = false;
         $filtros = [];
 
@@ -35,6 +37,16 @@ class ReporteController extends DIEControllerController
           ->getAllCamposByPage($filtros);
 
         $campos = $result[0];
+
+        if (@$filtros['export']) {
+          $response2 = $this->render('pregrado/reporte/export.csv.twig', array(
+            'entities' => $campos));
+
+          $response2->headers->set('Content-Type', 'text/csv');
+          $response2->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
+
+          return $response2;
+        }
 
         return new JsonResponse([
           'camposClinicos' => $this->getNormalizeCampos($campos),
@@ -71,4 +83,5 @@ class ReporteController extends DIEControllerController
       ]]
     );
   }
+
 }

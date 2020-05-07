@@ -1,0 +1,15 @@
+{% for campoClinico in entities %}
+  Delegacion {#{  campoClinico.convenio.delegacion }#};
+  Unidad {#{ entity.etat }#};
+  Institucion_Educativa {{ campoClinico.convenio.institucion.nombre }};
+  Num_Solicitud {#{ entity.prenom }#};
+  Ciclo_Academico {#{ entity.nom }#};
+  Carrera {#{ entity.fonction }#};
+  Asignatura {#{ entity.fonction }#};
+  Num_Solicitados {#{ entity.fonction }#};
+  Num_Autorizados {#{ entity.fonction }#};
+  Fecha_Inicio {#{ entity.fonction }#};
+  Fecha_Termino {#{ entity.fonction }#};
+  Estado_Solicitud {#{ entity.fonction }#};
+  Fecha_Solicitud {#{ entity.fonction }#};
+{% endfor %}

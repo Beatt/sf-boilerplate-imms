@@ -15,7 +15,7 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @Assert\GroupSequenceProvider
  * @UniqueEntity(
  *     groups={"Específico"},
- *     fields={ "institucion", "carrera", "cicloAcademico", "gradoAcademico", "vigencia"},
+ *     fields={ "institucion", "carrera", "cicloAcademico", "vigencia"},
  *     errorPath="institucion",
  *     message="La institución ya tiene registrado un convenio específico con esa vigencia."
  * )
