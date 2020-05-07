@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,18 +20,6 @@ class CampoClinico
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CicloAcademico")
-     * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id")
-     */
-    private $cicloAcademico;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
-     * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
-     */
-    private $carrera;
 
     /**
      * @ORM\Column(type="date")
@@ -76,7 +65,7 @@ class CampoClinico
     private $referenciaBancaria;
 
     /**
-     * @ORM\Column(type="float", precision=24, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=true)
      */
     private $monto;
 
@@ -101,6 +90,11 @@ class CampoClinico
      * @ORM\JoinColumn(name="unidad_id", referencedColumnName="id")
      */
     private $unidad;
+
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $asignatura;
 
     /**
      * @return integer
@@ -263,44 +257,6 @@ class CampoClinico
     }
 
     /**
-     * @param CicloAcademico $cicloAcademico
-     * @return CampoClinico
-     */
-    public function setCicloAcademico(CicloAcademico $cicloAcademico = null)
-    {
-        $this->cicloAcademico = $cicloAcademico;
-
-        return $this;
-    }
-
-    /**
-     * @return CicloAcademico
-     */
-    public function getCicloAcademico()
-    {
-        return $this->cicloAcademico;
-    }
-
-    /**
-     * @param Carrera $carrera
-     * @return CampoClinico
-     */
-    public function setCarrera(Carrera $carrera = null)
-    {
-        $this->carrera = $carrera;
-
-        return $this;
-    }
-
-    /**
-     * @return Carrera
-     */
-    public function getCarrera()
-    {
-        return $this->carrera;
-    }
-
-    /**
      * @param Convenio $convenio
      * @return CampoClinico
      */
@@ -365,7 +321,7 @@ class CampoClinico
         return $this->estatus;
     }
 
-     /**
+    /**
       * @return Unidad
      */
     public function getUnidad()
@@ -379,5 +335,32 @@ class CampoClinico
 
     public function getComprobante()
     {
+    }
+
+    public function getWeeks()
+    {
+        $inicial = Carbon::instance($this->fechaInicial);
+        $final = Carbon::instance($this->fechaFinal);
+        return $final->diffInWeeks($inicial);
+    }
+
+
+    /**
+     * @param string $asignatura
+     * @return CampoClinico
+     */
+    public function setAsignatura($asignatura)
+    {
+        $this->asignatura = $asignatura;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAsignatura()
+    {
+        return $this->asignatura;
     }
 }

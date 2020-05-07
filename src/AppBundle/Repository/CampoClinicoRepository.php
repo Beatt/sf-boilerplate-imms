@@ -28,15 +28,35 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
      * @param $id
      * @return array
      */
-    public function getAllCamposClinicosByRequest($id)
+    public function getAllCamposClinicosByRequest($id, $search = null, $autorizados)
     {
-        return $this->createQueryBuilder('campo_clinico')
-            ->join('campo_clinico.convenio', 'convenio')
-            ->join('convenio.institucion', 'institucion')
+        try{
+            $queryBuilder = $this->createQueryBuilder('campo_clinico')
             ->where('campo_clinico.solicitud = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('id', $id);
+            
+            if($search !== null && $search !== '') {
+                $queryBuilder = $queryBuilder
+                    ->andWhere("LOWER(campo_clinico.promocion) LIKE LOWER(:search)")
+                    ->setParameter('search', '%' . $search . '%')
+                ;
+            }
+
+            if($autorizados) {
+                $queryBuilder = $queryBuilder
+                    ->andWhere("campo_clinico.lugaresAutorizados <> 0")
+                ;
+            }
+
+            return $queryBuilder
+                ->getQuery()
+                ->getResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return 0;
+
     }
 
     public function getTotalSolicitudesByInstitucion($id)

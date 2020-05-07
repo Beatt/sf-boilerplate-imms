@@ -8,6 +8,7 @@ Encore
   .addStyleEntry('layout', './assets/css/layout.scss')
   .addEntry('validar-info', './assets/js/institucion_educativa/ValidarInfo/index.js')
   .addEntry('detalle-campos', './assets/js/institucion_educativa/DetalleSolicitud/index.js')
+  .addEntry('registrar-montos', './assets/js/institucion_educativa/RegistrarMontos/index.js')
   .addEntry('solicitudes', './assets/js/IEDetalleSolicitud/solicitudes.js')
   .addEntry('inicio', './assets/js/IEInicio/index.js')
   .addEntry('multiple', './assets/js/IEDetalleSolicitudMultiple/index.js')

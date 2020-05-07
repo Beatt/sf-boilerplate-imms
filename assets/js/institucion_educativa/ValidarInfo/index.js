@@ -4,6 +4,7 @@ import ListConvenios from "../../components/ListConvenios";
 
 const ValidarInfo = ({ institucion }) => {
   return(
+    
     <form
       action={`/instituciones/${institucion.id}/editar`}
       method="post"

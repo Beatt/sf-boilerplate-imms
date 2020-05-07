@@ -47,7 +47,7 @@ class Convenio implements GroupSequenceProviderInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $nombre;
 
@@ -73,14 +73,6 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank(message="Vigencia no debe estar vacìo o debe ser una fecha válida con formato: AAAA-MM-DD")
      */
     private $vigencia;
-
-    /**
-     * @var NivelAcademico
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
-     * @ORM\JoinColumn(name="nivel_id", referencedColumnName="id", nullable=true)
-     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO})
-     */
-    private $gradoAcademico;
 
     /**
      * @var CicloAcademico
@@ -113,6 +105,13 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank
      */
     private $delegacion;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $numero;
+
 
     public function __construct()
     {
@@ -212,8 +211,6 @@ class Convenio implements GroupSequenceProviderInterface
      */
     public function setGradoAcademico(NivelAcademico $gradoAcademico = null)
     {
-        $this->gradoAcademico = $gradoAcademico;
-
         return $this;
     }
 
@@ -222,7 +219,7 @@ class Convenio implements GroupSequenceProviderInterface
      */
     public function getGradoAcademico()
     {
-        return $this->gradoAcademico;
+        return $this->carrera ? $this->carrera->getNivelAcademico() : null;
     }
 
     /**
@@ -251,7 +248,6 @@ class Convenio implements GroupSequenceProviderInterface
     public function setCarrera(Carrera $carrera = null)
     {
         $this->carrera = $carrera;
-
         return $this;
     }
 
@@ -299,6 +295,22 @@ class Convenio implements GroupSequenceProviderInterface
     public function getDelegacion()
     {
         return $this->delegacion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+
+    /**
+     * @param string $numero
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
     }
 
     public function getLabel()

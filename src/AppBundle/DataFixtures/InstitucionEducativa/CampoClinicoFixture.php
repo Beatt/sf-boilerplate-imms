@@ -17,7 +17,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
     {
         $campoClinico1 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            CicloAcademicoFixture::CICLO_A,
             EstatusCampo::NUEVO,
             $manager
         );
@@ -25,7 +24,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 
         $campoClinico2 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            CicloAcademicoFixture::CICLO_A,
             EstatusCampo::NUEVO,
             $manager
         );
@@ -33,7 +31,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 
         $campoClinico3 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            CicloAcademicoFixture::CICLO_B,
             EstatusCampo::PENDIENTE_DE_PAGO,
             $manager
         );
@@ -52,20 +49,17 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 
     /**
      * @param $convenioReference
-     * @param $cicloAcademicoReference
      * @param $estatusCampoReference
      * @param ObjectManager $manager
      * @return CampoClinico
      */
     private function create(
         $convenioReference,
-        $cicloAcademicoReference,
         $estatusCampoReference,
         ObjectManager $manager
     ) {
         $campoClinico = new CampoClinico();
         $campoClinico->setConvenio($this->getReference($convenioReference));
-        $campoClinico->setCicloAcademico($this->getReference($cicloAcademicoReference));
         $campoClinico->setFechaInicial(Carbon::now());
         $campoClinico->setFechaFinal(Carbon::now()->addMonths(8));
         $campoClinico->setHorario('10am a 14:00pm');
