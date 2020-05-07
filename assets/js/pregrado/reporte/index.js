@@ -1,12 +1,12 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
-//import ReactPaginate from 'react-paginate';
+import ReactPaginate from 'react-paginate';
 import {getCarreras, getCiclosAcademicos, getDelegaciones, getEstatusCampoClinico} from "../api/catalogos";
 import {getCamposClinicos} from "./campos"
 
 const ContenedorFiltro = ({
-  EtiquetaFiltro, idFiltro, valores, setValSel
-}) => {
+                            EtiquetaFiltro, idFiltro, valores, setValSel
+                          }) => {
 
   function handler(e) {
     setValSel(e.value !== '' ? e.value : null)
@@ -20,19 +20,19 @@ const ContenedorFiltro = ({
           name=""
           id={idFiltro}
           className='form-control'
-          onChange={({target}) => handler(target) }
+          onChange={({target}) => handler(target)}
         >
           <option value="">Elige una opción</option>
           {
-          valores.map((valor) =>
-            <option
-              value={valor.id}
-              key={valor.id}
-            >
-              {valor.nombre}
-            </option>
-          )
-        }
+            valores.map((valor) =>
+              <option
+                value={valor.id}
+                key={valor.id}
+              >
+                {valor.nombre}
+              </option>
+            )
+          }
         </select>
       </div>
     </div>
@@ -61,8 +61,6 @@ const Filtros = (
   }, []);
 
   function updCarreraSel(e) {
-    /* setCarreraSel(e); */
-    console.log("Componente Filtro, valor recibido: " + e);
     props.setCarreraSel(e);
   }
 
@@ -125,62 +123,87 @@ const Buscador = (
 
 const TablaCampos = (props) => {
 
-  console.log("Tabla Campos");
-  console.log(props.isLoading);
-  console.log(props.camposClinicos);
-
   return (
-    <table className="table">
-      <thead>
-      <tr>
-        <td>Delegación</td>
-        <td>Unidad</td>
-        <td>Institución Educativa</td>
-        <td>Número de Solicitud</td>
-        <td>Ciclo Académico</td>
-        <td>Carrera</td>
-        <td>Asignatura</td>
-        <td>Núm. lugares solicitados</td>
-        <td>Núm. lugares autorizados</td>
-        <td>Período</td>
-        <td>Estado de la solicitud</td>
-      </tr>
-      </thead>
-      <tbody>
-      {
-        props.isLoading ?
-        <tr>
-          <th className='text-center' colSpan={11}>Cargando información...</th>
-        </tr> :
-        props.camposClinicos.map((campoClinico, index) => (
-          <tr key={index}>
-            <th><a href="">{  campoClinico.convenio.delegacion ? campoClinico.convenio.delegacion.nombre : ""}</a></th>
-            <th>{campoClinico.unidad ? campoClinico.unidad.nombre : ""}</th>
-            <th>{campoClinico.convenio.institucion.nombre}</th>
-            <th>{campoClinico.solicitud.noSolicitud}</th>
-            <th>{ campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : "" }</th>
-            <th>{campoClinico.convenio.carrera.nivelAcademico.nombre}
-              - {campoClinico.convenio.carrera.nombre}</th>
-            <th> </th>
-            <th>{campoClinico.lugaresSolicitados}</th>
-            <th>{campoClinico.lugaresAutorizados}</th>
-            <th>{(new Date(campoClinico.fechaInicial)).toLocaleDateString()}
-            - {new Date(campoClinico.fechaFinal).toLocaleDateString()} </th>
-            <th>{campoClinico.estatus.nombre}</th>
-          </tr>
-        ))
-      }
-      </tbody>
-    </table>
+    <div className="col-md-12">
+      <div className="panel panel-default">
+        <div className="panel-body">
+          <table className="table">
+            <thead>
+            <tr>
+              <td>Delegación</td>
+              <td>Unidad</td>
+              <td>Institución Educativa</td>
+              <td>Número de Solicitud</td>
+              <td>Ciclo Académico</td>
+              <td>Carrera</td>
+              <td>Asignatura</td>
+              <td>Núm. lugares solicitados</td>
+              <td>Núm. lugares autorizados</td>
+              <td>Período</td>
+              <td>Estado de la solicitud</td>
+            </tr>
+            </thead>
+            <tbody>
+            {
+              props.isLoading ?
+                <tr>
+                  <th className='text-center' colSpan={11}>Cargando información...</th>
+                </tr> :
+                 props.total > 0 ?
+                props.camposClinicos.map((campoClinico, index) => (
+                  <tr key={index}>
+                    <td><a href="">{campoClinico.convenio.delegacion ? campoClinico.convenio.delegacion.nombre : ""}</a>
+                    </td>
+                    <td>{campoClinico.unidad ? campoClinico.unidad.nombre : ""}</td>
+                    <td>{campoClinico.convenio.institucion.nombre}</td>
+                    <td>{campoClinico.solicitud.noSolicitud}</td>
+                    <td>{campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : ""}</td>
+                    <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}
+                      - {campoClinico.convenio.carrera.nombre}</td>
+                    <td> </td>
+                    <td>{campoClinico.lugaresSolicitados}</td>
+                    <td>{campoClinico.lugaresAutorizados}</td>
+                    <td>{(new Date(campoClinico.fechaInicial)).toLocaleDateString()}
+                      - {new Date(campoClinico.fechaFinal).toLocaleDateString()} </td>
+                    <td>{campoClinico.estatus.nombre}</td>
+                  </tr>
+                ))
+                  : <tr>
+                    <td className='text-center' colSpan={11}>No hay registros disponibles</td>
+                  </tr>
+            }
+            </tbody>
+          </table>
+          <div className="text-center">
+            {
+                <ReactPaginate
+                pageCount={props.total}
+                marginPagesDisplayed={5}
+                pageRangeDisplayed={3}
+                previousLabel={'Anterior'}
+                nextLabel={'Siguiente'}
+                breakLabel={'...'}
+                breakClassName={'break-me'}
+                onPageChange={(e) => { props.handlePageClick(e) }}
+                containerClassName={'pagination'}
+                subContainerClassName={'pages pagination'}
+                activeClassName={'active'}
+                />
+            }
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
 const Index = () => {
-  const { useState, useEffect } = React
+  const {useState, useEffect} = React
 
   const [search, setSearch] = useState('')
-  const [ currentPage, setCurrentPage ] = useState(1)
+  //const [currentPage, setCurrentPage] = useState(0)
   const [isLoading, toggleLoading] = useState(false)
+  const [total, setTotal] = useState(0)
 
   const [camposClinicos, setCamposClinicos] = useState([])
   const [carreraSel, setCarreraSel] = useState(null)
@@ -188,32 +211,37 @@ const Index = () => {
   const [delegacionSel, setDelegacionSel] = useState(null)
   const [estadoSolSel, setEstadoSolSel] = useState(null)
 
-  useEffect(()=>{
-    getCampos();
+  const perPage = 5;
+
+  useEffect(() => {
+    getCampos(1);
   }, []);
 
   function handleSearch() {
-    console.log("ejecutando handleSearch...");
     if (!search && !carreraSel && !cicloAcademicoSel
       && !delegacionSel && !estadoSolSel) return;
     getCampos()
   }
 
-  function getCampos() {
-    console.log("ejecutando getCampos...");
+  function handlePageClick(e) {
+    //setCurrentPage(  e.selected );
+    getCampos( e.selected + 1);
+  }
+
+  function getCampos(pag=1) {
     toggleLoading(true)
+
     getCamposClinicos(
       cicloAcademicoSel, delegacionSel, carreraSel,
-      estadoSolSel, search, currentPage
+      estadoSolSel, search, pag, perPage
     ).then((res) => {
       setCamposClinicos(res.camposClinicos)
+      setTotal ( res.numPags )
     })
       .finally(() => {
-        console.log("finally get campos...");
         toggleLoading(false)
       })
   }
-
 
   return (
     <React.Fragment>
@@ -229,6 +257,7 @@ const Index = () => {
       />
       <TablaCampos
         isLoading={isLoading} camposClinicos={camposClinicos}
+        total={total} handlePageClick={handlePageClick}
       />
     </React.Fragment>
   );
@@ -236,7 +265,7 @@ const Index = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <Index  />,
+    <Index />,
     document.getElementById('reporte-wrapper')
   )
 })

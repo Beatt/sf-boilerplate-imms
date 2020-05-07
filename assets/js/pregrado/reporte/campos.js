@@ -1,6 +1,6 @@
 const getCamposClinicos = ( tipoCASel, delegacionSel, carreraSel, estadoSolSel,
-                            search, currentPage) => {
-  return fetch(`/pregrado/reporte?offset=${currentPage}&search=${search}`
+                            search, page, limit) => {
+  return fetch(`/pregrado/reporte?page=${page}&limit=${limit}&search=${search}`
     + `&cicloAcademico=${tipoCASel}&estatus=${estadoSolSel}`
     + `&delegacion=${delegacionSel}&carrera=${carreraSel}`)
     .then(function(response) {
