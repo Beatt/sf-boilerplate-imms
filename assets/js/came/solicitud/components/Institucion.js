@@ -2,24 +2,27 @@ import * as React from 'react'
 
 const Institucion = (props) => {
 
-    const [selectedInstitution, setselectedInstitution] = React.useState({});
+    const [selectedInstitution, setSelectedInstitution] = React.useState(props.institucion ? props.institucion : {});
 
-    const [rfc, setRfc] = React.useState('');
-    const [domicilio, setDomicilio] = React.useState('');
-    const [phone, setPhone] = React.useState('');
-    const [web, setWeb] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [fax, setFax] = React.useState('');
+    const [rfc, setRfc] = React.useState(props.institucion && props.institucion.rfc ? props.institucion.rfc : '');
+    const [domicilio, setDomicilio] = React.useState(props.institucion && props.institucion.direccion ? props.institucion.direccion : '');
+    const [phone, setPhone] = React.useState(props.institucion && props.institucion.telefono ? props.institucion.telefono : '');
+    const [web, setWeb] = React.useState(props.institucion && props.institucion.sitioWeb ? props.institucion.sitioWeb : '' );
+    const [email, setEmail] = React.useState(props.institucion && props.institucion.correo ? props.institucion.correo : '');
+    const [fax, setFax] = React.useState(props.institucion && props.institucion.fax ? props.institucion.fax : '');
 
-    const handleSelectedInstitution = (institucion) => {
-        setselectedInstitution(institucion);
+    const handleSelectedInstitution = (value) => {
+        const results = props.instituciones.filter(item => {return value.toString() === item.id.toString()});
+        const institucion = results.length > 0 ? results[0]: {};
+        setSelectedInstitution(institucion);
         setRfc(institucion.rfc ? institucion.rfc : '');
-        setDomicilio(institucion.domicilio ? institucion.domicilio : '');
+        setDomicilio(institucion.direccion ? institucion.direccion : '');
         setPhone(institucion.telefono? institucion.telefono : '');
         setWeb(institucion.sitioWeb ? institucion.sitioWeb: '');
         setEmail(institucion.correo? institucion.correo :'');
         setFax(institucion.fax ? institucion.fax : '');
         props.parentCallback(institucion);
+        return institucion ? institucion : {};
     }
 
     const handleUpdateInstitucion = (event) => {
@@ -44,8 +47,6 @@ const Institucion = (props) => {
         });
     }
 
-    let index = 0;
-
     return (
         <>
             <form onSubmit={handleUpdateInstitucion}>
@@ -54,12 +55,15 @@ const Institucion = (props) => {
                     <select name="institucion_name"
                             id="institucion_name"
                             className={'form-control'}
-                            onChange={e => handleSelectedInstitution(e.target.value ? props.instituciones[e.target.value] : {}) }
-                            required={true}>
+                            value={selectedInstitution.id ? selectedInstitution.id : ''}
+                            onChange={e => handleSelectedInstitution(e.target.value) }
+                            required={true}
+                            disabled={props.disableSelect}
+                    >
                         <option value="">Seleccionar ...</option>
                         {props.instituciones.map(institucion => {
                             return (
-                                <option key={institucion.id} value={index++}>{institucion.nombre}</option>
+                                <option key={institucion.id} value={institucion.id}>{institucion.nombre}</option>
                             )
                         })}
                     </select>

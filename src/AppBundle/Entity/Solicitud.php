@@ -372,10 +372,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
 
     public function getInstitucion()
     {
-        $result = '';
+        $result = null;
         $campos_clinicos = $this->getCampoClinicos();
         if($campos_clinicos->count() > 0){
-            $result = $campos_clinicos[0]->getConvenio()->getInstitucion()->getNombre();
+            $result = $campos_clinicos[0]->getConvenio()->getInstitucion();
         }
         return $result;
     }

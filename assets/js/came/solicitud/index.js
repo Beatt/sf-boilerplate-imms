@@ -1,6 +1,7 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import SolicitudCreate from './create';
+import SolicitudEdit from './edit';
 
 const CameTableExample = (props) => {
     return (
@@ -86,6 +87,7 @@ export default {CameTableExample, ExampleForm};
 document.addEventListener('DOMContentLoaded', () => {
     const indexDom = document.getElementById('solicitudes-table');
     const createDom = document.getElementById('solicitud-wrapper');
+    const editDom = document.getElementById('solicitud-edit-wrapper')
     if(indexDom) {
         ReactDOM.render(
             <CameTableExample
@@ -99,6 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 instituciones={window.INSTITUCIONES}
                 unidades={window.UNIDADES}
             />, createDom
+        )
+    }
+    if(editDom) {
+        ReactDOM.render(
+            <SolicitudEdit
+                solicitud={window.SOLICITUD}
+                unidades={window.UNIDADES}
+                instituciones={window.INSTITUCIONES}
+            />, editDom
         )
     }
 })

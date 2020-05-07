@@ -35,7 +35,7 @@ class SolicitudController extends DIEControllerController
                         'fecha',
                         'estatus',
                         'estatusFormatted',
-                        'institucion',
+                        'institucion' => ['id', 'nombre'],
                         'camposClinicosSolicitados',
                         'camposClinicosAutorizados',
                     ]
@@ -96,6 +96,9 @@ class SolicitudController extends DIEControllerController
         $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
             ->findAllPrivate();
+        $unidades = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->getAllUnidadesByDelegacion();
         $form = $this->createForm(SolicitudType::class);
         return $this->render('came/solicitud/edit.html.twig', [
             'form' => $form->createView(),
@@ -103,13 +106,16 @@ class SolicitudController extends DIEControllerController
                 'json',
                 ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax']]),
             'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
-                ['attributes' => ['id', 'campoClinicos' => [
+                ['attributes' => ['id','campoClinicos' => ['id',
                     'convenio' => [ 'cicloAcademico' => ['id', 'nombre'],
-                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',],
-                        'gradoAcademico'=> ['id', 'nombre']],
+                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
-                    'fechaInicial', 'fechaFinal'
-                ]]])
+                    'fechaInicial', 'fechaFinal'], 'institucion' => ['id', 'nombre', 'fax',
+                    'telefono', 'correo', 'sitioWeb', 'direccion', 'rfc',  'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label'] ]
+                ]]),
+            'unidades' => $this->get('serializer')->normalize($unidades, 'json',
+                ['attributtes' => ['id', 'nombre']])
         ]);
     }
 
