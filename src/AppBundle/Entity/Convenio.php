@@ -47,7 +47,7 @@ class Convenio implements GroupSequenceProviderInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $nombre;
 
@@ -73,11 +73,6 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank(message="Vigencia no debe estar vacìo o debe ser una fecha válida con formato: AAAA-MM-DD")
      */
     private $vigencia;
-
-    /**
-     * @var NivelAcademico
-     */
-    private $gradoAcademico;
 
     /**
      * @var CicloAcademico
@@ -110,6 +105,13 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank
      */
     private $delegacion;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $numero;
+
 
     public function __construct()
     {
@@ -293,6 +295,22 @@ class Convenio implements GroupSequenceProviderInterface
     public function getDelegacion()
     {
         return $this->delegacion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+
+    /**
+     * @param string $numero
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
     }
 
     public function getLabel()

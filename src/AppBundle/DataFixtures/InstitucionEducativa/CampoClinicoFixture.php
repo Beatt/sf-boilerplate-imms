@@ -5,6 +5,7 @@ namespace AppBundle\DataFixtures\InstitucionEducativa;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampo;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -14,12 +15,28 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $this->create(
+        $campoClinico1 = $this->create(
             ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            CicloAcademicoFixture::CICLO_A,
-            EstatusCampo::MONTOS_VALIDADOS,
+            EstatusCampo::NUEVO,
             $manager
         );
+        $campoClinico1->setSolicitud($this->getReference(Solicitud::CONFIRMADA));
+
+        $campoClinico2 = $this->create(
+            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
+            EstatusCampo::NUEVO,
+            $manager
+        );
+        $campoClinico2->setSolicitud($this->getReference(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME));
+
+        $campoClinico3 = $this->create(
+            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
+            EstatusCampo::PENDIENTE_DE_PAGO,
+            $manager
+        );
+        $campoClinico3->setSolicitud($this->getReference(SolicitudInterface::CARGANDO_COMPROBANTES));
+
+        $manager->flush();
     }
 
     function getDependencies()
@@ -30,15 +47,19 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         ];
     }
 
+    /**
+     * @param $convenioReference
+     * @param $estatusCampoReference
+     * @param ObjectManager $manager
+     * @return CampoClinico
+     */
     private function create(
         $convenioReference,
-        $cicloAcademicoReference,
         $estatusCampoReference,
         ObjectManager $manager
     ) {
         $campoClinico = new CampoClinico();
         $campoClinico->setConvenio($this->getReference($convenioReference));
-        $campoClinico->setCicloAcademico($this->getReference($cicloAcademicoReference));
         $campoClinico->setFechaInicial(Carbon::now());
         $campoClinico->setFechaFinal(Carbon::now()->addMonths(8));
         $campoClinico->setHorario('10am a 14:00pm');
@@ -49,9 +70,8 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setMonto('100000');
         $campoClinico->setEstatus($this->getReference($estatusCampoReference));
 
-        $campoClinico->setSolicitud($this->getReference(Solicitud::CREADA));
-
         $manager->persist($campoClinico);
-        $manager->flush();
+
+        return $campoClinico;
     }
 }

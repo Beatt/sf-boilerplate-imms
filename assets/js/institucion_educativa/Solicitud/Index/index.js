@@ -2,8 +2,11 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import { solicitudesGet } from "../../api/solicitud";
-import { ESTATUS_TEXTS, TIPO_PAGO } from "./constants";
-import {getEstatusCampoClinico} from "../../api/estatusCampo";
+import { TIPO_PAGO } from "../../../constants";
+import {
+  getActionNameByInstitucionEducativa,
+  isActionDisabledByInstitucionEducativa
+} from "../../../utils";
 
 const Index = (
   {
@@ -13,28 +16,15 @@ const Index = (
 
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
-  const [ estatusCampo, setEstatusCampo ] = useState([])
   const [ search, setSearch ] = useState('')
-  const [ estatusSelected, setEstatus ] = useState(null)
-  const [ tipoPago, setTipoPago ] = useState('unico')
+  const [ tipoPago, setTipoPago ] = useState(null)
   const [ total, setTotal ] = useState(totalInit)
   const [ currentPage, setCurrentPage ] = useState(1)
   const [ isLoading, toggleLoading ] = useState(false)
 
   useEffect(() => {
-    if(
-      currentPage !== null ||
-      tipoPago !== '' ||
-      estatusSelected !== null
-    ) {
-      getCamposClinicos()
-    }
-  }, [currentPage, tipoPago, estatusSelected])
-
-  useEffect(() => {
-    getEstatusCampoClinico()
-      .then((res) => setEstatusCampo(res))
-  }, [])
+    if(currentPage !== null || tipoPago !== null) getCamposClinicos()
+  }, [currentPage, tipoPago])
 
   function handleSearch() {
     if(!search) return;
@@ -47,7 +37,6 @@ const Index = (
     solicitudesGet(
       institucionId,
       tipoPago,
-      estatusSelected,
       currentPage,
       search
     )
@@ -64,59 +53,20 @@ const Index = (
     <div className='row'>
       <div className="col-md-3">
         <div className="form-group">
-          <label htmlFor="">Tipo de pago</label>
-          <div className="row">
-            <div className='col-md-4'>
-              <label htmlFor="tipo_de_pago_unico">Único&nbsp;</label>
-              <input
-                type="radio"
-                id='tipo_de_pago_unico'
-                name='tipoDePago'
-                value={TIPO_PAGO.UNICO}
-                defaultChecked={true}
-                onChange={({ target }) => setTipoPago(target.value)}
-              />
-            </div>
-            <div className='col-md-6'>
-              <label htmlFor="tipo_de_pago_individual">Individual&nbsp;</label>
-              <input
-                type="radio"
-                id='tipo_de_pago_individual'
-                name='tipoDePago'
-                value={TIPO_PAGO.INDIVIDUAL}
-                onChange={({ target }) => setTipoPago(target.value)}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="form-group">
-          <label htmlFor="status">Estado</label>
+          <label htmlFor="solicitud_tipoPago">Tipo de pago</label>
           <select
-            name=""
-            id="status"
+            id="solicitud_tipoPago"
             className='form-control'
-            onChange={({ target }) =>
-              setEstatus(target.value !== '' ? target.value : null)
-            }
+            onChange={({ target }) => setTipoPago(target.value)}
           >
-            <option value="">Elige una opción</option>
-            {
-              estatusCampo.map((estatus) =>
-                <option
-                  value={estatus.id}
-                  key={estatus.id}
-                >
-                  {estatus.nombre}
-                </option>
-              )
-            }
+            <option value=''>Ver todos</option>
+            <option value={TIPO_PAGO.UNICO}>Pago único</option>
+            <option value={TIPO_PAGO.MULTIPLE}>Pago multiple</option>
           </select>
         </div>
       </div>
-      <div className="col-md-1"/>
-      <div className='col-md-5 mb-10'>
+      <div className="col-md-3"/>
+      <div className='col-md-6 mb-10 text-right'>
         <div className='navbar-form navbar-right'>
           <div className="form-group">
             <input
@@ -146,6 +96,7 @@ const Index = (
                 <th>No. de campos clínicos <br/>solicitados</th>
                 <th>No. de campos clínicos <br/>autorizados</th>
                 <th>Fecha de solicitud</th>
+                <th>Tipo de pago</th>
                 <th>Estado</th>
                 <th>Acciones</th>
               </tr>
@@ -154,18 +105,22 @@ const Index = (
               {
                 isLoading ?
                   <tr>
-                    <th className='text-center' colSpan={6}>Cargando información...</th>
+                    <th className='text-center' colSpan={7}>Cargando información...</th>
                   </tr> :
-                  camposClinicos.map((campoClinico, index) => (
+                  camposClinicos.map((solicitud, index) => (
                     <tr key={index}>
-                      <th><a href="">{campoClinico.noSolicitud}</a></th>
-                      <th>{campoClinico.noCamposSolicitados}</th>
-                      <th>{campoClinico.noCamposAutorizados}</th>
-                      <th>{campoClinico.fecha}</th>
-                      <th>{ESTATUS_TEXTS[campoClinico.estatusActual].title}</th>
+                      <th><a href="">{solicitud.noSolicitud}</a></th>
+                      <th>{solicitud.noCamposSolicitados}</th>
+                      <th>{solicitud.noCamposAutorizados}</th>
+                      <th>{solicitud.fecha}</th>
+                      <th>{solicitud.tipoPago}</th>
+                      <th>{solicitud.estatus}</th>
                       <th>
-                        <button className='btn btn-default'>
-                          {ESTATUS_TEXTS[campoClinico.estatusActual].button}
+                        <button
+                          className='btn btn-default'
+                          disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
+                        >
+                          {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
                         </button>
                       </th>
                     </tr>

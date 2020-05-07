@@ -26,6 +26,7 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
             $convenio->setSector('Sector a');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
+            $convenio->setGradoAcademico($this->getReference(NivelAcademicoFixture::NIVEL_ACADEMICO_A));
 
             $manager->persist($convenio);
 
@@ -41,6 +42,7 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
             $convenio->setSector('Sector b');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
+            $convenio->setGradoAcademico($this->getReference(NivelAcademicoFixture::NIVEL_ACADEMICO_A));
 
             $manager->persist($convenio);
 
@@ -55,6 +57,7 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
             $convenio->setSector('Sector c');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
+            $convenio->setGradoAcademico($this->getReference(NivelAcademicoFixture::NIVEL_ACADEMICO_A));
 
             $manager->persist($convenio);
 

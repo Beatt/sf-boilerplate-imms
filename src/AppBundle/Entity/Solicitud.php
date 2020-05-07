@@ -13,16 +13,8 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
 {
-    const CREADA = 'solicitud_creada';
-    const CONFIRMADA = 'solicitud_confirmada';
-    const EN_VALIDACION_DE_MONTOS = 'en_validacion_de_montos';
-    const MONTOS_INCORRECTOS = 'montos_incorrectos';
-
-    const TIPO_PAGO_INDIVIDUAL = 'individual';
-    const TIPO_PAGO_UNICO = 'unico';
-
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
@@ -51,14 +43,24 @@ class Solicitud
     private $referenciaBancaria;
 
     /**
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=true)
+     */
+    private $monto;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
      */
     private $camposClinicos;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
     private $tipoPago;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $documento;
 
     public function __construct()
     {
@@ -67,11 +69,26 @@ class Solicitud
     }
 
     /**
-     * @var Expediente
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Expediente", mappedBy="solicitud")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $expediente;
+    private $urlArchivo;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $validado;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $fechaComprobante;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $observaciones;
+
+    
     /**
      * @return int
      */
@@ -127,8 +144,13 @@ class Solicitud
         $estatusCollection = [
             self::CREADA,
             self::CONFIRMADA,
-            self::EN_VALIDACION_DE_MONTOS,
-            self::MONTOS_INCORRECTOS
+            self::EN_VALIDACION_DE_MONTOS_CAME,
+            self::MONTOS_INCORRECTOS_CAME,
+            self::MONTOS_VALIDADOS_CAME,
+            self::FORMATOS_DE_PAGO_GENERADOS,
+            self::CARGANDO_COMPROBANTES,
+            self::EN_VALIDACION_FOFOE,
+            self::CREDENCIALES_GENERADAS
         ];
 
         $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
@@ -174,6 +196,124 @@ class Solicitud
     {
         return $this->referenciaBancaria;
     }
+
+
+    /**
+     * @param string $documento
+     * @return Solicitud
+     */
+    public function setDocumento($documento)
+    {
+        $this->documento = $documento;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDocumento()
+    {
+        return $this->documento;
+    }
+
+    /**
+     * @param string $url_archivo
+     * @return Solicitud
+     */
+    public function setUrlArchivo($url_archivo)
+    {
+        $this->urlArchivo = $url_archivo;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrlArchivo()
+    {
+        return $this->urlArchivo;
+    }
+
+    
+    /**
+     * @param string $observaciones
+     * @return Solicitud
+     */
+    public function setObservaciones($observaciones)
+    {
+        $this->observaciones = $observaciones;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObservaciones()
+    {
+        return $this->observaciones;
+    }
+
+
+    /**
+     * @param boolean $validado
+     * @return Solicitud
+     */
+    public function setValidado($validado)
+    {
+        $this->validado = $validado;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getValidado()
+    {
+        return $this->validado;
+    }
+
+    /**
+     * @param DateTime $fecha_comprobante
+     * @return Solicitud
+     */
+    public function setFechaComprobante($fecha_comprobante)
+    {
+        $this->fechaComprobante = $fecha_comprobante;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getFechaComprobante()
+    {
+        return $this->fechaComprobante;
+    }
+
+    /**
+     * @param float $monto
+     * @return Solicitud
+     */
+    public function setMonto($monto)
+    {
+        $this->monto = $monto;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMonto()
+    {
+        return $this->monto;
+    }
+
 
     /**
      * @return int
@@ -255,22 +395,10 @@ class Solicitud
     {
         /** @var CampoClinico $campoClinico */
         $noCamposSolicitados = array_filter($this->getCampoClinicos()->toArray(), function (CampoClinico $campoClinico) {
-            return $campoClinico->getEstatus()->getEstatus() === EstatusCampo::SOLICITUD_NO_AUTORIZADA;
+            return $campoClinico->getLugaresAutorizados() !== 0;
         });
 
         return count($noCamposSolicitados);
-    }
-
-    /** @return string */
-    public function getEstatusActual()
-    {
-        if($this->estatus === Solicitud::CONFIRMADA) return $this->estatus;
-
-        if($this->tipoPago === self::TIPO_PAGO_UNICO) {
-            /** @var CampoClinico $campoClinico */
-            $campoClinico = $this->getCamposClinicos()->first();
-            return $campoClinico->getEstatus()->getEstatus();
-        }
     }
 
     /**
@@ -278,7 +406,7 @@ class Solicitud
      */
     public function getTipoPago()
     {
-        return $this->tipoPago;
+        return $this->tipoPago !== null ? $this->tipoPago : self::TIPO_PAGO_NULL;
     }
 
     /**
@@ -295,7 +423,10 @@ class Solicitud
      */
     public function addCamposClinico(CampoClinico $camposClinico)
     {
-        $this->camposClinicos[] = $camposClinico;
+        if(!$this->camposClinicos->contains($camposClinico)) {
+            $this->camposClinicos[] = $camposClinico;
+            $camposClinico->setSolicitud($this);
+        }
 
         return $this;
     }
@@ -348,5 +479,13 @@ class Solicitud
     {
         $this->expediente = $expediente;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    private function esSolicitudConfirmada()
+    {
+        return $this->estatus === Solicitud::CONFIRMADA;
     }
 }

@@ -3,120 +3,75 @@
 namespace Tests\AppBundle\Repository;
 
 use AppBundle\Entity\CampoClinico;
-use AppBundle\Entity\Convenio;
 use AppBundle\Entity\EstatusCampo;
-use AppBundle\Entity\Institucion;
+use AppBundle\Entity\NivelAcademico;
 use AppBundle\Entity\Solicitud;
-use AppBundle\Repository\SolicitudRepositoryInterface;
 use Carbon\Carbon;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Serializer\Serializer;
 
 class SolicitudRepositoryTest extends WebTestCase
 {
     /** @var EntityManagerInterface */
     private $entityManager;
 
+    /** @var Serializer */
+    private $serializer;
+
     public function setUp()
     {
         $client = static::createClient();
         $container = $client->getContainer();
-        $doctrine = $container->get('doctrine');
 
-        $purger = new ORMPurger($doctrine->getManager());
-        $purger->purge();
+        $this->entityManager = $container->get('doctrine.orm.default_entity_manager');
+        $this->serializer = $container->get('serializer');
 
-        $entityManager = $container->get('doctrine.orm.entity_manager');
-        $this->entityManager = $entityManager;
+        parent::setUp();
     }
 
     public function testGetSolicitudesConEstatusActualEnConfirmado()
     {
-        $institucion = new Institucion();
-        $institucion->setNombre('dummydata');
-        $institucion->setRepresentante('dummydata');
-        $institucion->setDireccion('dummydata');
-        $institucion->setCedulaIdentificacion('dummydata');
-        $institucion->setSitioWeb('dummydata');
-        $institucion->setCorreo('dummydata');
-        $institucion->setTelefono('dummydata');
-        $institucion->setRfc('dummydata');
-
-        $convenio = new Convenio();
-        $convenio->setNombre('dummydata');
-        $convenio->setInstitucion($institucion);
-        $convenio->setSector('dummydata');
-        $convenio->setVigencia(Carbon::now()->addMonths(6));
-        $convenio->setTipo('dummydata');
-
-        $campoClinico = $this->createCampoClinicoConEstatus();
-        $campoClinico->setConvenio($convenio);
-
         $solicitud = $this->createSolicitudByEstatus(
-            $campoClinico,
             Solicitud::CONFIRMADA
         );
 
-        $this->entityManager->persist($institucion);
-        $this->entityManager->persist($convenio);
-        $this->entityManager->persist($campoClinico);
-        $this->entityManager->persist($solicitud);
         $this->entityManager->flush();
 
-        /** @var SolicitudRepositoryInterface $repository */
-        $repository = $this->entityManager->getRepository(Solicitud::class);
+        $solicitudesNormalize = $this->getSolicitudNormalized([$solicitud]);
+        $this->assertEquals(Solicitud::CONFIRMADA, $solicitudesNormalize[0]['estatusActual']);
 
-        /** @var Paginator $paginator */
-        $paginator = $repository->getAllSolicitudesByInstitucion(
-            $institucion->getId(),
-            Solicitud::TIPO_PAGO_UNICO,
-            null,
-            1,
-            null
-        );
-
-        $solicitudes = $paginator->getQuery()->getResult();
-        dump(count($solicitudes));
-
-        /** @var Solicitud $solicitude */
-        foreach ($solicitudes as $solicitude) {
-            dump('verga');
-        }
     }
 
     public function testGetSolicitudesConPagoUnico()
     {
-        $estatusCampo = new EstatusCampo();
-        $estatusCampo->setNombre('dummydata');
-        $estatusCampo->setEstatus(EstatusCampo::MONTOS_VALIDADOS);
+        $estatusCampo = $this->createEstatusCampo();
 
-        $campoClinico = $this->createCampoClinicoConEstatus($estatusCampo);
+        $campoClinico = $this->createCampoClinico();
+        $campoClinico->setEstatus($estatusCampo);
 
         $solicitud = $this->createSolicitudByEstatus(
-            $campoClinico,
-            Solicitud::EN_VALIDACION_DE_MONTOS
+            Solicitud::EN_VALIDACION_DE_MONTOS,
+            Solicitud::TIPO_PAGO_UNICO
         );
+        $solicitud->addCamposClinico($campoClinico);
 
-        $this->entityManager->persist($estatusCampo);
-        $this->entityManager->persist($campoClinico);
-        $this->entityManager->persist($solicitud);
         $this->entityManager->flush();
 
-        $solicitudes = $this->entityManager->getRepository(Solicitud::class)->findAll();
-
-        /** @var Solicitud $solicitud */
-        $solicitud = $solicitudes[0];
+        $solicitudesNormalized = $this->getSolicitudNormalized([$solicitud]);
 
         $this->assertEquals(
-            'montos_validados',
-            $solicitud->getEstatusActual()
+            EstatusCampo::MONTOS_VALIDADOS,
+            $solicitudesNormalized[0]['estatusActual']
         );
     }
 
     public function testGetSolicitudesConPagoIndividual()
     {
+        $nivelAcademico = new NivelAcademico();
+        $nivelAcademico->setNombre('dummydata');
+
         $estatusCampo = new EstatusCampo();
         $estatusCampo->setNombre('dummydata');
         $estatusCampo->setEstatus(EstatusCampo::MONTOS_VALIDADOS);
@@ -125,74 +80,130 @@ class SolicitudRepositoryTest extends WebTestCase
         $estatusCampoPendienteCFDI->setNombre('dummydata');
         $estatusCampoPendienteCFDI->setEstatus(EstatusCampo::PENDIENTE_CFDI_POR_FOFOE);
 
-        $campoClinico1 = $this->createCampoClinicoConEstatus($estatusCampo);
-        $campoClinico2 = $this->createCampoClinicoConEstatus($estatusCampoPendienteCFDI);
+        $campoClinico1 = $this->createCampoClinico();
+        $campoClinico2 = $this->createCampoClinico();
+        $campoClinico1->setEstatus($estatusCampo);
+        $campoClinico2->setEstatus($estatusCampoPendienteCFDI);
 
         $solicitud = $this->createSolicitudByEstatus(
-            $campoClinico1,
-            Solicitud::EN_VALIDACION_DE_MONTOS
+            Solicitud::EN_VALIDACION_DE_MONTOS,
+            Solicitud::TIPO_PAGO_MULTIPLE
         );
+        $solicitud->addCamposClinico($campoClinico1);
         $solicitud->addCamposClinico($campoClinico2);
 
+        $this->entityManager->persist($nivelAcademico);
         $this->entityManager->persist($estatusCampo);
         $this->entityManager->persist($estatusCampoPendienteCFDI);
-        $this->entityManager->persist($campoClinico1);
-        $this->entityManager->persist($campoClinico2);
-        $this->entityManager->persist($solicitud);
         $this->entityManager->flush();
 
-        /** @var SolicitudRepositoryInterface $solicitudes */
-        $repository = $this->entityManager->getRepository(Solicitud::class);
+        $repository = $this->entityManager->getRepository(CampoClinico::class);
 
-        $solicitudes = $repository->getAllSolicitudesByInstitucion(
-        );
+        $camposClinicos = $repository->createQueryBuilder('campo_clinico')
+            ->leftJoin('campo_clinico.solicitud', 'solicitud')
+            ->where('campo_clinico.solicitud = :id')
+            ->setParameter('id', $solicitud->getId())
+            ->orderBy('campo_clinico.estatus', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
 
-        $this->assertCount(2, $solicitudes);
+        $solicitudesNormalized = $this->getSolicitudNormalized($camposClinicos);
 
-        /** @var Solicitud $solicitud */
-        $solicitud = $solicitudes[0];
+        $this->assertCount(2, $solicitudesNormalized);
 
         $this->assertEquals(
-            'montos_validados',
-            $solicitud->getEstatusActual()
+            EstatusCampo::PENDIENTE_CFDI_POR_FOFOE,
+            $solicitudesNormalized[0]['estatusActual']
+        );
+        $this->assertEquals(
+            EstatusCampo::MONTOS_VALIDADOS,
+            $solicitudesNormalized[1]['estatusActual']
         );
     }
 
     /**
-     * @param CampoClinico $campoClinico
      * @param $estatus
+     * @param string $tipoPago
      * @return Solicitud
      */
-    private function createSolicitudByEstatus(
-        CampoClinico $campoClinico,
-        $estatus
-    ) {
+    private function createSolicitudByEstatus($estatus, $tipoPago = Solicitud::TIPO_PAGO_UNICO) {
         $solicitud = new Solicitud();
-        $solicitud->setTipoPago(Solicitud::TIPO_PAGO_UNICO);
+        $solicitud->setTipoPago($tipoPago);
         $solicitud->setFecha(Carbon::now());
         $solicitud->setEstatus($estatus);
         $solicitud->setReferenciaBancaria('dummydata');
-        $solicitud->addCamposClinico($campoClinico);
+
+        $this->entityManager->persist($solicitud);
+
         return $solicitud;
     }
 
     /**
-     * @param EstatusCampo $estatusCampo
      * @return CampoClinico
      */
-    private function createCampoClinicoConEstatus(EstatusCampo $estatusCampo = null)
+    private function createCampoClinico()
     {
         $campoClinico = new CampoClinico();
-        $campoClinico->setLugaresAutorizados(10);
-        $campoClinico->setLugaresSolicitados(10);
+        $campoClinico->setLugaresAutorizados(0);
+        $campoClinico->setLugaresSolicitados(0);
         $campoClinico->setHorario(Carbon::now());
         $campoClinico->setFechaInicial(Carbon::now());
         $campoClinico->setFechaFinal(Carbon::now()->addMonths(6));
         $campoClinico->setPromocion('dummydata');
         $campoClinico->setReferenciaBancaria('dummydata');
         $campoClinico->setMonto(00000);
-        $campoClinico->setEstatus($estatusCampo);
+
+        $this->entityManager->persist($campoClinico);
 
         return $campoClinico;
+    }
+
+    /**
+     * @param array $solicitudes
+     * @return array
+     */
+    private function getSolicitudNormalized(array $solicitudes)
+    {
+        return $this->serializer
+            ->normalize(
+                $solicitudes,
+                'json',
+                [
+                    'attributes' => [
+                        'id',
+                        'noSolicitud',
+                        'fecha',
+                        'estatusActual',
+                        'noCamposSolicitados',
+                        'noCamposAutorizados'
+                    ]
+                ]
+            );
+    }
+
+    public function tearDown()
+    {
+        $client = static::createClient();
+        $container = $client->getContainer();
+        $doctrine = $container->get('doctrine');
+
+        $purger = new ORMPurger($doctrine->getManager());
+        $purger->purge();
+
+    }
+
+    /**
+     * @return EstatusCampo
+     */
+    private function createEstatusCampo()
+    {
+        $estatusCampo = new EstatusCampo();
+        $estatusCampo->setNombre('dummydata');
+        $estatusCampo->setEstatus(EstatusCampo::MONTOS_VALIDADOS);
+
+        $this->entityManager->persist($estatusCampo);
+
+        return $estatusCampo;
     }
 }

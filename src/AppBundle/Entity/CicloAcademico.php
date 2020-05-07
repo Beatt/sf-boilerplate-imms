@@ -25,7 +25,7 @@ class CicloAcademico
      */
     private $nombre;
 
-     /**
+    /**
      * @var boolean
      * @ORM\Column(type="boolean")
      */
