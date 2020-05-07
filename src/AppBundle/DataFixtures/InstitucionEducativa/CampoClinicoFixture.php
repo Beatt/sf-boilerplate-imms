@@ -38,15 +38,12 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
     ) {
         $campoClinico = new CampoClinico();
         $campoClinico->setConvenio($this->getReference($convenioReference));
-        $campoClinico->setCicloAcademico($this->getReference($cicloAcademicoReference));
         $campoClinico->setFechaInicial(Carbon::now());
         $campoClinico->setFechaFinal(Carbon::now()->addMonths(8));
         $campoClinico->setHorario('10am a 14:00pm');
         $campoClinico->setPromocion('promocion');
         $campoClinico->setLugaresSolicitados(40);
         $campoClinico->setLugaresAutorizados(20);
-        $campoClinico->setReferenciaBancaria('102012010210');
-        $campoClinico->setMonto('100000');
         $campoClinico->setEstatus($this->getReference($estatusCampoReference));
 
         $campoClinico->setSolicitud($this->getReference(Solicitud::CREADA));
