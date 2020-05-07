@@ -17,7 +17,7 @@ class ReporteController extends DIEControllerController
     public function showAction(Request $request)
     {
 
-        $campos = ["offset", "search", "estatus", "cicloAcademico", "delegacion", "carrera"];
+        $campos = ["page", "limit", "search", "estatus", "cicloAcademico", "delegacion", "carrera"];
         $isSomeValueSet = false;
         $filtros = [];
 
@@ -29,14 +29,17 @@ class ReporteController extends DIEControllerController
           }
         }
 
-      $campos =  $this->getDoctrine()
-        ->getRepository(CampoClinico::class)
-        ->getAllCampos($filtros);
-
       if($isSomeValueSet) {
+        $result =  $this->getDoctrine()
+          ->getRepository(CampoClinico::class)
+          ->getAllCamposByPage($filtros);
+
+        $campos = $result[0];
+
         return new JsonResponse([
           'camposClinicos' => $this->getNormalizeCampos($campos),
-          'total' => round(count($campos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
+          'total' => $result[1],
+          'numPags' => $result[2]
         ]);
 
       }

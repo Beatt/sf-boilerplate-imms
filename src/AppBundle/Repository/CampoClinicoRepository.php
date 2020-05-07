@@ -5,6 +5,7 @@ namespace AppBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class CampoClinicoRepository extends EntityRepository implements CampoClinicoRepositoryInterface
 {
@@ -58,37 +59,30 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         return 0;
     }
 
-    function getAllCampos($filtros = [], $per_page=10) {
+    function getAllCamposByPage($filtros) {
       $query =  $this->createQueryBuilder('campo_clinico')
         ->join('campo_clinico.convenio', 'convenio')
         ->join('campo_clinico.solicitud', 'solicitud')
         ->join('convenio.institucion', 'institucion')
         ->orderBy('institucion.nombre', 'ASC');
-        //->join('convenio.carrera', 'carrera');
-        //->join('carrera.nivelAcademico', 'ciclo_academico');
 
-      if (@$filtros['offset'] && $filtros['offset'] > 0) {
-        $query = $query->setMaxResults($per_page)
-          ->setFirstResult(($filtros['offset']-1) * $per_page);
+      if (@$filtros['search']) {
+        $query = $query
+          ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
+          //->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
+          ->orWhere("LOWER(institucion.nombre) LIKE LOWER(:search)")
+          ->setParameter('search', '%' . $filtros['search'] . '%');
       }
 
-        if (@$filtros['search']) {
-          $query = $query
-            ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
-            //->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
-            ->orWhere("LOWER(institucion.nombre) LIKE LOWER(:search)")
-            ->setParameter('search', '%' . $filtros['search'] . '%');
-        }
+      if (@$filtros['estatus']) {
+        $query = $query->andWhere('campo_clinico.estatus = :status')
+          ->setParameter('status', $filtros['estatus']);
+      }
 
-        if (@$filtros['estatus']) {
-          $query = $query->andWhere('campo_clinico.estatus = :status')
-            ->setParameter('status', $filtros['estatus']);
-        }
-
-        if (@$filtros['cicloAcademico']) {
-          $query = $query->andWhere('carrera.nivelAcademico = :ciclo')
-            ->setParameter('ciclo', $filtros['cicloAcademico']);
-        }
+      if (@$filtros['cicloAcademico']) {
+        $query = $query->andWhere('carrera.nivelAcademico = :ciclo')
+          ->setParameter('ciclo', $filtros['cicloAcademico']);
+      }
 
       if (@$filtros['carrera']) {
         $query = $query->andWhere('convenio.carrera = :carrera')
@@ -100,8 +94,31 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
           ->setParameter('delegacion', $filtros['delegacion']);
       }
 
-        return $query
+      $query = $query->getQuery();
+
+      // load doctrine Paginator
+      $paginator = new Paginator($query);
+
+      // get total items
+      $totalItems = count($paginator);
+
+      $pageSize = @$filtros['limit'] && $filtros['limit'] > 0 ?
+        $filtros['limit'] : 10;
+      $page = @$filtros['page']  && $filtros['page'] > 0 ? $filtros['page'] : 1;
+
+      // get total pages
+      $pagesCount = ceil($totalItems / $pageSize);
+
+
+      // now get one page's items:
+      $campos = $paginator
         ->getQuery()
-        ->getResult();
+        ->setFirstResult($pageSize * ($page-1)) // set the offset
+        ->setMaxResults($pageSize)
+        ->getResult(); // set the limit}
+
+      return [$campos, $totalItems, $pagesCount];
+
     }
+
 }
