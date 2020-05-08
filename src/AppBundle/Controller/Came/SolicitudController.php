@@ -179,7 +179,7 @@ class SolicitudController extends DIEControllerController
                         'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',
                             'nivelAcademico' => ['id', 'nombre']], 'numero'],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
-                    'fechaInicial', 'fechaFinal'],
+                    'fechaInicial', 'fechaFinal', 'referenciaBancaria'],
                 'expediente' => ['id', 'descripcion', 'urlArchivo', 'nombreArchivo', 'fecha'],
                 'pago' => ['id', 'comprobantePago', 'fecha', 'factura' => ['fechaFacturacion', 'id', 'zip']]]
             ]),
@@ -188,7 +188,8 @@ class SolicitudController extends DIEControllerController
                 'id', 'vigencia', 'label',
                 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]]
             ]),
-            'pagosCamposClinicos' => ['id', 'referenciaBancaria', 'comprobantePago', 'factura' => ['id', 'zip']]
+            'pagosCamposClinicos' => $this->get('serializer')->normalize($pagosCamposClinicos, 'json',
+                ['atributtes' => ['id', 'referenciaBancaria', 'comprobantePago', 'factura' => ['id', 'zip']]])
         ]);
     }
 

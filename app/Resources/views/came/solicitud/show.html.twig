@@ -28,6 +28,7 @@
     <script>
         window.SOLICITUD = {{ solicitud | json_encode | raw }}
         window.CONVENIOS = {{ convenios | json_encode | raw }}
+        window.PAGOSCAMPOSCLINICOS = {{ pagosCamposClinicos | json_encode | raw }};
     </script>
     <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 
