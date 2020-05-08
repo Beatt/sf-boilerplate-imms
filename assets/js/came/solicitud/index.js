@@ -117,7 +117,7 @@ const SolicitudIndex = (props) => {
                   {props.solicitudes.map(solicitud => {
                       return (
                           <tr key={solicitud.id}>
-                              <td>{solicitud.noSolicitud}</td>
+                              <td><a href={`/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
                               <td>{solicitud.institucion.nombre}</td>
                               <td>{solicitud.camposClinicosSolicitados}</td>
                               <td>{solicitud.camposClinicosAutorizados}</td>
