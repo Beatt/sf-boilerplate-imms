@@ -40,3 +40,4 @@ services:
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\Pago
+    public: true

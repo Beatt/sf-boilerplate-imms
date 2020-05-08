@@ -5,21 +5,25 @@ namespace Tests\AppBundle\Service;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Service\UploaderComprobantePago;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploaderComprobantePagoTest extends WebTestCase
 {
     /**
      * @var PagoRepositoryInterface
      */
-    private $pagoRepository;
+    private $pagoRepositoryInterface;
 
     protected function setUp()
     {
-        $client = self::createClient();
-        $container = $client->getContainer();
+        $kernel = self::bootKernel();
+        $container = $kernel->getContainer();
 
-        $this->pagoRepository = $container->get(PagoRepositoryInterface::class);
+        $this->pagoRepositoryInterface = $container->get(PagoRepositoryInterface::class);
     }
 
     public function testUploadComprobanteSuccessfully()
@@ -28,46 +32,32 @@ class UploaderComprobantePagoTest extends WebTestCase
 
         $pago = new Pago();
         $pago->setMonto(10000);
-        $pago->setReferenciaBancaria($referenciaBancaria);
+        $pago->setReferenciaBancaria(1000001);
         $pago->setRequiereFactura(false);
-        $pago->setComprobantePago('comprobante.pdf');
-        $pago->setValidado(false);
-        $pago->setObservaciones('');
-        $this->pagoRepository->save($pago);
+        $this->pagoRepositoryInterface->save($pago);
 
-        $service = new UploaderComprobantePago(
-            $this->pagoRepository
-        );
+        $service = new UploaderComprobantePago($this->pagoRepositoryInterface);
 
         $campoClinico = $this->createMock(CampoClinico::class);
         $campoClinico->method('getReferenciaBancaria')
             ->willReturn($referenciaBancaria);
 
-        $this->assertTrue(true);
+        $file = new File(__DIR__.'/test.pdf');
+        $service->update(
+            $campoClinico,
+            new UploadedFile($file->getRealPath(), $file->getFilename(), $file->getMimeType(), $file->getSize(), null, true)
+        );
+
+        $this->assertNotNull($pago->getComprobantePago());
     }
-}
 
-class UploaderComprobantePago implements UploaderComprobantePagoInterface
-{
-    /**
-     * @var PagoRepositoryInterface
-     */
-    private $pagoRepository;
-
-    public function __construct(PagoRepositoryInterface $pagoRepository)
+    public function tearDown()
     {
-        $this->pagoRepository = $pagoRepository;
+        $client = static::createClient();
+        $container = $client->getContainer();
+        $doctrine = $container->get('doctrine');
+
+        $purger = new ORMPurger($doctrine->getManager());
+        $purger->purge();
     }
-
-    public function update(CampoClinico $campoClinico)
-    {
-        /** @var Pago $comprobante */
-        $comprobante = $this->pagoRepository->getComprobante($campoClinico->getReferenciaBancaria());
-
-    }
-}
-
-interface UploaderComprobantePagoInterface
-{
-    public function update(CampoClinico $campoClinico);
 }

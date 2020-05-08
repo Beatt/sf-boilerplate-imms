@@ -62,12 +62,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $documento;
 
-    public function __construct()
-    {
-        $this->fecha = new \DateTime();
-        $this->camposClinicos = new ArrayCollection();
-    }
-
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -88,6 +82,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $observaciones;
 
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+        $this->camposClinicos = new ArrayCollection();
+    }
 
     /**
      * @return int

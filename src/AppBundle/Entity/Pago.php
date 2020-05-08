@@ -2,13 +2,18 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Pago
  *
  * @ORM\Table(name="pago")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PagoRepository")
+ * @Vich\Uploadable
  */
 class Pago
 {
@@ -31,9 +36,16 @@ class Pago
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $comprobantePago;
+
+    /**
+     * @var File
+     *
+     * @Vich\UploadableField(mapping="pagos", fileNameProperty="comprobantePago")
+     */
+    private $comprobantePagoFile;
 
     /**
      * @var string
@@ -45,7 +57,7 @@ class Pago
     /**
      * @var bool
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $validado;
 
@@ -59,7 +71,7 @@ class Pago
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $observaciones;
 
@@ -78,6 +90,13 @@ class Pago
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */
     private $factura;
+
+    /**
+     * @var DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $fechaActualizacionComprobante;
 
     /**
      * @return int
@@ -228,6 +247,42 @@ class Pago
     public function setSolicitud(Solicitud $solicitud)
     {
         $this->solicitud = $solicitud;
+    }
+
+    /**
+     * @return File
+     */
+    public function getComprobantePagoFile()
+    {
+        return $this->comprobantePagoFile;
+    }
+
+    /**
+     * @param File $comprobantePagoFile
+     */
+    public function setComprobantePagoFile($comprobantePagoFile = null)
+    {
+        $this->comprobantePagoFile = $comprobantePagoFile;
+
+        if($this->fechaActualizacionComprobante === null) {
+            $this->setFechaActualizacionComprobante(Carbon::now());
+        }
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getFechaActualizacionComprobante()
+    {
+        return $this->fechaActualizacionComprobante;
+    }
+
+    /**
+     * @param DateTime $fechaActualizacionComprobante
+     */
+    public function setFechaActualizacionComprobante($fechaActualizacionComprobante)
+    {
+        $this->fechaActualizacionComprobante = $fechaActualizacionComprobante;
     }
 }
 

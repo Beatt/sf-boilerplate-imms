@@ -8,7 +8,9 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
+    app.path.pagos: /uploads/files/institucion/pagos
     app.path.institucion_cedulas: /uploads/files/institucion/cedulas
+    upload_destination_pagos: '%kernel.root_dir%/../web/uploads/files/institucion/pagos'
 
 framework:
     #esi: ~
@@ -97,3 +99,7 @@ vich_uploader:
             uri_prefix: '%app.path.institucion_cedulas%'
             upload_destination: '%kernel.root_dir%/../web/uploads/files/institucion/cedulas'
             namer: AppBundle\Service\InstitucionVichNamer
+        pagos:
+            uri_prefix: '%app.path.pagos%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/institucion/pagos'
+            namer: AppBundle\Service\PagoVichNamer

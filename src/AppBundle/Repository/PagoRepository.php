@@ -9,6 +9,7 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 {
     public function getComprobante($referenciaBancaria)
     {
+        return $this->findOneByReferenciaBancaria($referenciaBancaria);
     }
 
     public function save(Pago $pago)
