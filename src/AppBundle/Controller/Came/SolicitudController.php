@@ -5,7 +5,9 @@ namespace AppBundle\Controller\Came;
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
+use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Unidad;
 use AppBundle\Form\Type\SolicitudType;
 use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +25,7 @@ class SolicitudController extends DIEControllerController
         $page = $request->query->get('page', 1);
         $solicitudes = $this->getDoctrine()
             ->getRepository(Solicitud::class)
-            ->findBy([], [], $perPage, ($page-1) * $perPage);
+            ->findBy([], [], $perPage, ($page - 1) * $perPage);
         return $this->render('came/solicitud/index.html.twig', [
             'solicitudes' => $this->get('serializer')->normalize(
                 $solicitudes,
@@ -33,8 +35,10 @@ class SolicitudController extends DIEControllerController
                         'id',
                         'fecha',
                         'estatus',
-                        'estatusFormatted',
-                        'institucion',
+                        'noSolicitud',
+                        'estatus',
+                        'estatusCameFormatted',
+                        'institucion' => ['id', 'nombre'],
                         'camposClinicosSolicitados',
                         'camposClinicosAutorizados',
                     ]
@@ -52,11 +56,17 @@ class SolicitudController extends DIEControllerController
         $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
             ->findAllPrivate();
+        $unidades = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->getAllUnidadesByDelegacion();
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
-            'instituciones' => $this->get('serializer')->normalize($instituciones,
-                'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax']])
+            'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
+                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax',
+                    'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]]),
+            'unidades' => $this->get('serializer')->normalize($unidades, 'json',
+                ['attributtes' => ['id', 'nombre']])
         ]);
     }
 
@@ -68,8 +78,6 @@ class SolicitudController extends DIEControllerController
      */
     public function storeAction(Request $request, SolicitudManagerInterface $solicitudManager)
     {
-        $form = $this->createForm(SolicitudType::class);
-        $form->handleRequest($request);
         $result = $solicitudManager->create(new Solicitud());
         return $this->jsonResponse($result);
     }
@@ -91,6 +99,9 @@ class SolicitudController extends DIEControllerController
         $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
             ->findAllPrivate();
+        $unidades = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->getAllUnidadesByDelegacion();
         $form = $this->createForm(SolicitudType::class);
         return $this->render('came/solicitud/edit.html.twig', [
             'form' => $form->createView(),
@@ -98,13 +109,16 @@ class SolicitudController extends DIEControllerController
                 'json',
                 ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax']]),
             'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
-                ['attributes' => ['id', 'campoClinicos' => [
-                    'convenio' => [ 'cicloAcademico' => ['id', 'nombre'],
-                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',],
-                        'gradoAcademico'=> ['id', 'nombre']],
+                ['attributes' => ['id', 'campoClinicos' => ['id',
+                    'convenio' => ['cicloAcademico' => ['id', 'nombre'],
+                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
-                    'fechaInicial', 'fechaFinal'
-                ]]])
+                    'fechaInicial', 'fechaFinal'], 'institucion' => ['id', 'nombre', 'fax',
+                    'telefono', 'correo', 'sitioWeb', 'direccion', 'rfc', 'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]
+                ]]),
+            'unidades' => $this->get('serializer')->normalize($unidades, 'json',
+                ['attributtes' => ['id', 'nombre']])
         ]);
     }
 
@@ -150,26 +164,31 @@ class SolicitudController extends DIEControllerController
         $convenios = $this->getDoctrine()
             ->getRepository(Convenio::class)
             ->getAllBySolicitud($solicitud->getId());
+        $pagosCamposClinicos = $this->getDoctrine()
+            ->getRepository(Pago::class)
+            ->getPagosCampoClinicosBySolicitud($solicitud->getId());
 
         return $this->render('came/solicitud/show.html.twig', [
             'solicitud' => $this->get('serializer')->normalize(
                 $solicitud, 'json', ['attributes' => [
-                        'id',
-                        'campoClinicos' => [
-                            'convenio' => [ 'cicloAcademico' => ['id', 'nombre'],
-                                'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',],
-                                'gradoAcademico'=> ['id', 'nombre']],
-                            'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
-                            'fechaInicial', 'fechaFinal'],
-                        'expediente' => ['id', 'descripcion', 'urlArchivo', 'nombreArchivo', 'fecha'],
-                        'pago' => ['id', 'comprobantePago', 'fecha', 'factura' => ['fechaFacturacion', 'id', 'zip']]]
+                'id', 'noSolicitud', 'estatusCameFormatted', 'tipoPago',
+                'institucion' => ['id', 'nombre'],
+                'camposClinicosSolicitados', 'camposClinicosAutorizados',
+                'campoClinicos' => ['id',
+                    'convenio' => ['cicloAcademico' => ['id', 'nombre'],
+                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',
+                            'nivelAcademico' => ['id', 'nombre']], 'numero'],
+                    'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
+                    'fechaInicial', 'fechaFinal'],
+                'expediente' => ['id', 'descripcion', 'urlArchivo', 'nombreArchivo', 'fecha'],
+                'pago' => ['id', 'comprobantePago', 'fecha', 'factura' => ['fechaFacturacion', 'id', 'zip']]]
             ]),
-            'convenios' =>  $this->get('serializer')->normalize($convenios, 'json', [ 'attributes' => [
+            'convenios' => $this->get('serializer')->normalize($convenios, 'json', ['attributes' => [
                 'cicloAcademico' => ['id', 'nombre'],
                 'id', 'vigencia', 'label',
-                'carrera' => ['id', 'nombre'],
-                'gradoAcademico'=> ['id', 'nombre']]
-            ])
+                'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]]
+            ]),
+            'pagosCamposClinicos' => ['id', 'referenciaBancaria', 'comprobantePago', 'factura' => ['id', 'zip']]
         ]);
     }
 
@@ -191,5 +210,81 @@ class SolicitudController extends DIEControllerController
         $entityManager->remove($solicitud);
         $response = new JsonResponse(['status' => true, "message" => "Solicitud Eliminada con éxito"]);
         return $response;
+    }
+
+    /**
+     * @Route("/api/solicitud/terminar/{id}", methods={"POST"}, name="solicitud.terminar")
+     * @param Request $request
+     * @param SolicitudManagerInterface $solicitudManager
+     * @param $id
+     */
+    public function terminarAction(Request $request, SolicitudManagerInterface $solicitudManager, $id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $id
+            );
+        }
+
+        $solicitudManager->finalizar($solicitud);
+        return $this->jsonResponse(['status' => true]);
+    }
+
+    /**
+     * @Route("/api/solicitud/validar_montos/{id}", methods={"POST"}, name="solicitud.store_validar_montos")
+     * @param Request $request
+     * @param SolicitudManagerInterface $solicitudManager
+     * @param $id
+     */
+    public function validarMontosStoreAction(Request $request, SolicitudManagerInterface $solicitudManager, $id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $id
+            );
+        }
+
+        $result = $solicitudManager->validarMontos($solicitud, $request);
+
+        return $this->jsonResponse($result);
+    }
+
+    /**
+     * @Route("/solicitud/{id}/validar_montos", methods={"GET"}, name="solicitud.validar_montos")
+     * @param Request $request
+     * @param $id
+     */
+    public function validarMontosAction(Request $request, $id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $id
+            );
+        }
+
+        return $this->render('came/solicitud/valida_montos.html.twig', [
+            'solicitud' => $this->get('serializer')->normalize(
+                $solicitud, 'json', ['attributes' => [
+                    'id', 'noSolicitud',
+                    'estatusCameFormatted',
+                    'documento', 'urlArchivo',
+                    'institucion' => ['id', 'nombre'],
+                    'montos' => ['id', 'montoInscripcion', 'montoColegiatura',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre'] ]]
+                ]]
+            )
+        ]);
     }
 }

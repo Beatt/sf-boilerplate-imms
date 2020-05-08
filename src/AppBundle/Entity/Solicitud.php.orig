@@ -82,21 +82,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $observaciones;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
-     */
-    private $pagos;
-
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
-     */
-    private $montos;
-
+<<<<<<< HEAD
+=======
     public function __construct()
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
     }
+>>>>>>> 3a7e5d2417d280e334bae63ff6b83b80f87e3242
 
     /**
      * @return int
@@ -162,7 +155,15 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
             self::CREDENCIALES_GENERADAS
         ];
 
+<<<<<<< HEAD
+        $estatusExist = array_filter($estatusCollection, function ($item) use ($estatus) {
+            return $item === $estatus;
+        });
+
+        if (count($estatusExist) === 0) {
+=======
         if(!in_array($estatus, $allowedStatus)) {
+>>>>>>> 3a7e5d2417d280e334bae63ff6b83b80f87e3242
             throw new \InvalidArgumentException(sprintf(
                 'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
                 $estatus,
@@ -483,37 +484,5 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private function esSolicitudConfirmada()
     {
         return $this->estatus === Solicitud::CONFIRMADA;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPagos()
-    {
-        return $this->pagos;
-    }
-
-    /**
-     * @param mixed $pagos
-     */
-    public function setPagos($pagos)
-    {
-        $this->pagos = $pagos;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMontos()
-    {
-        return $this->montos;
-    }
-
-    /**
-     * @param mixed $montos
-     */
-    public function setMontos($montos)
-    {
-        $this->montos = $montos;
     }
 }

@@ -1,8 +1,18 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
+import SolicitudCreate from './create';
+import SolicitudEdit from './edit';
+import SolicitudAccion from "./components/SolicitudAccion";
+import SolicitudShow from "./show";
+import SolicitudValidaMontos from "./validaMontos";
 
 const CameTableExample = (props) => {
     return (
+        <>
+        <form action="/solicitud" method="get">
+            <label htmlFor="">Filtro</label><input name={'solicitudNo'} type="text"/>
+            <button type={'submit'}>Enviar</button>
+        </form>
       <table className="table">
           <thead>
           <tr>
@@ -19,6 +29,7 @@ const CameTableExample = (props) => {
           </tr>
           </tbody>
       </table>
+            </>
     );
 }
 
@@ -74,24 +85,102 @@ class ExampleForm extends React.Component{
     }
 }
 
-export default {CameTableExample, ExampleForm};
+const SolicitudIndex = (props) => {
+
+    return (
+      <>
+          <div className="col-md-2">
+              <a href={'/solicitud/create'} id="btn_solicitud" className={'form-control btn btn-default'}>Agregar Solicitud</a>
+          </div>
+          <div className="col-md-6"/>
+          <div className="col-md-4">
+              <div className="input-group">
+                  <input type="text" className="form-control" placeholder="Buscar" name="search" />
+                      <div className="input-group-btn">
+                          <button className="btn btn-default" type="submit"><i
+                              className="glyphicon glyphicon-search"></i></button>
+                      </div>
+              </div>
+          </div>
+          <div className="col-md-12">
+              <table className="table">
+                  <thead>
+                  <tr>
+                      <th>No. de solicitud</th>
+                      <th>Institución Educativa</th>
+                      <th>No. de campos clínicos solicitados</th>
+                      <th>No. de campos clínicos autorizados</th>
+                      <th>Fecha Solicitud</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {props.solicitudes.map(solicitud => {
+                      return (
+                          <tr key={solicitud.id}>
+                              <td><a href={`/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
+                              <td>{solicitud.institucion.nombre}</td>
+                              <td>{solicitud.camposClinicosSolicitados}</td>
+                              <td>{solicitud.camposClinicosAutorizados}</td>
+                              <td>{solicitud.fecha}</td>
+                              <td>{solicitud.estatusCameFormatted}</td>
+                              <td><SolicitudAccion solicitud={solicitud}/></td>
+                          </tr>
+                      )
+                  })}
+                  </tbody>
+              </table>
+          </div>
+      </>
+    );
+}
+
+export default {CameTableExample, ExampleForm, SolicitudIndex};
 
 document.addEventListener('DOMContentLoaded', () => {
     const indexDom = document.getElementById('solicitudes-table');
     const createDom = document.getElementById('solicitud-wrapper');
+    const editDom = document.getElementById('solicitud-edit-wrapper');
+    const showDom = document.getElementById('solicitud-show-wrapper');
+    const validaMontosDom = document.getElementById('solicitud-valida-montos-wrapper');
+
     if(indexDom) {
         ReactDOM.render(
-            <CameTableExample
+            <SolicitudIndex
                 solicitudes={window.SOLICITUDES}
             />,indexDom
         )
     }
     if(createDom) {
         ReactDOM.render(
-            <ExampleForm
-                action='/api/solicitud'
-                method={'post'}
-                token={window.CSRF_TOKEN} />, createDom
+            <SolicitudCreate
+                instituciones={window.INSTITUCIONES}
+                unidades={window.UNIDADES}
+            />, createDom
         )
+    }
+    if(editDom) {
+        ReactDOM.render(
+            <SolicitudEdit
+                solicitud={window.SOLICITUD}
+                unidades={window.UNIDADES}
+                instituciones={window.INSTITUCIONES}
+            />, editDom
+        )
+    }
+    if(showDom){
+        ReactDOM.render(
+            <SolicitudShow
+                solicitud={window.SOLICITUD}
+                convenios={window.CONVENIOS}
+            />, showDom
+        )
+    }
+    if(validaMontosDom){
+        ReactDOM.render(
+            <SolicitudValidaMontos
+                solicitud={window.SOLICITUD}
+            />, validaMontosDom);
     }
 })
