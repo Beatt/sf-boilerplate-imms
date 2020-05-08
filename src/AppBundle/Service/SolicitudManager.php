@@ -63,6 +63,7 @@ class SolicitudManager implements SolicitudManagerInterface
         }
         return [
             'status' => true,
+            'message' => 'Solicitud almacenada con éxito',
             'object' => ['id' => $solicitud->getId(), 'fecha' => $solicitud->getFecha(), 'no_solicitud' => $solicitud->getNoSolicitud()]
         ];
     }

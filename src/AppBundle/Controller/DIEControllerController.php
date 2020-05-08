@@ -39,13 +39,15 @@ abstract class DIEControllerController extends Controller
         $json = [];
         $status = 200;
         if(isset($data['status'])){
-            $result['status'] = $data['status'];
+            $json['status'] = $data['status'];
             if(!$data['status']){
                 $status = Response::HTTP_UNPROCESSABLE_ENTITY;
             }
         }
         if(isset($data['message'])){
-            $result['message'] = $data['message'];
+            $json['message'] = $data['message'];
+        }else if($json['status']){
+            $json['message'] = 'Solicitud procesada con éxito';
         }
         if (isset($result['error'])) {
             $json['error'] = $result['error'];
@@ -57,10 +59,10 @@ abstract class DIEControllerController extends Controller
 
     }
 
-    protected function jsonErrorResponse($form)
+    protected function jsonErrorResponse($form, $data = [])
     {
         return new JsonResponse([
-            'message' =>    '¡Ha ocurrido un problema, intenta más tarde!',
+            'message' => isset($data['message']) ? $data['message'] : 'Ocurrío un error al procesar su solicitud',
             'status' => false,
             'errors' => $this->get('serializer')->normalize($this->getFormErrors($form), 'json'),
         ], Response::HTTP_UNPROCESSABLE_ENTITY);

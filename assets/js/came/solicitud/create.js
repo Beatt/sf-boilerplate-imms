@@ -48,14 +48,17 @@ const SolicitudCreate = (props) => {
     return (
       <>
           <Loader show={isLoading}/>
-          <div className="col-md-12">
-              <h2>Información Institución</h2>
-              <h3>Ingrese la información correspondiente a la institución Educativa que solicita el campo</h3>
+          <div className="row">
+              <div className="col-md-12">
+                  <h2>Información Institución</h2>
+                  <h3>Ingrese la información correspondiente a la institución Educativa que solicita el campo</h3>
+              </div>
           </div>
           <Institucion
               instituciones={props.instituciones}
               parentCallback = {callbackFunction}
               callbackIsLoading = {callbackIsLoading}
+              disableSelect={!!solicitud}
           />
           <div style={{display : (selectedInstitution.id ? 'block' : 'none')}}>
               <Convenios convenios={selectedInstitution.convenios ? selectedInstitution.convenios: []}/>
@@ -68,9 +71,11 @@ const SolicitudCreate = (props) => {
                   callbackSolicitud = {value => setSolicitud(value)}
               />
               <form onSubmit={handleSolicitudSubmit} style={{display : (solicitud ? 'block' : 'none')}}>
-                  <div className="col-md-12">
-                      <label htmlFor="btn_solicitud">&#160;</label>
-                      <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud</button>
+                  <div className="row">
+                      <div className="col-md-12">
+                          <label htmlFor="btn_solicitud">&#160;</label>
+                          <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud</button>
+                      </div>
                   </div>
               </form>
           </div>

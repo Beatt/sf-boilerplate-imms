@@ -4,6 +4,7 @@ import Loader from "../../components/Loader/Loader";
 const SolicitudValidaMontos = (props) => {
 
     const [isLoading, setIsLoading] = React.useState(false);
+    const [validos, setValidos] = React.useState(false);
 
     const callbackIsLoading = (value) => {
         setIsLoading(value);
@@ -16,7 +17,6 @@ const SolicitudValidaMontos = (props) => {
 
     return (
         <>
-            <Loader show={isLoading}/>
             <Loader show={isLoading}/>
             <div className="col-md-12">
                 <p><strong>No. de Solicitud:</strong> {props.solicitud.noSolicitud}</p>
@@ -63,13 +63,15 @@ const SolicitudValidaMontos = (props) => {
                     </table>
                 </div>
                 <div className="col-md-3"/>
-                <div className="col-md-12">
-                    <label htmlFor="radio_solicitud">¿Todos los montos corresponden?</label>
-                </div>
-                <div className="col-md-12">
-                    <input name={'radio_solicitud'} type={'radio'} value={true} id={'radio1'}/>Si
-                    &#160;&#160;&#160;&#160;
-                    <input name={'radio_solicitud'} type={'radio'} value={false} id={'radio2'} checked={true}/>No
+                <div className="col-md-12"/>
+                <div className="col-md-2">
+                    <label htmlFor="validos_solicitud">¿Todos los montos corresponden?</label>
+                    <select id="validos_solicitud" className={'form-control'}
+                            required={true} onChange={e => setValidos(e.target.value)}>
+                        <option value="">Seleccionar ...</option>
+                        <option value={true}>Si</option>
+                        <option value={false}>No</option>
+                    </select>
                 </div>
                 <div className="col-md-12">
                     <label htmlFor="observaciones_solicitud">Observaciones</label>

@@ -62,7 +62,7 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax',
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax',
                     'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
                         'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
@@ -107,7 +107,7 @@ class SolicitudController extends DIEControllerController
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones,
                 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'domicilio', 'telefono', 'correo', 'sitioWeb', 'fax']]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax']]),
             'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
                 ['attributes' => ['id', 'campoClinicos' => ['id',
                     'convenio' => ['cicloAcademico' => ['id', 'nombre'],

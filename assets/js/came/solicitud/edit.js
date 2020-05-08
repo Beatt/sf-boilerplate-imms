@@ -59,9 +59,11 @@ const SolicitudEdit = (props) => {
                 callbackIsLoading = {callbackIsLoading}
             />
             <form onSubmit={handleSolicitudSubmit}>
-                <div className="col-md-12">
-                    <label htmlFor="btn_solicitud">&#160;</label>
-                    <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud</button>
+                <div className="row">
+                    <div className="col-md-12">
+                        <label htmlFor="btn_solicitud">&#160;</label>
+                        <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud</button>
+                    </div>
                 </div>
             </form>
         </>
