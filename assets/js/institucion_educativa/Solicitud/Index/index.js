@@ -2,7 +2,7 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import { solicitudesGet } from "../../api/solicitud";
-import { TIPO_PAGO } from "../../../constants";
+import { TIPO_PAGO, SOLICITUD } from "../../../constants";
 import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
@@ -47,6 +47,20 @@ const Index = (
       .finally(() => {
         toggleLoading(false)
       })
+  }
+
+  function handleStatusAction(solicitud) {
+    if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
+
+    let redirectRoute = ''
+    if(
+      solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES  &&
+      solicitud.tipoPago === TIPO_PAGO.MULTIPLE
+    ) {
+      redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/campos-clinicos`
+    }
+
+    window.location.href = redirectRoute
   }
 
   return(
@@ -119,6 +133,7 @@ const Index = (
                         <button
                           className='btn btn-default'
                           disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
+                          onClick={() => handleStatusAction(solicitud)}
                         >
                           {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
                         </button>

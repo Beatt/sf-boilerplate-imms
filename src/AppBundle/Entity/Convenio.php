@@ -112,17 +112,15 @@ class Convenio implements GroupSequenceProviderInterface
      */
     private $numero;
 
-
-    public function __construct()
-    {
-        //$this->vigencia = Carbon::now();
-    }
-
     /**
      * @var CampoClinico
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="convenio")
      */
     private $camposClinicos;
+
+    public function __construct()
+    {
+    }
 
     /**
      * @return integer
@@ -203,23 +201,6 @@ class Convenio implements GroupSequenceProviderInterface
     public function getVigencia()
     {
         return $this->vigencia;
-    }
-
-    /**
-     * @param NivelAcademico $gradoAcademico
-     * @return Convenio
-     */
-    public function setGradoAcademico(NivelAcademico $gradoAcademico = null)
-    {
-        return $this;
-    }
-
-    /**
-     * @return NivelAcademico
-     */
-    public function getGradoAcademico()
-    {
-        return $this->carrera ? $this->carrera->getNivelAcademico() : null;
     }
 
     /**

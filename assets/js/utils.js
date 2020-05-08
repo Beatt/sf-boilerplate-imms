@@ -1,7 +1,11 @@
-import {SOLICITUD, TIPO_PAGO} from "./constants";
+import {
+  CAMPO_CLINICO,
+  SOLICITUD,
+  TIPO_PAGO
+} from "./constants";
 
-export const getActionNameByInstitucionEducativa = (status, tipoPago) => {
-  switch(status) {
+export const getActionNameByInstitucionEducativa = (estatus, tipoPago) => {
+  switch(estatus) {
     case SOLICITUD.CONFIRMADA:
       return 'Registrar montos'
     case SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME:
@@ -21,7 +25,7 @@ export const getActionNameByInstitucionEducativa = (status, tipoPago) => {
     case SOLICITUD.CREDENCIALES_GENERADAS:
       return 'Descargar credenciales'
     default:
-      console.error(`El action name del estatus ${status} no existe.`)
+      console.error(`El action name del eetatus ${estatus} no existe.`)
       return 'Estatus no definido'
   }
 }
@@ -30,8 +34,8 @@ function isMultipleTipoPago(tipoPago) {
   return tipoPago === TIPO_PAGO.MULTIPLE;
 }
 
-export const isActionDisabledByInstitucionEducativa = (status) => {
-  switch(status) {
+export const isActionDisabledByInstitucionEducativa = (estatus) => {
+  switch(estatus) {
     case SOLICITUD.CONFIRMADA:
       return false
     case SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME:
@@ -49,8 +53,15 @@ export const isActionDisabledByInstitucionEducativa = (status) => {
     case SOLICITUD.CREDENCIALES_GENERADAS:
       return false
     default:
-      console.error(`Is action disabled del estatus ${status} no existe.`)
+      console.error(`Is action disabled del estatus ${estatus} no existe.`)
       return true
+  }
+}
+
+export const getActionNameByCampoClinico = (estatus) => {
+  switch(estatus) {
+    case CAMPO_CLINICO.PENDIENTE_DE_PAGO:
+      return 'Cargar comprobante de pago'
   }
 }
 

@@ -331,10 +331,12 @@ class CampoClinico
 
     public function getFactura()
     {
+        return 'No solicitada';
     }
 
     public function getComprobante()
     {
+        return null;
     }
 
     public function getWeeks()
