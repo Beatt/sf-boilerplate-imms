@@ -167,11 +167,14 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/show.html.twig', [
             'solicitud' => $this->get('serializer')->normalize(
                 $solicitud, 'json', ['attributes' => [
-                        'id',
-                        'campoClinicos' => [
+                        'id', 'noSolicitud', 'estatusCameFormatted',
+                        'convenios',
+                        'institucion' => ['id', 'nombre'],
+                        'camposClinicosSolicitados', 'camposClinicosAutorizados',
+                        'campoClinicos' => ['id',
                             'convenio' => [ 'cicloAcademico' => ['id', 'nombre'],
-                                'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',],
-                                'gradoAcademico'=> ['id', 'nombre']],
+                                'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',
+                                    'nivelAcademico' => ['id', 'nombre']], 'numero'],
                             'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
                             'fechaInicial', 'fechaFinal'],
                         'expediente' => ['id', 'descripcion', 'urlArchivo', 'nombreArchivo', 'fecha'],

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import SolicitudCreate from './create';
 import SolicitudEdit from './edit';
 import SolicitudAccion from "./components/SolicitudAccion";
+import SolicitudShow from "./show";
 
 const CameTableExample = (props) => {
     return (
@@ -139,7 +140,9 @@ export default {CameTableExample, ExampleForm, SolicitudIndex};
 document.addEventListener('DOMContentLoaded', () => {
     const indexDom = document.getElementById('solicitudes-table');
     const createDom = document.getElementById('solicitud-wrapper');
-    const editDom = document.getElementById('solicitud-edit-wrapper')
+    const editDom = document.getElementById('solicitud-edit-wrapper');
+    const showDom = document.getElementById('solicitud-show-wrapper');
+
     if(indexDom) {
         ReactDOM.render(
             <SolicitudIndex
@@ -162,6 +165,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 unidades={window.UNIDADES}
                 instituciones={window.INSTITUCIONES}
             />, editDom
+        )
+    }
+    if(showDom){
+        ReactDOM.render(
+            <SolicitudShow
+                solicitud={window.SOLICITUD}
+            />, showDom
         )
     }
 })

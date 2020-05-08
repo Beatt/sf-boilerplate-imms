@@ -88,7 +88,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $observaciones;
 
-    
+
     /**
      * @return int
      */
@@ -153,11 +153,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
             self::CREDENCIALES_GENERADAS
         ];
 
-        $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
-           return $item === $estatus;
+        $estatusExist = array_filter($estatusCollection, function ($item) use ($estatus) {
+            return $item === $estatus;
         });
 
-        if(count($estatusExist) === 0) {
+        if (count($estatusExist) === 0) {
             throw new \InvalidArgumentException(sprintf(
                 'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
                 $estatus,
@@ -236,7 +236,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         return $this->urlArchivo;
     }
 
-    
+
     /**
      * @param string $observaciones
      * @return Solicitud
@@ -338,7 +338,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         $acc = 0;
         foreach ($this->getCampoClinicos() as $campoClinico) {
-            if($campoClinico->getLugaresAutorizados() > 0){
+            if ($campoClinico->getLugaresAutorizados() > 0) {
                 $acc++;
             }
         }
@@ -351,23 +351,30 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     public function getEstatusCameFormatted()
     {
         $result = '';
-        switch ($this->getEstatus()){
+        switch ($this->getEstatus()) {
             case self::CREADA :
-                $result = 'En edición'; break;
+                $result = 'En edición';
+                break;
             case self::CONFIRMADA:
-                $result = 'Solicitud Registrada'; break;
+                $result = 'Solicitud Registrada';
+                break;
             case self::EN_VALIDACION_DE_MONTOS_CAME:
-                $result = 'Falta validar montos'; break;
+                $result = 'Falta validar montos';
+                break;
             case self::MONTOS_INCORRECTOS_CAME:
-                $result = 'En corrección por IE'; break;
+                $result = 'En corrección por IE';
+                break;
             case self::MONTOS_VALIDADOS_CAME:
-                $result = 'Validados'; break;
+                $result = 'Validados';
+                break;
             case self::FORMATOS_DE_PAGO_GENERADOS:
             case self::CARGANDO_COMPROBANTES:
             case self::EN_VALIDACION_FOFOE:
-                $result = 'En proceso de pago'; break;
+                $result = 'En proceso de pago';
+                break;
             case self::CREDENCIALES_GENERADAS:
-                $result = 'Descargar credenciales'; break;
+                $result = 'Descargar credenciales';
+                break;
         }
         return $result;
     }
@@ -376,7 +383,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         $result = null;
         $campos_clinicos = $this->getCampoClinicos();
-        if($campos_clinicos->count() > 0){
+        if ($campos_clinicos->count() > 0) {
             $result = $campos_clinicos[0]->getConvenio()->getInstitucion();
         }
         return $result;
@@ -425,7 +432,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     public function addCamposClinico(CampoClinico $camposClinico)
     {
-        if(!$this->camposClinicos->contains($camposClinico)) {
+        if (!$this->camposClinicos->contains($camposClinico)) {
             $this->camposClinicos[] = $camposClinico;
             $camposClinico->setSolicitud($this);
         }
@@ -451,36 +458,18 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
 
     public function __toString()
     {
-        return ''.$this->getId();
+        return '' . $this->getId();
     }
 
     public function getPagosIndividuales()
     {
         $result = false;
-        foreach ($this->getCampoClinicos() as $cc){
-            if($cc->getReferenciaBancaria()){
+        foreach ($this->getCampoClinicos() as $cc) {
+            if ($cc->getReferenciaBancaria()) {
                 $result = true;
             }
         }
         return $result;
-    }
-
-    /**
-     * @return Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
-
-    /**
-     * @param Expediente $expediente
-     * @return Solicitud
-     */
-    public function setExpediente(Expediente $expediente)
-    {
-        $this->expediente = $expediente;
-        return $this;
     }
 
     /**
@@ -489,5 +478,24 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private function esSolicitudConfirmada()
     {
         return $this->estatus === Solicitud::CONFIRMADA;
+    }
+
+    public function getConvenios()
+    {
+        $result = [];
+        $tmp = [];
+        foreach ($this->getCampoClinicos() as $cc) {
+            $tmp[$cc->getConvenio()->getId()] = [
+                'numero' => $cc->getConvenio()->getNumero(),
+                'nivelAcademico' => $cc->getConvenio()->getCarrera()->getNivelAcademico()->getNombre(),
+                'cicloAcademico' => $cc->getConvenio()->getCicloAcademico()->getNombre(),
+                'carrera' => $cc->getConvenio()->getCarrera()->getNombre(),
+                'vigencia' => $cc->getConvenio()->getVigencia()
+            ];
+        }
+        foreach ($tmp as $item) {
+            $result []= $item;
+        }
+        return $result;
     }
 }

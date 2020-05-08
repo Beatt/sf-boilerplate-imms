@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/came_solicitud_index.css') }}">
     <style>
         .square {
             height: 25px;
@@ -15,7 +16,7 @@
     <div class='container-fluid'>
         <div class='row'>
             <div class='col-md-12'>
-                <h1>Solicitudes de Campos Clínicos</h1>
+                <h1 style="text-align: center">Solicitudes de Campos Clínicos</h1>
             </div>
         </div>
         <div id="solicitudes-table"></div>
