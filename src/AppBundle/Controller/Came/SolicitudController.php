@@ -25,7 +25,7 @@ class SolicitudController extends DIEControllerController
         $page = $request->query->get('page', 1);
         $solicitudes = $this->getDoctrine()
             ->getRepository(Solicitud::class)
-            ->findBy([], [], $perPage, ($page - 1) * $perPage);
+            ->getAllSolicitudesByDelegacion(null/*simulado*/, $perPage, $page, $request->query->all());
         return $this->render('came/solicitud/index.html.twig', [
             'solicitudes' => $this->get('serializer')->normalize(
                 $solicitudes,
@@ -118,7 +118,7 @@ class SolicitudController extends DIEControllerController
                         'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]
                 ]]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
-                ['attributtes' => ['id', 'nombre']])
+                ['attributtes' => ['id', 'nombre']]),
         ]);
     }
 

@@ -27,7 +27,7 @@
     {{ parent() }}
     <script>
         window.INSTITUCIONES = {{ instituciones | json_encode | raw  }};
-        window.UNIDADES = {{ unidades | json_encode | raw }}
+        window.UNIDADES = {{ unidades | json_encode | raw }};
     </script>
     <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 {% endblock %}
