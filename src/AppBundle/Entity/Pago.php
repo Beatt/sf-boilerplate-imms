@@ -29,13 +29,6 @@ class Pago
     private $monto;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     */
-    private $solicitudId;
-
-    /**
      * @var string
      *
      * @ORM\Column(type="string", length=100)
@@ -57,25 +50,11 @@ class Pago
     private $validado;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=100)
-     */
-    private $xml;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=100)
-     */
-    private $pdf;
-
-    /**
      * @var bool
      *
      * @ORM\Column(type="boolean")
      */
-    private $factura;
+    private $requiereFactura;
 
     /**
      * @var string
@@ -84,6 +63,21 @@ class Pago
      */
     private $observaciones;
 
+    /**
+     * @var Solicitud
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud")
+     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
+     */
+    private $solicitud;
+
+    /**
+     * @var Factura
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura")
+     * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
+     */
+    private $factura;
 
     /**
      * @return int
@@ -110,25 +104,6 @@ class Pago
     public function getMonto()
     {
         return $this->monto;
-    }
-
-    /**
-     * @param integer $solicitudId
-     * @return Pago
-     */
-    public function setSolicitudId($solicitudId)
-    {
-        $this->solicitudId = $solicitudId;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSolicitudId()
-    {
-        return $this->solicitudId;
     }
 
     /**
@@ -189,63 +164,6 @@ class Pago
     }
 
     /**
-     * @param string $xml
-     * @return Pago
-     */
-    public function setXml($xml)
-    {
-        $this->xml = $xml;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getXml()
-    {
-        return $this->xml;
-    }
-
-    /**
-     * @param string $pdf
-     * @return Pago
-     */
-    public function setPdf($pdf)
-    {
-        $this->pdf = $pdf;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPdf()
-    {
-        return $this->pdf;
-    }
-
-    /**
-     * @param boolean $factura
-     * @return Pago
-     */
-    public function setFactura($factura)
-    {
-        $this->factura = $factura;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getFactura()
-    {
-        return $this->factura;
-    }
-
-    /**
      * @param string $observaciones
      * @return Pago
      */
@@ -262,6 +180,54 @@ class Pago
     public function getObservaciones()
     {
         return $this->observaciones;
+    }
+
+    /**
+     * @return Factura
+     */
+    public function getFactura()
+    {
+        return $this->factura;
+    }
+
+    /**
+     * @param Factura $factura
+     */
+    public function setFactura(Factura $factura)
+    {
+        $this->factura = $factura;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequiereFactura()
+    {
+        return $this->requiereFactura;
+    }
+
+    /**
+     * @param bool $requiereFactura
+     */
+    public function setRequiereFactura($requiereFactura)
+    {
+        $this->requiereFactura = $requiereFactura;
+    }
+
+    /**
+     * @return Solicitud
+     */
+    public function getSolicitud()
+    {
+        return $this->solicitud;
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     */
+    public function setSolicitud(Solicitud $solicitud)
+    {
+        $this->solicitud = $solicitud;
     }
 }
 
