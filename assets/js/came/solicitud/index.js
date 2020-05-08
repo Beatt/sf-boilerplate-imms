@@ -4,6 +4,7 @@ import SolicitudCreate from './create';
 import SolicitudEdit from './edit';
 import SolicitudAccion from "./components/SolicitudAccion";
 import SolicitudShow from "./show";
+import SolicitudValidaMontos from "./validaMontos";
 
 const CameTableExample = (props) => {
     return (
@@ -142,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const createDom = document.getElementById('solicitud-wrapper');
     const editDom = document.getElementById('solicitud-edit-wrapper');
     const showDom = document.getElementById('solicitud-show-wrapper');
+    const validaMontosDom = document.getElementById('solicitud-valida-montos-wrapper');
 
     if(indexDom) {
         ReactDOM.render(
@@ -171,7 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ReactDOM.render(
             <SolicitudShow
                 solicitud={window.SOLICITUD}
+                convenios={window.CONVENIOS}
             />, showDom
         )
+    }
+    if(validaMontosDom){
+        ReactDOM.render(
+            <SolicitudValidaMontos
+                solicitud={window.SOLICITUD}
+            />, validaMontosDom);
     }
 })

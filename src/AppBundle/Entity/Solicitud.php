@@ -479,23 +479,4 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         return $this->estatus === Solicitud::CONFIRMADA;
     }
-
-    public function getConvenios()
-    {
-        $result = [];
-        $tmp = [];
-        foreach ($this->getCampoClinicos() as $cc) {
-            $tmp[$cc->getConvenio()->getId()] = [
-                'numero' => $cc->getConvenio()->getNumero(),
-                'nivelAcademico' => $cc->getConvenio()->getCarrera()->getNivelAcademico()->getNombre(),
-                'cicloAcademico' => $cc->getConvenio()->getCicloAcademico()->getNombre(),
-                'carrera' => $cc->getConvenio()->getCarrera()->getNombre(),
-                'vigencia' => $cc->getConvenio()->getVigencia()
-            ];
-        }
-        foreach ($tmp as $item) {
-            $result []= $item;
-        }
-        return $result;
-    }
 }

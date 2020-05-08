@@ -1,12 +1,154 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
 
+const DetalleSolicitudDetallado = (props) => {
+    return (
+        <table className="table">
+            <thead>
+            <tr>
+                <th>Sede</th>
+                <th>Campo Clínico</th>
+                <th>Nivel</th>
+                <th>Carrera</th>
+                <th>No. de lugares solicitados</th>
+                <th>No. de lugares autorizados</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Término</th>
+                <th>Comprobante</th>
+                <th>Factura</th>
+            </tr>
+            </thead>
+            <tbody>
+            {props.solicitud.campoClinicos.map(cc => {
+                return (
+                    <tr key={cc.id}>
+                        <td>{cc.unidad.nombre}</td>
+                        <td>{cc.convenio.cicloAcademico.nombre}</td>
+                        <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
+                        <td>{cc.convenio.carrera.nombre}</td>
+                        <td>{cc.lugaresSolicitados}</td>
+                        <td>{cc.lugaresAutorizados}</td>
+                        <td>{cc.fechaInicial}</td>
+                        <td>{cc.fechaFinal}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                )
+            })}
+            </tbody>
+        </table>
+    )
+}
+
+const ExpedienteUnico = (props) => {
+    return (
+        <table className="table">
+            <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Archivo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Oficio de Montos de Colegiatura e Inscripción</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Comprobante de Pago</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Factura (CFDI)</td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    )
+}
+
+const ExpedienteDetallado = (props) => {
+    return (
+        <table className="table">
+            <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Archivo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Oficio de Montos de Colegiatura e Inscripción</td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    )
+}
+
+const DetalleSolicitudUnico = (props) => {
+    return (
+        <table className="table">
+            <thead>
+            <tr>
+                <th>Sede</th>
+                <th>Campo Clínico</th>
+                <th>Nivel</th>
+                <th>Carrera</th>
+                <th>No. de lugares solicitados</th>
+                <th>No. de lugares autorizados</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Término</th>
+            </tr>
+            </thead>
+            <tbody>
+            {props.solicitud.campoClinicos.map(cc => {
+                return (
+                    <tr key={cc.id}>
+                        <td>{cc.unidad.nombre}</td>
+                        <td>{cc.convenio.cicloAcademico.nombre}</td>
+                        <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
+                        <td>{cc.convenio.carrera.nombre}</td>
+                        <td>{cc.lugaresSolicitados}</td>
+                        <td>{cc.lugaresAutorizados}</td>
+                        <td>{cc.fechaInicial}</td>
+                        <td>{cc.fechaFinal}</td>
+                    </tr>
+                )
+            })}
+            </tbody>
+        </table>
+    )
+}
+
 const SolicitudShow = (props) => {
 
     const [isLoading, setIsLoading] = React.useState(false);
 
     const callbackIsLoading = (value) => {
         setIsLoading(value);
+    }
+
+    const Detalle = () => {
+        if (props.solicitud.tipoPago === 'Multiple')
+            return (<DetalleSolicitudMultiple solicitud={props.solicitud}/>)
+        return (<DetalleSolicitudUnico solicitud={props.solicitud}/>)
+    }
+
+    const Expediente = () => {
+        if (props.solicitud.tipoPago === 'Multiple')
+            return (<ExpedienteDetallado solicitud={props.solicitud}/>)
+        return (<ExpedienteUnico solicitud={props.solicitud}/>)
     }
 
     return (
@@ -36,36 +178,7 @@ const SolicitudShow = (props) => {
                 </div>
             </div>
             <div className="col-md-12">
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Sede</th>
-                        <th>Campo Clínico</th>
-                        <th>Nivel</th>
-                        <th>Carrera</th>
-                        <th>No. de lugares solicitados</th>
-                        <th>No. de lugares autorizados</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Término</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {props.solicitud.campoClinicos.map(cc => {
-                        return (
-                            <tr key={cc.id}>
-                                <td>{cc.unidad.nombre}</td>
-                                <td>{cc.convenio.cicloAcademico.nombre}</td>
-                                <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
-                                <td>{cc.convenio.carrera.nombre}</td>
-                                <td>{cc.lugaresSolicitados}</td>
-                                <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicial}</td>
-                                <td>{cc.fechaFinal}</td>
-                            </tr>
-                        )
-                    })}
-                    </tbody>
-                </table>
+                <Detalle/>
             </div>
             <div className="col-md-6">
                 <h2>Expediente</h2>
@@ -74,32 +187,7 @@ const SolicitudShow = (props) => {
                 <h2>Convenios</h2>
             </div>
             <div className="col-md-6">
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Descripción</th>
-                        <th>Fecha</th>
-                        <th>Archivo</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Comprobante de Pago</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Factura (CFDI)</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    </tbody>
-                </table>
+               <Expediente/>
             </div>
             <div className="col-md-6">
                 <table className="table">
@@ -113,13 +201,13 @@ const SolicitudShow = (props) => {
                     </tr>
                     </thead>
                     <tbody>
-                    {props.solicitud.convenios.map((convenio, i) => {
+                    {props.convenios.map((convenio, i) => {
                         return (
                             <tr key={i}>
                                 <td>{convenio.numero}</td>
-                                <td>{convenio.nivelAcademico}</td>
-                                <td>{convenio.cicloAcademico}</td>
-                                <td>{convenio.carrera}</td>
+                                <td>{convenio.carrera.nivelAcademico.nombre}</td>
+                                <td>{convenio.cicloAcademico.nombre}</td>
+                                <td>{convenio.carrera.nombre}</td>
                                 <td>{convenio.vigencia}</td>
                             </tr>
                         )
