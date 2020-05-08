@@ -6,6 +6,7 @@ use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
 use AppBundle\Repository\PagoRepositoryInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploaderComprobantePago implements UploaderComprobantePagoInterface
@@ -15,9 +16,15 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
      */
     private $pagoRepository;
 
-    public function __construct(PagoRepositoryInterface $pagoRepository)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(PagoRepositoryInterface $pagoRepository, LoggerInterface $logger)
     {
         $this->pagoRepository = $pagoRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -31,8 +38,21 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
         $pago = $this->pagoRepository->getComprobante($campoClinico->getReferenciaBancaria());
         if($pago === null) throw new Exception('El campo clinico no tiene un pago asociado');
 
-        $pago->setComprobantePagoFile($file);
+        $this->logger->info(sprintf(
+            'Iniciado el guardado del comprobante de pago del campo clinico con id %s', $campoClinico->getId()
+        ));
 
-        $this->pagoRepository->save($pago);
+        try {
+            $this->logger->info('Subiendo el comprobante de pago');
+            $pago->setComprobantePagoFile($file);
+            $this->pagoRepository->save($pago);
+        } catch (Exception $exception) {
+            $this->logger->critical($exception->getMessage());
+            throw $exception;
+        }
+
+        $this->logger->info('El comprobante de pago se ha guardado correctamente');
+
+        return true;
     }
 }

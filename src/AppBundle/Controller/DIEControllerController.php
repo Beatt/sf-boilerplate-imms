@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use http\Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -60,5 +61,21 @@ abstract class DIEControllerController extends Controller
             'status' => false,
             'errors' => $this->get('serializer')->normalize($this->getFormErrors($form), 'json'),
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    protected function successResponse($message)
+    {
+        return new JsonResponse([
+            'message' => $message,
+            'status' => true,
+        ], Response::HTTP_OK);
+    }
+
+    protected function failedResponse($message)
+    {
+        return new JsonResponse([
+            'message' => $message,
+            'status' => true,
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

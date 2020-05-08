@@ -32,6 +32,17 @@ a {
   font-size: 15px;
 }
 
+tbody {
+  th {
+    font-weight: 400;
+  }
+}
+
 .section-md {
   padding: 40px 0;
+}
+
+.error-message {
+  font-size: 11px;
+  color: red;
 }

@@ -2,18 +2,18 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\DTO\UploadComprobantePagoDTO;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\ComprobantePagoType;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Service\UploaderComprobantePagoInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CampoClinico extends Controller
+class CampoClinico extends DIEControllerController
 {
     /**
      * @Route("/instituciones/{institucionId}/solicitudes/{solicitudId}/campos-clinicos", name="campos_clinicos#index")
@@ -36,6 +36,7 @@ class CampoClinico extends Controller
                     'json',
                     [
                         'attributes' => [
+                            'id',
                             'unidad' => [
                                 'tipoUnidad' => [
                                     'nombre'
@@ -85,15 +86,17 @@ class CampoClinico extends Controller
         /** @var UploadComprobantePagoDTO $data */
         $data = $form->getData();
         if($form->isSubmitted() && $form->isValid()) {
-            $uploaderComprobantePago->update(
+
+            $isComprobantePagoUploaded = $uploaderComprobantePago->update(
                 $data->getCampoClinico(),
                 $data->getFile()
             );
 
-            return new JsonResponse('Se ha cargado correctamente el comprobante de pago');
+            return $isComprobantePagoUploaded ?
+                $this->successResponse('Se ha cargado correctamente el comprobante de pago') :
+                $this->failedResponse('¡Ha ocurrido un error, vuelve a intentar más tarde!');
         }
 
-
-        return new JsonResponse('lol');
+        return $this->jsonErrorResponse($form);
     }
 }

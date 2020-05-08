@@ -4,11 +4,16 @@ namespace AppBundle\DTO;
 
 use AppBundle\Entity\CampoClinico;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class UploadComprobantePagoDTO
 {
     /**
      * @var UploadedFile
+     * @Assert\File(
+     *     maxSize="1000000",
+     *     mimeTypes = {"application/pdf", "application/x-pdf"},
+     * )
      */
     private $file;
 

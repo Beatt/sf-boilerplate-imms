@@ -62,6 +62,8 @@ export const getActionNameByCampoClinico = (estatus) => {
   switch(estatus) {
     case CAMPO_CLINICO.PENDIENTE_DE_PAGO:
       return 'Cargar comprobante de pago'
+    case CAMPO_CLINICO.PAGO:
+      return 'En validación por FOFOE'
   }
 }
 
