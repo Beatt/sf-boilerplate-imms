@@ -1,7 +1,22 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
+import {getActionNameByCampoClinico} from "../../utils";
 
 const DetalleSolicitudMultiple = ({ camposClinicos }) => {
+
+  function getComprobanteAction(campoClinico) {
+    if(campoClinico.comprobante !== null) return campoClinico.comprobante
+
+    return(
+      <div>
+        <label htmlFor="">{getActionNameByCampoClinico(campoClinico.estatus.nombre)}</label>
+        <input
+          type="file"
+        />
+      </div>
+    )
+  }
+
   return(
     <div className="panel panel-default">
       <div className="panel-body">
@@ -25,8 +40,8 @@ const DetalleSolicitudMultiple = ({ camposClinicos }) => {
           {
             camposClinicos.map((campoClinico, index) =>
               <tr key={index}>
-                <th>SEDE</th>
-                <th>{campoClinico.cicloAcademico.nombre}</th>
+                <th>{campoClinico.unidad.tipoUnidad.nombre}</th>
+                <th>{campoClinico.convenio.cicloAcademico.nombre}</th>
                 <th>{campoClinico.convenio.carrera.nivelAcademico.nombre}</th>
                 <th>{campoClinico.convenio.carrera.nombre}</th>
                 <th>{campoClinico.lugaresSolicitados}</th>
@@ -34,8 +49,10 @@ const DetalleSolicitudMultiple = ({ camposClinicos }) => {
                 <th>{new Date(campoClinico.fechaInicial).toLocaleDateString()}</th>
                 <th>{new Date(campoClinico.fechaFinal).toLocaleDateString()}</th>
                 <th>{campoClinico.estatus.nombre}</th>
-                <th>{campoClinico.estatus.comprobante}</th>
-                <th>{campoClinico.estatus.factura}</th>
+                <th>
+                  {getComprobanteAction(campoClinico)}
+                </th>
+                <th>{campoClinico.factura}</th>
               </tr>
             )
           }

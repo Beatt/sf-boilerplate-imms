@@ -34,3 +34,10 @@ services:
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\EstatusCampo
+
+  AppBundle\Repository\PagoRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\Pago
+    public: true

@@ -22,7 +22,7 @@ class EstatusCampo implements EstatusCampoInterface
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $estatus;
+    private $nombre;
 
     /**
      * @return int
@@ -33,21 +33,18 @@ class EstatusCampo implements EstatusCampoInterface
     }
 
     /**
-     * @param string $estatus
-     * @return EstatusCampo
+     * @return string
      */
-    public function setEstatus($estatus)
+    public function getNombre()
     {
-        $this->estatus = $estatus;
-
-        return $this;
+        return $this->nombre;
     }
 
     /**
-     * @return string
+     * @param string $nombre
      */
-    public function getEstatus()
+    public function setNombre($nombre)
     {
-        return $this->estatus;
+        $this->nombre = $nombre;
     }
 }

@@ -157,4 +157,20 @@ class TipoUnidad
     {
         return $this->grupoNombre;
     }
+
+    /**
+     * @return int
+     */
+    public function getNivel()
+    {
+        return $this->nivel;
+    }
+
+    /**
+     * @param int $nivel
+     */
+    public function setNivel($nivel)
+    {
+        $this->nivel = $nivel;
+    }
 }

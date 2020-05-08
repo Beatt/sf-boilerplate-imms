@@ -26,7 +26,8 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
             $convenio->setSector('Sector a');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
-            $convenio->setGradoAcademico($this->getReference(NivelAcademicoFixture::NIVEL_ACADEMICO_A));
+            $convenio->setCicloAcademico($this->getReference(CicloAcademicoFixture::CICLO_A));
+            $convenio->setDelegacion($this->getReference(DelegacionFixture::DELEGACION_A));
 
             $manager->persist($convenio);
 
@@ -42,7 +43,8 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
             $convenio->setSector('Sector b');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
-            $convenio->setGradoAcademico($this->getReference(NivelAcademicoFixture::NIVEL_ACADEMICO_A));
+            $convenio->setCicloAcademico($this->getReference(CicloAcademicoFixture::CICLO_B));
+            $convenio->setDelegacion($this->getReference(DelegacionFixture::DELEGACION_B));
 
             $manager->persist($convenio);
 
@@ -57,7 +59,8 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
             $convenio->setSector('Sector c');
             $convenio->setCarrera($this->getReference(CarreraFixture::CARRERA_A));
             $convenio->setInstitucion($this->getReference(InstitucionFixture::INSTITUCION_A));
-            $convenio->setGradoAcademico($this->getReference(NivelAcademicoFixture::NIVEL_ACADEMICO_A));
+            $convenio->setCicloAcademico($this->getReference(CicloAcademicoFixture::CICLO_C));
+            $convenio->setDelegacion($this->getReference(DelegacionFixture::DELEGACION_A));
 
             $manager->persist($convenio);
 
@@ -71,7 +74,8 @@ class ConvenioFixture extends Fixture implements FixtureInterface, DependentFixt
     {
         return[
             CarreraFixture::class,
-            NivelAcademicoFixture::class
+            NivelAcademicoFixture::class,
+            DelegacionFixture::class
         ];
     }
 }

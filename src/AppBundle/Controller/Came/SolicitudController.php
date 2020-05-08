@@ -5,6 +5,7 @@ namespace AppBundle\Controller\Came;
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
+use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Unidad;
 use AppBundle\Form\Type\SolicitudType;
@@ -163,6 +164,9 @@ class SolicitudController extends DIEControllerController
         $convenios = $this->getDoctrine()
             ->getRepository(Convenio::class)
             ->getAllBySolicitud($solicitud->getId());
+        $pagosCamposClinicos = $this->getDoctrine()
+            ->getRepository(Pago::class)
+            ->getPagosCampoClinicosBySolicitud($solicitud->getId());
 
         return $this->render('came/solicitud/show.html.twig', [
             'solicitud' => $this->get('serializer')->normalize(
@@ -183,7 +187,8 @@ class SolicitudController extends DIEControllerController
                 'cicloAcademico' => ['id', 'nombre'],
                 'id', 'vigencia', 'label',
                 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]]
-            ])
+            ]),
+            'pagosCamposClinicos' => ['id', 'referenciaBancaria', 'comprobantePago', 'factura' => ['id', 'zip']]
         ]);
     }
 
@@ -276,6 +281,8 @@ class SolicitudController extends DIEControllerController
                     'estatusCameFormatted',
                     'documento', 'urlArchivo',
                     'institucion' => ['id', 'nombre'],
+                    'montos' => ['id', 'montoInscripcion', 'montoColegiatura',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre'] ]]
                 ]]
             )
         ]);

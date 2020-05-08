@@ -8,7 +8,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class EstatusCampoFixtures extends Fixture
 {
-
     public function load(ObjectManager $manager)
     {
         $this->create($manager, EstatusCampo::NUEVO, 1);
