@@ -1,12 +1,12 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
-import { solicitudesGet } from "../../api/solicitud";
-import { TIPO_PAGO, SOLICITUD } from "../../../constants";
+import { solicitudesGet } from "../api/solicitud";
+import { TIPO_PAGO, SOLICITUD } from "../../constants";
 import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
-} from "../../../utils";
+} from "../../utils";
 
 const Index = (
   {
@@ -39,14 +39,11 @@ const Index = (
       tipoPago,
       currentPage,
       search
-    )
-      .then((res) => {
+    ).then((res) => {
         setCamposClinicos(res.camposClinicos)
         setTotal(res.total)
       })
-      .finally(() => {
-        toggleLoading(false)
-      })
+      .finally(() => toggleLoading(false))
   }
 
   function handleStatusAction(solicitud) {
@@ -58,6 +55,11 @@ const Index = (
       solicitud.tipoPago === TIPO_PAGO.MULTIPLE
     ) {
       redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/campos-clinicos`
+    } else {
+      switch(solicitud.estatus) {
+        case SOLICITUD.CONFIRMADA:
+          redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/registrar`
+      }
     }
 
     window.location.href = redirectRoute

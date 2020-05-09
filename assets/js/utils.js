@@ -13,7 +13,7 @@ export const getActionNameByInstitucionEducativa = (estatus, tipoPago) => {
     case SOLICITUD.MONTOS_INCORRECTOS_CAME:
       return 'Corregir montos'
     case SOLICITUD.MONTOS_VALIDADOS_CAME:
-      return 'Montos validados por CAME'
+      return 'Consulte formato de pago'
     case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
       return 'Generar formato de pago y referencia'
     case SOLICITUD.CARGANDO_COMPROBANTES:
@@ -43,7 +43,7 @@ export const isActionDisabledByInstitucionEducativa = (estatus) => {
     case SOLICITUD.MONTOS_INCORRECTOS_CAME:
       return false
     case SOLICITUD.MONTOS_VALIDADOS_CAME:
-      return true
+      return false
     case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
       return false
     case SOLICITUD.CARGANDO_COMPROBANTES:
