@@ -96,10 +96,10 @@ vich_uploader:
         institucion_cedulas:
             uri_prefix: '%app.path.instituciones%'
             upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
-            namer: AppBundle\Service\InstitucionVichNamer
+            namer: AppBundle\Vich\Naming\CedulaNamer
             directory_namer: app.directory_namer.comprobantepago
         pagos:
             uri_prefix: '%app.path.instituciones%'
             upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
-            namer: AppBundle\Service\PagoVichNamer
+            namer: AppBundle\Vich\Naming\ComprobantePagoNamer
             directory_namer: app.directory_namer.comprobantepago

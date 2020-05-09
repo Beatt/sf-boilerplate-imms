@@ -5,7 +5,7 @@ services:
     arguments:
       - AppBundle\Entity\CampoClinico
     public: true
-    
+
   AppBundle\Repository\ConvenioRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]

@@ -29,7 +29,7 @@ doctrine:
 
 doctrine_migrations:
     dir_name: "%kernel.root_dir%/../tests/AppBundle/Migrations"
-    namespace: AppBundle\Migrations\Test
+    namespace: Tests\AppBundle\Migrations
     table_name: migration_versions
     name: Application Migrations
     organize_migrations: false

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Migrations\Test;
+namespace AppBundle\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20200508014900 extends AbstractMigration
+class Version20200509222657 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -21,7 +21,7 @@ class Version20200508014900 extends AbstractMigration
         $this->addSql('CREATE TABLE departamento (id SERIAL NOT NULL, unidad_id INT DEFAULT NULL, nombre VARCHAR(100) NOT NULL, clave_departamental VARCHAR(15) NOT NULL, clave_presupuestal VARCHAR(15) NOT NULL, es_unidad BOOLEAN NOT NULL, anio INT NOT NULL, fecha TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_40E497EB9D01464C ON departamento (unidad_id)');
         $this->addSql('CREATE TABLE region (id SERIAL NOT NULL, nombre VARCHAR(20) NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE pago (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, factura_id INT DEFAULT NULL, monto NUMERIC(10, 4) NOT NULL, comprobante_pago VARCHAR(100) DEFAULT NULL, referencia_bancaria VARCHAR(100) NOT NULL, validado BOOLEAN DEFAULT NULL, requiere_factura BOOLEAN NOT NULL, observaciones VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE pago (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, factura_id INT DEFAULT NULL, monto NUMERIC(10, 4) NOT NULL, comprobante_pago VARCHAR(100) DEFAULT NULL, referencia_bancaria VARCHAR(100) NOT NULL, validado BOOLEAN DEFAULT NULL, requiere_factura BOOLEAN NOT NULL, observaciones VARCHAR(100) DEFAULT NULL, fecha_actualizacion_comprobante TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F4DF5F3E1CB9D6E4 ON pago (solicitud_id)');
         $this->addSql('CREATE INDEX IDX_F4DF5F3EF04F795F ON pago (factura_id)');
         $this->addSql('CREATE TABLE categoria (id SERIAL NOT NULL, nombre VARCHAR(100) NOT NULL, clave VARCHAR(15) NOT NULL, PRIMARY KEY(id))');
@@ -59,8 +59,9 @@ class Version20200508014900 extends AbstractMigration
         $this->addSql('CREATE TABLE unidad (id SERIAL NOT NULL, delegacion_id INT DEFAULT NULL, tipo_unidad_id INT DEFAULT NULL, nombre VARCHAR(100) NOT NULL, clave_unidad VARCHAR(15) NOT NULL, clave_presupuestal VARCHAR(15) NOT NULL, nivel_atencion INT DEFAULT NULL, es_umae BOOLEAN NOT NULL, direccion VARCHAR(255) DEFAULT NULL, nombre_unidad_principal VARCHAR(50) DEFAULT NULL, clave_unidad_principal VARCHAR(2) DEFAULT NULL, anio INT NOT NULL, fecha DATE NOT NULL, activo BOOLEAN NOT NULL, latitud DOUBLE PRECISION DEFAULT NULL, longitud DOUBLE PRECISION DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F3E6D02FF4B21EB5 ON unidad (delegacion_id)');
         $this->addSql('CREATE INDEX IDX_F3E6D02F7F6FF902 ON unidad (tipo_unidad_id)');
-        $this->addSql('CREATE TABLE monto_carrera (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, monto_inscripcion DOUBLE PRECISION NOT NULL, monto_colegiatura DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE monto_carrera (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, carrera_id INT DEFAULT NULL, monto_inscripcion DOUBLE PRECISION NOT NULL, monto_colegiatura DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_BCC32A561CB9D6E4 ON monto_carrera (solicitud_id)');
+        $this->addSql('CREATE INDEX IDX_BCC32A56C671B40F ON monto_carrera (carrera_id)');
         $this->addSql('CREATE TABLE campo_clinico (id SERIAL NOT NULL, convenio_id INT DEFAULT NULL, solicitud_id INT DEFAULT NULL, estatus_campo_id INT DEFAULT NULL, unidad_id INT DEFAULT NULL, fecha_inicial DATE NOT NULL, fecha_final DATE NOT NULL, horario VARCHAR(100) NOT NULL, promocion VARCHAR(100) NOT NULL, lugares_solicitados INT NOT NULL, lugares_autorizados INT NOT NULL, referencia_bancaria VARCHAR(100) NOT NULL, monto DOUBLE PRECISION DEFAULT NULL, asignatura VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_3307999AF9D43F2A ON campo_clinico (convenio_id)');
         $this->addSql('CREATE INDEX IDX_3307999A1CB9D6E4 ON campo_clinico (solicitud_id)');
@@ -92,6 +93,7 @@ class Version20200508014900 extends AbstractMigration
         $this->addSql('ALTER TABLE unidad ADD CONSTRAINT FK_F3E6D02FF4B21EB5 FOREIGN KEY (delegacion_id) REFERENCES delegacion (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE unidad ADD CONSTRAINT FK_F3E6D02F7F6FF902 FOREIGN KEY (tipo_unidad_id) REFERENCES tipo_unidad (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE monto_carrera ADD CONSTRAINT FK_BCC32A561CB9D6E4 FOREIGN KEY (solicitud_id) REFERENCES solicitud (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE monto_carrera ADD CONSTRAINT FK_BCC32A56C671B40F FOREIGN KEY (carrera_id) REFERENCES carrera (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE campo_clinico ADD CONSTRAINT FK_3307999AF9D43F2A FOREIGN KEY (convenio_id) REFERENCES convenio (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE campo_clinico ADD CONSTRAINT FK_3307999A1CB9D6E4 FOREIGN KEY (solicitud_id) REFERENCES solicitud (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE campo_clinico ADD CONSTRAINT FK_3307999A44D087A7 FOREIGN KEY (estatus_campo_id) REFERENCES estatus_campo (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -115,6 +117,7 @@ class Version20200508014900 extends AbstractMigration
         $this->addSql('ALTER TABLE convenio DROP CONSTRAINT FK_25577244B239FBC6');
         $this->addSql('ALTER TABLE convenio DROP CONSTRAINT FK_25577244A7D9417F');
         $this->addSql('ALTER TABLE convenio DROP CONSTRAINT FK_25577244C671B40F');
+        $this->addSql('ALTER TABLE monto_carrera DROP CONSTRAINT FK_BCC32A56C671B40F');
         $this->addSql('ALTER TABLE permiso_rol DROP CONSTRAINT FK_DD501D066CEFAD37');
         $this->addSql('ALTER TABLE usuario_delegacion DROP CONSTRAINT FK_17D166E9DB38439E');
         $this->addSql('ALTER TABLE usuario_rol DROP CONSTRAINT FK_72EDD1A4DB38439E');
