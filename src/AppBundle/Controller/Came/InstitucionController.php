@@ -30,8 +30,9 @@ class InstitucionController extends \AppBundle\Controller\DIEControllerControlle
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $institucionManager->Create($form->getData());
-            return $this->jsonResponse(['status' => $result]);
+            return $this->jsonResponse(['status' => $result,
+                'message' => $result? 'Institución Actualizada con éxito' : 'Se presento un problema al actualizar la institucion']);
         }
-        return $this->jsonErrorResponse($form);
+        return $this->jsonErrorResponse($form, ['message' => 'Se presento un problema al actualizar la institucion']);
     }
 }

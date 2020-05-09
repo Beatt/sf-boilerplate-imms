@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="campo_clinico")
@@ -44,6 +45,7 @@ class CampoClinico
     /**
      * @var integer
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(value = 0)
      */
     private $lugaresSolicitados;
 

@@ -5,7 +5,7 @@ namespace AppBundle\Entity;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Table(name="monto_carrera")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MontoCarreraRepository")
@@ -22,12 +22,16 @@ class MontoCarrera
     private $id;
     
     /**
-     * @ORM\Column(name="monto_inscripcion", type="float", precision=24, scale=4)
+     * @ORM\Column(name="monto_inscripcion", type="float", precision=24, scale=4, nullable=false)
+     * @Assert\NotNull
+     * @Assert\NotBlank
      */
     private $montoInscripcion;
 
     /**
-     * @ORM\Column(name="monto_colegiatura", type="float", precision=24, scale=4)
+     * @ORM\Column(name="monto_colegiatura", type="float", precision=24, scale=4, nullable=false)
+     * @Assert\NotNull
+     * @Assert\NotBlank
      */
     private $montoColegiatura;
     

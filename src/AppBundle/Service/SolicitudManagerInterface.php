@@ -15,5 +15,5 @@ interface SolicitudManagerInterface
 
     public function finalizar(Solicitud $solicitud);
 
-    public function validarMontos(Solicitud $solicitud, Request $request);
+    public function validarMontos(Solicitud $solicitud, $montos, $is_valid);
 }
