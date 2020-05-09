@@ -3,16 +3,19 @@
 namespace Tests\AppBundle\Service;
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
+use AppBundle\Repository\EstatusCampoRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\UploaderComprobantePago;
+use Carbon\Carbon;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\AclBundle\Entity\Car;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Tests\AppBundle\AbstractWebTestCase;
 
-class UploaderComprobantePagoTest extends WebTestCase
+class UploaderComprobantePagoTest extends AbstractWebTestCase
 {
     /**
      * @var PagoRepositoryInterface
@@ -25,18 +28,21 @@ class UploaderComprobantePagoTest extends WebTestCase
     private $logger;
 
     /**
-     * @var EntityManagerInterface
+     * @var EstatusCampoRepositoryInterface
      */
-    private $entityManager;
+    private $estatusCampoRepository;
 
     protected function setUp()
     {
-        $kernel = self::bootKernel();
-        $container = $kernel->getContainer();
+        parent::setUp();
 
-        $this->entityManager = $container->get('doctrine.orm.default_entity_manager');
-        $this->pagoRepositoryInterface = $container->get(PagoRepositoryInterface::class);
-        $this->logger = $container->get('logger');
+        $this->pagoRepositoryInterface = $this->container->get(PagoRepositoryInterface::class);
+        $this->estatusCampoRepository = $this->container->get(EstatusCampoRepositoryInterface::class);
+        $this->logger = $this->container->get('logger');
+
+        $this->clearTablaPago();
+        $this->clearTablaCampoClinico();
+        $this->clearTablaSolicitud();
     }
 
     public function testUploadComprobanteSuccessfully()
@@ -49,9 +55,18 @@ class UploaderComprobantePagoTest extends WebTestCase
         $pago->setRequiereFactura(false);
         $this->pagoRepositoryInterface->save($pago);
 
-        $campoClinico = $this->createMock(CampoClinico::class)
-            ->method('getReferenciaBancaria')
-            ->willReturn($referenciaBancaria);
+        $campoClinico = new CampoClinico();
+        $campoClinico->setReferenciaBancaria($referenciaBancaria);
+        $campoClinico->setMonto(10000);
+        $campoClinico->setEstatus(
+            $this->estatusCampoRepository->find(EstatusCampoInterface::PENDIENTE_DE_PAGO)
+        );
+        $campoClinico->setLugaresSolicitados(10);
+        $campoClinico->setLugaresAutorizados(10);
+        $campoClinico->setPromocion('promicion');
+        $campoClinico->setHorario('10am a 5pm');
+        $campoClinico->setFechaInicial(Carbon::now());
+        $campoClinico->setFechaFinal(Carbon::now()->addMonths(3));
 
         $service = new UploaderComprobantePago(
             $this->entityManager,
@@ -65,15 +80,5 @@ class UploaderComprobantePagoTest extends WebTestCase
             $campoClinico,
             $uploadedFile
         );
-    }
-
-    public function tearDown()
-    {
-        $client = static::createClient();
-        $container = $client->getContainer();
-        $doctrine = $container->get('doctrine');
-
-        $purger = new ORMPurger($doctrine->getManager());
-        $purger->purge();
     }
 }
