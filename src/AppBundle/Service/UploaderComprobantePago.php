@@ -5,6 +5,7 @@ namespace AppBundle\Service;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
 use AppBundle\Repository\PagoRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -21,8 +22,17 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
      */
     private $logger;
 
-    public function __construct(PagoRepositoryInterface $pagoRepository, LoggerInterface $logger)
-    {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        PagoRepositoryInterface $pagoRepository,
+        LoggerInterface $logger
+    ) {
+        $this->entityManager = $entityManager;
         $this->pagoRepository = $pagoRepository;
         $this->logger = $logger;
     }
@@ -30,6 +40,7 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
     /**
      * @param CampoClinico $campoClinico
      * @param UploadedFile $file
+     * @return bool
      * @throws Exception
      */
     public function update(CampoClinico $campoClinico, UploadedFile $file)
@@ -45,7 +56,8 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
         try {
             $this->logger->info('Subiendo el comprobante de pago');
             $pago->setComprobantePagoFile($file);
-            $this->pagoRepository->save($pago);
+
+            $this->entityManager->flush();
         } catch (Exception $exception) {
             $this->logger->critical($exception->getMessage());
             throw $exception;

@@ -64,31 +64,11 @@ export const getActionNameByCampoClinico = (estatus) => {
       return 'Cargar comprobante de pago'
     case CAMPO_CLINICO.PAGO:
       return 'En validación por FOFOE'
+    case CAMPO_CLINICO.PAGO_NO_VALIDO:
+      return 'Corregir pago'
+    case CAMPO_CLINICO.PAGO_VALIDADO_FOFOE:
+    case CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE:
+    case CAMPO_CLINICO.CREDENCIALES_GENERADAS:
+      return 'Pago validado'
   }
 }
-
-/*export const getStatusName = (status) => {
-  switch(status) {
-    case SOLICITUD.CREADA:
-      return 'Solicitud creada'
-    case SOLICITUD.CONFIRMADA:
-      return 'Solicitud confirmada'
-    case SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME:
-      return 'En validación de montos CAME'
-    case SOLICITUD.MONTOS_INCORRECTOS_CAME:
-      return 'Montos incorrectos CAME'
-    case SOLICITUD.MONTOS_VALIDADOS_CAME:
-      return 'Montos validados por CAME'
-    case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-      return 'Formatos de pagos generados'
-    case SOLICITUD.CARGANDO_COMPROBANTES:
-      return 'Cargando comprobantes'
-    case SOLICITUD.EN_VALIDACION_FOFOE:
-      return 'En validación FOFOE'
-    case SOLICITUD.CREDENCIALES_GENERADAS:
-      return 'Credenciales generadas'
-    default:
-      console.error(`El status name del estatus ${status} no existe.`)
-      return 'Estatus no definido'
-  }
-}*/

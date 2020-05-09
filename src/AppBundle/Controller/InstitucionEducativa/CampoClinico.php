@@ -61,7 +61,7 @@ class CampoClinico extends DIEControllerController
                                 'nombre'
                             ],
                             'comprobante',
-                            'factura'
+                            'factura',
                         ]
                     ]
                 )

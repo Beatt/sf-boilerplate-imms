@@ -78,7 +78,7 @@ class Pago
     /**
      * @var Solicitud
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pagos")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;

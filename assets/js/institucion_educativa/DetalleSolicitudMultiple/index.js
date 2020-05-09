@@ -12,11 +12,10 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
 
 
   function getComprobanteAction(campoClinico) {
-    if(campoClinico.comprobante !== null) return campoClinico.comprobante
-
     const estatus = campoClinico.estatus.nombre
     switch(estatus) {
       case CAMPO_CLINICO.PENDIENTE_DE_PAGO:
+      case CAMPO_CLINICO.PAGO_NO_VALIDO:
         return(
           <div style={{ position: 'relative' }}>
             <label htmlFor="">{!isLoading ?
@@ -39,7 +38,29 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
             {getActionNameByCampoClinico(estatus)}
           </button>
         )
+      case CAMPO_CLINICO.PAGO_VALIDADO_FOFOE:
+      case CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE:
+      case CAMPO_CLINICO.CREDENCIALES_GENERADAS:
+        return(
+          <div>
+            <a
+              href={campoClinico.comprobante}
+              target='_blank'
+            >
+              Comprobante de pago
+            </a><br/>
+            [{getActionNameByCampoClinico(estatus)}]
+          </div>
+        )
     }
+  }
+
+  function getFactura(factura) {
+    if(factura === 'Pendiente' || factura === 'No solicitada') return factura;
+
+    return(
+      <a href={`${factura}`}>Descargar factura</a>
+    )
   }
 
   function handleUploadComprobantePago(campoClinico, target) {
@@ -95,7 +116,7 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                 <th>
                   {getComprobanteAction(campoClinico)}
                 </th>
-                <th>{campoClinico.factura}</th>
+                <th>{getFactura(campoClinico.factura)}</th>
               </tr>
             )
           }

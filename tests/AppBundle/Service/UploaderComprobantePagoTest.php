@@ -7,8 +7,9 @@ use AppBundle\Entity\Pago;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\UploaderComprobantePago;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploaderComprobantePagoTest extends WebTestCase
@@ -18,12 +19,24 @@ class UploaderComprobantePagoTest extends WebTestCase
      */
     private $pagoRepositoryInterface;
 
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
     protected function setUp()
     {
         $kernel = self::bootKernel();
         $container = $kernel->getContainer();
 
+        $this->entityManager = $container->get('doctrine.orm.default_entity_manager');
         $this->pagoRepositoryInterface = $container->get(PagoRepositoryInterface::class);
+        $this->logger = $container->get('logger');
     }
 
     public function testUploadComprobanteSuccessfully()
@@ -36,19 +49,22 @@ class UploaderComprobantePagoTest extends WebTestCase
         $pago->setRequiereFactura(false);
         $this->pagoRepositoryInterface->save($pago);
 
-        $service = new UploaderComprobantePago($this->pagoRepositoryInterface);
-
-        $campoClinico = $this->createMock(CampoClinico::class);
-        $campoClinico->method('getReferenciaBancaria')
+        $campoClinico = $this->createMock(CampoClinico::class)
+            ->method('getReferenciaBancaria')
             ->willReturn($referenciaBancaria);
 
-        $file = new File(__DIR__.'/test.pdf');
-        $service->update(
-            $campoClinico,
-            new UploadedFile($file->getRealPath(), $file->getFilename(), $file->getMimeType(), $file->getSize(), null, true)
+        $service = new UploaderComprobantePago(
+            $this->entityManager,
+            $this->pagoRepositoryInterface,
+            $this->logger
         );
 
-        $this->assertNotNull($pago->getComprobantePago());
+        $uploadedFile = $this->createMock(UploadedFile::class);
+
+        $service->update(
+            $campoClinico,
+            $uploadedFile
+        );
     }
 
     public function tearDown()

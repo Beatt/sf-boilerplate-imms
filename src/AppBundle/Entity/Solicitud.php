@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -82,10 +83,17 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $observaciones;
 
+    /**
+     * @var Pago
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
+     */
+    private $pagos;
+
     public function __construct()
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
+        $this->pagos = new ArrayCollection();
     }
 
     /**
@@ -464,5 +472,32 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private function esSolicitudConfirmada()
     {
         return $this->estatus === Solicitud::CONFIRMADA;
+    }
+
+    /**
+     * @param Pago $pago
+     * @return Solicitud
+     */
+    public function addPago(Pago $pago)
+    {
+        $this->pagos[] = $pago;
+
+        return $this;
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    public function removePago(Pago $pago)
+    {
+        $this->pagos->removeElement($pago);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPagos()
+    {
+        return $this->pagos;
     }
 }

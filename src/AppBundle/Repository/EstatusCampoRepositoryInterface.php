@@ -6,5 +6,5 @@ use Doctrine\Common\Persistence\ObjectRepository;
 
 interface EstatusCampoRepositoryInterface extends ObjectRepository
 {
-
+    function getEstatusPagado();
 }

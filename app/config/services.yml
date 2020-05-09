@@ -57,3 +57,7 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
         public: true
+
+    AppBundle\EventListener\ComprobantePagoUploadedListener:
+        tags:
+            - { name: kernel.event_listener, event: vich_uploader.post_upload, method: postUpload }
