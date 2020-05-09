@@ -9,6 +9,7 @@ use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Unidad;
 use AppBundle\Form\Type\SolicitudType;
+use AppBundle\Form\Type\ValidaSolicitudType;
 use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -253,9 +254,16 @@ class SolicitudController extends DIEControllerController
             );
         }
 
-        $result = $solicitudManager->validarMontos($solicitud, $request);
+        $form = $this->createForm(ValidaSolicitudType::class, $solicitud);
+        $form->get('montos_pagos')->setData($solicitud->getMontos());
+        $form->handleRequest($request);
 
-        return $this->jsonResponse($result);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $result = $solicitudManager->validarMontos($form->getData(),
+                $form->get('montos_pagos')->getData(), isset($request->request->get('solicitud')['validado']));
+            return $this->jsonResponse($result);
+        }
+        return $this->jsonErrorResponse($form);
     }
 
     /**
@@ -275,7 +283,11 @@ class SolicitudController extends DIEControllerController
             );
         }
 
+        $form = $this->createForm(ValidaSolicitudType::class);
+        $form->get('montos_pagos')->setData($solicitud->getMontos());
+
         return $this->render('came/solicitud/valida_montos.html.twig', [
+            'form' => $form->createView(),
             'solicitud' => $this->get('serializer')->normalize(
                 $solicitud, 'json', ['attributes' => [
                     'id', 'noSolicitud',

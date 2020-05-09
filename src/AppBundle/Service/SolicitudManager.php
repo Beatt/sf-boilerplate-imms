@@ -86,8 +86,38 @@ class SolicitudManager implements SolicitudManagerInterface
         ];
     }
 
-    public function validarMontos(Solicitud $solicitud, Request $request)
+    public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false)
     {
+        $solicitud->setValidado($is_valid);
+        if($is_valid){
+            $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
+        }else{
+            $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
+        }
+        try {
+            $this->entityManager->persist($solicitud);
+            $this->entityManager->flush();
+            if($solicitud->getValidado()){
+                foreach ($montos as $monto) {
+                    if($monto->getMontoInscripcion() && $monto->getMontoColegiatura()){
+                        $this->entityManager->persist($monto);
+                        $this->entityManager->flush();
+                    }else{
+                        throw new \Exception("Montos no puedes ser vacios");
+                    }
+                }
+            }
+
+        } catch (OptimisticLockException $exception) {
+            $this->logger->critical($exception->getMessage());
+            return [
+                'status' => false,
+                'error' => $exception->getMessage()
+            ];
+        }
+        return [
+            'status' => true
+        ];
 
     }
 }

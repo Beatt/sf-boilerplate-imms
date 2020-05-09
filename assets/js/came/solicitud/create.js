@@ -36,12 +36,12 @@ const SolicitudCreate = (props) => {
             return response.json()
         }, error => {
             console.error(error);
-
         }).then(json => {
-
+            if(json.status){
+                document.location.href = '/solicitud';
+            }
         }).finally(() => {
             setIsLoading(false);
-            document.location.href = '/solicitud';
         });
     }
 
