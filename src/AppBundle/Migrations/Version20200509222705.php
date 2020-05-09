@@ -15,19 +15,40 @@ class Version20200509222705 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/categoria.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/ciclo_academico.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/region.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/tipo_unidad.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/estatus_campo.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/nivel_academico.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/institucion.sql');
+        $this->executeSqlSinDependencias();
+        $this->executeSqlConDependencias();
+    }
 
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/carrera.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/delegacion.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/unidad.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/convenios.sql');
-        $this->ExecuteSql(__DIR__ . '/../../../db/seeds/departamento.sql');
+    private function executeSqlSinDependencias()
+    {
+        $this->executeSql(__DIR__ . '/../../../db/seeds/categoria.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/ciclo_academico.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/region.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/tipo_unidad.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/estatus_campo.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/nivel_academico.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/institucion.sql');
+    }
+
+    private function executeSqlConDependencias()
+    {
+        $this->executeSql(__DIR__ . '/../../../db/seeds/carrera.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/delegacion.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/unidad.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/convenios.sql');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/departamento.sql');
+    }
+
+    /**
+     * @param string $sqlFile
+     */
+    private function executeSql($sqlFile)
+    {
+        foreach (explode(';', file_get_contents($sqlFile)) as $sql) {
+            if (strlen(trim($sql)) > 0) {
+                $this->addSql($sql);
+            }
+        }
     }
 
     /**
@@ -37,17 +58,5 @@ class Version20200509222705 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
 
-    }
-
-    /**
-     * @param string $sqlFile
-     */
-    private function ExecuteSql($sqlFile)
-    {
-        foreach (explode(';', file_get_contents($sqlFile)) as $sql) {
-            if (strlen(trim($sql)) > 0) {
-                $this->addSql($sql);
-            }
-        }
     }
 }
