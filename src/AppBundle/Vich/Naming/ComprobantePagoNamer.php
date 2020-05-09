@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Vich\Naming;
 
 use AppBundle\Entity\Pago;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 use Vich\UploaderBundle\Naming\NamerInterface;
 
-class PagoVichNamer implements NamerInterface
+class ComprobantePagoNamer implements NamerInterface
 {
     /**
      * @inheritDoc

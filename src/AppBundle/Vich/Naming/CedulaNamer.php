@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\Service;
+namespace AppBundle\Vich\Naming;
 
 use AppBundle\Entity\Institucion;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 use Vich\UploaderBundle\Naming\NamerInterface;
 
-class InstitucionVichNamer implements NamerInterface
+class CedulaNamer implements NamerInterface
 {
     /**
      * @inheritDoc
