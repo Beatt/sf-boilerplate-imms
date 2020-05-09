@@ -89,11 +89,18 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $pagos;
 
+    /**
+     * @var MontoCarrera
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montosCarrera;
+
     public function __construct()
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
         $this->pagos = new ArrayCollection();
+        $this->montosCarrera = new ArrayCollection();
     }
 
     /**
@@ -499,5 +506,54 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     public function getPagos()
     {
         return $this->pagos;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     * @return Solicitud
+     */
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarrera[] = $montosCarrera;
+
+        return $this;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     */
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarrera->removeElement($montosCarrera);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMontosCarrera()
+    {
+        return $this->montosCarrera;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescripcion()
+    {
+        $items = [];
+
+        /** @var MontoCarrera $monto */
+        foreach($this->montosCarrera as $monto) {
+            $carrera = $monto->getCarrera();
+            $items[] = sprintf(
+                "%s %s: Inscripción $%s, Colegiatura: $%s",
+                $carrera->getNivelAcademico()->getNombre(),
+                $carrera->getNombre(),
+                $monto->getMontoInscripcion(),
+                $monto->getMontoColegiatura()
+            );
+        }
+
+        return implode('. ', $items);
     }
 }
