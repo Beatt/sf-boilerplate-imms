@@ -4,36 +4,42 @@ services:
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\CampoClinico
-
+    public: true
+    
   AppBundle\Repository\ConvenioRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\Convenio
+    public: true
 
   AppBundle\Repository\ExpedienteRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\Expediente
+    public: true
 
   AppBundle\Repository\InstitucionRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\Institucion
+    public: true
 
   AppBundle\Repository\SolicitudRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\Solicitud
+    public: true
 
   AppBundle\Repository\EstatusCampoRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
       - AppBundle\Entity\EstatusCampo
+    public: true
 
   AppBundle\Repository\PagoRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
