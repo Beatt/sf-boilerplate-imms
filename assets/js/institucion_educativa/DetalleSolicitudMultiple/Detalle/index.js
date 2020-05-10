@@ -103,7 +103,7 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
           {
             camposClinicos.map((campoClinico, index) =>
               <tr key={index}>
-                <td>{campoClinico.unidad.tipoUnidad.nombre}</td>
+                <td>{campoClinico.unidad.nombre}</td>
                 <td>{campoClinico.convenio.cicloAcademico.nombre}</td>
                 <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}</td>
                 <td>{campoClinico.convenio.carrera.nombre}</td>

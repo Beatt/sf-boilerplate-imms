@@ -63,6 +63,30 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         );
         $manager->persist($campo2);
 
+        /** @var Convenio $convenio3 */
+        $convenio3 = $manager->getRepository(Convenio::class)
+            ->find(14);
+
+        /** @var EstatusCampo $estatusCampoNuevo */
+        $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
+            ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
+
+        /** @var Unidad $unidad3 */
+        $unidad3 = $manager->getRepository(Unidad::class)
+            ->find(16);
+
+        /** @var Solicitud $solicitudFormatos */
+        $solicitudFormatos = $this->getReference(Solicitud::CARGANDO_COMPROBANTES);
+
+        $campo3 = $this->create(
+            $convenio3,
+            $estatusCampoNuevo,
+            $unidad3,
+            $solicitudFormatos,
+            '101011'
+        );
+        $manager->persist($campo3);
+
         $manager->flush();
     }
 
@@ -95,7 +119,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setPromocion('Promoción');
         $campoClinico->setLugaresSolicitados(40);
         $campoClinico->setLugaresAutorizados(20);
-        $campoClinico->setMonto('100000');
+        $campoClinico->setMonto(10000);
         $campoClinico->setReferenciaBancaria($referenciaBancaria);
         $campoClinico->setConvenio($convenio);
         $campoClinico->setEstatus($estatusCampo);

@@ -51,9 +51,7 @@ class CampoClinico extends DIEControllerController
                     'attributes' => [
                         'id',
                         'unidad' => [
-                            'tipoUnidad' => [
-                                'nombre'
-                            ]
+                            'nombre'
                         ],
                         'convenio' => [
                             'carrera' => [

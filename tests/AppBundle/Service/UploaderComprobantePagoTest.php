@@ -75,8 +75,9 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             ->findOneBy([]);
 
         $solicitud = $this->createSolicitud(
-            $referenciaBancaria,
-            SolicitudInterface::CARGANDO_COMPROBANTES
+            null,
+            SolicitudInterface::CARGANDO_COMPROBANTES,
+            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
         );
         $this->createPago($referenciaBancaria, $solicitud);
 
@@ -116,8 +117,11 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         /** @var Pago $pago */
         $pago = $this->pagoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
 
-        $this->assertEquals(SolicitudInterface::CARGANDO_COMPROBANTES, $campoClinico->getSolicitud()->getEstatus());
-        $this->assertEquals(EstatusCampoInterface::PAGO, $campoClinico->getEstatus()->getNombre());
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $campoClinico->getSolicitud()->getEstatus());
+        /** @var CampoClinico $camposClinico */
+        foreach($solicitud->getCamposClinicos() as $camposClinico) {
+            $this->assertEquals(EstatusCampoInterface::PAGO, $camposClinico->getEstatus()->getNombre());
+        }
         $this->assertNotNull($pago->getComprobantePago());
     }
 
@@ -131,8 +135,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
 
         $solicitud = $this->createSolicitud(
             $referenciaBancaria,
-            SolicitudInterface::CARGANDO_COMPROBANTES,
-            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
+            SolicitudInterface::CARGANDO_COMPROBANTES
         );
         $this->createPago($referenciaBancaria, $solicitud);
 
@@ -172,11 +175,8 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         /** @var Pago $pago */
         $pago = $this->pagoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
 
-        $this->assertEquals(SolicitudInterface::CARGANDO_COMPROBANTES, $solicitud->getEstatus());
-        /** @var CampoClinico $camposClinico */
-        foreach($solicitud->getCamposClinicos() as $camposClinico) {
-            $this->assertEquals(EstatusCampoInterface::PAGO, $camposClinico->getEstatus()->getNombre());
-        }
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $solicitud->getEstatus());
+        $this->assertEquals(EstatusCampoInterface::PAGO, $campoClinico->getEstatus()->getNombre());
         $this->assertNotNull($pago->getComprobantePago());
     }
 

@@ -4,6 +4,7 @@ namespace AppBundle\EventListener;
 
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
+use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
@@ -51,15 +52,16 @@ class ComprobantePagoUploadedListener
 
         $estatusPagado = $this->estatusCampoRepository->getEstatusPagado();
 
-        $comprobantePago = null;
+        $pago->getSolicitud()->setEstatus(SolicitudInterface::EN_VALIDACION_FOFOE);
+
         if($pago->getSolicitud()->isPagoUnico()) {
-            $comprobantePago = $this->campoClinicoRepository->findOneBy(['referenciaBancaria' => $pago->getReferenciaBancaria()]);
-            $comprobantePago->setEstatus($estatusPagado);
-        } else {
             /** @var CampoClinico $camposClinico */
             foreach($pago->getSolicitud()->getCamposClinicos() as $camposClinico) {
                 $camposClinico->setEstatus($estatusPagado);
             }
+        } else {
+            $camposClinico = $this->campoClinicoRepository->findOneBy(['referenciaBancaria' => $pago->getReferenciaBancaria()]);
+            $camposClinico->setEstatus($estatusPagado);
         }
 
         $this->entityManager->flush();
