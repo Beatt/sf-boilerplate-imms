@@ -12,42 +12,31 @@ class SolicitudFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $this->Create(
+        $solicitud = $this->create(
+            '1000001',
             SolicitudInterface::CONFIRMADA,
-            Carbon::now(),
-            $manager
+            Carbon::now()->addMonths(3)
         );
-
-        $this->Create(
-            SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME,
-            Carbon::now()->addMonths(2),
-            $manager
-        );
-
-        $solicitud = $this->Create(
-            SolicitudInterface::CARGANDO_COMPROBANTES,
-            Carbon::now()->addMonths(4),
-            $manager
-        );
-        $solicitud->setTipoPago(Solicitud::TIPO_PAGO_MULTIPLE);
-
-        $manager->flush();
-    }
-
-    private function Create(
-        $typeReference,
-        $fecha,
-        ObjectManager $manager
-    ) {
-        $solicitud = new Solicitud();
-        $solicitud->setEstatus($typeReference);
-        $solicitud->setNoSolicitud(sprintf('NS_00%s', rand(0, 10000)));
-        $solicitud->setFecha($fecha);
-        $solicitud->setReferenciaBancaria('10202010220');
 
         $manager->persist($solicitud);
+        $manager->flush();
 
-        $this->addReference($typeReference, $solicitud);
+        $this->addReference(
+            SolicitudInterface::CONFIRMADA,
+            $solicitud
+        );
+    }
+
+    private function create(
+        $referenciaBancaria,
+        $estatus,
+        $fecha
+    ) {
+        $solicitud = new Solicitud();
+        $solicitud->setEstatus($estatus);
+        $solicitud->setNoSolicitud(sprintf('NS_00%s', rand(0, 10000)));
+        $solicitud->setFecha($fecha);
+        $solicitud->setReferenciaBancaria($referenciaBancaria);
 
         return $solicitud;
     }
