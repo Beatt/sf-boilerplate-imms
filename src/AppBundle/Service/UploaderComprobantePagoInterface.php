@@ -2,10 +2,10 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\ComprobantePagoInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 interface UploaderComprobantePagoInterface
 {
-    public function update(CampoClinico $campoClinico, UploadedFile $file);
+    public function update(ComprobantePagoInterface $campoClinico, UploadedFile $file);
 }

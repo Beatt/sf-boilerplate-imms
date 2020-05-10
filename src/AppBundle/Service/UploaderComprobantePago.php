@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\ComprobantePagoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Repository\PagoRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,19 +38,19 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
     }
 
     /**
-     * @param CampoClinico $campoClinico
+     * @param ComprobantePagoInterface $comprobantePago
      * @param UploadedFile $file
      * @return bool
      * @throws Exception
      */
-    public function update(CampoClinico $campoClinico, UploadedFile $file)
+    public function update(ComprobantePagoInterface $comprobantePago, UploadedFile $file)
     {
         /** @var Pago $pago */
-        $pago = $this->pagoRepository->getComprobante($campoClinico->getReferenciaBancaria());
+        $pago = $this->pagoRepository->getComprobante($comprobantePago->getReferenciaBancaria());
         if($pago === null) throw new Exception('El campo clinico no tiene un pago asociado');
 
         $this->logger->info(sprintf(
-            'Iniciado el guardado del comprobante de pago del campo clinico con id %s', $campoClinico->getId()
+            'Iniciado el guardado del comprobante de pago del campo clinico con id %s', $comprobantePago->getId()
         ));
 
         try {

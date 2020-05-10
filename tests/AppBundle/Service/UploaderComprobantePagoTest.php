@@ -8,9 +8,11 @@ use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Service\UploaderComprobantePago;
 use Carbon\Carbon;
 use Symfony\Bridge\Monolog\Logger;
@@ -25,7 +27,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
     /**
      * @var PagoRepositoryInterface
      */
-    private $pagoRepositoryInterface;
+    private $pagoRepository;
 
     /**
      * @var Logger
@@ -42,13 +44,19 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
      */
     private $campoClinicoRepository;
 
+    /**
+     * @var SolicitudRepositoryInterface
+     */
+    private $solicitudRepository;
+
     protected function setUp()
     {
         parent::setUp();
 
-        $this->pagoRepositoryInterface = $this->container->get(PagoRepositoryInterface::class);
+        $this->pagoRepository = $this->container->get(PagoRepositoryInterface::class);
         $this->estatusCampoRepository = $this->container->get(EstatusCampoRepositoryInterface::class);
         $this->campoClinicoRepository = $this->container->get(CampoClinicoRepositoryInterface::class);
+        $this->solicitudRepository = $this->container->get(SolicitudRepositoryInterface::class);
         $this->logger = $this->container->get('logger');
 
         $this->clearTablaPago();
@@ -66,7 +74,10 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $convenio = $this->entityManager->getRepository(Convenio::class)
             ->findOneBy([]);
 
-        $solicitud = $this->createSolicitud($referenciaBancaria);
+        $solicitud = $this->createSolicitud(
+            $referenciaBancaria,
+            SolicitudInterface::CARGANDO_COMPROBANTES
+        );
         $this->createPago($referenciaBancaria, $solicitud);
 
         $campoClinico = $this->createCampoClinico(
@@ -90,7 +101,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
 
         $service = new UploaderComprobantePago(
             $this->entityManager,
-            $this->pagoRepositoryInterface,
+            $this->pagoRepository,
             $this->logger
         );
 
@@ -103,9 +114,68 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $campoClinico = $this->campoClinicoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
 
         /** @var Pago $pago */
-        $pago = $this->pagoRepositoryInterface->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
+        $pago = $this->pagoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
 
         $this->assertEquals(EstatusCampoInterface::PAGO, $campoClinico->getEstatus()->getNombre());
+        $this->assertNotNull($pago->getComprobantePago());
+    }
+
+    public function testGuardarComprobantePagoDeUnaSolicitud()
+    {
+        $referenciaBancaria = 1000001;
+
+        /** @var Convenio $convenio */
+        $convenio = $this->entityManager->getRepository(Convenio::class)
+            ->findOneBy([]);
+
+        $solicitud = $this->createSolicitud(
+            $referenciaBancaria,
+            SolicitudInterface::CARGANDO_COMPROBANTES,
+            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
+        );
+        $this->createPago($referenciaBancaria, $solicitud);
+
+        $this->createCampoClinico(
+            null,
+            $solicitud,
+            $convenio,
+            EstatusCampoInterface::PENDIENTE_DE_PAGO
+        );
+
+        $this->entityManager->flush();
+
+        $file = new File(__DIR__ . '/pdf-test.pdf');
+        $uploadedFile = new UploadedFile(
+            $file->getRealPath(),
+            $file->getFilename(),
+            $file->getMimeType(),
+            $file->getSize(),
+            null,
+            true
+        );
+
+        $service = new UploaderComprobantePago(
+            $this->entityManager,
+            $this->pagoRepository,
+            $this->logger
+        );
+
+        $service->update(
+            $solicitud,
+            $uploadedFile
+        );
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
+
+        /** @var Pago $pago */
+        $pago = $this->pagoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
+
+        $this->assertEquals(SolicitudInterface::CARGANDO_COMPROBANTES, $solicitud->getEstatus());
+        /** @var CampoClinico $camposClinico */
+        foreach($solicitud->getCamposClinicos() as $camposClinico) {
+            $this->assertEquals(EstatusCampoInterface::PAGO, $camposClinico->getEstatus()->getNombre());
+        }
         $this->assertNotNull($pago->getComprobantePago());
     }
 
@@ -147,15 +217,24 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
 
     /**
      * @param $referenciaBancaria
+     * @param null $estatus
+     * @param null $tipoPago
      * @return Solicitud
      */
-    private function createSolicitud($referenciaBancaria)
-    {
+    private function createSolicitud(
+        $referenciaBancaria,
+        $estatus = null,
+        $tipoPago = null
+    ) {
+        $tipoPago = $tipoPago ?: SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
+        $estatus = $estatus ?: SolicitudInterface::CONFIRMADA;
+
         $solicitud = new Solicitud();
         $solicitud->setMonto(10000);
         $solicitud->setReferenciaBancaria($referenciaBancaria);
         $solicitud->setNoSolicitud('00001');
-        $solicitud->setEstatus(SolicitudInterface::CARGANDO_COMPROBANTES);
+        $solicitud->setEstatus($estatus);
+        $solicitud->setTipoPago($tipoPago);
         $this->entityManager->persist($solicitud);
         return $solicitud;
     }

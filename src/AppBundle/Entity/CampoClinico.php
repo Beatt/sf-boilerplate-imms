@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico
+class CampoClinico implements ComprobantePagoInterface
 {
     /**
      * @var int
@@ -62,7 +62,7 @@ class CampoClinico
     private $convenio;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
 

@@ -14,7 +14,7 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
 {
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -39,7 +39,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private $estatus;
 
     /**
-     * @ORM\Column(name="referencia_bancaria", type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
 
@@ -555,5 +555,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         }
 
         return implode('. ', $items);
+    }
+
+    public function isPagoUnico()
+    {
+        return $this->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
     }
 }
