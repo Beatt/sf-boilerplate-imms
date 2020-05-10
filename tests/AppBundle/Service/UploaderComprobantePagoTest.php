@@ -58,7 +58,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         copy(__DIR__ . '/pdf.pdf', __DIR__ . '/pdf-test.pdf');
     }
 
-    public function testGuardarComprobantePagoCorrectamente()
+    public function testGuardarComprobantePagoDeUnCampoClinico()
     {
         $referenciaBancaria = 1000001;
 
