@@ -54,9 +54,7 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
         ));
 
         try {
-            $this->logger->info('Subiendo el comprobante de pago');
             $pago->setComprobantePagoFile($file);
-
             $this->entityManager->flush();
         } catch (Exception $exception) {
             $this->logger->critical($exception->getMessage());
