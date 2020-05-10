@@ -264,9 +264,7 @@ class Pago
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
 
-        if($this->fechaActualizacionComprobante) {
-            $this->setFechaActualizacionComprobante(Carbon::now());
-        }
+        $this->setFechaActualizacionComprobante(Carbon::now());
     }
 
     /**

@@ -3,15 +3,18 @@
 namespace Tests\AppBundle\Service;
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Convenio;
 use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
+use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\UploaderComprobantePago;
 use Carbon\Carbon;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\AclBundle\Entity\Car;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Tests\AppBundle\AbstractWebTestCase;
 
@@ -49,17 +52,28 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
     {
         $referenciaBancaria = 1000001;
 
+        $convenio = $this->entityManager->getRepository(Convenio::class)
+            ->find(1);
+
+        $solicitud = new Solicitud();
+        $solicitud->setMonto(10000);
+        $solicitud->setReferenciaBancaria($referenciaBancaria);
+        $solicitud->setNoSolicitud('00001');
+        $solicitud->setEstatus(SolicitudInterface::CARGANDO_COMPROBANTES);
+        $this->entityManager->persist($solicitud);
+
         $pago = new Pago();
         $pago->setMonto(10000);
-        $pago->setReferenciaBancaria(1000001);
+        $pago->setReferenciaBancaria($referenciaBancaria);
         $pago->setRequiereFactura(false);
-        $this->pagoRepositoryInterface->save($pago);
+        $pago->setSolicitud($solicitud);
+        $this->entityManager->persist($pago);
 
         $campoClinico = new CampoClinico();
         $campoClinico->setReferenciaBancaria($referenciaBancaria);
         $campoClinico->setMonto(10000);
         $campoClinico->setEstatus(
-            $this->estatusCampoRepository->find(EstatusCampoInterface::PENDIENTE_DE_PAGO)
+            $this->estatusCampoRepository->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO])
         );
         $campoClinico->setLugaresSolicitados(10);
         $campoClinico->setLugaresAutorizados(10);
@@ -67,6 +81,11 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $campoClinico->setHorario('10am a 5pm');
         $campoClinico->setFechaInicial(Carbon::now());
         $campoClinico->setFechaFinal(Carbon::now()->addMonths(3));
+        $campoClinico->setSolicitud($solicitud);
+        $campoClinico->setConvenio($convenio);
+        $this->entityManager->persist($campoClinico);
+
+        $this->entityManager->flush();
 
         $service = new UploaderComprobantePago(
             $this->entityManager,
@@ -74,7 +93,15 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             $this->logger
         );
 
-        $uploadedFile = $this->createMock(UploadedFile::class);
+        $file = new File(__DIR__ . '/pdf-test.pdf');
+        $uploadedFile = new UploadedFile(
+            $file->getRealPath(),
+            $file->getFilename(),
+            $file->getMimeType(),
+            $file->getSize(),
+            null,
+            true
+        );
 
         $service->update(
             $campoClinico,
