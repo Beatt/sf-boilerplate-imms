@@ -1,6 +1,9 @@
 imports:
     - { resource: config_dev.yml }
 
+parameters:
+    app.path.instituciones: /tests/uploads/files/instituciones
+
 framework:
     test: ~
     session:
@@ -33,3 +36,17 @@ doctrine_migrations:
     table_name: migration_versions
     name: Application Migrations
     organize_migrations: false
+
+vich_uploader:
+    db_driver: orm
+    mappings:
+        institucion_cedulas:
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/tests/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\CedulaNamer
+            directory_namer: app.directory_namer.comprobantepago
+        pagos:
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/tests/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\ComprobantePagoNamer
+            directory_namer: app.directory_namer.comprobantepago

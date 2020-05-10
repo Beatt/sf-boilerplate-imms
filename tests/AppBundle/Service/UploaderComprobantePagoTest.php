@@ -179,7 +179,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
     protected function tearDown()
     {
         $finder = new Finder();
-        $files = $finder->files()->in(__DIR__ . '/../../../web/uploads/files/instituciones/*');
+        $files = $finder->files()->in(__DIR__ . '/../../../web/tests/uploads/files/instituciones/*');
 
         $fileSystem = new Filesystem();
         $fileSystem->remove($files);
