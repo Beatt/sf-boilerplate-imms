@@ -14,6 +14,8 @@ use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\UploaderComprobantePago;
 use Carbon\Carbon;
 use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Tests\AppBundle\AbstractWebTestCase;
@@ -172,5 +174,14 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $pago->setSolicitud($solicitud);
         $this->entityManager->persist($pago);
         return $pago;
+    }
+
+    protected function tearDown()
+    {
+        $finder = new Finder();
+        $files = $finder->files()->in(__DIR__ . '/../../../web/uploads/files/instituciones/*');
+
+        $fileSystem = new Filesystem();
+        $fileSystem->remove($files);
     }
 }
