@@ -38,8 +38,31 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
             $unidad,
             $solicitud
         );
-
         $manager->persist($campo1);
+
+        /** @var Convenio $convenio2 */
+        $convenio2 = $manager->getRepository(Convenio::class)
+            ->find(4);
+
+        /** @var EstatusCampo $estatusCampoNuevo */
+        $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
+            ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
+
+        /** @var Unidad $unidad2 */
+        $unidad2 = $manager->getRepository(Unidad::class)
+            ->find(4);
+
+        /** @var Solicitud $solicitudFormatos */
+        $solicitudFormatos = $this->getReference(Solicitud::FORMATOS_DE_PAGO_GENERADOS);
+
+        $campo2 = $this->create(
+            $convenio2,
+            $estatusCampoNuevo,
+            $unidad2,
+            $solicitudFormatos
+        );
+        $manager->persist($campo2);
+
         $manager->flush();
     }
 

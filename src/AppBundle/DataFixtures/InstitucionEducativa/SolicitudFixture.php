@@ -12,18 +12,30 @@ class SolicitudFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $solicitud = $this->create(
+        $solicitudConfirmada = $this->create(
             '1000001',
             SolicitudInterface::CONFIRMADA,
             Carbon::now()->addMonths(3)
         );
+        $manager->persist($solicitudConfirmada);
 
-        $manager->persist($solicitud);
+        $solicitudFormatoPago = $this->create(
+            '1000002',
+            SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS,
+            Carbon::now()->addMonths(6)
+        );
+        $manager->persist($solicitudFormatoPago);
+
         $manager->flush();
 
         $this->addReference(
             SolicitudInterface::CONFIRMADA,
-            $solicitud
+            $solicitudConfirmada
+        );
+
+        $this->addReference(
+            SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS,
+            $solicitudFormatoPago
         );
     }
 
