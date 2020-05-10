@@ -116,6 +116,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         /** @var Pago $pago */
         $pago = $this->pagoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
 
+        $this->assertEquals(SolicitudInterface::CARGANDO_COMPROBANTES, $campoClinico->getSolicitud()->getEstatus());
         $this->assertEquals(EstatusCampoInterface::PAGO, $campoClinico->getEstatus()->getNombre());
         $this->assertNotNull($pago->getComprobantePago());
     }
