@@ -8,7 +8,6 @@ use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
-use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\UploaderComprobantePago;
@@ -46,6 +45,8 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $this->clearTablaPago();
         $this->clearTablaCampoClinico();
         $this->clearTablaSolicitud();
+
+        copy(__DIR__ . '/pdf.pdf', __DIR__ . '/pdf-test.pdf');
     }
 
     public function testUploadComprobanteSuccessfully()
