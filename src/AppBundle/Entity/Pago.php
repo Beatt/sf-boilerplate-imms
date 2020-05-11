@@ -39,20 +39,11 @@ class Pago
      private $fechaPago;
 
     /**
-<<<<<<< HEAD
-     * @var Solicitud
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pago")
-     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
-     */
-     private $solicitud;
-=======
      * @var string
      *
      * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $comprobantePago;
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
 
     /**
      * @var File
@@ -106,21 +97,11 @@ class Pago
     private $factura;
 
     /**
-<<<<<<< HEAD
-     * @var Factura
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="factura")
-     * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
-     */
-     private $facturas;
-
-=======
      * @var DateTime
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $fechaActualizacionComprobante;
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
 
     /**
      * @return int
@@ -150,48 +131,6 @@ class Pago
     }
 
     /**
-<<<<<<< HEAD
-     * @param Solicitud $solicitud
-     * @return Pago
-     */
-     public function setSolicitud(Solicitud $solicitud = null)
-     {
-         $this->solicitud = $solicitud;
- 
-         return $this;
-     }
- 
-     /**
-      * @return Solicitud
-      */
-     public function getSolicitud()
-     {
-         return $this->solicitud;
-     }
-
-
-     /**
-     * @param Factura $facturas
-     * @return Pago
-     */
-     public function setFacturas(Factura $facturas = null)
-     {
-         $this->facturas = $facturas;
- 
-         return $this;
-     }
- 
-     /**
-      * @return Factura
-      */
-     public function getFacturas()
-     {
-         return $this->facturas;
-     }
-
-    /**
-=======
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
      * @param string $comprobantePago
      * @return Pago
      */
@@ -273,14 +212,6 @@ class Pago
     public function getFactura()
     {
         return $this->factura;
-    }
-
-    /**
-     * @param Factura $factura
-     */
-    public function setFactura(Factura $factura)
-    {
-        $this->factura = $factura;
     }
 
     /**

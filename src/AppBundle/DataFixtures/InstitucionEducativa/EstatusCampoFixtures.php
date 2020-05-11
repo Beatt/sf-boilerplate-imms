@@ -24,7 +24,7 @@ class EstatusCampoFixtures extends Fixture
     {
         //$estatusCampo = $manager->find(EstatusCampo::class, $id);
         $estatusCampo = new EstatusCampo();
-        $estatusCampo->setEstatus($typeReference);
+        $estatusCampo->setNombre($typeReference);
         $manager->persist($estatusCampo);
         $this->addReference($typeReference, $estatusCampo);
     }

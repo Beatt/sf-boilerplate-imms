@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityRepository;
 
 class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 {
-<<<<<<< HEAD
     /**
      * @param $id
      * @return array
@@ -20,7 +19,8 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
-=======
+    }
+
     public function getComprobante($referenciaBancaria)
     {
         return $this->findOneByReferenciaBancaria($referenciaBancaria);
@@ -36,6 +36,5 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
     {
         return Criteria::create()
             ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria));
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     }
 }

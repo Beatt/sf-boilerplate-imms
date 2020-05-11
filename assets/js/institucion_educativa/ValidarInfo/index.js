@@ -102,7 +102,7 @@ const ValidarInfo = ({ institucion }) => {
             type="file"
             name="institucion[cedulaFile][file]"
             id="institucion_cedulaFile_file"
-            required={true}
+            required={false}
           />
           <div className="hidden">
             <input

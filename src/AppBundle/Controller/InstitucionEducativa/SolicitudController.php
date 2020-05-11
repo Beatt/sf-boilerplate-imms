@@ -13,6 +13,7 @@ use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\CarreraRepositoryInterface;
+use AppBundle\Repository\MontoCarreraRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -144,6 +145,7 @@ class SolicitudController extends Controller
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @param CarreraRepositoryInterface $carreraRepository
      * @param MontoCarreraManagerInterface $montoCarreraManager
+     * @param MontoCarreraRepository $montoCarreraRepository
      * @return Response
      */
     public function recordAction(
@@ -153,7 +155,8 @@ class SolicitudController extends Controller
         InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         CarreraRepositoryInterface $carreraRepository,
-        MontoCarreraManagerInterface $montoCarreraManager
+        MontoCarreraManagerInterface $montoCarreraManager,
+        MontoCarreraRepositoryInterface $montoCarreraRepository
     ) {
 
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
@@ -179,13 +182,21 @@ class SolicitudController extends Controller
             }
         }
 
-        foreach ($carreras as $c){
-            $montoCarrera = new MontoCarrera();
-            $montoCarrera->setSolicitud($solicitud);
-            $montoCarrera->setCarrera($c);
-            $solicitud->getMontosCarrera()->add($montoCarrera);
-        }
 
+        $montos = $montoCarreraRepository->getAllMontosCarreraByRequest(
+            $solicitudId
+        );
+
+
+        if($montos == null){
+            foreach ($carreras as $c){
+                $montoCarrera = new MontoCarrera();
+                $carrera = $carreraRepository->find($c["id"]);
+                $montoCarrera->setSolicitud($solicitud);
+                $montoCarrera->setCarrera($carrera);
+                $solicitud->getMontosCarrera()->add($montoCarrera);
+            }
+        }
 
         $form = $this->createForm(SolicitudMontoType::class, $solicitud, [
             'action' => $this->generateUrl('instituciones#record', [
@@ -194,25 +205,35 @@ class SolicitudController extends Controller
             ]),
         ]);
     
-        $form->handleRequest($request);
-        if($form->isSubmitted()) {
-            if($form->isValid()){
-                return new JsonResponse([
-                    'message' => 
-                        "Todo shido" 
-                    
-                ]);
+        if ($request->isMethod('POST')) {
+            $inscripciones = $request->get('montosInscripcion');
+            $colegiatura = $request->get('montosColegiatura');
+            $carrera = $request->get('carreraid');
+
+            $value = 0;
+            if($montos != null){
+                foreach ($montos as $c){
+                    $c->setMontoInscripcion($inscripciones[$value]);
+                    $c->setMontoColegiatura($colegiatura[$value]);
+                    $result = $montoCarreraManager->Create($c);
+                    $value++;
+                }    
             }else{
-                return new JsonResponse([
-                    'message' => 
-                        "Ociurrió un error" 
-                    
-                ]);
+                foreach ($carreras as $c){
+                    $montoCarrera = new MontoCarrera();
+                    $montoCarrera->setMontoInscripcion($inscripciones[$value]);
+                    $montoCarrera->setMontoColegiatura($colegiatura[$value]);
+                    $montoCarrera->setSolicitud($solicitud);
+                    $carre = $carreraRepository->find($carrera[$value]);
+                    $montoCarrera->setCarrera($carre);
+                    $solicitud->getMontosCarrera()->add($montoCarrera);
+                    $result = $montoCarreraManager->Create($montoCarrera);
+                    $value++;
+                }
             }
             
-            /*$result = $institucionManager->Create($form->getData());*/
 
-            /*return new JsonResponse([
+            return new JsonResponse([
                 'message' => $result ?
                     "¡La información se actualizado correctamente!" :
                     '¡Ha ocurrido un problema, intenta más tarde!',
@@ -220,11 +241,8 @@ class SolicitudController extends Controller
                     Response::HTTP_OK :
                     Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
-        }else{
-            $acc = 10;
-        }*/
-        }else{
-            $enviado = 'no se ha enviado';
+
+
         }
 
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
@@ -239,12 +257,14 @@ class SolicitudController extends Controller
                     'attributes' => [
                         'montosCarrera' => [
                             'montoInscripcion',
-                            'montoColegiatura'
+                            'montoColegiatura',
+                            'carrera' => [
+                                'id',
+                                'nombre'
+                            ]
                         ]
                     ]
-                ]),
-            'enviado' => $enviado
-
+                ])
         ]);
     }
 
@@ -287,9 +307,9 @@ class SolicitudController extends Controller
                     'monto',
                     'fechaPago',
                     'comprobantePago',
-                    'factura',
+                    'requiereFactura',
                     'referenciaBancaria',
-                    'facturas'
+                    'factura'
                 ]
             ]);
     }
@@ -390,7 +410,8 @@ class SolicitudController extends Controller
                     'fecha',
                     'montosCarrera' => [
                         'montoInscripcion',
-                        'montoColegiatura'
+                        'montoColegiatura',
+                        'carrera'
                     ]
                 ]
             ]

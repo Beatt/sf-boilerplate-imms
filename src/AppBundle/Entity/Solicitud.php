@@ -55,12 +55,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $camposClinicos;
 
-
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
-     */
-    private $montosCarrera;
-
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
      */
@@ -71,16 +65,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $documento;
 
-<<<<<<< HEAD
-    public function __construct()
-    {
-        $this->fecha = new \DateTime();
-        $this->camposClinicos = new ArrayCollection();
-        $this->montosCarrera = new ArrayCollection();
-    }
-
-=======
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -102,23 +86,21 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     private $observaciones;
 
     /**
-<<<<<<< HEAD
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $descripcion;
 
-    
-=======
-     * @var Pago
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
-     */
-    private $pagos;
-
     /**
      * @var MontoCarrera
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud", cascade={"persist"})
      */
     private $montosCarrera;
+
+    /**
+     * @var Pago
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
+    */
+    private $pagos;
 
     public function __construct()
     {
@@ -128,7 +110,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         $this->montosCarrera = new ArrayCollection();
     }
 
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     /**
      * @return int
      */
@@ -193,26 +174,25 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
             self::CREDENCIALES_GENERADAS
         ];
 
-<<<<<<< HEAD
-        $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
+        $estatusExist = array_filter($allowedStatus, function ($item) use($estatus) {
             return $item === $estatus;
         });
 
-        if(count($estatusExist) === 0) {
-=======
+        /*if(count($estatusExist) === 0) {
         if(!in_array($estatus, $allowedStatus)) {
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
             throw new \InvalidArgumentException(sprintf(
                 'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
                 $estatus,
                 implode(', ', $allowedStatus)
             ));
-        }
+        }*/
 
         $this->estatus = $estatus;
 
         return $this;
+        //}
     }
+
 
     /**
      * @return string
@@ -309,16 +289,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
          $this->descripcion = $descripcion;
  
          return $this;
-     }
- 
-     /**
-      * @return string
-      */
-     public function getDescripcion()
-     {
-         return $this->descripcion;
-     }
-
+     } 
 
     /**
      * @param boolean $validado
@@ -577,14 +548,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     public function removeMontosCarrera(MontoCarrera $montosCarrera)
     {
         $this->montosCarrera->removeElement($montosCarrera);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getMontosCarrera()
-    {
-        return $this->montosCarrera;
     }
 
     /**

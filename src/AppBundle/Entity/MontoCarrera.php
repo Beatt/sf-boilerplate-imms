@@ -32,7 +32,7 @@ class MontoCarrera
     /**
      * @var Solicitud
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", cascade={"persist"})
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;
@@ -44,12 +44,6 @@ class MontoCarrera
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
      */
     private $carrera;
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
 
     /**
      * @return integer
@@ -117,24 +111,14 @@ class MontoCarrera
         return $this->solicitud;
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     /**
      * @param Carrera $carrera
      * @return MontoCarrera
      */
-<<<<<<< HEAD
-    public function setCarrera($carrera)
-    {
-        $this->carrera = $carrera;
-=======
     public function setCarrera(Carrera $carrera = null)
     {
         $this->carrera = $carrera;
 
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
         return $this;
     }
 

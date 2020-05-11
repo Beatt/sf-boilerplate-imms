@@ -60,3 +60,10 @@ services:
     arguments:
       - AppBundle\Entity\Pago
     public: true
+
+  AppBundle\Repository\MontoCarreraRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\MontoCarrera
+    public: true

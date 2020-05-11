@@ -58,19 +58,19 @@ const Registrar = ({
                                 {
                                     solicitud.montosCarrera.map((item, index) => {
                                     return <tr key={index}>
-                                        <td>Lincenciatura</td>
-                                        <td>{item.nombre}</td>
-                                        <td className='hidden'><input className='form-control' type="text" defaultValue={item.id} name='carreraid[]'/></td>
+                                        <td>{item.carrera.nivelAcademico.nombre}</td>
+                                        <td>{item.carrera.nombre}</td>
+                                        <td className='hidden'><input className='form-control' type="text" defaultValue={item.carrera.id} name='carreraid[]'/></td>
                                         <td><input className='form-control'
                                             type="text"
-                                            name="montosCarrera[montoInscripcion]"
+                                            name="montosInscripcion[]"
                                             id="montosCarrera_montoInscripcion"
                                             defaultValue={item.montoInscripcion}
                                             required={true}/>
                                         </td>
                                         <td><input className='form-control'
                                             type="text"
-                                            name="montosColegiatura[montoColegiatura]"
+                                            name="montosColegiatura[]"
                                             id="montosCarrera_montoColegiatura"
                                             defaultValue={item.montoColegiatura}
                                             required={true}/>

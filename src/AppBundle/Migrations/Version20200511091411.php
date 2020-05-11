@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20200509185729 extends AbstractMigration
+class Version20200511091411 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -16,9 +16,7 @@ class Version20200509185729 extends AbstractMigration
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('ALTER TABLE solicitud ADD descripcion VARCHAR(255) DEFAULT NULL');
     }
 
     /**
@@ -30,6 +28,5 @@ class Version20200509185729 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE solicitud DROP descripcion');
     }
 }

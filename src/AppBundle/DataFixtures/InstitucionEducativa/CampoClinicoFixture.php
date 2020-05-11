@@ -17,31 +17,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-<<<<<<< HEAD
-        $campoClinico1 = $this->create(
-            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            EstatusCampo::NUEVO,
-            Solicitud::CONFIRMADA,
-            $manager
-        );
-        //$campoClinico1->setSolicitud($this->getReference(Solicitud::CONFIRMADA));
-
-        $campoClinico2 = $this->create(
-            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            EstatusCampo::NUEVO,
-            SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME,
-            $manager
-        );
-        //$campoClinico2->setSolicitud($this->getReference(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME));
-
-        $campoClinico3 = $this->create(
-            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            EstatusCampo::PENDIENTE_DE_PAGO,
-            SolicitudInterface::CARGANDO_COMPROBANTES,
-            $manager
-        );
-        //$campoClinico3->setSolicitud($this->getReference(SolicitudInterface::CARGANDO_COMPROBANTES));
-=======
         /** @var Convenio $convenio1 */
         $convenio1 = $manager->getRepository(Convenio::class)
             ->find(1);
@@ -111,7 +86,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
             '101011'
         );
         $manager->persist($campo3);
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
 
         //$manager->flush();
     }
@@ -124,19 +98,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
     }
 
     /**
-<<<<<<< HEAD
-     * @param $convenioReference
-     * @param $estatusCampoReference
-     * @param $solicitudCampoReferece
-     * @param ObjectManager $manager
-     * @return CampoClinico
-     */
-    private function create(
-        $convenioReference,
-        $estatusCampoReference,
-        $solicitudCampoReferece,
-        ObjectManager $manager
-=======
      * @param Convenio $convenio
      * @param EstatusCampo $estatusCampo
      * @param Unidad $unidad
@@ -150,7 +111,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         Unidad $unidad,
         $solicitud,
         $referenciaBancaria = null
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     ) {
         $campoClinico = new CampoClinico();
         $campoClinico->setFechaInicial(Carbon::now());
@@ -159,20 +119,12 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setPromocion('Promoción');
         $campoClinico->setLugaresSolicitados(40);
         $campoClinico->setLugaresAutorizados(20);
-<<<<<<< HEAD
-        $campoClinico->setEstatus($this->getReference($estatusCampoReference));
-        $campoClinico->setSolicitud($this->getReference($solicitudCampoReferece));
-
-        $manager->persist($campoClinico);
-        $manager->flush();
-=======
         $campoClinico->setMonto(10000);
         $campoClinico->setReferenciaBancaria($referenciaBancaria);
         $campoClinico->setConvenio($convenio);
         $campoClinico->setEstatus($estatusCampo);
         $campoClinico->setUnidad($unidad);
         $campoClinico->setSolicitud($solicitud);
->>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
 
         return $campoClinico;
     }
