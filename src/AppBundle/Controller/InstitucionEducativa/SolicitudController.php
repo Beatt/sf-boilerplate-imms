@@ -226,6 +226,9 @@ class SolicitudController extends Controller
                     $montoCarrera->setSolicitud($solicitud);
                     $carre = $carreraRepository->find($carrera[$value]);
                     $montoCarrera->setCarrera($carre);
+
+                    dump($montoCarrera);
+
                     $solicitud->getMontosCarrera()->add($montoCarrera);
                     $result = $montoCarreraManager->Create($montoCarrera);
                     $value++;
