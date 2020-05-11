@@ -4,6 +4,7 @@ namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Entity\SolicitudTipoPagoInterface;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -12,42 +13,60 @@ class SolicitudFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $this->Create(
+        $solicitudConfirmada = $this->create(
+            '1000001',
             SolicitudInterface::CONFIRMADA,
-            Carbon::now(),
-            $manager
+            Carbon::now()->addMonths(3)
         );
+        $manager->persist($solicitudConfirmada);
 
-        $this->Create(
-            SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME,
-            Carbon::now()->addMonths(2),
-            $manager
+        $solicitudFormatoPago = $this->create(
+            '1000002',
+            SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS,
+            Carbon::now()->addMonths(6)
         );
+        $manager->persist($solicitudFormatoPago);
 
-        $solicitud = $this->Create(
+        $solicitudCargandoComprobantes = $this->create(
+            '100003',
             SolicitudInterface::CARGANDO_COMPROBANTES,
-            Carbon::now()->addMonths(4),
-            $manager
+            Carbon::now()->addMonths(5),
+            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
         );
-        $solicitud->setTipoPago(Solicitud::TIPO_PAGO_MULTIPLE);
+        $manager->persist($solicitudCargandoComprobantes);
 
         $manager->flush();
+
+        $this->addReference(
+            SolicitudInterface::CONFIRMADA,
+            $solicitudConfirmada
+        );
+
+        $this->addReference(
+            SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS,
+            $solicitudFormatoPago
+        );
+
+        $this->addReference(
+          SolicitudInterface::CARGANDO_COMPROBANTES,
+          $solicitudCargandoComprobantes
+        );
     }
 
-    private function Create(
-        $typeReference,
+    private function create(
+        $referenciaBancaria,
+        $estatus,
         $fecha,
-        ObjectManager $manager
+        $tipoPago = null
     ) {
+        $tipoPago = $tipoPago ?: SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
+
         $solicitud = new Solicitud();
-        $solicitud->setEstatus($typeReference);
+        $solicitud->setEstatus($estatus);
         $solicitud->setNoSolicitud(sprintf('NS_00%s', rand(0, 10000)));
         $solicitud->setFecha($fecha);
-        $solicitud->setReferenciaBancaria('10202010220');
-
-        $manager->persist($solicitud);
-
-        $this->addReference($typeReference, $solicitud);
+        $solicitud->setReferenciaBancaria($referenciaBancaria);
+        $solicitud->setTipoPago($tipoPago);
 
         return $solicitud;
     }

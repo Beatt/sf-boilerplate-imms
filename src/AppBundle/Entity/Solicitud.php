@@ -2,9 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 use Exception;
 
 /**
@@ -13,8 +15,9 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
 {
+
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
@@ -38,7 +41,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private $estatus;
 
     /**
-     * @ORM\Column(name="referencia_bancaria", type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
 
@@ -51,6 +54,12 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
      */
     private $camposClinicos;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montosCarrera;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
@@ -83,6 +92,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private $observaciones;
 
     /**
+     * @var Pago
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
      */
     private $pagos;
@@ -96,6 +106,8 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
+        $this->pagos = new ArrayCollection();
+        $this->montosCarrera = new ArrayCollection();
     }
 
     /**
@@ -261,7 +273,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         return $this->observaciones;
     }
 
-
     /**
      * @param boolean $validado
      * @return Solicitud
@@ -318,7 +329,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         return $this->monto;
     }
-
 
     /**
      * @return int
@@ -486,7 +496,26 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     }
 
     /**
-     * @return mixed
+     * @param Pago $pago
+     * @return Solicitud
+     */
+    public function addPago(Pago $pago)
+    {
+        $this->pagos[] = $pago;
+
+        return $this;
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    public function removePago(Pago $pago)
+    {
+        $this->pagos->removeElement($pago);
+    }
+
+    /**
+     * @return Collection
      */
     public function getPagos()
     {
@@ -494,11 +523,57 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     }
 
     /**
-     * @param mixed $pagos
+     * @param MontoCarrera $montosCarrera
+     * @return Solicitud
      */
-    public function setPagos($pagos)
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
     {
-        $this->pagos = $pagos;
+        $this->montosCarrera[] = $montosCarrera;
+
+        return $this;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     */
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarrera->removeElement($montosCarrera);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMontosCarrera()
+    {
+        return $this->montosCarrera;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpedienteDescripcion()
+    {
+        $items = [];
+
+        /** @var MontoCarrera $monto */
+        foreach($this->montosCarrera as $monto) {
+            $carrera = $monto->getCarrera();
+            $items[] = sprintf(
+                "%s %s: Inscripción $%s, Colegiatura: $%s",
+                $carrera->getNivelAcademico()->getNombre(),
+                $carrera->getNombre(),
+                $monto->getMontoInscripcion(),
+                $monto->getMontoColegiatura()
+            );
+        }
+
+        return implode('. ', $items);
+    }
+
+    public function isPagoUnico()
+    {
+        return $this->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
     }
 
     /**

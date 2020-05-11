@@ -2,10 +2,9 @@
 
 namespace AppBundle\Entity;
 
-use Carbon\Carbon;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Table(name="monto_carrera")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\MontoCarreraRepository")
@@ -20,7 +19,7 @@ class MontoCarrera
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @ORM\Column(name="monto_inscripcion", type="float", precision=24, scale=4, nullable=false)
      * @Assert\NotNull
@@ -34,7 +33,7 @@ class MontoCarrera
      * @Assert\NotBlank
      */
     private $montoColegiatura;
-    
+
     /**
      * @var Solicitud
      *
@@ -45,6 +44,7 @@ class MontoCarrera
 
     /**
      * @var Carrera
+     *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
      */
@@ -116,6 +116,13 @@ class MontoCarrera
         return $this->solicitud;
     }
 
+    public function setCarrera(Carrera $carrera = null)
+    {
+        $this->carrera = $carrera;
+
+        return $this;
+    }
+
     /**
      * @return Carrera
      */
@@ -123,13 +130,4 @@ class MontoCarrera
     {
         return $this->carrera;
     }
-
-    /**
-     * @param Carrera $carrera
-     */
-    public function setCarrera($carrera)
-    {
-        $this->carrera = $carrera;
-    }
-
 }

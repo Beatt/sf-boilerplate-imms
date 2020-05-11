@@ -2,10 +2,12 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\ComprobantePagoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Repository\PagoRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploaderComprobantePago implements UploaderComprobantePagoInterface
@@ -15,24 +17,52 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
      */
     private $pagoRepository;
 
-    public function __construct(PagoRepositoryInterface $pagoRepository)
-    {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        PagoRepositoryInterface $pagoRepository,
+        LoggerInterface $logger
+    ) {
+        $this->entityManager = $entityManager;
         $this->pagoRepository = $pagoRepository;
+        $this->logger = $logger;
     }
 
     /**
-     * @param CampoClinico $campoClinico
+     * @param ComprobantePagoInterface $comprobantePago
      * @param UploadedFile $file
+     * @return bool
      * @throws Exception
      */
-    public function update(CampoClinico $campoClinico, UploadedFile $file)
+    public function update(ComprobantePagoInterface $comprobantePago, UploadedFile $file)
     {
         /** @var Pago $pago */
-        $pago = $this->pagoRepository->getComprobante($campoClinico->getReferenciaBancaria());
+        $pago = $this->pagoRepository->getComprobante($comprobantePago->getReferenciaBancaria());
         if($pago === null) throw new Exception('El campo clinico no tiene un pago asociado');
 
-        $pago->setComprobantePagoFile($file);
+        $this->logger->info(sprintf(
+            'Iniciado el guardado del comprobante de pago del campo clinico con id %s', $comprobantePago->getId()
+        ));
 
-        $this->pagoRepository->save($pago);
+        try {
+            $pago->setComprobantePagoFile($file);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            $this->logger->critical($exception->getMessage());
+            throw $exception;
+        }
+
+        $this->logger->info('El comprobante de pago se ha guardado correctamente');
+
+        return true;
     }
 }

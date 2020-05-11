@@ -3,10 +3,24 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Pago;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 
 class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 {
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getAllPagosByRequest($id)
+    {
+        return $this->createQueryBuilder('pago')
+            ->where('pago.solicitud = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getComprobante($referenciaBancaria)
     {
         return $this->findOneByReferenciaBancaria($referenciaBancaria);
@@ -18,14 +32,9 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         $this->_em->flush();
     }
 
-    public function getPagosCampoClinicosBySolicitud($solicitud_id)
+    public static function createGetPagoByReferenciaBancariaCriteria($referenciaBancaria)
     {
-        return $this->createQueryBuilder('pago')
-            ->innerJoin('pago.solicitud', 'solicitud')
-            ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
-            ->where('solicitud.id = :solicitud_id')
-            ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
-            ->setParameter('solicitud_id', $solicitud_id)
-            ->getQuery()->getResult();
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria));
     }
 }
