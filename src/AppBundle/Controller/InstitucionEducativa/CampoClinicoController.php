@@ -39,7 +39,7 @@ class CampoClinicoController extends DIEControllerController
                     'attributes' => [
                         'documento',
                         'urlArchivo',
-                        'expedienteDescripcion',
+                        'descripcion',
                         'fechaComprobante'
                     ]
                 ]

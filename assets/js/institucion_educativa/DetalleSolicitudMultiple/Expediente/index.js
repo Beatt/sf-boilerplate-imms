@@ -16,7 +16,7 @@ const Expediente = ({ expediente }) => (
         <tr>
           <td>{expediente.documento}</td>
           <td>{expediente.fechaComprobante}</td>
-          <td>{expediente.expedienteDescripcion}</td>
+          <td>{expediente.descripcion}</td>
           <td>
             <a
               href={expediente.urlArchivo}
