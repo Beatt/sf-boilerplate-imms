@@ -34,7 +34,8 @@ class Pago
     private $monto;
 
      /**
-     * @ORM\Column(type="date", nullable=true)
+      *
+      * @ORM\Column(type="date", nullable=true)
      */
      private $fechaPago;
 
@@ -272,7 +273,7 @@ class Pago
      * @param DateTime $fechaPago
      * @return Pago
      */
-     public function setFechaPago($fechaPago)
+     public function setFechaPago($fechaPago = null)
      {
          $this->fechaPago = $fechaPago;
 
