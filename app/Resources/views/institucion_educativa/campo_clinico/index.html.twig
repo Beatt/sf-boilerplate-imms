@@ -15,11 +15,15 @@
                 <h1 class="text-bold text-center mb-20">Detalle de solicitud de campos clínicos</h1>
                 <div class="row">
                     <div class="col-md-12 mb-20">
-                        <p><span class="text-bold">No. solicitud:</span> {{ solicitud.noSolicitud }}</p>
+                        <p><span class="text-bold">No. solicitud:</span> {{ noSolicitud }}</p>
                         <p><span class="text-bold">Se autorizarón:</span> 5 de 6 campos clínicos solicitados</p>
                     </div>
                     <div class="col-md-12">
                         <div id="detalle_solicitud_multiple-component"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="text-bold mb-20">Expediente</p>
+                        <div id="expediente_solicitud_multiple-component"></div>
                     </div>
                 </div>
             </div>
@@ -31,6 +35,7 @@
     {{ parent() }}
     <script>
         window.CAMPOS_CLINICOS_PROPS = {{ camposClinicos|json_encode|raw }}
+        window.EXPEDIENTE_PROP = {{ expediente|json_encode|raw }}
     </script>
     <script src="{{ asset('build/multiple.js') }}"></script>
 {% endblock %}

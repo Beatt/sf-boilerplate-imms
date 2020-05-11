@@ -2,15 +2,17 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico
+class CampoClinico implements ComprobantePagoInterface
 {
     /**
      * @var int
@@ -331,10 +333,26 @@ class CampoClinico
 
     public function getFactura()
     {
+        $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
+
+        /** @var Pago $pago */
+        $pago = $this->getSolicitud()->getPagos()->matching($criteria)->first();
+
+        if(!$pago->isRequiereFactura()) return 'No solicitada';
+
+        if($this->getEstatus()->getNombre() !== EstatusCampoInterface::CREDENCIALES_GENERADAS) return 'Pendiente';
+
+        return $pago->getFactura()->getZip();
     }
 
     public function getComprobante()
     {
+        $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
+
+        /** @var Pago $pago */
+        $pago = $this->getSolicitud()->getPagos()->matching($criteria)->first();
+
+        return sprintf('/uploads/files/institucion/pagos/%s', $pago->getComprobantePago());
     }
 
     public function getWeeks()

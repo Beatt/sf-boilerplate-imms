@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +15,7 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
 {
 
     /**
@@ -40,7 +41,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private $estatus;
 
     /**
-     * @ORM\Column(name="referencia_bancaria", type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
 
@@ -70,6 +71,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $documento;
 
+<<<<<<< HEAD
     public function __construct()
     {
         $this->fecha = new \DateTime();
@@ -77,6 +79,8 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         $this->montosCarrera = new ArrayCollection();
     }
 
+=======
+>>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -98,11 +102,33 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private $observaciones;
 
     /**
+<<<<<<< HEAD
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $descripcion;
 
     
+=======
+     * @var Pago
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
+     */
+    private $pagos;
+
+    /**
+     * @var MontoCarrera
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montosCarrera;
+
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+        $this->camposClinicos = new ArrayCollection();
+        $this->pagos = new ArrayCollection();
+        $this->montosCarrera = new ArrayCollection();
+    }
+
+>>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     /**
      * @return int
      */
@@ -155,7 +181,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     public function setEstatus($estatus)
     {
-        $estatusCollection = [
+        $allowedStatus = [
             self::CREADA,
             self::CONFIRMADA,
             self::EN_VALIDACION_DE_MONTOS_CAME,
@@ -167,15 +193,19 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
             self::CREDENCIALES_GENERADAS
         ];
 
+<<<<<<< HEAD
         $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
             return $item === $estatus;
         });
 
         if(count($estatusExist) === 0) {
+=======
+        if(!in_array($estatus, $allowedStatus)) {
+>>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
             throw new \InvalidArgumentException(sprintf(
                 'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
                 $estatus,
-                implode(', ', $estatusCollection)
+                implode(', ', $allowedStatus)
             ));
         }
 
@@ -250,7 +280,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         return $this->urlArchivo;
     }
 
-    
+
     /**
      * @param string $observaciones
      * @return Solicitud
@@ -496,29 +526,92 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     }
 
     /**
-     * @return Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
-
-    /**
-     * @param Expediente $expediente
-     * @return Solicitud
-     */
-    public function setExpediente(Expediente $expediente)
-    {
-        $this->expediente = $expediente;
-        return $this;
-    }
-
-    /**
      * @return bool
      */
     private function esSolicitudConfirmada()
     {
         return $this->estatus === Solicitud::CONFIRMADA;
+    }
+
+    /**
+     * @param Pago $pago
+     * @return Solicitud
+     */
+    public function addPago(Pago $pago)
+    {
+        $this->pagos[] = $pago;
+
+        return $this;
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    public function removePago(Pago $pago)
+    {
+        $this->pagos->removeElement($pago);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPagos()
+    {
+        return $this->pagos;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     * @return Solicitud
+     */
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarrera[] = $montosCarrera;
+
+        return $this;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     */
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarrera->removeElement($montosCarrera);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMontosCarrera()
+    {
+        return $this->montosCarrera;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescripcion()
+    {
+        $items = [];
+
+        /** @var MontoCarrera $monto */
+        foreach($this->montosCarrera as $monto) {
+            $carrera = $monto->getCarrera();
+            $items[] = sprintf(
+                "%s %s: Inscripción $%s, Colegiatura: $%s",
+                $carrera->getNivelAcademico()->getNombre(),
+                $carrera->getNombre(),
+                $monto->getMontoInscripcion(),
+                $monto->getMontoColegiatura()
+            );
+        }
+
+        return implode('. ', $items);
+    }
+
+    public function isPagoUnico()
+    {
+        return $this->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
     }
 
 

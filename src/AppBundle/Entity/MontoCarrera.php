@@ -2,8 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use Carbon\Carbon;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,7 +18,7 @@ class MontoCarrera
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @ORM\Column(name="monto_inscripcion", type="float", precision=24, scale=4)
      */
@@ -30,7 +28,7 @@ class MontoCarrera
      * @ORM\Column(name="monto_colegiatura", type="float", precision=24, scale=4)
      */
     private $montoColegiatura;
-    
+
     /**
      * @var Solicitud
      *
@@ -46,9 +44,12 @@ class MontoCarrera
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
      */
     private $carrera;
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
 
     /**
      * @return integer
@@ -116,14 +117,24 @@ class MontoCarrera
         return $this->solicitud;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
     /**
      * @param Carrera $carrera
      * @return MontoCarrera
      */
+<<<<<<< HEAD
     public function setCarrera($carrera)
     {
         $this->carrera = $carrera;
+=======
+    public function setCarrera(Carrera $carrera = null)
+    {
+        $this->carrera = $carrera;
+
+>>>>>>> 60a9bc8534ada9854bb9777b893e7609e9856012
         return $this;
     }
 
