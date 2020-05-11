@@ -97,13 +97,6 @@ class Pago
      private $factura;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $fechaActualizacionComprobante;
-
-    /**
      * @return int
      */
     public function getId()
@@ -272,23 +265,7 @@ class Pago
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
 
-        $this->setFechaActualizacionComprobante(Carbon::now());
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getFechaActualizacionComprobante()
-    {
-        return $this->fechaActualizacionComprobante;
-    }
-
-    /**
-     * @param DateTime $fechaActualizacionComprobante
-     */
-    public function setFechaActualizacionComprobante($fechaActualizacionComprobante)
-    {
-        $this->fechaActualizacionComprobante = $fechaActualizacionComprobante;
+        $this->setFechaPago(Carbon::now());
     }
 
     /**
