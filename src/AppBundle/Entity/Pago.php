@@ -33,6 +33,19 @@ class Pago
      */
     private $monto;
 
+     /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+     private $fechaPago;
+
+    /**
+     * @var Solicitud
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pago")
+     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
+     */
+     private $solicitud;
+
     /**
      * @var string
      *
@@ -76,20 +89,12 @@ class Pago
     private $observaciones;
 
     /**
-     * @var Solicitud
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pagos")
-     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
-     */
-    private $solicitud;
-
-    /**
      * @var Factura
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="factura")
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */
-    private $factura;
+     private $factura;
 
     /**
      * @var DateTime
@@ -124,6 +129,25 @@ class Pago
     {
         return $this->monto;
     }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return Pago
+     */
+     public function setSolicitud(Solicitud $solicitud = null)
+     {
+         $this->solicitud = $solicitud;
+
+         return $this;
+     }
+
+     /**
+      * @return Solicitud
+      */
+     public function getSolicitud()
+     {
+         return $this->solicitud;
+     }
 
     /**
      * @param string $comprobantePago
@@ -234,22 +258,6 @@ class Pago
     }
 
     /**
-     * @return Solicitud
-     */
-    public function getSolicitud()
-    {
-        return $this->solicitud;
-    }
-
-    /**
-     * @param Solicitud $solicitud
-     */
-    public function setSolicitud(Solicitud $solicitud)
-    {
-        $this->solicitud = $solicitud;
-    }
-
-    /**
      * @return File
      */
     public function getComprobantePagoFile()
@@ -282,4 +290,23 @@ class Pago
     {
         $this->fechaActualizacionComprobante = $fechaActualizacionComprobante;
     }
+
+    /**
+     * @param DateTime $fechaPago
+     * @return Pago
+     */
+     public function setFechaPago($fechaPago)
+     {
+         $this->fechaPago = $fechaPago;
+
+         return $this;
+     }
+
+     /**
+      * @return DateTime
+      */
+     public function getFechaPago()
+     {
+         return $this->fechaPago;
+     }
 }

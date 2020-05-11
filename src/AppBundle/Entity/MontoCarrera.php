@@ -116,10 +116,6 @@ class MontoCarrera
         return $this->solicitud;
     }
 
-    /**
-     * @param Carrera $carrera
-     * @return MontoCarrera
-     */
     public function setCarrera(Carrera $carrera = null)
     {
         $this->carrera = $carrera;

@@ -11,4 +11,6 @@ interface CampoClinicoRepositoryInterface extends ObjectRepository
     function getAllCamposClinicosByRequest($id, $search = null, $autorizados);
 
     function getTotalSolicitudesByInstitucion($id);
+
+    function getDistinctCarrerasBySolicitud($id);
 }

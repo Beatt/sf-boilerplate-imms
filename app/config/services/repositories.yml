@@ -6,6 +6,13 @@ services:
       - AppBundle\Entity\CampoClinico
     public: true
 
+  AppBundle\Repository\CarreraRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\Carrera
+    public: true
+
   AppBundle\Repository\ConvenioRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]
@@ -19,6 +26,12 @@ services:
     arguments:
       - AppBundle\Entity\Expediente
     public: true
+
+  AppBundle\Repository\PagoRepositoryInterface:
+    class: Doctrine\ORM\EntityRepository
+    factory: ["@doctrine.orm.entity_manager", getRepository]
+    arguments:
+      - AppBundle\Entity\Pago
 
   AppBundle\Repository\InstitucionRepositoryInterface:
     class: Doctrine\ORM\EntityRepository

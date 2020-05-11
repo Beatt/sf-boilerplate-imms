@@ -86,7 +86,6 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
             '101011'
         );
         $manager->persist($campo3);
-
         $manager->flush();
     }
 

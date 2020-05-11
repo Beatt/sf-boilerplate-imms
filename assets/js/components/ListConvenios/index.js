@@ -23,7 +23,7 @@ const ListConvenios = ({ convenios }) => {
                 <tr className={`label-${item.convenio.label}`}>
                   <td>{item.id}</td>
                   <td>{item.convenio.carrera.nivelAcademico.nombre}</td>
-                  <td>{item.cicloAcademico.nombre}</td>
+                  <td>{item.convenio.cicloAcademico.nombre}</td>
                   <td>{item.convenio.carrera.nombre}</td>
                   <td>{item.convenio.vigencia}</td>
                 </tr>

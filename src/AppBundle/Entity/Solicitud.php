@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 use Exception;
 
 /**
@@ -16,6 +17,7 @@ use Exception;
  */
 class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
 {
+
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
@@ -53,6 +55,12 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $camposClinicos;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montosCarrera;
+
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
      */
@@ -88,12 +96,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
      */
     private $pagos;
-
-    /**
-     * @var MontoCarrera
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
-     */
-    private $montosCarrera;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
@@ -271,7 +273,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         return $this->observaciones;
     }
 
-
     /**
      * @param boolean $validado
      * @return Solicitud
@@ -328,7 +329,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     {
         return $this->monto;
     }
-
 
     /**
      * @return int
@@ -552,7 +552,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     /**
      * @return string
      */
-    public function getDescripcion()
+    public function getExpedienteDescripcion()
     {
         $items = [];
 

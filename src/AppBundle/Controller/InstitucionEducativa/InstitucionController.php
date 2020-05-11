@@ -76,6 +76,9 @@ class InstitucionController extends Controller
                             'nivelAcademico' => [
                                 'nombre'
                             ]
+                        ],
+                        'cicloAcademico' => [
+                            'nombre'
                         ]
                     ]
                 ]
