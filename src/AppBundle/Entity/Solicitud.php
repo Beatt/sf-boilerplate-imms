@@ -95,6 +95,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $montosCarrera;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montos;
+
     public function __construct()
     {
         $this->fecha = new \DateTime();
@@ -348,7 +353,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     {
         $acc = 0;
         foreach ($this->getCampoClinicos() as $campoClinico) {
-            if($campoClinico->getLugaresAutorizados() > 0){
+            if ($campoClinico->getLugaresAutorizados() > 0) {
                 $acc++;
             }
         }
@@ -358,34 +363,43 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     /**
      * @return string
      */
-    public function getEstatusFormatted()
+    public function getEstatusCameFormatted()
     {
         $result = '';
-        switch ($this->getEstatus()){
-            case 1:
-                $result = 'Nueva'; break;
-            case 2:
-                $result = 'En espera de registro de montos'; break;
-            case 3:
-                $result = 'En espera de validación'; break;
-            case 4:
-                $result = 'Montos validados'; break;
-            case 5:
-                $result = 'Pago en proceso'; break;
-            case 6:
-                $result = 'En validación FOFOE'; break;
-            case 7:
-                $result = 'Pagado'; break;
+        switch ($this->getEstatus()) {
+            case self::CREADA :
+                $result = 'En edición';
+                break;
+            case self::CONFIRMADA:
+                $result = 'Solicitud Registrada';
+                break;
+            case self::EN_VALIDACION_DE_MONTOS_CAME:
+                $result = 'Falta validar montos';
+                break;
+            case self::MONTOS_INCORRECTOS_CAME:
+                $result = 'En corrección por IE';
+                break;
+            case self::MONTOS_VALIDADOS_CAME:
+                $result = 'Validados';
+                break;
+            case self::FORMATOS_DE_PAGO_GENERADOS:
+            case self::CARGANDO_COMPROBANTES:
+            case self::EN_VALIDACION_FOFOE:
+                $result = 'En proceso de pago';
+                break;
+            case self::CREDENCIALES_GENERADAS:
+                $result = 'Descargar credenciales';
+                break;
         }
         return $result;
     }
 
     public function getInstitucion()
     {
-        $result = '';
+        $result = null;
         $campos_clinicos = $this->getCampoClinicos();
-        if($campos_clinicos->count() > 0){
-            $result = $campos_clinicos[0]->getConvenio()->getInstitucion()->getNombre();
+        if ($campos_clinicos->count() > 0) {
+            $result = $campos_clinicos[0]->getConvenio()->getInstitucion();
         }
         return $result;
     }
@@ -433,7 +447,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     public function addCamposClinico(CampoClinico $camposClinico)
     {
-        if(!$this->camposClinicos->contains($camposClinico)) {
+        if (!$this->camposClinicos->contains($camposClinico)) {
             $this->camposClinicos[] = $camposClinico;
             $camposClinico->setSolicitud($this);
         }
@@ -459,14 +473,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
 
     public function __toString()
     {
-        return ''.$this->getId();
+        return '' . $this->getId();
     }
 
     public function getPagosIndividuales()
     {
         $result = false;
-        foreach ($this->getCampoClinicos() as $cc){
-            if($cc->getReferenciaBancaria()){
+        foreach ($this->getCampoClinicos() as $cc) {
+            if ($cc->getReferenciaBancaria()) {
                 $result = true;
             }
         }
@@ -560,5 +574,21 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     public function isPagoUnico()
     {
         return $this->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMontos()
+    {
+        return $this->montos;
+    }
+
+    /**
+     * @param mixed $montos
+     */
+    public function setMontos($montos)
+    {
+        $this->montos = $montos;
     }
 }

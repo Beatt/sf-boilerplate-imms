@@ -283,4 +283,3 @@ class Pago
         $this->fechaActualizacionComprobante = $fechaActualizacionComprobante;
     }
 }
-

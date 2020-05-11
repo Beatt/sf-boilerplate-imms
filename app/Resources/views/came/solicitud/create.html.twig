@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/came_solicitud_index.css') }}">
     <style>
         .square {
             height: 25px;
@@ -15,11 +16,10 @@
     <div class='container-fluid'>
         <div class='row'>
             <div class='col-md-12'>
-                <h3>Nueva solicitud</h3>
-                {{ form_widget(form) }}
-                <div id="solicitud-wrapper"></div>
+                <h1 style="text-align: center">Nueva solicitud</h1>
             </div>
         </div>
+        <div id="solicitud-wrapper"></div>
     </div>
 {% endblock %}
 
@@ -27,6 +27,7 @@
     {{ parent() }}
     <script>
         window.INSTITUCIONES = {{ instituciones | json_encode | raw  }};
+        window.UNIDADES = {{ unidades | json_encode | raw }};
     </script>
     <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 {% endblock %}

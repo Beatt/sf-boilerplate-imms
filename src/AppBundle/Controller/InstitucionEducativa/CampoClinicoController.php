@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CampoClinico extends DIEControllerController
+class CampoClinicoController extends DIEControllerController
 {
     /**
      * @Route("/instituciones/{institucionId}/solicitudes/{solicitudId}/campos-clinicos", name="campos_clinicos#index")
