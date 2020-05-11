@@ -66,7 +66,65 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         copy(__DIR__ . '/pdf.pdf', __DIR__ . '/pdf-test.pdf');
     }
 
-    public function testGuardarComprobantePagoDeTipoDePagoMultiple()
+    public function testGuardarComprobantePagoParaTipoDePagoUnico()
+    {
+        $referenciaBancaria = 1000001;
+
+        /** @var Convenio $convenio */
+        $convenio = $this->entityManager->getRepository(Convenio::class)
+            ->findOneBy([]);
+
+        $solicitud = $this->createSolicitud(
+            $referenciaBancaria,
+            SolicitudInterface::CARGANDO_COMPROBANTES
+        );
+        $this->createPago($referenciaBancaria, $solicitud);
+
+        $this->createCampoClinico(
+            null,
+            $solicitud,
+            $convenio,
+            EstatusCampoInterface::PENDIENTE_DE_PAGO
+        );
+
+        $this->entityManager->flush();
+
+        $file = new File(__DIR__ . '/pdf-test.pdf');
+        $uploadedFile = new UploadedFile(
+            $file->getRealPath(),
+            $file->getFilename(),
+            $file->getMimeType(),
+            $file->getSize(),
+            null,
+            true
+        );
+
+        $service = new UploaderComprobantePago(
+            $this->entityManager,
+            $this->pagoRepository,
+            $this->logger
+        );
+
+        $service->update(
+            $solicitud,
+            $uploadedFile
+        );
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
+
+        /** @var Pago $pago */
+        $pago = $this->pagoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
+
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $solicitud->getEstatus());
+        /** @var CampoClinico $camposClinico */
+        foreach($solicitud->getCamposClinicos() as $camposClinico) {
+            $this->assertEquals(EstatusCampoInterface::PAGO, $camposClinico->getEstatus()->getNombre());
+        }
+        $this->assertNotNull($pago->getComprobantePago());
+    }
+
+    public function testGuardarComprobantePagoParaTipoDePagoMultiple()
     {
         $referenciaBancaria = 1000001;
 
@@ -125,7 +183,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $this->assertNotNull($pago->getComprobantePago());
     }
 
-    public function testGuardarComprobantePagoDeTipoDePagoUnico()
+    public function testNoCambiarElEstatusDeLaSolicitudDeTipoPagoMultipleSiExisteCampoClinicoSinComprobanteDePago()
     {
         $referenciaBancaria = 1000001;
 
@@ -134,18 +192,28 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             ->findOneBy([]);
 
         $solicitud = $this->createSolicitud(
-            $referenciaBancaria,
-            SolicitudInterface::CARGANDO_COMPROBANTES
+            null,
+            SolicitudInterface::CARGANDO_COMPROBANTES,
+            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
         );
         $this->createPago($referenciaBancaria, $solicitud);
 
-        $this->createCampoClinico(
-            null,
+        $campoClinico1 = $this->createCampoClinico(
+            $referenciaBancaria,
             $solicitud,
             $convenio,
             EstatusCampoInterface::PENDIENTE_DE_PAGO
         );
 
+        $campoClinico2 = $this->createCampoClinico(
+            '1000003',
+            $solicitud,
+            $convenio,
+            EstatusCampoInterface::PENDIENTE_DE_PAGO
+        );
+
+        $solicitud->addCamposClinico($campoClinico1);
+        $solicitud->addCamposClinico($campoClinico2);
         $this->entityManager->flush();
 
         $file = new File(__DIR__ . '/pdf-test.pdf');
@@ -165,18 +233,20 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         );
 
         $service->update(
-            $solicitud,
+            $campoClinico1,
             $uploadedFile
         );
 
-        /** @var Solicitud $solicitud */
-        $solicitud = $this->solicitudRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $this->campoClinicoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
 
         /** @var Pago $pago */
         $pago = $this->pagoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
+        $camposClinicos = $pago->getSolicitud()->getCamposClinicos();
 
-        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $solicitud->getEstatus());
-        $this->assertEquals(EstatusCampoInterface::PAGO, $campoClinico->getEstatus()->getNombre());
+        $this->assertEquals(SolicitudInterface::CARGANDO_COMPROBANTES, $campoClinico->getSolicitud()->getEstatus());
+        $this->assertEquals(EstatusCampoInterface::PAGO, $camposClinicos[0]->getEstatus()->getNombre());
+        $this->assertEquals(EstatusCampoInterface::PENDIENTE_DE_PAGO, $camposClinicos[1]->getEstatus()->getNombre());
         $this->assertNotNull($pago->getComprobantePago());
     }
 

@@ -43,7 +43,7 @@ class Pago
     /**
      * @var File
      *
-     * @Vich\UploadableField(mapping="pagos", fileNameProperty="comprobantePago")
+     * @Vich\UploadableField(mapping="comprobantes_pagos", fileNameProperty="comprobantePago")
      */
     private $comprobantePagoFile;
 
