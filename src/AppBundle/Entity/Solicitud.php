@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 use Exception;
 
 /**
@@ -15,6 +16,7 @@ use Exception;
  */
 class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
 {
+
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
@@ -52,6 +54,12 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $camposClinicos;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montosCarrera;
+
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
      */
@@ -66,6 +74,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
+        $this->montosCarrera = new ArrayCollection();
     }
 
     /**
@@ -87,6 +96,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $observaciones;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $descripcion;
 
     
     /**
@@ -154,7 +168,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         ];
 
         $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
-           return $item === $estatus;
+            return $item === $estatus;
         });
 
         if(count($estatusExist) === 0) {
@@ -256,6 +270,25 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         return $this->observaciones;
     }
 
+    /**
+     * @param string $descripcion
+     * @return Solicitud
+     */
+     public function setDescripcion($descripcion)
+     {
+         $this->descripcion = $descripcion;
+ 
+         return $this;
+     }
+ 
+     /**
+      * @return string
+      */
+     public function getDescripcion()
+     {
+         return $this->descripcion;
+     }
+
 
     /**
      * @param boolean $validado
@@ -313,7 +346,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         return $this->monto;
     }
-
 
     /**
      * @return int
@@ -487,5 +519,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private function esSolicitudConfirmada()
     {
         return $this->estatus === Solicitud::CONFIRMADA;
+    }
+
+
+    public function getMontosCarrera()
+    {
+        return $this->montosCarrera;
     }
 }

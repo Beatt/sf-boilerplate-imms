@@ -49,6 +49,14 @@ services:
             - '@logger'
         public: true
 
+    AppBundle\Service\MontoCarreraManagerInterface:
+        class: AppBundle\Service\MontoCarreraManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@logger'
+        public: true
+
+
     AppBundle\Service\ConvenioManagerInterface:
         class: AppBundle\Service\ConvenioManager
         arguments:

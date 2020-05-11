@@ -22,7 +22,10 @@ class EstatusCampoFixtures extends Fixture
      */
     private function create(ObjectManager $manager, $typeReference, $id)
     {
-        $estatusCampo = $manager->find(EstatusCampo::class, $id);
+        //$estatusCampo = $manager->find(EstatusCampo::class, $id);
+        $estatusCampo = new EstatusCampo();
+        $estatusCampo->setEstatus($typeReference);
+        $manager->persist($estatusCampo);
         $this->addReference($typeReference, $estatusCampo);
     }
 }

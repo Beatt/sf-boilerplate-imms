@@ -39,6 +39,15 @@ class MontoCarrera
      */
     private $solicitud;
 
+    /**
+     * @var Carrera
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
+     * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
+     */
+    private $carrera;
+
+
 
 
     /**
@@ -105,5 +114,24 @@ class MontoCarrera
     public function getSolicitud()
     {
         return $this->solicitud;
+    }
+
+
+    /**
+     * @param Carrera $carrera
+     * @return MontoCarrera
+     */
+    public function setCarrera($carrera)
+    {
+        $this->carrera = $carrera;
+        return $this;
+    }
+
+    /**
+     * @return Carrera
+     */
+    public function getCarrera()
+    {
+        return $this->carrera;
     }
 }

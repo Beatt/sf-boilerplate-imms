@@ -60,7 +60,7 @@ class CampoClinico
     private $convenio;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
 
@@ -78,7 +78,7 @@ class CampoClinico
     private $solicitud;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\EstatusCampo")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\EstatusCampo", cascade={"persist"})
      * @ORM\JoinColumn(name="estatus_campo_id", referencedColumnName="id")
      */
     private $estatus;
