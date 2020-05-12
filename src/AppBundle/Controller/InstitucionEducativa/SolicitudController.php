@@ -4,6 +4,7 @@ namespace AppBundle\Controller\InstitucionEducativa;
 
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
@@ -170,9 +171,7 @@ class SolicitudController extends Controller
         if($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-
-
-
+            $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
             $entityManager->persist($data);
             $entityManager->flush();
 
