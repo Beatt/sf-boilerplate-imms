@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolicitudController extends Controller
 {
     /**
-     * @Route("/instituciones/{id}/solicitudes", methods={"GET"})
+     * @Route("/instituciones/{id}/solicitudes", methods={"GET"}, name="solicitudes#index")
      * @param $id
      * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
@@ -62,7 +62,7 @@ class SolicitudController extends Controller
     }
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="instituciones#show", methods={"GET"})
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="solicitudes#show", methods={"GET"})
      * @param integer $id
      * @param $solicitudId
      * @param Request $request
@@ -134,7 +134,7 @@ class SolicitudController extends Controller
 
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="instituciones#record", methods={"POST", "GET"})
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="solicitudes#record", methods={"POST", "GET"})
      * @param integer $id
      * @param $solicitudId
      * @param Request $request
@@ -160,7 +160,7 @@ class SolicitudController extends Controller
             ->find($solicitudId);
 
         $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
-            'action' => $this->generateUrl("instituciones#record", [
+            'action' => $this->generateUrl("solicitudes#record", [
                 'id' => $id,
                 'solicitudId' => $solicitudId,
             ]),
@@ -175,13 +175,12 @@ class SolicitudController extends Controller
             $entityManager->persist($data);
             $entityManager->flush();
 
-            return $this->redirectToRoute('instituciones#record', [
-                'id' => $id,
-                'solicitudId' => $solicitudId
+            $this->addFlash('success', 'Se ha guardado correctamente los montos');
+
+            return $this->redirectToRoute('solicitudes#index', [
+                'id' => $id
             ]);
         }
-
-        dump($form->createView());
 
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
             'institucion' => $institucion,
