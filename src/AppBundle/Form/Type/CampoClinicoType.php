@@ -17,14 +17,13 @@ class CampoClinicoType extends AbstractType
         $builder
             ->add('solicitud')
             ->add('convenio')
-            ->add('carrera')
-            ->add('cicloAcademico')
             ->add('fechaInicial')
             ->add('fechaFinal')
             ->add('lugaresSolicitados')
             ->add('lugaresAutorizados')
             ->add('unidad')
             ->add('horario')
+            ->add('asignatura')
         ;
     }
 

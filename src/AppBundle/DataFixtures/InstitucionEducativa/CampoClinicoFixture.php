@@ -3,9 +3,11 @@
 namespace AppBundle\DataFixtures\InstitucionEducativa;
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Convenio;
 use AppBundle\Entity\EstatusCampo;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Solicitud;
-use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Entity\Unidad;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -15,62 +17,113 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $campoClinico1 = $this->create(
-            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            EstatusCampo::NUEVO,
-            $manager
-        );
-        $campoClinico1->setSolicitud($this->getReference(Solicitud::CONFIRMADA));
+        /** @var Convenio $convenio1 */
+        $convenio1 = $manager->getRepository(Convenio::class)
+            ->find(1);
 
-        $campoClinico2 = $this->create(
-            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            EstatusCampo::NUEVO,
-            $manager
-        );
-        $campoClinico2->setSolicitud($this->getReference(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME));
+        /** @var EstatusCampo $estatusCampoNuevo */
+        $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
+            ->findOneBy(['nombre' => EstatusCampoInterface::NUEVO]);
 
-        $campoClinico3 = $this->create(
-            ConvenioFixture::AGREEMENT_GREATER_THAN_ONE_YEAR,
-            EstatusCampo::PENDIENTE_DE_PAGO,
-            $manager
-        );
-        $campoClinico3->setSolicitud($this->getReference(SolicitudInterface::CARGANDO_COMPROBANTES));
+        /** @var Unidad $unidad */
+        $unidad = $manager->getRepository(Unidad::class)
+            ->find(1);
 
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->getReference(Solicitud::CONFIRMADA);
+
+        $campo1 = $this->create(
+            $convenio1,
+            $estatusCampoNuevo,
+            $unidad,
+            $solicitud
+        );
+        $manager->persist($campo1);
+
+        /** @var Convenio $convenio2 */
+        $convenio2 = $manager->getRepository(Convenio::class)
+            ->find(4);
+
+        /** @var EstatusCampo $estatusCampoNuevo */
+        $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
+            ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
+
+        /** @var Unidad $unidad2 */
+        $unidad2 = $manager->getRepository(Unidad::class)
+            ->find(4);
+
+        /** @var Solicitud $solicitudFormatos */
+        $solicitudFormatos = $this->getReference(Solicitud::FORMATOS_DE_PAGO_GENERADOS);
+
+        $campo2 = $this->create(
+            $convenio2,
+            $estatusCampoNuevo,
+            $unidad2,
+            $solicitudFormatos
+        );
+        $manager->persist($campo2);
+
+        /** @var Convenio $convenio3 */
+        $convenio3 = $manager->getRepository(Convenio::class)
+            ->find(14);
+
+        /** @var EstatusCampo $estatusCampoNuevo */
+        $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
+            ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
+
+        /** @var Unidad $unidad3 */
+        $unidad3 = $manager->getRepository(Unidad::class)
+            ->find(16);
+
+        /** @var Solicitud $solicitudFormatos */
+        $solicitudFormatos = $this->getReference(Solicitud::CARGANDO_COMPROBANTES);
+
+        $campo3 = $this->create(
+            $convenio3,
+            $estatusCampoNuevo,
+            $unidad3,
+            $solicitudFormatos,
+            '101011'
+        );
+        $manager->persist($campo3);
         $manager->flush();
     }
 
     function getDependencies()
     {
         return[
-            ConvenioFixture::class,
-            CicloAcademicoFixture::class
+            SolicitudFixture::class
         ];
     }
 
     /**
-     * @param $convenioReference
-     * @param $estatusCampoReference
-     * @param ObjectManager $manager
+     * @param Convenio $convenio
+     * @param EstatusCampo $estatusCampo
+     * @param Unidad $unidad
+     * @param Solicitud $solicitud
+     * @param string|null $referenciaBancaria
      * @return CampoClinico
      */
     private function create(
-        $convenioReference,
-        $estatusCampoReference,
-        ObjectManager $manager
+        Convenio $convenio,
+        EstatusCampo $estatusCampo,
+        Unidad $unidad,
+        $solicitud,
+        $referenciaBancaria = null
     ) {
         $campoClinico = new CampoClinico();
-        $campoClinico->setConvenio($this->getReference($convenioReference));
         $campoClinico->setFechaInicial(Carbon::now());
         $campoClinico->setFechaFinal(Carbon::now()->addMonths(8));
         $campoClinico->setHorario('10am a 14:00pm');
-        $campoClinico->setPromocion('promocion');
+        $campoClinico->setPromocion('Promoción');
         $campoClinico->setLugaresSolicitados(40);
         $campoClinico->setLugaresAutorizados(20);
-        $campoClinico->setReferenciaBancaria('102012010210');
-        $campoClinico->setMonto('100000');
-        $campoClinico->setEstatus($this->getReference($estatusCampoReference));
-
-        $manager->persist($campoClinico);
+        $campoClinico->setMonto(10000);
+        $campoClinico->setReferenciaBancaria($referenciaBancaria);
+        $campoClinico->setConvenio($convenio);
+        $campoClinico->setEstatus($estatusCampo);
+        $campoClinico->setUnidad($unidad);
+        $campoClinico->setSolicitud($solicitud);
 
         return $campoClinico;
     }

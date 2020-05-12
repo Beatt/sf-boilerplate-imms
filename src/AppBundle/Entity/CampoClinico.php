@@ -2,15 +2,18 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico
+class CampoClinico implements ComprobantePagoInterface
 {
     /**
      * @var int
@@ -44,6 +47,7 @@ class CampoClinico
     /**
      * @var integer
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(value = 0)
      */
     private $lugaresSolicitados;
 
@@ -60,7 +64,7 @@ class CampoClinico
     private $convenio;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
 
@@ -78,7 +82,7 @@ class CampoClinico
     private $solicitud;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\EstatusCampo")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\EstatusCampo", cascade={"persist"})
      * @ORM\JoinColumn(name="estatus_campo_id", referencedColumnName="id")
      */
     private $estatus;
@@ -331,10 +335,26 @@ class CampoClinico
 
     public function getFactura()
     {
+        $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
+
+        /** @var Pago $pago */
+        $pago = $this->getSolicitud()->getPagos()->matching($criteria)->first();
+
+        if(!$pago->isRequiereFactura()) return 'No solicitada';
+
+        if($this->getEstatus()->getNombre() !== EstatusCampoInterface::CREDENCIALES_GENERADAS) return 'Pendiente';
+
+        return $pago->getFactura()->getZip();
     }
 
     public function getComprobante()
     {
+        $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
+
+        /** @var Pago $pago */
+        $pago = $this->getSolicitud()->getPagos()->matching($criteria)->first();
+
+        return sprintf('/uploads/files/institucion/pagos/%s', $pago->getComprobantePago());
     }
 
     public function getWeeks()

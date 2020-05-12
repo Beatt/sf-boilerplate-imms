@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use http\Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,11 +38,17 @@ abstract class DIEControllerController extends Controller
     {
         $result = $data;
         $json = [];
+        $status = 200;
         if(isset($data['status'])){
-            $result['status'] = $data['status'];
+            $json['status'] = $data['status'];
+            if(!$data['status']){
+                $status = Response::HTTP_UNPROCESSABLE_ENTITY;
+            }
         }
         if(isset($data['message'])){
-            $result['message'] = $data['message'];
+            $json['message'] = $data['message'];
+        }else if($json['status']){
+            $json['message'] = 'Solicitud procesada con éxito';
         }
         if (isset($result['error'])) {
             $json['error'] = $result['error'];
@@ -49,16 +56,32 @@ abstract class DIEControllerController extends Controller
         if (isset($data['object'])) {
             $json['data'] = $data['object'];
         }
-        return new JsonResponse($json);
+        return new JsonResponse($json, $status);
 
     }
 
-    protected function jsonErrorResponse($form)
+    protected function jsonErrorResponse($form, $data = [])
     {
         return new JsonResponse([
-            'message' =>    '¡Ha ocurrido un problema, intenta más tarde!',
+            'message' => isset($data['message']) ? $data['message'] : 'Ocurrío un error al procesar su solicitud',
             'status' => false,
             'errors' => $this->get('serializer')->normalize($this->getFormErrors($form), 'json'),
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    protected function successResponse($message)
+    {
+        return new JsonResponse([
+            'message' => $message,
+            'status' => true,
+        ], Response::HTTP_OK);
+    }
+
+    protected function failedResponse($message)
+    {
+        return new JsonResponse([
+            'message' => $message,
+            'status' => true,
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

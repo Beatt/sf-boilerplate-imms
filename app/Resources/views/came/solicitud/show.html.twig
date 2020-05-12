@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/came_solicitud_index.css') }}">
     <style>
         .square {
             height: 25px;
@@ -15,10 +16,10 @@
     <div class='container-fluid'>
         <div class='row'>
             <div class='col-md-12'>
-                <h3>Solicitud</h3>
-                <div id="solicitud-wrapper"></div>
+                <h1 style="text-align: center">Detalle de Solicitud de Campos Clínicos</h1>
             </div>
         </div>
+        <div id="solicitud-show-wrapper"></div>
     </div>
 {% endblock %}
 
@@ -27,7 +28,8 @@
     <script>
         window.SOLICITUD = {{ solicitud | json_encode | raw }}
         window.CONVENIOS = {{ convenios | json_encode | raw }}
+        window.PAGOSCAMPOSCLINICOS = {{ pagosCamposClinicos | json_encode | raw }};
     </script>
-    <script src="{{ asset('build/came_solicitud_show.js') }}"></script>
+    <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 
 {% endblock %}

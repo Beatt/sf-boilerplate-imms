@@ -2,9 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 use Exception;
 
 /**
@@ -13,8 +15,9 @@ use Exception;
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
 {
+
     /**
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\Id
@@ -38,7 +41,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private $estatus;
 
     /**
-     * @ORM\Column(name="referencia_bancaria", type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $referenciaBancaria;
 
@@ -52,6 +55,12 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $camposClinicos;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montosCarrera;
+
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
      */
@@ -61,12 +70,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $documento;
-
-    public function __construct()
-    {
-        $this->fecha = new \DateTime();
-        $this->camposClinicos = new ArrayCollection();
-    }
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -88,7 +91,25 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     private $observaciones;
 
-    
+    /**
+     * @var Pago
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
+     */
+    private $pagos;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     */
+    private $montos;
+
+    public function __construct()
+    {
+        $this->fecha = new \DateTime();
+        $this->camposClinicos = new ArrayCollection();
+        $this->pagos = new ArrayCollection();
+        $this->montosCarrera = new ArrayCollection();
+    }
+
     /**
      * @return int
      */
@@ -141,7 +162,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     public function setEstatus($estatus)
     {
-        $estatusCollection = [
+        $allowedStatus = [
             self::CREADA,
             self::CONFIRMADA,
             self::EN_VALIDACION_DE_MONTOS_CAME,
@@ -153,15 +174,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
             self::CREDENCIALES_GENERADAS
         ];
 
-        $estatusExist = array_filter($estatusCollection, function ($item) use($estatus) {
-           return $item === $estatus;
-        });
-
-        if(count($estatusExist) === 0) {
+        if(!in_array($estatus, $allowedStatus)) {
             throw new \InvalidArgumentException(sprintf(
                 'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
                 $estatus,
-                implode(', ', $estatusCollection)
+                implode(', ', $allowedStatus)
             ));
         }
 
@@ -236,7 +253,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         return $this->urlArchivo;
     }
 
-    
+
     /**
      * @param string $observaciones
      * @return Solicitud
@@ -255,7 +272,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         return $this->observaciones;
     }
-
 
     /**
      * @param boolean $validado
@@ -314,7 +330,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
         return $this->monto;
     }
 
-
     /**
      * @return int
      * @throws Exception
@@ -338,7 +353,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     {
         $acc = 0;
         foreach ($this->getCampoClinicos() as $campoClinico) {
-            if($campoClinico->getLugaresAutorizados() > 0){
+            if ($campoClinico->getLugaresAutorizados() > 0) {
                 $acc++;
             }
         }
@@ -348,34 +363,43 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     /**
      * @return string
      */
-    public function getEstatusFormatted()
+    public function getEstatusCameFormatted()
     {
         $result = '';
-        switch ($this->getEstatus()){
-            case 1:
-                $result = 'Nueva'; break;
-            case 2:
-                $result = 'En espera de registro de montos'; break;
-            case 3:
-                $result = 'En espera de validación'; break;
-            case 4:
-                $result = 'Montos validados'; break;
-            case 5:
-                $result = 'Pago en proceso'; break;
-            case 6:
-                $result = 'En validación FOFOE'; break;
-            case 7:
-                $result = 'Pagado'; break;
+        switch ($this->getEstatus()) {
+            case self::CREADA :
+                $result = 'En edición';
+                break;
+            case self::CONFIRMADA:
+                $result = 'Solicitud Registrada';
+                break;
+            case self::EN_VALIDACION_DE_MONTOS_CAME:
+                $result = 'Falta validar montos';
+                break;
+            case self::MONTOS_INCORRECTOS_CAME:
+                $result = 'En corrección por IE';
+                break;
+            case self::MONTOS_VALIDADOS_CAME:
+                $result = 'Validados';
+                break;
+            case self::FORMATOS_DE_PAGO_GENERADOS:
+            case self::CARGANDO_COMPROBANTES:
+            case self::EN_VALIDACION_FOFOE:
+                $result = 'En proceso de pago';
+                break;
+            case self::CREDENCIALES_GENERADAS:
+                $result = 'Descargar credenciales';
+                break;
         }
         return $result;
     }
 
     public function getInstitucion()
     {
-        $result = '';
+        $result = null;
         $campos_clinicos = $this->getCampoClinicos();
-        if($campos_clinicos->count() > 0){
-            $result = $campos_clinicos[0]->getConvenio()->getInstitucion()->getNombre();
+        if ($campos_clinicos->count() > 0) {
+            $result = $campos_clinicos[0]->getConvenio()->getInstitucion();
         }
         return $result;
     }
@@ -423,7 +447,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
      */
     public function addCamposClinico(CampoClinico $camposClinico)
     {
-        if(!$this->camposClinicos->contains($camposClinico)) {
+        if (!$this->camposClinicos->contains($camposClinico)) {
             $this->camposClinicos[] = $camposClinico;
             $camposClinico->setSolicitud($this);
         }
@@ -449,36 +473,18 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
 
     public function __toString()
     {
-        return ''.$this->getId();
+        return '' . $this->getId();
     }
 
     public function getPagosIndividuales()
     {
         $result = false;
-        foreach ($this->getCampoClinicos() as $cc){
-            if($cc->getReferenciaBancaria()){
+        foreach ($this->getCampoClinicos() as $cc) {
+            if ($cc->getReferenciaBancaria()) {
                 $result = true;
             }
         }
         return $result;
-    }
-
-    /**
-     * @return Expediente
-     */
-    public function getExpediente()
-    {
-        return $this->expediente;
-    }
-
-    /**
-     * @param Expediente $expediente
-     * @return Solicitud
-     */
-    public function setExpediente(Expediente $expediente)
-    {
-        $this->expediente = $expediente;
-        return $this;
     }
 
     /**
@@ -487,5 +493,102 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface
     private function esSolicitudConfirmada()
     {
         return $this->estatus === Solicitud::CONFIRMADA;
+    }
+
+    /**
+     * @param Pago $pago
+     * @return Solicitud
+     */
+    public function addPago(Pago $pago)
+    {
+        $this->pagos[] = $pago;
+
+        return $this;
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    public function removePago(Pago $pago)
+    {
+        $this->pagos->removeElement($pago);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPagos()
+    {
+        return $this->pagos;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     * @return Solicitud
+     */
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarrera[] = $montosCarrera;
+
+        return $this;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     */
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarrera->removeElement($montosCarrera);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMontosCarrera()
+    {
+        return $this->montosCarrera;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpedienteDescripcion()
+    {
+        $items = [];
+
+        /** @var MontoCarrera $monto */
+        foreach($this->montosCarrera as $monto) {
+            $carrera = $monto->getCarrera();
+            $items[] = sprintf(
+                "%s %s: Inscripción $%s, Colegiatura: $%s",
+                $carrera->getNivelAcademico()->getNombre(),
+                $carrera->getNombre(),
+                $monto->getMontoInscripcion(),
+                $monto->getMontoColegiatura()
+            );
+        }
+
+        return implode('. ', $items);
+    }
+
+    public function isPagoUnico()
+    {
+        return $this->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMontos()
+    {
+        return $this->montos;
+    }
+
+    /**
+     * @param mixed $montos
+     */
+    public function setMontos($montos)
+    {
+        $this->montos = $montos;
     }
 }

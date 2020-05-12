@@ -79,6 +79,26 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         return 0;
     }
 
+    public function getDistinctCarrerasBySolicitud($id)
+    {
+        try {
+            return $this->createQueryBuilder('campo_clinico')
+                ->select('carrera.id, carrera.nombre, carrera.activo, nivel_academico.nombre as nivel')
+                ->join('campo_clinico.convenio', 'convenio')
+                ->join('convenio.carrera', 'carrera')
+                ->join('carrera.nivelAcademico', 'nivel_academico')
+                ->where('campo_clinico.solicitud = :id')
+                ->setParameter('id', $id)
+                ->distinct()
+                ->getQuery()
+                ->getResult();
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
+
+        return 0;
+    }
+
     function getAllCamposByPage($filtros) {
       $query =  $this->createQueryBuilder('campo_clinico')
         ->join('campo_clinico.convenio', 'convenio')

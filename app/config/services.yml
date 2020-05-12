@@ -36,7 +36,13 @@ services:
     #     arguments:
     #         $someArgument: 'some_value'
 
-    AppBundle\Service\InstitucionVichNamer:
+    AppBundle\Vich\Naming\CedulaNamer:
+        public: true
+
+    AppBundle\Vich\Naming\ComprobantePagoNamer:
+        public: true
+
+    AppBundle\Service\PagoVichNamer:
         public: true
 
     AppBundle\DataFixtures\:
@@ -49,8 +55,24 @@ services:
             - '@logger'
         public: true
 
+    AppBundle\Service\MontoCarreraManagerInterface:
+        class: AppBundle\Service\MontoCarreraManager
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@logger'
+        public: true
+
+
     AppBundle\Service\ConvenioManagerInterface:
         class: AppBundle\Service\ConvenioManager
         arguments:
             - '@doctrine.orm.entity_manager'
+        public: true
+
+    AppBundle\EventListener\ComprobantePagoUploadedListener:
+        tags:
+            - { name: kernel.event_listener, event: vich_uploader.post_upload, method: postUpload }
+
+    app.directory_namer.comprobantepago:
+        class: AppBundle\Vich\Naming\ComprobantePagoDirectoryNamer
         public: true

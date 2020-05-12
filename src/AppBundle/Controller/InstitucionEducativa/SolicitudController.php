@@ -2,12 +2,18 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Form\Type\MontoCarreraType;
+use AppBundle\Form\Type\SolicitudMontoType;
 use AppBundle\Entity\Institucion;
+use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Service\MontoCarreraManagerInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
+use AppBundle\Repository\CarreraRepositoryInterface;
+use AppBundle\Repository\PagoRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,6 +71,7 @@ class SolicitudController extends Controller
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @param ExpedienteRepositoryInterface $expedienteRepository
+     * @param PagoRepositoryInterface $pagoRepository
      * @return Response
      */
     public function showAction(
@@ -73,7 +80,8 @@ class SolicitudController extends Controller
         Request $request,
         InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
-        ExpedienteRepositoryInterface $expedienteRepository
+        ExpedienteRepositoryInterface $expedienteRepository,
+        PagoRepositoryInterface $pagoRepository
     ) {
 
 
@@ -87,8 +95,9 @@ class SolicitudController extends Controller
             false
         );
 
-        $expediente = $expedienteRepository->getAllExpedientesByRequest($solicitudId);
+        //$expediente = $expedienteRepository->getAllExpedientesByRequest($solicitudId);
         $institucion = $institucionRepository->find($id);
+        $pagos = $pagoRepository->getAllPagosByRequest($solicitudId);
 
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($solicitudId);
@@ -120,8 +129,8 @@ class SolicitudController extends Controller
             'totalCampos' => $totalCampos,
             'autorizado' => $acc,
             'camposClinicos' => $this->getNormalizeCamposClinicos($camposClinicos),
-            'expediente' => $this->getNormalizeExpediente($expediente),
-            'search' => $search
+            'search' => $search,
+            'pago' => $this->getNormalizePagos($pagos)
         ]);
     }
 
@@ -133,7 +142,8 @@ class SolicitudController extends Controller
      * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
-     * @param ExpedienteRepositoryInterface $expedienteRepository
+     * @param CarreraRepositoryInterface $carreraRepository
+     * @param MontoCarreraManagerInterface $montoCarreraManager
      * @return Response
      */
     public function recordAction(
@@ -142,13 +152,18 @@ class SolicitudController extends Controller
         Request $request,
         InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
-        ExpedienteRepositoryInterface $expedienteRepository
+        CarreraRepositoryInterface $carreraRepository,
+        MontoCarreraManagerInterface $montoCarreraManager
     ) {
 
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
             $solicitudId,
             null,
             true
+        );
+
+        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud(
+            $solicitudId
         );
 
         $institucion = $institucionRepository->find($id);
@@ -164,11 +179,72 @@ class SolicitudController extends Controller
             }
         }
 
+        foreach ($carreras as $c){
+            $montoCarrera = new MontoCarrera();
+            $montoCarrera->setSolicitud($solicitud);
+            $montoCarrera->setCarrera($c);
+            $solicitud->getMontosCarrera()->add($montoCarrera);
+        }
+
+
+        $form = $this->createForm(SolicitudMontoType::class, $solicitud, [
+            'action' => $this->generateUrl('instituciones#record', [
+                'id' => $id,
+                'solicitudId' => $solicitudId
+            ]),
+        ]);
+    
+        $form->handleRequest($request);
+        if($form->isSubmitted()) {
+            if($form->isValid()){
+                return new JsonResponse([
+                    'message' => 
+                        "Todo shido" 
+                    
+                ]);
+            }else{
+                return new JsonResponse([
+                    'message' => 
+                        "Ociurrió un error" 
+                    
+                ]);
+            }
+            
+            /*$result = $institucionManager->Create($form->getData());*/
+
+            /*return new JsonResponse([
+                'message' => $result ?
+                    "¡La información se actualizado correctamente!" :
+                    '¡Ha ocurrido un problema, intenta más tarde!',
+                'status' => $result ?
+                    Response::HTTP_OK :
+                    Response::HTTP_UNPROCESSABLE_ENTITY
+            ]);
+        }else{
+            $acc = 10;
+        }*/
+        }else{
+            $enviado = 'no se ha enviado';
+        }
+
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
             'institucion' => $institucion,
-            'solicitud' => $solicitud,
+            'solicitud' => $this->getNormalizeSolicitud($solicitud),
             'autorizado' => $acc,
-            'camposClinicos' => $this->getNormalizeCamposClinicos($camposClinicos)
+            'carreras' => $carreras,
+            'montos' => $this->get('serializer')->normalize(
+                $solicitud,
+                'json',
+                [
+                    'attributes' => [
+                        'montosCarrera' => [
+                            'montoInscripcion',
+                            'montoColegiatura'
+                        ]
+                    ]
+                ]),
+            'enviado' => $enviado
+
         ]);
     }
 
@@ -192,6 +268,28 @@ class SolicitudController extends Controller
                     'noCamposSolicitados',
                     'noCamposAutorizados',
                     'tipoPago'
+                ]
+            ]);
+    }
+
+
+    /**
+     * @param $pagos
+     * @return array
+     */
+    private function getNormalizePagos($pagos)
+    {
+        return $this->get('serializer')->normalize(
+            $pagos,
+            'json',
+            [
+                'attributes' => [
+                    'monto',
+                    'fechaPago',
+                    'comprobantePago',
+                    'factura',
+                    'referenciaBancaria',
+                    'facturas'
                 ]
             ]);
     }
@@ -249,20 +347,27 @@ class SolicitudController extends Controller
                     'fechaInicial',
                     'fechaFinal',
                     'weeks',
-                    'cicloAcademico' => [
-                        'nombre'
-                    ],
-                    'carrera' => [
-                        'id',
-                        'nombre',
-                        'nivelAcademico' => [
+                    'convenio' => [
+                        'carrera' => [
+                            'id',
+                            'nombre',
+                            'nivelAcademico' => [
+                                'id',
+                                'nombre'
+                            ]
+                        ],
+                        'cicloAcademico' => [
                             'nombre'
                         ]
                     ],
                     'solicitud' => [
                         'id',
                         'noSolicitud',
-                        'estatus'
+                        'estatus',
+                        'documento',
+                        'fechaComprobante',
+                        'descripcion',
+                        'urlArchivo'
                     ],
                     'unidad' => [
                         'nombre'
@@ -271,18 +376,22 @@ class SolicitudController extends Controller
             ]);
     }
 
-    private function getNormalizeExpediente($expediente)
+    private function getNormalizeSolicitud($solicitud)
     {
 
         return $this->get('serializer')->normalize(
-            $expediente,
+            $solicitud,
             'json',
             [
                 'attributes' => [
                     'id',
-                    'descripcion',
-                    'urlArchivo',
-                    'fecha'
+                    'noSolicitud',
+                    'estatus',
+                    'fecha',
+                    'montosCarrera' => [
+                        'montoInscripcion',
+                        'montoColegiatura'
+                    ]
                 ]
             ]
         );

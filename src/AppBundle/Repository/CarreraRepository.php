@@ -4,7 +4,7 @@ namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class CarreraRepository extends EntityRepository
+class CarreraRepository extends EntityRepository implements CarreraRepositoryInterface
 {
     function getAllCarrerasActivas() {
       return $this->findBy(array("activo" => true));

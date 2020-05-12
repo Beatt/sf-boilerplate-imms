@@ -8,7 +8,7 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
-    app.path.institucion_cedulas: /uploads/files/institucion/cedulas
+    app.path.instituciones: /uploads/files/instituciones
 
 framework:
     #esi: ~
@@ -95,6 +95,12 @@ vich_uploader:
     db_driver: orm
     mappings:
         institucion_cedulas:
-            uri_prefix: '%app.path.institucion_cedulas%'
-            upload_destination: '%kernel.root_dir%/../web/uploads/files/institucion/cedulas'
-            namer: AppBundle\Service\InstitucionVichNamer
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\CedulaNamer
+            directory_namer: app.directory_namer.comprobantepago
+        comprobantes_pagos:
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\ComprobantePagoNamer
+            directory_namer: app.directory_namer.comprobantepago
