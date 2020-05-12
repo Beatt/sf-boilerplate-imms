@@ -55,11 +55,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $camposClinicos;
 
-
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud", cascade={"persist"})
      */
-    private $montosCarrera;
+    private $montosCarreras;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
@@ -97,17 +96,12 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $pagos;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
-     */
-    private $montos;
-
     public function __construct()
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
         $this->pagos = new ArrayCollection();
-        $this->montosCarrera = new ArrayCollection();
+        $this->montosCarreras = new ArrayCollection();
     }
 
     /**
@@ -523,33 +517,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @param MontoCarrera $montosCarrera
-     * @return Solicitud
-     */
-    public function addMontosCarrera(MontoCarrera $montosCarrera)
-    {
-        $this->montosCarrera[] = $montosCarrera;
-
-        return $this;
-    }
-
-    /**
-     * @param MontoCarrera $montosCarrera
-     */
-    public function removeMontosCarrera(MontoCarrera $montosCarrera)
-    {
-        $this->montosCarrera->removeElement($montosCarrera);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getMontosCarrera()
-    {
-        return $this->montosCarrera;
-    }
-
-    /**
      * @return string
      */
     public function getExpedienteDescripcion()
@@ -577,18 +544,34 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @return mixed
+     * @param MontoCarrera $montosCarrera
+     * @return Solicitud
      */
-    public function getMontos()
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
     {
-        return $this->montos;
+        if(!$this->montosCarreras->contains($montosCarrera)) {
+            $this->montosCarreras[] = $montosCarrera;
+            $montosCarrera->setSolicitud($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @param mixed $montos
+     * @param MontoCarrera $montosCarrera
      */
-    public function setMontos($montos)
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
     {
-        $this->montos = $montos;
+        if($this->montosCarreras->contains($montosCarrera)) {
+            $this->montosCarreras->removeElement($montosCarrera);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMontosCarreras()
+    {
+        return $this->montosCarreras;
     }
 }

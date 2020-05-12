@@ -2,18 +2,15 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
-use AppBundle\Form\Type\MontoCarreraType;
-use AppBundle\Form\Type\SolicitudMontoType;
 use AppBundle\Entity\Institucion;
-use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Solicitud;
-use AppBundle\Service\MontoCarreraManagerInterface;
+use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
-use AppBundle\Repository\CarreraRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -142,8 +139,7 @@ class SolicitudController extends Controller
      * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
-     * @param CarreraRepositoryInterface $carreraRepository
-     * @param MontoCarreraManagerInterface $montoCarreraManager
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     public function recordAction(
@@ -152,85 +148,43 @@ class SolicitudController extends Controller
         Request $request,
         InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
-        CarreraRepositoryInterface $carreraRepository,
-        MontoCarreraManagerInterface $montoCarreraManager
+        EntityManagerInterface $entityManager
     ) {
 
-        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
-            $solicitudId,
-            null,
-            true
-        );
-
-        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud(
-            $solicitudId
-        );
-
+        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($solicitudId);
         $institucion = $institucionRepository->find($id);
 
+        /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($solicitudId);
 
-        $acc = 0;
+        $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
+            'action' => $this->generateUrl("instituciones#record", [
+                'id' => $id,
+                'solicitudId' => $solicitudId,
+            ]),
+            'method' => 'POST'
+        ]);
 
-        foreach ($camposClinicos as $campoClinico) {
-            if($campoClinico->getLugaresAutorizados() > 0){
-                $acc++;
-            }
-        }
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
 
-        foreach ($carreras as $c){
-            $montoCarrera = new MontoCarrera();
-            $montoCarrera->setSolicitud($solicitud);
-            $montoCarrera->setCarrera($c);
-            $solicitud->getMontosCarrera()->add($montoCarrera);
-        }
+            $data = $form->getData();
 
 
-        $form = $this->createForm(SolicitudMontoType::class, $solicitud, [
-            'action' => $this->generateUrl('instituciones#record', [
+
+            $entityManager->persist($data);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('instituciones#record', [
                 'id' => $id,
                 'solicitudId' => $solicitudId
-            ]),
-        ]);
-    
-        $form->handleRequest($request);
-        if($form->isSubmitted()) {
-            if($form->isValid()){
-                return new JsonResponse([
-                    'message' => 
-                        "Todo shido" 
-                    
-                ]);
-            }else{
-                return new JsonResponse([
-                    'message' => 
-                        "Ociurrió un error" 
-                    
-                ]);
-            }
-            
-            /*$result = $institucionManager->Create($form->getData());*/
-
-            /*return new JsonResponse([
-                'message' => $result ?
-                    "¡La información se actualizado correctamente!" :
-                    '¡Ha ocurrido un problema, intenta más tarde!',
-                'status' => $result ?
-                    Response::HTTP_OK :
-                    Response::HTTP_UNPROCESSABLE_ENTITY
             ]);
-        }else{
-            $acc = 10;
-        }*/
-        }else{
-            $enviado = 'no se ha enviado';
         }
 
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
-            'autorizado' => $acc,
             'carreras' => $carreras,
             'montos' => $this->get('serializer')->normalize(
                 $solicitud,
@@ -243,8 +197,6 @@ class SolicitudController extends Controller
                         ]
                     ]
                 ]),
-            'enviado' => $enviado
-
         ]);
     }
 

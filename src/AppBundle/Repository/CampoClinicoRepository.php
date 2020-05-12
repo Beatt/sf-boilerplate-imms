@@ -34,7 +34,7 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
             $queryBuilder = $this->createQueryBuilder('campo_clinico')
             ->where('campo_clinico.solicitud = :id')
             ->setParameter('id', $id);
-            
+
             if($search !== null && $search !== '') {
                 $queryBuilder = $queryBuilder
                     ->andWhere("LOWER(campo_clinico.promocion) LIKE LOWER(:search)")
@@ -82,10 +82,18 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
     {
         try {
             return $this->createQueryBuilder('campo_clinico')
-                ->select('carrera.id, carrera.nombre, carrera.activo, nivel_academico.nombre as nivel')
+                ->select('
+                    carrera.id,
+                    carrera.nombre,
+                    carrera.activo,
+                    nivel_academico.nombre as nivelAcademico,
+                    montos_carreras.montoInscripcion,
+                    montos_carreras.montoColegiatura
+                ')
                 ->join('campo_clinico.convenio', 'convenio')
                 ->join('convenio.carrera', 'carrera')
                 ->join('carrera.nivelAcademico', 'nivel_academico')
+                ->leftJoin('carrera.montosCarreras', 'montos_carreras')
                 ->where('campo_clinico.solicitud = :id')
                 ->setParameter('id', $id)
                 ->distinct()
