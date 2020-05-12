@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="row">
-        {% for label, messages in app.flashes(['success']) %}
+        {% for label, messages in app.flashes(['success', 'failed']) %}
             {% for message in messages %}
                 <div class="alert alert-{{ label }} text-center">
                     {{ message }}
