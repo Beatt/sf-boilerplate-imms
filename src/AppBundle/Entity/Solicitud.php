@@ -2,18 +2,20 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 use Exception;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Solicitud
- *
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
+ * @Vich\Uploadable
  */
 class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
 {
@@ -74,6 +76,13 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $urlArchivo;
+
+    /**
+     * @var File
+     *
+     * @Vich\UploadableField(mapping="comprobantes_inscripcion", fileNameProperty="urlArchivo")
+     */
+    private $urlArchivoFile;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -573,5 +582,23 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     public function getMontosCarreras()
     {
         return $this->montosCarreras;
+    }
+
+    /**
+     * @return File
+     */
+    public function getUrlArchivoFile()
+    {
+        return $this->urlArchivoFile;
+    }
+
+    /**
+     * @param File $urlArchivoFile
+     */
+    public function setUrlArchivoFile($urlArchivoFile = null)
+    {
+        $this->urlArchivoFile = $urlArchivoFile;
+
+        $this->setFechaComprobante(Carbon::now());
     }
 }

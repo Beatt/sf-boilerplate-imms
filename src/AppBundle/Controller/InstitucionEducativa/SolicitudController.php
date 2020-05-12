@@ -181,6 +181,8 @@ class SolicitudController extends Controller
             ]);
         }
 
+        dump($form->createView());
+
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud),

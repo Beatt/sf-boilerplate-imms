@@ -10,36 +10,37 @@ const Registrar = (
     institucionId
   }) => {
   return (
-    <div className='row'>
-      <div className="col-md-12 mt-10">
-        <p>Se autorizaron {autorizados} Campos Clínicos para las carreras de
+    <form
+      action={`/instituciones/${institucionId}/solicitudes/${solicitudId}/registrar`}
+      method="post"
+      encType='multipart/form-data'
+    >
+      <div className='row'>
+        <div className="col-md-12 mb-10">
+          <p>Se autorizaron {autorizados} Campos Clínicos para las carreras de&nbsp;
+            <strong>{carreras.map(carrera => carrera.nombre).join(', ')}</strong>
+          </p>
+        </div>
 
-          {
-            carreras.map((item) => <strong> {item.nombre}, </strong>)
-          }
+        <div className="col-md-12 mb-10">
+          <div className="row">
+            <div className="col-md-8">
+              <p>Cargue el oficio que contenga los montos de inscripción de todas las carreras que comprenden su solicitud de campos clínicos </p>
+            </div>
+            <div className="col-md-4">
+              <input
+                type="file"
+                name='solicitud_validacion_montos[urlArchivoFile]'
+              />
+            </div>
+          </div>
+        </div>
 
-        </p>
-      </div>
+        <div className="col-md-12 mb-10">
+          <p>Ingrese los montos correspondientes a cada carrera de su solicitud</p>
+        </div>
 
-      <div className="col-md-8 mt-10">
-        <p>Cargue el oficio que contenga los montos de inscripción de todas las carreras que comprenden su solicitud de
-          campos clínicos </p>
-      </div>
-
-      <div className="col-md-4 mt-10">
-
-      </div>
-
-      <div className="col-md-12 mt-10">
-        <p>Ingrese los montos correspondientes a cada carrera de su solicitud</p>
-      </div>
-
-
-      <form
-        action={`/instituciones/${institucionId}/solicitudes/${solicitudId}/registrar`}
-        method="post"
-      >
-        <div className="col-md-12 mt-20">
+        <div className="col-md-12 mb-10">
           <div className="panel panel-default">
             <div className="panel-body">
               <table className='table'>
@@ -93,20 +94,32 @@ const Registrar = (
             </div>
           </div>
         </div>
-        <button type="submit">Enviar</button>
-      </form>
 
-      <div className='col-md-12 mt-10'>
-        <p>La institución educativa <span className='text-bold'>{institucion}</span>, confirma que el oficion adjunto,
-          contiene el monto correspondiente a
-          los montos de la colegiatura e inscripción por cada una de las carreras mencionadas anteriormente</p>
+        <div className='col-md-12 mb-20'>
+          <p>
+            La institución educativa
+            <span className='text-bold'>{institucion}</span>, confirma que el oficion adjunto, contiene el monto correspondiente a los montos de la colegiatura e inscripción por cada una de las carreras mencionadas anteriormente&nbsp;
+            <label htmlFor="confirmo">
+              <input type="checkbox" id='confirmo' />&nbsp;Confirmo información
+            </label>
+          </p>
+        </div>
       </div>
-
-
-    </div>
+      <div className="col-md-12">
+        <div className="row">
+          <div className="col-md-10"/>
+          <div className="col-md-2">
+            <button
+              type="submit"
+              className='btn btn-success btn-block'
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
   )
-
-
 }
 
 
