@@ -105,6 +105,13 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $pagos;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $confirmacionOficioAdjunto;
+
     public function __construct()
     {
         $this->fecha = new \DateTime();
@@ -600,5 +607,21 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         $this->urlArchivoFile = $urlArchivoFile;
 
         $this->setFechaComprobante(Carbon::now());
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfirmacionOficioAdjunto()
+    {
+        return $this->confirmacionOficioAdjunto;
+    }
+
+    /**
+     * @param string $confirmacionOficioAdjunto
+     */
+    public function setConfirmacionOficioAdjunto($confirmacionOficioAdjunto)
+    {
+        $this->confirmacionOficioAdjunto = $confirmacionOficioAdjunto;
     }
 }
