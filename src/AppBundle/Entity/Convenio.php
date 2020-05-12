@@ -70,7 +70,7 @@ class Convenio implements GroupSequenceProviderInterface
     /**
      * @var DateTime
      * @ORM\Column(type="date")
-     * @Assert\NotBlank(message="Vigencia no debe estar vacìo o debe ser una fecha válida con formato: AAAA-MM-DD")
+     * @Assert\NotBlank(message="Vigencia no debe estar vacío o debe ser una fecha válida con formato: AAAA-MM-DD")
      */
     private $vigencia;
 
@@ -78,7 +78,8 @@ class Convenio implements GroupSequenceProviderInterface
      * @var CicloAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CicloAcademico")
      * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id", nullable=true)
-     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO})
+     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
+     *   message="Debe especificar un valor del catálogo de Tipos de ciclos académicos.")
      */
     private $cicloAcademico;
 
@@ -87,7 +88,8 @@ class Convenio implements GroupSequenceProviderInterface
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id", nullable=true)
      * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
-        message="Este valor debería ser un valor del catálogo de Carreras.") */
+        message="Debe especificar el grado y el nombre de la carrera,
+        de acuerdo al catálogo de Carreras.") */
     private $carrera;
 
     /**
@@ -102,7 +104,7 @@ class Convenio implements GroupSequenceProviderInterface
      * @var Delegacion
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Delegacion")
      * @ORM\JoinColumn(name="delegacion_id", referencedColumnName="id")
-     * @Assert\NotBlank
+     * @Assert\NotBlank(message="Debe especificar un valor del catálogo de Delegaciones.")
      */
     private $delegacion;
 
@@ -239,6 +241,10 @@ class Convenio implements GroupSequenceProviderInterface
     public function getCicloAcademico()
     {
         return $this->cicloAcademico;
+    }
+
+    public function getCiclo() {
+      return $this->getCicloAcademico();
     }
 
     /**

@@ -86,7 +86,20 @@ const Filtros = (
         valores={estadosSol}
         setValSel={props.setEstadoSolSel}
       />
-
+      <div className="col-md-3">
+        <div className="form-group">
+          <label htmlFor="Fecha">Fecha Inicio</label>
+            <input className='form-control' type='date'
+             onChange={(target) => { console.log(target);  }}/>
+        </div>
+      </div>
+      <div className="col-md-3">
+        <div className="form-group">
+          <label htmlFor="Fecha">Fecha Término</label>
+          <input className='form-control' type='date'
+                 onChange={(target) => { console.log(target);  }}/>
+        </div>
+      </div>
     </div>
   );
 }

@@ -12,4 +12,13 @@ class DelegationRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+  public function searchOneByNombre($nombre) {
+    return $this->createQueryBuilder('d')
+      ->where('LOWER(unaccent(d.nombre)) LIKE LOWER(unaccent(:nombre))')
+      ->setParameter('nombre', $nombre)
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
 }

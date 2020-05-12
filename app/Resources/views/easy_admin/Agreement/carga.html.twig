@@ -1,6 +1,3 @@
-{# app/Resources/views/easy_admin/Conveio/list.html.twig #}
-{#% extends '@EasyAdmin/default/new.html.twig' %#}
-
 {% extends '@EasyAdmin/default/layout.html.twig' %}
 
 {% block content_title %}
@@ -39,5 +36,65 @@
 
 {% endblock entity_form %}
 
+  {% block result_table %}
+    {% if data is defined and data|length > 0 %}
+      <div class="row"></div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Resultado Carga</div>
+        {#{ user.username|e('js') }#}
+        <div class="panel-body">
+          <p>Se agregaron {{ agregados }} de {{ data|length }} registros.</p>
+        </div>
+
+        <table class="table">
+          <thead>
+          <th>consecutivo</th>
+          {% for header in headers %}
+            <th>{{ header }}</th>
+          {% endfor %}
+          <th>Observaciones</th>
+          </thead>
+          <tbody>
+          {% for row in data %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              {% for header in headers %}
+                <td>
+                  {% if attribute(row.conv, header) is defined
+                    and attribute(attribute(row.conv, header), 'nombre') is defined %}
+                    {{ attribute(attribute(row.conv, header), 'nombre') }}
+
+                  {% elseif attribute(row.conv, header) is defined
+                    and attribute(row.conv, header).timestamp is defined %}
+                    {{ attribute(row.conv, header)|date('Y-m-d') }}
+
+                  {% elseif attribute(row.conv, header) is defined %}
+                    {{ attribute(row.conv, header) }}
+                  {% endif %}
+                </td>
+              {% endfor %}
+              <td>{{ row.error }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  {% endblock result_table %}
+
 {% endblock main %}
+
+{% block body_javascript %}
+  {{ parent() }}
+
+  <script type="text/javascript">
+    $(function() {
+
+      $('.form-actions').easyAdminSticky();
+
+    });
+  </script>
+
+  {{ include('@EasyAdmin/default/includes/_select2_widget.html.twig') }}
+{% endblock %}
 
