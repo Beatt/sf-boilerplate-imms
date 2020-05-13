@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -81,27 +82,28 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
     public function getDistinctCarrerasBySolicitud($id)
     {
         try {
-            return $this->createQueryBuilder('campo_clinico')
-                ->select('
-                    carrera.id,
-                    carrera.nombre,
-                    carrera.activo,
-                    nivel_academico.nombre as nivelAcademico,
-                    montos_carreras.montoInscripcion,
-                    montos_carreras.montoColegiatura
-                ')
-                ->join('campo_clinico.convenio', 'convenio')
-                ->join('convenio.carrera', 'carrera')
-                ->join('campo_clinico.solicitud', 'solicitud')
-                ->leftJoin('solicitud.montosCarreras', 'montos_carreras')
-                ->join('carrera.nivelAcademico', 'nivel_academico')
-                ->where('solicitud.id = :id')
-                ->setParameter('id', $id)
-                ->distinct()
-                ->getQuery()
-                ->getResult();
-        } catch (NoResultException $e) {
-        } catch (NonUniqueResultException $e) {
+            $stmt = $this->_em->getConnection()->prepare('
+                SELECT carreras_unicas.*,
+                       monto_carrera.monto_colegiatura,
+                       monto_carrera.monto_inscripcion
+                FROM (
+                         SELECT DISTINCT carrera.id             AS id,
+                                         carrera.nombre         AS nombre,
+                                         nivel_academico.nombre as nivel_academico
+                         FROM campo_clinico
+                                  JOIN convenio on campo_clinico.convenio_id = convenio.id
+                                  JOIN carrera on convenio.carrera_id = carrera.id
+                                  JOIN nivel_academico on carrera.nivel_academico_id = nivel_academico.id
+                                  JOIN solicitud on campo_clinico.solicitud_id = solicitud.id
+                         WHERE campo_clinico.solicitud_id = :id
+                     ) as carreras_unicas
+                         LEFT JOIN monto_carrera on carreras_unicas.id = monto_carrera.carrera_id
+            ');
+
+            $stmt->bindParam('id', $id);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (DBALException $e) {
         }
 
         return 0;

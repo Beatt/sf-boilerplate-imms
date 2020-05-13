@@ -21,6 +21,7 @@ class SolicitudValidacionMontosType extends AbstractType
                 'by_reference' => false,
             ])
             ->add('urlArchivoFile', FileType::class)
+            ->add('confirmacionOficioAdjunto')
         ;
     }
 

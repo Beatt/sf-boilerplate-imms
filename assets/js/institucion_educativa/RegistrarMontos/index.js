@@ -56,7 +56,7 @@ const Registrar = (
                 {
                   carreras.map((carrera, index) =>
                     <tr key={index}>
-                      <td>{carrera.nivelAcademico}</td>
+                      <td>{carrera.nivel_academico}</td>
                       <td>{carrera.nombre}</td>
                       <td className='hidden'>
                         <input
@@ -71,8 +71,8 @@ const Registrar = (
                           className='form-control'
                           type="text"
                           name={`solicitud_validacion_montos[montosCarreras][${index}][montoInscripcion]`}
-                          id="montosCarrera_montoInscripcion"
-                          defaultValue={carrera.montoInscripcion}
+                          id="solicitud_validacion_montos_montosCarreras_${index}_montoInscripcion"
+                          defaultValue={carrera.monto_inscripcion}
                           required={true}
                         />
                       </td>
@@ -81,8 +81,8 @@ const Registrar = (
                           className='form-control'
                           type="text"
                           name={`solicitud_validacion_montos[montosCarreras][${index}][montoColegiatura]`}
-                          id="montosCarrera_montoColegiatura"
-                          defaultValue={carrera.montoColegiatura}
+                          id="solicitud_validacion_montos_montosCarreras_${index}_montoColegiatura"
+                          defaultValue={carrera.monto_colegiatura}
                           required={true}
                         />
                       </td>
@@ -99,8 +99,12 @@ const Registrar = (
           <p>
             La institución educativa
             <span className='text-bold'>{institucion}</span>, confirma que el oficion adjunto, contiene el monto correspondiente a los montos de la colegiatura e inscripción por cada una de las carreras mencionadas anteriormente&nbsp;
-            <label htmlFor="confirmo">
-              <input type="checkbox" id='confirmo' />&nbsp;Confirmo información
+            <label htmlFor="solicitud_validacion_montos_confirmacionOficioAdjunto">
+              <input
+                type="checkbox"
+                id='solicitud_validacion_montos_confirmacionOficioAdjunto'
+                name='solicitud_validacion_montos[confirmacionOficioAdjunto]'
+              />&nbsp;Confirmo información
             </label>
           </p>
         </div>
