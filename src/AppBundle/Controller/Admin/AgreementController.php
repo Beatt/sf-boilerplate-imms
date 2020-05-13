@@ -33,20 +33,9 @@ class AgreementController extends BaseAdminController
     $this->request->attributes->set('easyadmin', $easyadmin);
     $fields = $this->entity['new']['fields'];
 
-    $form = $this->createFormBuilder()
-      ->add('submitFile', FileType::class,
-        array(
-          'label' => 'Archivo CSV con Convenios a cargar',
-          'attr' => array('accept' => "text/csv"),
-          'constraints' => [
-            new File([
-              'mimeTypes' => ["text/csv", 'text/plain']
-            ])
-          ],
-        ))
-      ->add('submit', LegacyFormHelper::getType('submit'),
-        array('label' => 'Cargar Convenios'))
-      ->getForm();
+    $form = $this->createFormCargaConvenio();
+    $data = [];
+    $agregados = 0;
 
     // Check if we are posting stuff
     if ($request->getMethod('post') == 'POST') {
@@ -57,23 +46,9 @@ class AgreementController extends BaseAdminController
       if ($form->isSubmitted() && $form->isValid()) {
 
         $nameFile = $form->get('submitFile')->getData();
-        $dataFile = file_get_contents($nameFile);
-        $bom = pack("CCC", 0xEF, 0xBB, 0xBF);
-        if (0 === strncmp($dataFile, $bom, 3)) {
-          //BOM detected - file is UTF-8
-          $dataFile = substr($dataFile, 3);
-        }
-        $checkEncoding = mb_detect_encoding($dataFile, "UTF-8, ISO-8859-1");
-        if ($checkEncoding != 'UTF-8') {
-          $fromEncoding = $checkEncoding ?: [];
-          $dataFile = mb_convert_encoding($dataFile, 'UTF-8', $fromEncoding);
-        }
-        $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
-        $dataCSV = $serializer->decode($dataFile, 'csv');
+        $dataCSV = $this->processFileCSV($nameFile);
 
-        $data = [];
         $i = 0;
-        $agregados = 0;
         foreach ($dataCSV as $row) {
           $conv = $cm->processDataCSV($row);
           $errsConv = $validator->validate($conv);
@@ -84,21 +59,12 @@ class AgreementController extends BaseAdminController
                 $violation->getPropertyPath() . ":" .
                 $violation->getMessage() . ";";
             }
-            /* $this->addFlash(
-                'error',
-                'Renglon '.($i+1).' NO agregado. '.$messages.
-                ' '.implode(",",$row)
-            );  */
           } else {
             $em->persist($conv);
             $em->flush();
             $agregados++;
-            /* $this->addFlash(
-                'notice',
-                'Renglon '.($i+1).', convenio agregado con id: '.$conv->getId()
-            ); */
           }
-          $data[] = array(
+          $data [] = array(
             'ind' => ++$i,
             'conv' => $conv,
             'row' => $row,
@@ -112,16 +78,49 @@ class AgreementController extends BaseAdminController
       'form' => $form->createView(),
       'entity_fields' => $fields,
       'entity' => $entity,
-      'data' => @$data,
-      'agregados' => @$agregados,
-      'headers' => self::HEADERS,
-      'dataFile' => @$dataFile,
+      'data' => $data,
+      'agregados' => $agregados,
+      'headers' => self::HEADERS
     );
 
     return $this->render('easy_admin/agreement/carga.html.twig',
       $parameters
     );
 
+  }
+
+  protected function createFormCargaConvenio() {
+    return $this->createFormBuilder()
+      ->add('submitFile', FileType::class,
+        array(
+          'label' => 'Archivo CSV con Convenios a cargar',
+          'attr' => array('accept' => "text/csv"),
+          'constraints' => [
+            new File([
+              'mimeTypes' => ["text/csv", 'text/plain']
+            ])
+          ],
+        ))
+      ->add('submit', LegacyFormHelper::getType('submit'),
+        array('label' => 'Cargar Convenios'))
+      ->getForm();
+  }
+
+  protected function processFileCSV($nameFile) {
+    $dataFile = file_get_contents($nameFile);
+    $bom = pack("CCC", 0xEF, 0xBB, 0xBF);
+    if (0 === strncmp($dataFile, $bom, 3)) {
+      //BOM detected - file is UTF-8
+      $dataFile = substr($dataFile, 3);
+    }
+    $checkEncoding = mb_detect_encoding($dataFile, "UTF-8, ISO-8859-1");
+    if ($checkEncoding != 'UTF-8') {
+      $fromEncoding = $checkEncoding ?: [];
+      $dataFile = mb_convert_encoding($dataFile, 'UTF-8', $fromEncoding);
+    }
+    $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
+    $dataCSV = $serializer->decode($dataFile, 'csv');
+    return $dataCSV;
   }
 
 }

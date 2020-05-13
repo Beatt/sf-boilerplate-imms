@@ -103,6 +103,15 @@ class ConvenioManager implements ConvenioManagerInterface
       );
     }
 
+    if ($conv->getTipo() == Convenio::TIPO_ESPECIFICO
+      && $institucion_id && $vigencia) {
+      $conv->setGeneral(
+        $this->entityManager->getRepository(Convenio::class)
+          ->getConvenioGeneral($institucion_id, $vigencia)
+      );
+    }
+
     return $conv;
   }
+
 }
