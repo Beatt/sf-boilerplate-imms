@@ -44,36 +44,42 @@
         {#{ user.username|e('js') }#}
         <div class="panel-body">
           <p>Se agregaron {{ agregados }} de {{ data|length }} registros.</p>
+          <a href="#" onclick="download_table_as_csv();">Download as CSV</a>
         </div>
 
-        <table class="table">
+        <table class="table" id="conveniosNoCargados">
           <thead>
-          <th>consecutivo</th>
+          <th>id</th>
           {% for header in headers %}
             <th>{{ header }}</th>
           {% endfor %}
           <th>Observaciones</th>
           </thead>
           <tbody>
-          {% for row in data %}
+          {% for d in data %}
             <tr>
-              <td>{{ loop.index }}</td>
+              <td>{% if attribute(d.conv, 'id') is defined %} {{ d.conv.id }} {% endif %}</td>
               {% for header in headers %}
                 <td>
-                  {% if attribute(row.conv, header) is defined
-                    and attribute(attribute(row.conv, header), 'nombre') is defined %}
-                    {{ attribute(attribute(row.conv, header), 'nombre') }}
+                  {% if attribute(d.conv, header) is defined
+                    and attribute(attribute(d.conv, header), 'nombre') is defined %}
+                    {{ attribute(attribute(d.conv, header), 'nombre') }}
 
-                  {% elseif attribute(row.conv, header) is defined
-                    and attribute(row.conv, header).timestamp is defined %}
-                    {{ attribute(row.conv, header)|date('Y-m-d') }}
+                  {% elseif attribute(d.conv, header) is defined
+                    and attribute(d.conv, header).timestamp is defined %}
+                    {{ attribute(d.conv, header)|date('Y-m-d') }}
 
-                  {% elseif attribute(row.conv, header) is defined %}
-                    {{ attribute(row.conv, header) }}
+                  {% elseif attribute(d.conv, header) is defined and
+                    attribute(d.conv, header)  is not null %}
+                    {{ attribute(d.conv, header) }}
+
+                  {% elseif attribute(d.row, header) is defined %}
+                    {{ attribute(d.row, header) }}
+
                   {% endif %}
                 </td>
               {% endfor %}
-              <td>{{ row.error }}</td>
+              <td>{{ d.error }}</td>
             </tr>
           {% endfor %}
           </tbody>
@@ -87,14 +93,49 @@
 {% block body_javascript %}
   {{ parent() }}
 
+  {{ include('@EasyAdmin/default/includes/_select2_widget.html.twig') }}
+
   <script type="text/javascript">
     $(function() {
 
       $('.form-actions').easyAdminSticky();
-
     });
+
+    function download_table_as_csv() {
+      var table_id = 'conveniosNoCargados';
+      var filename = 'export_' + table_id + '_' + new Date().toLocaleDateString() + '.csv';
+      var csv = [];
+      var rows = document.querySelectorAll("table#conveniosNoCargados tr");
+
+      for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+
+        for (var j = 0; j < cols.length; j++)
+          row.push( "\"" + cols[j].innerText
+            .replace("\"", "\"\"")
+//            .replace("\,", "\"\,\"")
+            + "\"");
+
+        csv.push(row.join(","));
+      }
+
+      // Download CSV file
+      downloadCSV(csv.join("\r\n"), filename);
+    }
+
+    function downloadCSV(csv_string, filename) {
+      var link = document.createElement('a');
+      var universalBOM = "\uFEFF";
+
+      link.style.display = 'none';
+      link.setAttribute('target', '_blank');
+      link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(universalBOM+csv_string));
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 
   {{ include('@EasyAdmin/default/includes/_select2_widget.html.twig') }}
 {% endblock %}
-

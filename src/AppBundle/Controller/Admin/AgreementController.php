@@ -70,6 +70,7 @@ class AgreementController extends BaseAdminController
         }
         $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
         $dataCSV = $serializer->decode($dataFile, 'csv');
+
         $data = [];
         $i = 0;
         $agregados = 0;

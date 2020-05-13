@@ -32,6 +32,8 @@ class ConvenioManager implements ConvenioManagerInterface
     }
     $data = $newData;
 
+    $institucion_id = 0;
+    $vigencia = '';
     $conv = new Convenio();
     if (array_key_exists('nombre', $data))
       $conv->setNombre($data['nombre']);
@@ -69,17 +71,20 @@ class ConvenioManager implements ConvenioManagerInterface
           $d = DateTime::createFromFormat($format, $data['vigencia']);
           if ($d && $d->format($format) === $data['vigencia']) {
             $conv->setVigencia($d);
+            $vigencia = $d->format('Y-m-d');
             break;
           }
         }
       } catch (\Exception $e) {
       }
     }
-    if (array_key_exists('institucion', $data))
-      $conv->setInstitucion(
-        $this->entityManager->getRepository(Institucion::class)
-          ->findOneByNombre($data['institucion'])
-      );
+    if (array_key_exists('institucion', $data)) {
+      $institucion = $this->entityManager
+        ->getRepository(Institucion::class)
+        ->findOneByNombre($data['institucion']);
+      $conv->setInstitucion($institucion);
+      $institucion_id = $institucion ? $institucion->getId() : 0;
+    }
     if (array_key_exists('delegacion', $data))
       $conv->setDelegacion(
         $this->entityManager->getRepository(Delegacion::class)

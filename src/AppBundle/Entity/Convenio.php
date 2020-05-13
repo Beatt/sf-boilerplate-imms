@@ -120,6 +120,15 @@ class Convenio implements GroupSequenceProviderInterface
      */
     private $camposClinicos;
 
+  /**
+   * @var Convenio
+   * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
+   *   message="Los convenios específicos deben estar asociados a un convenio General.
+        Verifique que existe un convenio general para la institución."
+   *  )
+   */
+    private $general;
+
     public function __construct()
     {
     }
@@ -249,7 +258,7 @@ class Convenio implements GroupSequenceProviderInterface
     public function getGrado() {
       return $this->carrera ?
         $this->carrera->getNivelAcademico()->getNombre()
-      : '';
+      : null;
     }
 
     /**
@@ -337,5 +346,21 @@ class Convenio implements GroupSequenceProviderInterface
     public function __toString()
     {
         return $this->getNombre();
+    }
+
+    /**
+     * @return Convenio
+     */
+    public function getGeneral()
+    {
+      return $this->general;
+    }
+
+    /**
+     * @param Convenio $general
+     */
+    public function setGeneral($general)
+    {
+      $this->general = $general;
     }
 }
