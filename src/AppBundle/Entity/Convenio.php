@@ -25,6 +25,13 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  *     errorPath="institucion",
  *     message="La institución ya tiene registrado un convenio general con esa vigencia."
  * )
+ * @UniqueEntity(
+ *     groups={"Convenio"},
+ *     fields={"institucion", "vigencia", "tipo", "carrera", "cicloAcademico"},
+ *     ignoreNull=false,
+ *     errorPath="institucion",
+ *     message="La institución ya tiene registrado un convenio con esa vigencia."
+ * )
  */
 class Convenio implements GroupSequenceProviderInterface
 {
@@ -359,7 +366,7 @@ class Convenio implements GroupSequenceProviderInterface
     /**
      * @param Convenio $general
      */
-    public function setGeneral($general)
+    public function setGeneral(Convenio $general = null)
     {
       $this->general = $general;
     }
