@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
+import camelcaseKeys from 'camelcase-keys'
 
 const Registrar = (
   {
@@ -56,7 +57,7 @@ const Registrar = (
                 {
                   carreras.map((carrera, index) =>
                     <tr key={index}>
-                      <td>{carrera.nivel_academico}</td>
+                      <td>{carrera.nivelAcademico}</td>
                       <td>{carrera.nombre}</td>
                       <td className='hidden'>
                         <input
@@ -72,7 +73,7 @@ const Registrar = (
                           type="text"
                           name={`solicitud_validacion_montos[montosCarreras][${index}][montoInscripcion]`}
                           id="solicitud_validacion_montos_montosCarreras_${index}_montoInscripcion"
-                          defaultValue={carrera.monto_inscripcion}
+                          defaultValue={carrera.montoInscripcion}
                           required={true}
                         />
                       </td>
@@ -82,7 +83,7 @@ const Registrar = (
                           type="text"
                           name={`solicitud_validacion_montos[montosCarreras][${index}][montoColegiatura]`}
                           id="solicitud_validacion_montos_montosCarreras_${index}_montoColegiatura"
-                          defaultValue={carrera.monto_colegiatura}
+                          defaultValue={carrera.montoColegiatura}
                           required={true}
                         />
                       </td>
@@ -131,7 +132,7 @@ ReactDOM.render(
   <Registrar
     autorizados={window.AUTORIZADOS_PROP}
     institucion={window.INSTITUCION_PROP}
-    carreras={window.CARRERAS_PROP}
+    carreras={camelcaseKeys(window.CARRERAS_PROP)}
     solicitudId={window.SOLICITUD_ID_PROP}
     institucionId={window.INSTITUCION_ID_PROP}
   />,
