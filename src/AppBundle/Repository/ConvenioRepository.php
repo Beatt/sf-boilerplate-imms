@@ -46,4 +46,20 @@ class ConvenioRepository extends EntityRepository implements ConvenioRepositoryI
             ->getQuery()
             ->getResult();
     }
+
+    public function getConvenioGeneral($institucion_id, $vigencia ) {
+      return $this->createQueryBuilder('c')
+        ->where('c.institucion = :institucion_id')
+        ->andWhere('c.vigencia >= :vigencia')
+        //->andWhere("date_part('YEAR', age(c.vigencia, :vigencia)) <= 10 ")
+        ->setParameter('institucion_id', $institucion_id)
+        ->setParameter('vigencia', $vigencia)
+        //->setParameter('tGral', new DateTime($vigencia))
+        //->setParameter('tEsp', '5')
+        ->orderBy('c.vigencia', 'DESC' )
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+
+    }
 }

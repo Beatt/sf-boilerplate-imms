@@ -49,7 +49,7 @@ abstract class DIEControllerController extends Controller
         }
         if(isset($data['message'])){
             $json['message'] = $data['message'];
-        }else if($json['status']){
+        }else if(isset($data['status']) && $json['status']){
             $json['message'] = 'Solicitud procesada con éxito';
         }
         if (isset($result['error'])) {
