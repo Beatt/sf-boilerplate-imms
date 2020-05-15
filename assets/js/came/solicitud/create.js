@@ -67,7 +67,7 @@ const SolicitudCreate = (props) => {
               <CamposClinicos campos={camposClinicos} />
               <CampoClinicoForm
                   unidades={props.unidades}
-                  convenios={selectedInstitution.convenios ? selectedInstitution.convenios: []}
+                  convenios={convenios ? convenios: []}
                   callbackCampoClinico = {callbackCampoClinico}
                   callbackIsLoading = {callbackIsLoading}
                   callbackSolicitud = {value => setSolicitud(value)}
