@@ -11,4 +11,6 @@ services:
       - "33417:5432"
   mailcatcher:
     image: schickling/mailcatcher
-    ports: [1025, 1080]
+    ports:
+      - "32769:1025"
+      - "32768:1080"

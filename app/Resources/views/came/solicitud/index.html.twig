@@ -19,7 +19,7 @@
     <div class='container-fluid wrapper-came'>
         <div class='row'>
             <div class='col-md-12'>
-                <h1 style="text-align: center">Solicitudes de Campos Clínicos</h1>
+                <h1 style="text-align: center; padding-bottom: 40px">Solicitudes de Campos Clínicos</h1>
             </div>
         </div>
         <div id="solicitudes-table"></div>
@@ -29,7 +29,8 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        window.SOLICITUDES = {{ solicitudes | json_encode | raw }}
+        window.SOLICITUDES = {{ solicitudes | json_encode | raw }};
+        window.META = {{ meta | json_encode | raw}};
     </script>
     <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 

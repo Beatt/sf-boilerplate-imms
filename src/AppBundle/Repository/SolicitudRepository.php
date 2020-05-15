@@ -52,11 +52,12 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
                 ->setParameter('delegacion_id', $delegacion_id)
             ;
         }
+        $qb2 = clone $queryBuilder;
 
-        $queryBuilder->setMaxResults($perPage)
-            ->setFirstResult(($offset-1) * $perPage);
-
-        return $queryBuilder->getQuery()
-            ->getResult();
+        return ['data' => $queryBuilder->setMaxResults($perPage)
+            ->setFirstResult(($offset-1) * $perPage)->getQuery()
+            ->getResult(),
+            'total' => $qb2->select('COUNT(solicitud.id)')->getQuery()->getSingleScalarResult()
+        ];
     }
 }

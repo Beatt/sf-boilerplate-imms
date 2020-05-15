@@ -13,18 +13,23 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Swift_Mailer;
 
 class SolicitudManager implements SolicitudManagerInterface
 {
 
     private $entityManager;
-
     private $logger;
+    private $mailer;
+    private $templating;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
+        Swift_Mailer $mailer, \Twig_Environment $templating)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->mailer     = $mailer;
+        $this->templating = $templating;
     }
 
     public function update(Solicitud $solicitud)
@@ -93,6 +98,7 @@ class SolicitudManager implements SolicitudManagerInterface
             $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
         }else{
             $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
+            $this->sendEmailMontosInvalidos($solicitud);
         }
         try {
             $this->entityManager->persist($solicitud);
@@ -118,6 +124,18 @@ class SolicitudManager implements SolicitudManagerInterface
         return [
             'status' => true
         ];
+    }
 
+    public function sendEmailMontosInvalidos(Solicitud $solicitud)
+    {
+        $message = (new \Swift_Message('Los montos de la solicitud ' . $solicitud->getNoSolicitud() . ' son invalidos'))
+            ->setFrom('send@example.com') //cambiar el destinatario XD
+            ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
+            ->setBody(
+                $this->templating->render('emails/came/montos_invalidos.html.twig',['solicitud' => $solicitud]),
+                'text/html'
+            )
+        ;
+        $this->mailer->send($message);
     }
 }
