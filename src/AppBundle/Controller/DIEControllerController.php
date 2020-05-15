@@ -44,6 +44,8 @@ abstract class DIEControllerController extends Controller
             if(!$data['status']){
                 $status = Response::HTTP_UNPROCESSABLE_ENTITY;
             }
+        }else{
+            $json['status'] = true;
         }
         if(isset($data['message'])){
             $json['message'] = $data['message'];

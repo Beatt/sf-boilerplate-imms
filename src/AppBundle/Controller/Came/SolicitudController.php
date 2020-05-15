@@ -49,6 +49,37 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
+     * @Route("/api/solicitud", methods={"GET"}, name="solicitud.index.json")
+     */
+    public function indexApiAction(Request $request)
+    {
+        $perPage = $request->query->get('perPage', 10);
+        $page = $request->query->get('page', 1);
+        $solicitudes = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->getAllSolicitudesByDelegacion(null/*simulado*/, $perPage, $page, $request->query->all());
+        return $this->jsonResponse([
+            'object' => $this->get('serializer')->normalize(
+                $solicitudes,
+                'json',
+                [
+                    'attributes' => [
+                        'id',
+                        'fecha',
+                        'estatus',
+                        'noSolicitud',
+                        'estatus',
+                        'estatusCameFormatted',
+                        'institucion' => ['id', 'nombre'],
+                        'camposClinicosSolicitados',
+                        'camposClinicosAutorizados',
+                    ]
+                ]
+            )
+        ]);
+    }
+
+    /**
      * @Route("/solicitud/create", methods={"GET"}, name="solicitud.create")
      */
     public function createAction(Request $request)
@@ -63,9 +94,7 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax',
-                    'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
-                        'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax']]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
                 ['attributtes' => ['id', 'nombre']])
         ]);
