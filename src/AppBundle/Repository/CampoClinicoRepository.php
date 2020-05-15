@@ -106,7 +106,7 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         ->join('convenio.institucion', 'institucion')
         ->orderBy('institucion.nombre', 'ASC');
 
-      if (@$filtros['search']) {
+      if ( array_key_exists('search', $filtros) && $filtros['search']) {
         $query = $query
           ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
           //->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
@@ -114,22 +114,32 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
           ->setParameter('search', '%' . $filtros['search'] . '%');
       }
 
-      if (@$filtros['estatus']) {
+      if ( array_key_exists('estatus', $filtros)  && $filtros['estatus']) {
         $query = $query->andWhere('campo_clinico.estatus = :status')
           ->setParameter('status', $filtros['estatus']);
       }
 
-      if (@$filtros['cicloAcademico']) {
+      if ( array_key_exists('fechaIni', $filtros)  && $filtros['fechaIni']) {
+        $query = $query->andWhere('campo_clinico.fechaInicial >= :fechaIni')
+          ->setParameter('fechaIni', new \DateTime($filtros['fechaIni']) );
+      }
+
+      if ( array_key_exists('fechaFin', $filtros)  && $filtros['fechaFin']) {
+        $query = $query->andWhere('campo_clinico.fechaFinal <= :fechaFin')
+          ->setParameter('fechaFin', new \DateTime($filtros['fechaFin']));
+      }
+
+      if ( array_key_exists('cicloAcademico', $filtros)  &&  $filtros['cicloAcademico']) {
         $query = $query->andWhere('carrera.nivelAcademico = :ciclo')
           ->setParameter('ciclo', $filtros['cicloAcademico']);
       }
 
-      if (@$filtros['carrera']) {
+      if ( array_key_exists('carrera', $filtros) && $filtros['carrera']) {
         $query = $query->andWhere('convenio.carrera = :carrera')
           ->setParameter('carrera', $filtros['carrera']);
       }
 
-      if (@$filtros['delegacion']) {
+      if ( array_key_exists('delegacion', $filtros) && $filtros['delegacion']) {
         $query = $query->andWhere('convenio.delegacion = :delegacion')
           ->setParameter('delegacion', $filtros['delegacion']);
       }
@@ -142,28 +152,31 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
       // get total items
       $totalItems = count($paginator);
 
-      $pageSize = @$filtros['limit'] && $filtros['limit'] > 0 ?
+      $pageSize = array_key_exists('limit', $filtros)
+        && $filtros['limit'] > 0 ?
         $filtros['limit'] : 10;
-      $page = @$filtros['page']  && $filtros['page'] > 0 ? $filtros['page'] : 1;
+      $page = array_key_exists('limit', $filtros)
+        && $filtros['page'] > 0 ? $filtros['page'] : 1;
 
       // get total pages
       $pagesCount = ceil($totalItems / $pageSize);
 
       $campos = [];
-      if(@$filtros['export']) {
+      if(array_key_exists('export', $filtros) && $filtros['export']) {
         $campos = $paginator
           ->getQuery()
           ->getResult();
       } else {
+        $offset = $pageSize * ($page-1);
         // now get one page's items:
         $campos = $paginator
           ->getQuery()
-          ->setFirstResult($pageSize * ($page-1)) // set the offset
+          ->setFirstResult($offset) // set the offset
           ->setMaxResults($pageSize) // set the limit}
           ->getResult();
       }
 
-      return [$campos, $totalItems, $pagesCount];
+      return [$campos, $totalItems, $pagesCount, $pageSize];
 
     }
 

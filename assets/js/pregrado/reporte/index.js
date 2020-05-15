@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import {getCarreras, getCiclosAcademicos, getDelegaciones, getEstatusCampoClinico} from "../api/catalogos";
 import {getCamposClinicos, getCamposClinicosCSV} from "./campos"
+import {Fragment} from "react";
 
 const ContenedorFiltro = ({
-                            EtiquetaFiltro, idFiltro, valores, setValSel
+                            EtiquetaFiltro, name, valores, setValSel, type
                           }) => {
 
   function handler(e) {
@@ -15,25 +16,32 @@ const ContenedorFiltro = ({
   return (
     <div className="col-md-3">
       <div className="form-group">
-        <label htmlFor="status">{EtiquetaFiltro}</label>
-        <select
-          name=""
-          id={idFiltro}
-          className='form-control'
-          onChange={({target}) => handler(target)}
-        >
-          <option value="">Elige una opción</option>
-          {
-            valores.map((valor) =>
-              <option
-                value={valor.id}
-                key={valor.id}
-              >
-                {valor.nombre}
-              </option>
-            )
-          }
-        </select>
+        <label htmlFor={name}>{EtiquetaFiltro}</label>
+        {type === "Select" ?
+          <Fragment>
+            <select
+              name={name}
+              id={"id" + name}
+              className='form-control'
+              onChange={({target}) => handler(target)}
+            >
+              <option value="">Elige una opción</option>
+              { valores.map((valor) =>
+                  <option  value={valor.id}  key={valor.id}>
+                    {valor.nombre}
+                  </option>
+              )}
+            </select>
+          </Fragment>
+         : type === "date" ?
+            <Fragment>
+              <input className='form-control' type='date'
+                     name={name}
+                     id={"id" + name}
+                     onChange={({target}) => handler(target)} />
+            </Fragment>
+            : ''
+        }
       </div>
     </div>
   );
@@ -60,47 +68,65 @@ const Filtros = (
       .then((res) => setEstadosSol(res))
   }, []);
 
+  function handlerFiltro() {
+
+  }
+
   return (
+    <Fragment>
     <div className="row">
       <ContenedorFiltro
         EtiquetaFiltro="Ciclo Académico"
-        idFiltro="idCicloAcademico"
+        name="CicloAcademico"
         valores={tiposCA}
         setValSel={props.setCASel}
+        type="Select"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Delegación"
-        idFiltro="idDelegacion"
+        name="Delegacion"
         valores={delegaciones}
         setValSel={props.setDelegacionSel}
+        type="Select"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Carrera"
-        idFiltro="idCarrera"
+        name="Carrera"
         valores={carreras}
         setValSel={props.setCarreraSel}
+        type="Select"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Estado de la Solicitud"
-        idFiltro="idEstadoSol"
+        name="EstadoSol"
         valores={estadosSol}
         setValSel={props.setEstadoSolSel}
+        type="Select"
       />
-      <div className="col-md-3">
-        <div className="form-group">
-          <label htmlFor="Fecha">Fecha Inicio</label>
-            <input className='form-control' type='date'
-             onChange={(target) => { console.log(target);  }}/>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="form-group">
-          <label htmlFor="Fecha">Fecha Término</label>
-          <input className='form-control' type='date'
-                 onChange={(target) => { console.log(target);  }}/>
-        </div>
-      </div>
+      <ContenedorFiltro
+        EtiquetaFiltro="Fecha incio a partir de:"
+        name="FechaInicio"
+        valores={[]}
+        setValSel={props.setFechaIniSel}
+        type="date"
+      />
+      <ContenedorFiltro
+        EtiquetaFiltro="Fecha de fin antes de:"
+        name="FechaInicio"
+        valores={[]}
+        setValSel={props.setFechaFinSel}
+        type="date"
+      />
+
     </div>
+    <Buscador
+      setSearch={props.setSearch}
+      handleSearch={props.handleSearch}
+      handleExport={props.handleExport}
+      setPageSize={props.setPageSize}
+      pageSize={props.pageSize}
+    />
+    </Fragment>
   );
 }
 
@@ -141,12 +167,45 @@ props
   );
 }
 
+const OpcionesPageSize = (props) => {
+
+  function handlerPageSize(e) {
+    props.setPageSize(parseInt(e.value));
+    props.handleSearch(1, e.value);
+  }
+
+  return (
+      <label> Mostrar
+        <select
+                onChange={({target}) => handlerPageSize(target)}>
+          <option value='5' key='5'>5</option>
+          <option value='10'>10</option>
+          <option value='30'>30</option>
+          <option value='50'>50</option>
+        </select>
+        registros
+      </label>
+  );
+}
+
 const TablaCampos = (props) => {
+
+  var offset = props.totalItems > 0 ?
+    (props.pageSize*(props.currentPage-1)) + 1
+    : 0;
+
+  function handlePageClick(e) {
+    props.getCampos( e.selected + 1);
+  }
 
   return (
     <div className="col-md-12">
       <div className="panel panel-default">
         <div className="panel-body">
+            <OpcionesPageSize
+              setPageSize={props.setPageSize}
+              handleSearch={props.handleSearch}
+            />
           <table className="table">
             <thead>
             <tr>
@@ -169,7 +228,7 @@ const TablaCampos = (props) => {
                 <tr>
                   <th className='text-center' colSpan={11}>Cargando información...</th>
                 </tr> :
-                 props.total > 0 ?
+                 props.totalItems > 0 ?
                 props.camposClinicos.map((campoClinico, index) => (
                   <tr key={index}>
                     <td><a href="">{campoClinico.convenio.delegacion ? campoClinico.convenio.delegacion.nombre : ""}</a>
@@ -178,13 +237,15 @@ const TablaCampos = (props) => {
                     <td>{campoClinico.convenio.institucion.nombre}</td>
                     <td>{campoClinico.solicitud.noSolicitud}</td>
                     <td>{campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : ""}</td>
-                    <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}
-                      - {campoClinico.convenio.carrera.nombre}</td>
-                    <td> </td>
+                    <td>{campoClinico.convenio.carrera
+                      ?  campoClinico.convenio.carrera.displayName
+                      : ''}
+                    </td>
+                    <td>{campoClinico.asignatura} </td>
                     <td>{campoClinico.lugaresSolicitados}</td>
                     <td>{campoClinico.lugaresAutorizados}</td>
-                    <td>{(new Date(campoClinico.fechaInicial)).toLocaleDateString()}
-                      - {new Date(campoClinico.fechaFinal).toLocaleDateString()} </td>
+                    <td>{ campoClinico.displayFechaInicial}
+                      - { campoClinico.displayFechaFinal } </td>
                     <td>{campoClinico.estatus.nombre}</td>
                   </tr>
                 ))
@@ -194,23 +255,31 @@ const TablaCampos = (props) => {
             }
             </tbody>
           </table>
-          <div className="text-center">
-            {
+          { !props.isLoading ?
+          <div className="col-md-12">
+            <div className="col-md-3">
+              {offset} - {offset +
+            (props.camposClinicos.length - 1)} de {props.totalItems}
+            </div>
+            <div className="col-md-9 text-center">
                 <ReactPaginate
-                pageCount={props.total}
-                marginPagesDisplayed={5}
-                pageRangeDisplayed={3}
-                previousLabel={'Anterior'}
-                nextLabel={'Siguiente'}
-                breakLabel={'...'}
-                breakClassName={'break-me'}
-                onPageChange={(e) => { props.handlePageClick(e) }}
-                containerClassName={'pagination'}
-                subContainerClassName={'pages pagination'}
-                activeClassName={'active'}
+                  pageCount={props.totalPages}
+                  marginPagesDisplayed={5}
+                  pageRangeDisplayed={3}
+                  previousLabel={'Anterior'}
+                  nextLabel={'Siguiente'}
+                  breakLabel={'...'}
+                  breakClassName={'break-me'}
+                  onPageChange={(e) => { handlePageClick(e) }}
+                  containerClassName={'pagination'}
+                  subContainerClassName={'pages pagination'}
+                  activeClassName={'active'}
+                  forcePage={props.currentPage - 1}
                 />
-            }
+            </div>
           </div>
+            : ''
+          }
         </div>
       </div>
     </div>
@@ -221,48 +290,50 @@ const Index = () => {
   const {useState, useEffect} = React
 
   const [search, setSearch] = useState('')
-  //const [currentPage, setCurrentPage] = useState(0)
   const [isLoading, toggleLoading] = useState(false)
-  const [total, setTotal] = useState(0)
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(5)
 
   const [camposClinicos, setCamposClinicos] = useState([])
   const [carreraSel, setCarreraSel] = useState(null)
   const [cicloAcademicoSel, setCASel] = useState(null)
   const [delegacionSel, setDelegacionSel] = useState(null)
   const [estadoSolSel, setEstadoSolSel] = useState(null)
-
-  const perPage = 2;
+  const [fechaIniSel, setFechaIniSel] = useState(null)
+  const [fechaFinSel, setFechaFinSel] = useState(null)
+  //const offset = 0
 
   useEffect(() => {
-    getCampos(1);
+    getCampos();
   }, []);
 
-  function handleSearch() {
-    if (!search && !carreraSel && !cicloAcademicoSel
-      && !delegacionSel && !estadoSolSel) return;
-    getCampos()
+  function handleSearch(pag=1, limit=pageSize) {
+    /* if (!carreraSel && !cicloAcademicoSel
+      && !delegacionSel && !estadoSolSel
+    && !fechaIniSel && !fechaFinSel) return; */
+    getCampos(pag, limit)
   }
 
   function handleExport() {
     getCamposClinicosCSV(
       cicloAcademicoSel, delegacionSel, carreraSel,
-      estadoSolSel, search);
+      estadoSolSel, fechaIniSel, fechaFinSel, search);
   }
 
-  function handlePageClick(e) {
-    getCampos( e.selected + 1);
-
-  }
-
-  function getCampos(pag=1) {
-    toggleLoading(true)
-
+  function getCampos(pag=1, limit=pageSize) {
+    toggleLoading(true);
+    console.log(limit)
     getCamposClinicos(
       cicloAcademicoSel, delegacionSel, carreraSel,
-      estadoSolSel, search, pag, perPage
+      estadoSolSel, fechaIniSel, fechaFinSel,
+      search, pag, limit
     ).then((res) => {
       setCamposClinicos(res.camposClinicos)
-      setTotal ( res.numPags )
+      setTotalItems( res.totalItems )
+      setTotalPages( res.numPags)
+      setCurrentPage(pag)
     })
       .finally(() => {
         toggleLoading(false)
@@ -276,15 +347,26 @@ const Index = () => {
         setCASel={setCASel}
         setDelegacionSel={setDelegacionSel}
         setEstadoSolSel={setEstadoSolSel}
-      />
-      <Buscador
+        setFechaIniSel={setFechaIniSel}
+        setFechaFinSel={setFechaFinSel}
+
         setSearch={setSearch}
         handleSearch={handleSearch}
         handleExport={handleExport}
+        setPageSize={setPageSize}
+        pageSize={pageSize}
       />
       <TablaCampos
-        isLoading={isLoading} camposClinicos={camposClinicos}
-        total={total} handlePageClick={handlePageClick}
+        isLoading={isLoading}
+        camposClinicos={camposClinicos}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        getCampos={getCampos}
+        handleSearch={handleSearch}
       />
     </React.Fragment>
   );

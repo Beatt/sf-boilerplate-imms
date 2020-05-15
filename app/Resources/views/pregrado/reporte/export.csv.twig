@@ -1,15 +1,50 @@
+id, Delegación, Unidad, "Institución", "Núm_Solicitud", Ciclo, Carrera, Asignatura, "Núm_Solicitados", "Núm_Autorizados", Fecha_Inicio, Fecha_Termino, Estado_Solicitud, Fecha_Solicitud
+
+'id',
+        'solicitud' => ['id', 'noSolicitud'],
+        'convenio' =>
+          ['carrera' => ['displayName' ],
+            'delegacion' => ['nombre'],
+            'institucion' => ['nombre'] ,
+            'cicloAcademico' => ['nombre'] ],
+        'displayFechaInicial',
+        'displayFechaFinal',
+        'horario',
+        'unidad' => ['nombre'],
+        'promocion',
+        'lugaresSolicitados',
+        'lugaresAutorizados',
+        'estatus' => ['nombre']
+
 {% for campoClinico in entities %}
-  Delegacion {#{  campoClinico.convenio.delegacion }#};
-  Unidad {#{ entity.etat }#};
-  Institucion_Educativa {{ campoClinico.convenio.institucion.nombre }};
-  Num_Solicitud {#{ entity.prenom }#};
-  Ciclo_Academico {#{ entity.nom }#};
-  Carrera {#{ entity.fonction }#};
-  Asignatura {#{ entity.fonction }#};
-  Num_Solicitados {#{ entity.fonction }#};
-  Num_Autorizados {#{ entity.fonction }#};
-  Fecha_Inicio {#{ entity.fonction }#};
-  Fecha_Termino {#{ entity.fonction }#};
-  Estado_Solicitud {#{ entity.fonction }#};
-  Fecha_Solicitud {#{ entity.fonction }#};
+  "{{campoClinico.id|escape}}",
+  Delegacion {#{  campoClinico.convenio.delegacion }#},
+  Unidad {#{ entity.etat }#},
+  Institucion_Educativa {{ campoClinico.convenio.institucion.nombre }},
+  Num_Solicitud {#{ entity.prenom }#},
+  Ciclo_Academico {#{ entity.nom }#},
+  Carrera {#{ entity.fonction }#},
+  Asignatura {#{ entity.fonction }#},
+  Num_Solicitados {#{ entity.fonction }#},
+  Num_Autorizados {#{ entity.fonction }#},
+  Fecha_Inicio {#{ entity.fonction }#},
+  Fecha_Termino {#{ entity.fonction }#},
+  Estado_Solicitud {#{ entity.fonction }#},
+  Fecha_Solicitud {#{ entity.fonction }#},
 {% endfor %}
+
+'id',
+        'solicitud' => ['id', 'noSolicitud'],
+        'convenio' =>
+          ['carrera' => ['displayName' ],
+            'delegacion' => ['nombre'],
+            'institucion' => ['nombre'] ,
+            'cicloAcademico' => ['nombre'] ],
+        'displayFechaInicial',
+        'displayFechaFinal',
+        'horario',
+        'unidad' => ['nombre'],
+        'promocion',
+        'lugaresSolicitados',
+        'lugaresAutorizados',
+        'estatus' => ['nombre']
