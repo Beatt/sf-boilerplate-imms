@@ -26,6 +26,13 @@ const Institucion = (props) => {
         setWeb(institucion.sitioWeb ? institucion.sitioWeb : '');
         setEmail(institucion.correo ? institucion.correo : '');
         setFax(institucion.fax ? institucion.fax : '');
+        props.callbackIsLoading(true);
+        fetch('/api/came/convenio/' + institucion.id)
+            .then(response => {
+                return response.json()}, error => {
+                console.error(error)})
+            .then(json => props.conveniosCallback(json.data))
+            .finally(() => {props.callbackIsLoading(false);});
         props.parentCallback(institucion);
         return institucion ? institucion : {};
     }

@@ -40,4 +40,41 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/api/came/solicitud/{id}/campos_clinicos", methods={"GET"}, name="solicitud.index.campo_clinico.json")
+     * @param $id_solicitud
+     */
+    public function indexApiAction(Request $request, $id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $id
+            );
+        }
+
+        $perPage = $request->query->get('perPage', 10);
+        $page = $request->query->get('page', 1);
+        $camposClinicos = $this->getDoctrine()
+            ->getRepository(CampoClinico::class)
+            ->getAllCamposClinicosBySolicitud($id, $perPage, $page, $request->query->all());
+        return $this->jsonResponse([
+            'object' => $this->get('serializer')->normalize(
+                $camposClinicos,
+                'json',
+                [
+                    'attributes' => ['id',
+                        'convenio' => ['cicloAcademico' => ['id', 'nombre'],
+                            'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',
+                                'nivelAcademico' => ['id', 'nombre']], 'numero'],
+                        'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
+                        'fechaInicial', 'fechaFinal', 'referenciaBancaria']
+                ]
+            )
+        ]);
+    }
 }

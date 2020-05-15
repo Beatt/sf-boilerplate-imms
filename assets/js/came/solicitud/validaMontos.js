@@ -8,6 +8,7 @@ const SolicitudValidaMontos = (props) => {
     const [observaciones, setObservaciones] = React.useState('');
     const [montos, setMontos] = React.useState(props.solicitud.montos);
     const [alert, setAlert] = React.useState({});
+    const [errores, setErrores] = React.useState({});
 
     const callbackIsLoading = (value) => {
         setIsLoading(value);
@@ -118,21 +119,27 @@ const SolicitudValidaMontos = (props) => {
                 </div>
                 <div className="col-md-3"/>
                 <div className="col-md-12"/>
-                <div className="col-md-2">
-                    <label htmlFor="validos_solicitud">¿Todos los montos corresponden?</label>
-                    <select id="validos_solicitud" className={'form-control'}
-                            required={true} onChange={e => setValidos(e.target.value)}>
-                        <option value="">Seleccionar ...</option>
-                        <option value={1}>Si</option>
-                        <option value={0}>No</option>
-                    </select>
+                <div className="col-md-3">
+                    <div className={`form-group ${errores.validado ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="validos_solicitud">¿Todos los montos corresponden?</label>
+                        <select id="validos_solicitud" className={'form-control'}
+                                required={true} onChange={e => setValidos(e.target.value)}>
+                            <option value="">Seleccionar ...</option>
+                            <option value={1}>Si</option>
+                            <option value={0}>No</option>
+                        </select>
+                        <span className="help-block">{errores.validado ? errores.validado[0] : ''}</span>
+                    </div>
                 </div>
                 <div className="col-md-12">
-                    <label htmlFor="observaciones_solicitud">Observaciones</label>
-                    <textarea className={'form-control'}
-                              placeholder={'Observaciones'}
-                              onChange={e => setObservaciones(e.target.value)}
-                    />
+                    <div className={`form-group ${errores.observaciones ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="observaciones_solicitud">Observaciones</label>
+                        <textarea className={'form-control'}
+                                  placeholder={'Observaciones'}
+                                  onChange={e => setObservaciones(e.target.value)}
+                        />
+                        <span className="help-block">{errores.observaciones ? errores.observaciones[0] : ''}</span>
+                    </div>
                 </div>
                 <div className="col-md-8"/>
                 <div className="col-md-4">

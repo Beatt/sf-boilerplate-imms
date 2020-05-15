@@ -2,41 +2,76 @@ import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
 
 const DetalleSolicitudDetallado = (props) => {
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
+
+    const handleSearchEvent = (query) => {
+        setIsLoading(true);
+        let querystring = '';
+        for (const i in query) {
+            querystring += `${i}=${query[i]}&`;
+        }
+
+        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+            .then(response => {
+                return response.json()
+            }, error => {
+                console.error(error)
+            })
+            .then(json => {
+                setCamposClinicos(json.data)
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+
+    }
+
     return (
-        <table className="table">
-            <thead>
-            <tr>
-                <th>Sede</th>
-                <th>Campo Clínico</th>
-                <th>Nivel</th>
-                <th>Carrera</th>
-                <th>No. de lugares solicitados</th>
-                <th>No. de lugares autorizados</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Término</th>
-                <th>Comprobante</th>
-                <th>Factura</th>
-            </tr>
-            </thead>
-            <tbody>
-            {props.solicitud.campoClinicos.map(cc => {
-                return (
-                    <tr key={cc.id}>
-                        <td>{cc.unidad.nombre}</td>
-                        <td>{cc.convenio.cicloAcademico.nombre}</td>
-                        <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
-                        <td>{cc.convenio.carrera.nombre}</td>
-                        <td>{cc.lugaresSolicitados}</td>
-                        <td>{cc.lugaresAutorizados}</td>
-                        <td>{cc.fechaInicial}</td>
-                        <td>{cc.fechaFinal}</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                )
-            })}
-            </tbody>
-        </table>
+        <>
+            <table className="table">
+                <thead>
+                <tr>
+                    <th><input type="text" placeholder={'Sede'}
+                               onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
+                    <th><input type="text" placeholder={'Campo Clínico'}
+                               onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
+                    <th><input type="text" placeholder={'Nivel'}
+                               onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
+                    <th><input type="text" placeholder={'Carrera'}
+                               onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                    <th>No. de lugares solicitados</th>
+                    <th>No. de lugares autorizados</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Término</th>
+                    <th>Comprobante</th>
+                    <th>Factura</th>
+                </tr>
+                <tr>
+                    <th><input type="text" placeholder={'Sede'}/></th>
+                </tr>
+                </thead>
+                <tbody>
+                {camposClinicos.map(cc => {
+                    return (
+                        <tr key={cc.id}>
+                            <td>{cc.unidad.nombre}</td>
+                            <td>{cc.convenio.cicloAcademico.nombre}</td>
+                            <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
+                            <td>{cc.convenio.carrera.nombre}</td>
+                            <td>{cc.lugaresSolicitados}</td>
+                            <td>{cc.lugaresAutorizados}</td>
+                            <td>{cc.fechaInicial}</td>
+                            <td>{cc.fechaFinal}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    )
+                })}
+                </tbody>
+            </table>
+        </>
     )
 }
 
@@ -97,48 +132,74 @@ const ExpedienteDetallado = (props) => {
 }
 
 const DetalleSolicitudUnico = (props) => {
+
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
+
+    const handleSearchEvent = (query) => {
+        setIsLoading(true);
+        let querystring = '';
+        for (const i in query) {
+            querystring += `${i}=${query[i]}&`;
+        }
+
+        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+            .then(response => {
+                return response.json()
+            }, error => {
+                console.error(error)
+            })
+            .then(json => {
+                setCamposClinicos(json.data)
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+
+    }
+
     return (
-        <table className="table">
-            <thead>
-            <tr>
-                <th>Sede</th>
-                <th>Campo Clínico</th>
-                <th>Nivel</th>
-                <th>Carrera</th>
-                <th>No. de lugares solicitados</th>
-                <th>No. de lugares autorizados</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Término</th>
-            </tr>
-            </thead>
-            <tbody>
-            {props.solicitud.campoClinicos.map(cc => {
-                return (
-                    <tr key={cc.id}>
-                        <td>{cc.unidad.nombre}</td>
-                        <td>{cc.convenio.cicloAcademico.nombre}</td>
-                        <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
-                        <td>{cc.convenio.carrera.nombre}</td>
-                        <td>{cc.lugaresSolicitados}</td>
-                        <td>{cc.lugaresAutorizados}</td>
-                        <td>{cc.fechaInicial}</td>
-                        <td>{cc.fechaFinal}</td>
-                    </tr>
-                )
-            })}
-            </tbody>
-        </table>
+        <><Loader show={isLoading}/>
+            <table className="table">
+                <thead>
+                <tr>
+                    <th><input type="text" placeholder={'Sede'}
+                               onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
+                    <th><input type="text" placeholder={'Campo Clínico'}
+                               onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
+                    <th><input type="text" placeholder={'Nivel'}
+                               onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
+                    <th><input type="text" placeholder={'Carrera'}
+                               onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                    <th>No. de lugares solicitados</th>
+                    <th>No. de lugares autorizados</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Término</th>
+                </tr>
+                </thead>
+                <tbody>
+                {camposClinicos.map(cc => {
+                    return (
+                        <tr key={cc.id}>
+                            <td>{cc.unidad.nombre}</td>
+                            <td>{cc.convenio.cicloAcademico.nombre}</td>
+                            <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
+                            <td>{cc.convenio.carrera.nombre}</td>
+                            <td>{cc.lugaresSolicitados}</td>
+                            <td>{cc.lugaresAutorizados}</td>
+                            <td>{cc.fechaInicial}</td>
+                            <td>{cc.fechaFinal}</td>
+                        </tr>
+                    )
+                })}
+                </tbody>
+            </table>
+        </>
     )
 }
 
 const SolicitudShow = (props) => {
-
-    const [isLoading, setIsLoading] = React.useState(false);
-
-    const callbackIsLoading = (value) => {
-        setIsLoading(value);
-    }
-
     const Detalle = () => {
         if (props.solicitud.tipoPago === 'Multiple')
             return (<DetalleSolicitudMultiple solicitud={props.solicitud}/>)
@@ -153,7 +214,6 @@ const SolicitudShow = (props) => {
 
     return (
         <>
-            <Loader show={isLoading}/>
             <div className="col-md-12">
                 <p><strong>No. de Solicitud:</strong> {props.solicitud.noSolicitud}</p>
             </div>
@@ -164,19 +224,10 @@ const SolicitudShow = (props) => {
                 <p><strong>Insitución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
             </div>
             <div className="col-md-12">
-                <p>Se <strong>autorizaron</strong> {props.solicitud.camposClinicosAutorizados} de {props.solicitud.camposClinicosSolicitados} Campos Clinicos solicitados.</p>
+                <p>Se <strong>autorizaron</strong> {props.solicitud.camposClinicosAutorizados} de {props.solicitud.camposClinicosSolicitados} Campos
+                    Clinicos solicitados.</p>
             </div>
             <div className="col-md-8"/>
-            <div className="col-md-4">
-                <div className="input-group">
-                    <input type="text" className="form-control" placeholder="Buscar" name="search" />
-                    <div className="input-group-btn">
-                        <button className="btn btn-default" type="submit">
-                            <i className="glyphicon glyphicon-search"/>
-                        </button>
-                    </div>
-                </div>
-            </div>
             <div className="col-md-12">
                 <Detalle/>
             </div>
@@ -187,7 +238,7 @@ const SolicitudShow = (props) => {
                 <h2>Convenios</h2>
             </div>
             <div className="col-md-6">
-               <Expediente/>
+                <Expediente/>
             </div>
             <div className="col-md-6">
                 <table className="table">

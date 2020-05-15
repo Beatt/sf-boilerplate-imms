@@ -39,7 +39,7 @@ class ConvenioRepository extends EntityRepository implements ConvenioRepositoryI
     public function getConveniosByDelegacion($delegacion_id = 1)
     {
         return  $this->createQueryBuilder('convenio')
-            ->innerJoin('convenio.cicloAcademic', 'cicloAcademico')
+            ->innerJoin('convenio.cicloAcademico', 'cicloAcademico')
             ->where('convenio.delegacion = :delegacion_id')
             ->andWhere('cicloAcademico.activo = true')
             ->setParameter('delegacion_id', $delegacion_id)

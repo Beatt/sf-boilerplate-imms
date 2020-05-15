@@ -45,7 +45,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
             ->join('campos_clinicos.convenio', 'convenio');
         if(isset($filters['no_solicitud']) && $filters['no_solicitud']){
             $queryBuilder->where('solicitud.noSolicitud like :no_solicitud')
-                ->setParameter('no_solicitud', '%'.$filters['no_solicitud'].'%');
+                ->setParameter('no_solicitud', '%'.strtoupper($filters['no_solicitud']).'%');
         }
         if($delegacion_id){
             $queryBuilder->andWhere('convenio.delegacion = :delegacion_id')

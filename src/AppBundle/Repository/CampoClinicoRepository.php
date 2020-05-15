@@ -191,4 +191,42 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
 
     }
 
+    public function getAllCamposClinicosBySolicitud($solicitud_id, $perPage = 10, $offset = 1, $filters = [])
+    {
+        $queryBuilder = $this->createQueryBuilder('campoClinico')
+            ->innerJoin('campoClinico.solicitud', 'solicitud')
+            ->innerJoin('campoClinico.unidad', 'unidad')
+            ->innerJoin('campoClinico.convenio', 'convenio')
+            ->innerJoin('convenio.carrera', 'carrera')
+            ->innerJoin('carrera.nivelAcademico', 'nivelAcademico')
+            ->innerJoin('convenio.cicloAcademico',  'cicloAcademico')
+            ->where('solicitud.id = :solicitud_id')
+            ->setParameter('solicitud_id', $solicitud_id);
+
+        if(isset($filters['unidad']) && $filters['unidad']){
+            $queryBuilder->andWhere('upper(unidad.nombre) like :unidad')
+                ->setParameter('unidad', '%'.strtoupper($filters['unidad']).'%');
+        }
+
+        if(isset($filters['carrera']) && $filters['carrera']){
+            $queryBuilder->andWhere('upper(unidad.nombre) like :unidad')
+                ->setParameter('unidad', '%'.strtoupper($filters['unidad']).'%');
+        }
+
+        if(isset($filters['cicloAcademico']) && $filters['cicloAcademico']){
+            $queryBuilder->andWhere('upper(cicloAcademico.nombre) like :cicloAcademico')
+                ->setParameter('cicloAcademico', '%'.strtoupper($filters['cicloAcademico']).'%');
+        }
+
+        if(isset($filters['nivelAcademico']) && $filters['nivelAcademico']){
+            $queryBuilder->andWhere('upper(nivelAcademico.nombre) like :nivelAcademico')
+                ->setParameter('nivelAcademico', '%'.strtoupper($filters['nivelAcademico']).'%');
+        }
+
+
+        $queryBuilder->setMaxResults($perPage)
+            ->setFirstResult(($offset-1) * $perPage);
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }
