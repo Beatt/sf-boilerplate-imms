@@ -6,7 +6,7 @@ const SolicitudValidaMontos = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [validos, setValidos] = React.useState(false);
     const [observaciones, setObservaciones] = React.useState('');
-    const [montos, setMontos] = React.useState(props.solicitud.montos);
+    const [montos, setMontos] = React.useState(props.solicitud.montosCarreras);
     const [alert, setAlert] = React.useState({});
     const [errores, setErrores] = React.useState({});
 

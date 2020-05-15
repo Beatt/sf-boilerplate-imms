@@ -30,104 +30,110 @@ const DetalleSolicitudDetallado = (props) => {
 
     return (
         <>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th><input type="text" placeholder={'Sede'}
-                               onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                    <th><input type="text" placeholder={'Campo Clínico'}
-                               onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                    <th><input type="text" placeholder={'Nivel'}
-                               onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                    <th><input type="text" placeholder={'Carrera'}
-                               onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
-                    <th>No. de lugares solicitados</th>
-                    <th>No. de lugares autorizados</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Término</th>
-                    <th>Comprobante</th>
-                    <th>Factura</th>
-                </tr>
-                <tr>
-                    <th><input type="text" placeholder={'Sede'}/></th>
-                </tr>
-                </thead>
-                <tbody>
-                {camposClinicos.map(cc => {
-                    return (
-                        <tr key={cc.id}>
-                            <td>{cc.unidad.nombre}</td>
-                            <td>{cc.convenio.cicloAcademico.nombre}</td>
-                            <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
-                            <td>{cc.convenio.carrera.nombre}</td>
-                            <td>{cc.lugaresSolicitados}</td>
-                            <td>{cc.lugaresAutorizados}</td>
-                            <td>{cc.fechaInicial}</td>
-                            <td>{cc.fechaFinal}</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    )
-                })}
-                </tbody>
-            </table>
+            <div className="table-responsive">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th><input type="text" placeholder={'Sede'}
+                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
+                        <th><input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
+                        <th><input type="text" placeholder={'Nivel'}
+                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
+                        <th><input type="text" placeholder={'Carrera'}
+                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                        <th>No. de lugares solicitados</th>
+                        <th>No. de lugares autorizados</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Término</th>
+                        <th>Comprobante</th>
+                        <th>Factura</th>
+                    </tr>
+                    <tr>
+                        <th><input type="text" placeholder={'Sede'}/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {camposClinicos.map(cc => {
+                        return (
+                            <tr key={cc.id}>
+                                <td>{cc.unidad.nombre}</td>
+                                <td>{cc.convenio.cicloAcademico.nombre}</td>
+                                <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
+                                <td>{cc.convenio.carrera.nombre}</td>
+                                <td>{cc.lugaresSolicitados}</td>
+                                <td>{cc.lugaresAutorizados}</td>
+                                <td>{cc.fechaInicial}</td>
+                                <td>{cc.fechaFinal}</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        )
+                    })}
+                    </tbody>
+                </table>
+            </div>
         </>
     )
 }
 
 const ExpedienteUnico = (props) => {
     return (
-        <table className="table">
-            <thead>
-            <tr>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Archivo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Comprobante de Pago</td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Factura (CFDI)</td>
-                <td></td>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
+        <div className="table-responsive">
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Archivo</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Oficio de Montos de Colegiatura e Inscripción</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Comprobante de Pago</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Factura (CFDI)</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     )
 }
 
 const ExpedienteDetallado = (props) => {
     return (
-        <table className="table">
-            <thead>
-            <tr>
-                <th>Descripción</th>
-                <th>Fecha</th>
-                <th>Archivo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Oficio de Montos de Colegiatura e Inscripción</td>
-            </tr>
-            <tr>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
+        <div className="table-responsive">
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Archivo</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Oficio de Montos de Colegiatura e Inscripción</td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     )
 }
 
@@ -161,40 +167,42 @@ const DetalleSolicitudUnico = (props) => {
 
     return (
         <><Loader show={isLoading}/>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th><input type="text" placeholder={'Sede'}
-                               onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                    <th><input type="text" placeholder={'Campo Clínico'}
-                               onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                    <th><input type="text" placeholder={'Nivel'}
-                               onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                    <th><input type="text" placeholder={'Carrera'}
-                               onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
-                    <th>No. de lugares solicitados</th>
-                    <th>No. de lugares autorizados</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Término</th>
-                </tr>
-                </thead>
-                <tbody>
-                {camposClinicos.map(cc => {
-                    return (
-                        <tr key={cc.id}>
-                            <td>{cc.unidad.nombre}</td>
-                            <td>{cc.convenio.cicloAcademico.nombre}</td>
-                            <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
-                            <td>{cc.convenio.carrera.nombre}</td>
-                            <td>{cc.lugaresSolicitados}</td>
-                            <td>{cc.lugaresAutorizados}</td>
-                            <td>{cc.fechaInicial}</td>
-                            <td>{cc.fechaFinal}</td>
-                        </tr>
-                    )
-                })}
-                </tbody>
-            </table>
+            <div className="table-responsive">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th><input type="text" placeholder={'Sede'}
+                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
+                        <th><input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
+                        <th><input type="text" placeholder={'Nivel'}
+                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
+                        <th><input type="text" placeholder={'Carrera'}
+                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                        <th>No. de lugares solicitados</th>
+                        <th>No. de lugares autorizados</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Término</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {camposClinicos.map(cc => {
+                        return (
+                            <tr key={cc.id}>
+                                <td>{cc.unidad.nombre}</td>
+                                <td>{cc.convenio.cicloAcademico.nombre}</td>
+                                <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
+                                <td>{cc.convenio.carrera.nombre}</td>
+                                <td>{cc.lugaresSolicitados}</td>
+                                <td>{cc.lugaresAutorizados}</td>
+                                <td>{cc.fechaInicial}</td>
+                                <td>{cc.fechaFinal}</td>
+                            </tr>
+                        )
+                    })}
+                    </tbody>
+                </table>
+            </div>
         </>
     )
 }
@@ -241,30 +249,32 @@ const SolicitudShow = (props) => {
                 <Expediente/>
             </div>
             <div className="col-md-6">
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Número</th>
-                        <th>Grado</th>
-                        <th>Ciclo</th>
-                        <th>Carrera</th>
-                        <th>Vigencia</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {props.convenios.map((convenio, i) => {
-                        return (
-                            <tr key={i}>
-                                <td>{convenio.numero}</td>
-                                <td>{convenio.carrera.nivelAcademico.nombre}</td>
-                                <td>{convenio.cicloAcademico.nombre}</td>
-                                <td>{convenio.carrera.nombre}</td>
-                                <td>{convenio.vigencia}</td>
-                            </tr>
-                        )
-                    })}
-                    </tbody>
-                </table>
+                <div className="table-responsive">
+                    <table className="table">
+                        <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Grado</th>
+                            <th>Ciclo</th>
+                            <th>Carrera</th>
+                            <th>Vigencia</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {props.convenios.map((convenio, i) => {
+                            return (
+                                <tr key={i}>
+                                    <td>{convenio.numero}</td>
+                                    <td>{convenio.carrera.nivelAcademico.nombre}</td>
+                                    <td>{convenio.cicloAcademico.nombre}</td>
+                                    <td>{convenio.carrera.nombre}</td>
+                                    <td>{convenio.vigencia}</td>
+                                </tr>
+                            )
+                        })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </>
     )

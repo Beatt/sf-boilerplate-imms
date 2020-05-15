@@ -17,7 +17,7 @@ class Version20200513013252 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('alter table campo_clinico alter column horario drop not null');
-        $this->addSql('alter table campo_clinico alter column horario drop not null');
+        $this->addSql('alter table campo_clinico alter column promocion drop not null');
     }
 
     /**
@@ -27,6 +27,6 @@ class Version20200513013252 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('alter table campo_clinico alter column horario drop not null');
-        $this->addSql('alter table campo_clinico alter column horario drop not null');
+        $this->addSql('alter table campo_clinico alter column promocion drop not null');
     }
 }

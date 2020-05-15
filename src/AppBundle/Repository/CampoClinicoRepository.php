@@ -224,8 +224,8 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         }
 
 
-        $queryBuilder->setMaxResults($perPage)
-            ->setFirstResult(($offset-1) * $perPage);
+//        $queryBuilder->setMaxResults($perPage)
+//            ->setFirstResult(($offset-1) * $perPage);
 
         return $queryBuilder->getQuery()->getResult();
     }

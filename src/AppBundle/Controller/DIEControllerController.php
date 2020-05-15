@@ -58,6 +58,9 @@ abstract class DIEControllerController extends Controller
         if (isset($data['object'])) {
             $json['data'] = $data['object'];
         }
+        if(isset($data['meta'])){
+            $json['meta'] = $data['meta'];
+        }
         return new JsonResponse($json, $status);
 
     }
