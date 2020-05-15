@@ -5,6 +5,7 @@ import SolicitudEdit from './edit';
 import SolicitudAccion from "./components/SolicitudAccion";
 import SolicitudShow from "./show";
 import SolicitudValidaMontos from "./validaMontos";
+import Loader from "../../components/Loader/Loader";
 
 const CameTableExample = (props) => {
     return (
@@ -87,8 +88,22 @@ class ExampleForm extends React.Component {
 
 const SolicitudIndex = (props) => {
 
+    const [solicitudes, setSolicitudes] = React.useState(props.solicitudes ? props.solicitudes : [])
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    const handleSearchEvent = (query) => {
+
+        setIsLoading(true);
+        fetch(`/api/solicitud?no_solicitud=${query}`)
+            .then(response => { return response.json()}, error => {console.error(error)})
+            .then(json => {setSolicitudes(json.data)})
+            .finally(() => { setIsLoading(false)});
+
+    }
+
     return (
         <>
+            <Loader show={isLoading}/>
             <div className="col-md-2">
                 <a href={'/solicitud/create'} id="btn_solicitud" className={'form-control btn btn-default'}>Agregar
                     Solicitud</a>
@@ -97,7 +112,7 @@ const SolicitudIndex = (props) => {
             <div className="col-md-4">
                 <form action="/solicitud" method={'get'}>
                     <div className="input-group">
-                        <input type="text" className="form-control" placeholder="Buscar" name="no_solicitud"/>
+                        <input type="text" className="form-control" placeholder="Buscar por Número de Solicitud" name="no_solicitud" onChange={e => {handleSearchEvent(e.target.value)}}/>
                         <div className="input-group-btn">
                             <button className="btn btn-default" type="submit">
                                 <i className="glyphicon glyphicon-search"/>
@@ -120,7 +135,7 @@ const SolicitudIndex = (props) => {
                     </tr>
                     </thead>
                     <tbody>
-                    {props.solicitudes.map(solicitud => {
+                    {solicitudes.map(solicitud => {
                         return (
                             <tr key={solicitud.id}>
                                 <td><a href={`/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>

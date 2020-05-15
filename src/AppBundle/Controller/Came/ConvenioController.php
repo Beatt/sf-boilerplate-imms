@@ -30,11 +30,7 @@ class ConvenioController extends \AppBundle\Controller\DIEControllerController
                     'label',
                     'carrera' => [
                         'id',
-                        'nombre',
-                    ],
-                    'gradoAcademico'=> [
-                        'id',
-                        'nombre'
+                        'nombre', 'nivelAcademico' => ['id', 'nombre']
                     ]
                 ]])
         ]);
