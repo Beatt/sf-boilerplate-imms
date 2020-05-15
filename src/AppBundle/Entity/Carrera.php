@@ -35,7 +35,7 @@ class Carrera
     /**
      * @var NivelAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico", cascade={"persist"})
-     * @ORM\JoinColumn(name="nivel_academico_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="nivel_academico_id", referencedColumnName="id", nullable=false)
      */
     private $nivelAcademico;
 
@@ -74,6 +74,14 @@ class Carrera
     public function getNombre()
     {
         return $this->nombre;
+    }
+
+  /**
+   * @return string
+   */
+    public function getDisplayName() {
+      return $this->nivelAcademico->getNombre()
+          . " - " . $this->nombre;
     }
 
     /**

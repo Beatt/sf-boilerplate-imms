@@ -6,6 +6,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class CampoClinicoRepository extends EntityRepository implements CampoClinicoRepositoryInterface
 {
@@ -108,4 +109,86 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
 
         return 0;
     }
+
+    function getAllCamposByPage($filtros) {
+      $query =  $this->createQueryBuilder('campo_clinico')
+        ->join('campo_clinico.convenio', 'convenio')
+        ->join('campo_clinico.solicitud', 'solicitud')
+        ->join('convenio.institucion', 'institucion')
+        ->orderBy('institucion.nombre', 'ASC');
+
+      if ( array_key_exists('search', $filtros) && $filtros['search']) {
+        $query = $query
+          ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
+          //->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
+          ->orWhere("LOWER(institucion.nombre) LIKE LOWER(:search)")
+          ->setParameter('search', '%' . $filtros['search'] . '%');
+      }
+
+      if ( array_key_exists('estatus', $filtros)  && $filtros['estatus']) {
+        $query = $query->andWhere('campo_clinico.estatus = :status')
+          ->setParameter('status', $filtros['estatus']);
+      }
+
+      if ( array_key_exists('fechaIni', $filtros)  && $filtros['fechaIni']) {
+        $query = $query->andWhere('campo_clinico.fechaInicial >= :fechaIni')
+          ->setParameter('fechaIni', new \DateTime($filtros['fechaIni']) );
+      }
+
+      if ( array_key_exists('fechaFin', $filtros)  && $filtros['fechaFin']) {
+        $query = $query->andWhere('campo_clinico.fechaFinal <= :fechaFin')
+          ->setParameter('fechaFin', new \DateTime($filtros['fechaFin']));
+      }
+
+      if ( array_key_exists('cicloAcademico', $filtros)  &&  $filtros['cicloAcademico']) {
+        $query = $query->andWhere('carrera.nivelAcademico = :ciclo')
+          ->setParameter('ciclo', $filtros['cicloAcademico']);
+      }
+
+      if ( array_key_exists('carrera', $filtros) && $filtros['carrera']) {
+        $query = $query->andWhere('convenio.carrera = :carrera')
+          ->setParameter('carrera', $filtros['carrera']);
+      }
+
+      if ( array_key_exists('delegacion', $filtros) && $filtros['delegacion']) {
+        $query = $query->andWhere('convenio.delegacion = :delegacion')
+          ->setParameter('delegacion', $filtros['delegacion']);
+      }
+
+      $query = $query->getQuery();
+
+      // load doctrine Paginator
+      $paginator = new Paginator($query);
+
+      // get total items
+      $totalItems = count($paginator);
+
+      $pageSize = array_key_exists('limit', $filtros)
+        && $filtros['limit'] > 0 ?
+        $filtros['limit'] : 10;
+      $page = array_key_exists('limit', $filtros)
+        && $filtros['page'] > 0 ? $filtros['page'] : 1;
+
+      // get total pages
+      $pagesCount = ceil($totalItems / $pageSize);
+
+      $campos = [];
+      if(array_key_exists('export', $filtros) && $filtros['export']) {
+        $campos = $paginator
+          ->getQuery()
+          ->getResult();
+      } else {
+        $offset = $pageSize * ($page-1);
+        // now get one page's items:
+        $campos = $paginator
+          ->getQuery()
+          ->setFirstResult($offset) // set the offset
+          ->setMaxResults($pageSize) // set the limit}
+          ->getResult();
+      }
+
+      return [$campos, $totalItems, $pagesCount, $pageSize];
+
+    }
+
 }
