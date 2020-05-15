@@ -4,7 +4,7 @@ import ListConvenios from "../../components/ListConvenios";
 
 const ValidarInfo = ({ institucion }) => {
   return(
-    
+
     <form
       action={`/instituciones/${institucion.id}/editar`}
       method="post"
@@ -104,14 +104,6 @@ const ValidarInfo = ({ institucion }) => {
             id="institucion_cedulaFile_file"
             required={true}
           />
-          <div className="hidden">
-            <input
-              type="checkbox"
-              name="institucion[cedulaFile][delete]"
-              id="institucion_cedulaFile_delete"
-              checked={true}
-            />
-          </div>
         </div>
       </div>
 
