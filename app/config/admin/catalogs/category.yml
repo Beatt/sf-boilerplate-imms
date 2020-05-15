@@ -2,9 +2,9 @@ easy_admin:
   entities:
     Category:
       class: AppBundle\Entity\Categoria
-      label: 'Categoria'
+      label: 'Categoría'
       list:
-        title: 'Categoria'
+        title: 'Categoría'
         actions:
           - { name: 'new', label: 'Crear categoria' }
         fields:

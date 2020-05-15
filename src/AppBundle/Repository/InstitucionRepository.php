@@ -44,4 +44,13 @@ class InstitucionRepository extends EntityRepository implements InstitucionRepos
         } catch (NonUniqueResultException $e) {
         }
     }
+
+    public function searchOneByNombre($nombre) {
+      return $this->createQueryBuilder('institucion')
+        ->where('LOWER(unaccent(convenio.nombre)) LIKE LOWER(unaccent(:nombre))')
+        ->setParameter('nombre', $nombre)
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+    }
 }

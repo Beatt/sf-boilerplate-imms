@@ -1,3 +1,19 @@
 form:
   label:
     delete: '¿Eliminar?'
+
+AcademicLevel: 'Nivel académico'
+Agreement: 'Convenio'
+Career: 'Carrera'
+Category: 'Categoría'
+Delegation: 'Delegación'
+Deparment: 'Departamento'
+GraduateSchool: 'Ciclo académico'
+Institution: 'Institución'
+Region: 'Región'
+Unit: 'Unidad'
+UnitType: 'Tipo de unidad'
+
+Role: 'Rol'
+Permission: 'Permiso'
+User: 'Usuario'
