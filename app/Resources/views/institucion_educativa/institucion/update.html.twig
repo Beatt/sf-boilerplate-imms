@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('build/validar-info.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    {{ render(controller('AppBundle:InstitucionEducativa\\Institucion:menu', {
+        id: institucion.id
+    })) }}
+
+    <div class="section-md">
+        <div class='container'>
+            <h1 class="text-bold text-center">Valide su Información de Contacto</h1>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-10">
+                        <p class="text-bold">Nombre:</p>
+                        <p>{{ institucion.nombre }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="lista-convenio-component"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div id="validar-info-component"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+      window.INSTITUCION_PROP = {{ institucion|json_encode|raw }}
+      window.CONVENIOS_PROP = {{ convenios|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/validar-info.js') }}"></script>
+
+{% endblock %}

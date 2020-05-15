@@ -21,25 +21,31 @@ class TipoUnidad
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string", length=100)
      */
     private $nombre;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string", length=100)
      */
     private $descripcion;
 
     /**
+     * @var int
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $nivel;
+
+    /**
      * @var string
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=6)
      */
     private $grupoTipo;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string", length=50)
      */
     private $grupoNombre;
 
@@ -150,5 +156,21 @@ class TipoUnidad
     public function getGrupoNombre()
     {
         return $this->grupoNombre;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNivel()
+    {
+        return $this->nivel;
+    }
+
+    /**
+     * @param int $nivel
+     */
+    public function setNivel($nivel)
+    {
+        $this->nivel = $nivel;
     }
 }

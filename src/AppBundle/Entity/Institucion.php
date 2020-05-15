@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -10,7 +12,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Table(name="institucion")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\InstitucionRepository")
  * @Vich\Uploadable
  */
 class Institucion
@@ -26,38 +28,38 @@ class Institucion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $nombre;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=16, nullable=true)
      */
     private $telefono;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=254)
+     * @ORM\Column(type="string", length=254, nullable=true)
      * @Assert\Email()
      */
     private $correo;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=254)
+     * @ORM\Column(type="string", length=254, nullable=true)
      */
     private $fax;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $sitioWeb;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $cedulaIdentificacion;
 
@@ -73,7 +75,7 @@ class Institucion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=13)
+     * @ORM\Column(type="string", length=13, nullable=true)
      * @Assert\Length(
      *     min="13",
      *     max="13",
@@ -85,9 +87,26 @@ class Institucion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $direccion;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $representante;
+
+    /**
+     * @var Convenio
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Convenio", mappedBy="institucion")
+     */
+    private $convenios;
+
+    public function __construct()
+    {
+        $this->convenios = new ArrayCollection();
+    }
 
     /**
      * @return integer
@@ -250,6 +269,25 @@ class Institucion
     }
 
     /**
+     * @param string $representante
+     * @return Institucion
+     */
+    public function setRepresentante($representante)
+    {
+        $this->direccion = $representante;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepresentante()
+    {
+        return $this->representante;
+    }
+
+    /**
      * @return File
      */
     public function getCedulaFile()
@@ -263,5 +301,32 @@ class Institucion
     public function setCedulaFile($cedulaFile)
     {
         $this->cedulaFile = $cedulaFile;
+    }
+
+    /**
+     * @param Convenio $convenio
+     * @return Institucion
+     */
+    public function addConvenio(Convenio $convenio)
+    {
+        $this->convenios[] = $convenio;
+
+        return $this;
+    }
+
+    /**
+     * @param Convenio $convenio
+     */
+    public function removeConvenio(Convenio $convenio)
+    {
+        $this->convenios->removeElement($convenio);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getConvenios()
+    {
+        return $this->convenios;
     }
 }

@@ -16,7 +16,7 @@ easy_admin:
           - { property: grupoDelegacion, label: 'Grupo delegacional' }
           - { property: nombreGrupoDelegacion, label: 'Nombre del grupo delegacional' }
           - { property: latitud, label: 'Latitud' }
-          - { property: altitud, label: 'Altitud' }
+          - { property: longitud, label: 'Longitud' }
           - { property: fecha, label: 'Fecha de creación' }
       form:
         fields:
@@ -25,6 +25,6 @@ easy_admin:
           - { property: grupoDelegacion, label: 'Grupo delegacional' }
           - { property: nombreGrupoDelegacion, label: 'Nombre del grupo delegacional' }
           - { property: latitud, label: 'Latitud' }
-          - { property: altitud, label: 'Altitud' }
+          - { property: longitud, label: 'Longitud' }
           - { property: activo }
           - { property: region, type: entity, type_options: { choice_label: nombre } }

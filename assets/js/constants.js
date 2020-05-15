@@ -1,0 +1,23 @@
+export const SOLICITUD = {}
+SOLICITUD.CREADA = 'Solicitud creada';
+SOLICITUD.CONFIRMADA = 'Solicitud confirmada';
+SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME = 'En validación de montos CAME';
+SOLICITUD.MONTOS_INCORRECTOS_CAME = 'Montos incorrectos CAME';
+SOLICITUD.MONTOS_VALIDADOS_CAME = 'Montos validados CAME';
+SOLICITUD.FORMATOS_DE_PAGO_GENERADOS = 'Formatos de pago generados';
+SOLICITUD.CARGANDO_COMPROBANTES = 'Cargando comprobantes';
+SOLICITUD.EN_VALIDACION_FOFOE = 'En validación FOFOE';
+SOLICITUD.CREDENCIALES_GENERADAS = 'Credenciales generadas';
+
+export const TIPO_PAGO = {}
+TIPO_PAGO.UNICO = 'Único'
+TIPO_PAGO.MULTIPLE = 'Multiple'
+
+export const CAMPO_CLINICO = {}
+CAMPO_CLINICO.NUEVO = 'Nuevo';
+CAMPO_CLINICO.PENDIENTE_DE_PAGO = 'Pendiente de pago';
+CAMPO_CLINICO.PAGO = 'Pago';
+CAMPO_CLINICO.PAGO_VALIDADO_FOFOE = 'Pago validado FOFOE';
+CAMPO_CLINICO.PAGO_NO_VALIDO = 'Pago no válido';
+CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE = 'Pendiente factura FOFOE';
+CAMPO_CLINICO.CREDENCIALES_GENERADAS = 'Credenciales generadas';

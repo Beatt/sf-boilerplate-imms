@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="unidad")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UnidadRepository")
  */
 class Unidad
 {
@@ -32,9 +32,9 @@ class Unidad
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=15)
      * @Assert\Length(
-     *      max = 12,
+     *      max = 15,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
      * )
      */
@@ -49,9 +49,9 @@ class Unidad
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=15)
      * @Assert\Length(
-     *      max = 12,
+     *      max = 15,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
      * )
      */
@@ -59,7 +59,7 @@ class Unidad
 
     /**
      * @var integer
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $nivelAtencion;
 
@@ -78,19 +78,19 @@ class Unidad
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $direccion;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     private $nombreUnidadPrincipal;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=2)
+     * @ORM\Column(type="string", length=2, nullable=true)
      * @Assert\Length(
      *      max = 2,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
@@ -121,6 +121,13 @@ class Unidad
      * @ORM\Column(type="boolean")
      */
     private $activo;
+
+    /**
+     * @var CampoClinico
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="unidad")
+     */
+    private $camposClinicos;
+
 
     public function __construct()
     {
@@ -380,5 +387,10 @@ class Unidad
     public function getTipoUnidad()
     {
         return $this->tipoUnidad;
+    }
+
+    public function __toString()
+    {
+        return $this->getNombre();
     }
 }

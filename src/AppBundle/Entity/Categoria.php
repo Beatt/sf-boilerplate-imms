@@ -21,13 +21,13 @@ class Categoria
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=100)
      */
     private $nombre;
 
     /**
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=15)
      */
     private $clave;
 

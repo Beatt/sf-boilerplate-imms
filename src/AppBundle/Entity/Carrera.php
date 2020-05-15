@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="carrera")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CarreraRepository")
  */
 class Carrera
 {
@@ -21,7 +21,7 @@ class Carrera
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=35)
      */
     private $nombre;
 
@@ -33,7 +33,7 @@ class Carrera
 
     /**
      * @var NivelAcademico
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico", cascade={"persist"})
      * @ORM\JoinColumn(name="nivel_academico_id", referencedColumnName="id")
      */
     private $nivelAcademico;
@@ -101,5 +101,10 @@ class Carrera
     public function getNivelAcademico()
     {
         return $this->nivelAcademico;
+    }
+
+    public function __toString()
+    {
+        return $this->getNombre();
     }
 }

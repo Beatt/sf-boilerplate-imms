@@ -27,7 +27,7 @@ class Delegacion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=30)
      */
     private $nombre;
 
@@ -52,13 +52,13 @@ class Delegacion
     /**
      * @var Region
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Region")
-     * @ORM\JoinColumn(name="region_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="region_id", referencedColumnName="id", nullable=true)
      */
     private $region;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=4)
      * @Assert\Length(
      *      max = 5,
      *      maxMessage = "No puede contener más de {{ limit }} carácteres"
@@ -68,7 +68,7 @@ class Delegacion
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=50)
      */
     private $nombreGrupoDelegacion;
 
@@ -79,7 +79,7 @@ class Delegacion
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="date", length=100)
+     * @ORM\Column(type="datetime")
      */
     private $fecha;
 
