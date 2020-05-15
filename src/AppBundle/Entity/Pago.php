@@ -34,7 +34,8 @@ class Pago
     private $monto;
 
      /**
-     * @ORM\Column(type="date", nullable=true)
+      *
+      * @ORM\Column(type="date", nullable=true)
      */
      private $fechaPago;
 
@@ -95,13 +96,6 @@ class Pago
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */
      private $factura;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $fechaActualizacionComprobante;
 
     /**
      * @return int
@@ -272,30 +266,14 @@ class Pago
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
 
-        $this->setFechaActualizacionComprobante(Carbon::now());
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getFechaActualizacionComprobante()
-    {
-        return $this->fechaActualizacionComprobante;
-    }
-
-    /**
-     * @param DateTime $fechaActualizacionComprobante
-     */
-    public function setFechaActualizacionComprobante($fechaActualizacionComprobante)
-    {
-        $this->fechaActualizacionComprobante = $fechaActualizacionComprobante;
+        $this->setFechaPago(Carbon::now());
     }
 
     /**
      * @param DateTime $fechaPago
      * @return Pago
      */
-     public function setFechaPago($fechaPago)
+     public function setFechaPago($fechaPago = null)
      {
          $this->fechaPago = $fechaPago;
 
