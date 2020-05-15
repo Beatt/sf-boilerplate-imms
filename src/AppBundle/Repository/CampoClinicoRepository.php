@@ -229,4 +229,6 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+
 }
