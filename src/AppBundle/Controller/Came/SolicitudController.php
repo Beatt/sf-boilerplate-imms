@@ -208,20 +208,23 @@ class SolicitudController extends DIEControllerController
                 'camposClinicosSolicitados', 'camposClinicosAutorizados',
                 'campoClinicos' => ['id',
                     'convenio' => ['cicloAcademico' => ['id', 'nombre'],
-                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',
+                        'id', 'vigencia', 'vigenciaFormatted','label', 'carrera' => ['id', 'nombre',
                             'nivelAcademico' => ['id', 'nombre']], 'numero'],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
-                    'fechaInicial', 'fechaFinal', 'referenciaBancaria'],
+                    'fechaInicial', 'fechaFinal', 'referenciaBancaria', 'fechaInicialFormatted', 'fechaFinalFormatted'],
                 'expediente' => ['id', 'descripcion', 'urlArchivo', 'nombreArchivo', 'fecha'],
                 'pago' => ['id', 'comprobantePago', 'fecha', 'factura' => ['fechaFacturacion', 'id', 'zip']]]
             ]),
             'convenios' => $this->get('serializer')->normalize($convenios, 'json', ['attributes' => [
                 'cicloAcademico' => ['id', 'nombre'],
-                'id', 'vigencia', 'label',
+                'id', 'vigencia','vigenciaFormatted', 'label',
                 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]]
             ]),
             'pagosCamposClinicos' => $this->get('serializer')->normalize($pagosCamposClinicos, 'json',
-                ['atributtes' => ['id', 'referenciaBancaria', 'comprobantePago', 'factura' => ['id', 'zip']]])
+                ['attributes' => ['id'
+                    , 'referenciaBancaria', 'comprobantePago', 'factura' => ['id', 'zip']
+            ]])
+//            'pagosCamposClinicos' => []
         ]);
     }
 
