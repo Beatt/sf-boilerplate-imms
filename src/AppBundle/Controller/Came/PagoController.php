@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PagoController extends Controller
 {
     /**
-     * @Route("/pago/{pago_id}", methods={"GET"}, name="pago.comprobante")
+     * @Route("/pago/{pago_id}/download", methods={"GET"}, name="pago.comprobante")
      * @param $pago_id
      * @return mixed
      */
