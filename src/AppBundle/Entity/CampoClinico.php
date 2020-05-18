@@ -391,4 +391,20 @@ class CampoClinico implements ComprobantePagoInterface
     {
         return $this->asignatura;
     }
+
+    /**
+     * @return string
+     */
+    public function getFechaInicialFormatted()
+    {
+        return $this->getFechaInicial()->format('d/m/Y');
+    }
+
+    /**
+     * @return string
+     */
+    public function getFechaFinalFormatted()
+    {
+        return $this->getFechaFinal()->format('d/m/Y');
+    }
 }
