@@ -75,6 +75,11 @@ const DetalleSolicitudDetallado = (props) => {
 }
 
 const ExpedienteUnico = (props) => {
+    const Comprobante = () => {
+        if(props.solicitud.fechaComprobante)
+            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+        return (<></>);
+    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -88,8 +93,8 @@ const ExpedienteUnico = (props) => {
                 <tbody>
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.fechaComprobanteFormatted}</td>
+                    <td><Comprobante/></td>
                 </tr>
                 <tr>
                     <td>Comprobante de Pago</td>
@@ -108,6 +113,11 @@ const ExpedienteUnico = (props) => {
 }
 
 const ExpedienteDetallado = (props) => {
+    const Comprobante = () => {
+        if(props.solicitud.fechaComprobante)
+            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+        return (<></>);
+    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -121,8 +131,8 @@ const ExpedienteDetallado = (props) => {
                 <tbody>
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.fechaComprobanteFormatted}</td>
+                    <td><Comprobante/></td>
                 </tr>
                 </tbody>
             </table>

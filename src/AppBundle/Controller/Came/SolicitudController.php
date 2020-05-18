@@ -203,7 +203,8 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/show.html.twig', [
             'solicitud' => $this->get('serializer')->normalize(
                 $solicitud, 'json', ['attributes' => [
-                'id', 'noSolicitud', 'estatusCameFormatted', 'tipoPago',
+                'id', 'noSolicitud', 'estatusCameFormatted', 'tipoPago', 'fechaComprobanteFormatted',
+                'fechaComprobante',
                 'institucion' => ['id', 'nombre'],
                 'camposClinicosSolicitados', 'camposClinicosAutorizados',
                 'campoClinicos' => ['id',
@@ -333,5 +334,25 @@ class SolicitudController extends DIEControllerController
                 ]]
             )
         ]);
+    }
+
+    /**
+     * @Route("/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="came.solicitud.oficio_montos")
+     * @param $solicitud_id
+     * @return mixed
+     */
+    public function downloadOficioMontosAction($solicitud_id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($solicitud_id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $solicitud_id
+            );
+        }
+        $downloadHandler = $this->get('vich_uploader.download_handler');
+        return $downloadHandler->downloadObject($solicitud, 'urlArchivoFile');
     }
 }
