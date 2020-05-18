@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class='container-fluid'>
+    <div class='row'>
+      <div class='col-md-12'>
+        <h3>Reporte mensual por ciclos</h3>
+        <div id="reporte-wrapper"></div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('build/fofoe_reporte-ingresos.js') }}"></script>
+{% endblock %}

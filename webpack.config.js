@@ -12,6 +12,7 @@ Encore
   .addEntry('mis-solicitudes', './assets/js/institucion_educativa/MisSolicitudes/index.js')
   .addEntry('came_solicitud_index', './assets/js/came/solicitud/index.js')
   .addEntry('pregrado_reporte', './assets/js/pregrado/reporte/index.js')
+  .addEntry('fofoe_reporte-ingresos', './assets/js/fofoe/reporte_ingresos/index.js')
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
   .enableSourceMaps(!Encore.isProduction())
