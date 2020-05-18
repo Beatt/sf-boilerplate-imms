@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class FacturaController extends Controller
 {
     /**
-     * @Route("/factura/{factura_id}", methods={"GET"}, name="factura.download")
+     * @Route("/factura/{factura_id}/download", methods={"GET"}, name="factura.download")
      * @param $factura_id
      * @return mixed
      */
