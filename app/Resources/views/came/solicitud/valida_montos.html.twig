@@ -16,17 +16,17 @@
     <div class='container-fluid'>
         <div class='row'>
             <div class='col-md-12'>
-                <h1 style="text-align: center">Solicitudes de Campos Clínicos</h1>
+                <h1 style="text-align: center">Validación de Montos de Inscripción y Colegiatura</h1>
             </div>
         </div>
-        <div id="solicitudes-table"></div>
+        <div id="solicitud-valida-montos-wrapper"></div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
-        window.SOLICITUDES = {{ solicitudes | json_encode | raw }}
+        window.SOLICITUD = {{ solicitud | json_encode | raw }};
     </script>
     <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 

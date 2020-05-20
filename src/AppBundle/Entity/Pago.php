@@ -298,5 +298,6 @@ class Pago
      {
          return $this->fechaPago;
      }
-}
 
+    
+}

@@ -8,11 +8,12 @@ use Doctrine\ORM\EntityRepository;
 
 class UnidadRepository extends EntityRepository
 {
-    public function getAllUnidadesByDelegacion($delegacion_id)
+    public function getAllUnidadesByDelegacion($delegacion_id = 1)
     {
         return $this->createQueryBuilder('unidad')
-//            ->where('delegacion_id = :delegacion_id')
-//            ->setParameter('delegacion_id', $delegacion_id)
+            ->innerJoin('unidad.delegacion', 'delegacion')
+            ->where('delegacion.id = :delegacion_id')
+            ->setParameter('delegacion_id', $delegacion_id)
             ->getQuery()
             ->getResult();
     }

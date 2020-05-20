@@ -6,7 +6,7 @@ import { getActionNameByInstitucionEducativa } from "../../utils";
 
 const ListaCampos = ({
     institucion,
-    solicitud, 
+    solicitud,
     total,
     autorizado,
     pago,
@@ -17,6 +17,7 @@ const ListaCampos = ({
         const [ search, setSearch ] = useState('')
         const [ isLoading, toggleLoading ] = useState(false)
         
+
         useEffect(() => {
             if(
                 search === null ||
@@ -33,7 +34,7 @@ const ListaCampos = ({
 
         function getCamposClinicos() {
             toggleLoading(true)
-        
+
             solicitudesGet(
                 institucion,
                 solicitud,
@@ -63,6 +64,7 @@ const ListaCampos = ({
     }
 
     
+        {console.log(pago)}
 
     return(
         <div className='row'>
@@ -76,7 +78,7 @@ const ListaCampos = ({
             <div className="col-md-6 mt-10">
                 <p className='text-bold'>Acción: {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}</p>
             </div>
-            
+
 
             <div className="col-md-12 mt-10">
                 <div className="panel panel-default">
