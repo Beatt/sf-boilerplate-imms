@@ -21,14 +21,14 @@ class MontoCarrera
     private $id;
 
     /**
-     * @ORM\Column(name="monto_inscripcion", type="float", precision=24, scale=4, nullable=false)
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=false)
      * @Assert\NotNull
      * @Assert\NotBlank
      */
     private $montoInscripcion;
 
     /**
-     * @ORM\Column(name="monto_colegiatura", type="float", precision=24, scale=4, nullable=false)
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=false)
      * @Assert\NotNull
      * @Assert\NotBlank
      */
@@ -37,7 +37,7 @@ class MontoCarrera
     /**
      * @var Solicitud
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="montosCarreras")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;
@@ -45,7 +45,7 @@ class MontoCarrera
     /**
      * @var Carrera
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera", inversedBy="montosCarreras")
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
      */
     private $carrera;
@@ -116,10 +116,6 @@ class MontoCarrera
         return $this->solicitud;
     }
 
-    /**
-     * @param Carrera $carrera
-     * @return MontoCarrera
-     */
     public function setCarrera(Carrera $carrera = null)
     {
         $this->carrera = $carrera;

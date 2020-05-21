@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20200511050641 extends AbstractMigration
+class Version20200520205412 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -23,7 +23,7 @@ class Version20200511050641 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_3307999A1CB9D6E4 ON campo_clinico (solicitud_id)');
         $this->addSql('CREATE INDEX IDX_3307999A44D087A7 ON campo_clinico (estatus_campo_id)');
         $this->addSql('CREATE INDEX IDX_3307999A9D01464C ON campo_clinico (unidad_id)');
-        $this->addSql('CREATE TABLE carrera (id SERIAL NOT NULL, nivel_academico_id INT DEFAULT NULL, nombre VARCHAR(35) NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE carrera (id SERIAL NOT NULL, nivel_academico_id INT NOT NULL, nombre VARCHAR(35) NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_CF1ECD30C21F5FA8 ON carrera (nivel_academico_id)');
         $this->addSql('CREATE TABLE categoria (id SERIAL NOT NULL, nombre VARCHAR(100) NOT NULL, clave VARCHAR(15) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE ciclo_academico (id SERIAL NOT NULL, nombre VARCHAR(30) NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
@@ -39,13 +39,13 @@ class Version20200511050641 extends AbstractMigration
         $this->addSql('CREATE TABLE estatus_campo (id SERIAL NOT NULL, nombre VARCHAR(50) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE expediente (id SERIAL NOT NULL, solicitud_id INT NOT NULL, descripcion TEXT DEFAULT NULL, url_archivo VARCHAR(255) NOT NULL, fecha DATE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_D59CA4131CB9D6E4 ON expediente (solicitud_id)');
-        $this->addSql('CREATE TABLE factura (id SERIAL NOT NULL, zip VARCHAR(100) NOT NULL, fecha_facturacion DATE NOT NULL, monto NUMERIC(10, 4) NOT NULL, folio VARCHAR(10) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE factura (id SERIAL NOT NULL, zip VARCHAR(100) NOT NULL, fecha_facturacion DATE NOT NULL, monto DOUBLE PRECISION DEFAULT NULL, folio VARCHAR(100) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE institucion (id SERIAL NOT NULL, nombre VARCHAR(255) NOT NULL, telefono VARCHAR(16) DEFAULT NULL, correo VARCHAR(254) DEFAULT NULL, fax VARCHAR(254) DEFAULT NULL, sitio_web VARCHAR(100) DEFAULT NULL, cedula_identificacion VARCHAR(255) DEFAULT NULL, rfc VARCHAR(13) DEFAULT NULL, direccion VARCHAR(255) DEFAULT NULL, representante VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE monto_carrera (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, carrera_id INT DEFAULT NULL, monto_inscripcion DOUBLE PRECISION NOT NULL, monto_colegiatura DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_BCC32A561CB9D6E4 ON monto_carrera (solicitud_id)');
         $this->addSql('CREATE INDEX IDX_BCC32A56C671B40F ON monto_carrera (carrera_id)');
         $this->addSql('CREATE TABLE nivel_academico (id SERIAL NOT NULL, nombre VARCHAR(30) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE pago (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, factura_id INT DEFAULT NULL, monto NUMERIC(10, 4) NOT NULL, fecha_pago DATE DEFAULT NULL, comprobante_pago VARCHAR(100) DEFAULT NULL, referencia_bancaria VARCHAR(100) NOT NULL, validado BOOLEAN DEFAULT NULL, requiere_factura BOOLEAN NOT NULL, observaciones VARCHAR(100) DEFAULT NULL, fecha_actualizacion_comprobante TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE pago (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, factura_id INT DEFAULT NULL, monto NUMERIC(10, 4) NOT NULL, fecha_pago DATE DEFAULT NULL, comprobante_pago VARCHAR(100) DEFAULT NULL, referencia_bancaria VARCHAR(100) NOT NULL, validado BOOLEAN DEFAULT NULL, requiere_factura BOOLEAN NOT NULL, observaciones VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F4DF5F3E1CB9D6E4 ON pago (solicitud_id)');
         $this->addSql('CREATE INDEX IDX_F4DF5F3EF04F795F ON pago (factura_id)');
         $this->addSql('CREATE TABLE permiso (id SERIAL NOT NULL, nombre VARCHAR(255) NOT NULL, descripcion VARCHAR(255) NOT NULL, rol_seguridad VARCHAR(80) NOT NULL, PRIMARY KEY(id))');
@@ -54,7 +54,7 @@ class Version20200511050641 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_DD501D064BAB96C ON permiso_rol (rol_id)');
         $this->addSql('CREATE TABLE region (id SERIAL NOT NULL, nombre VARCHAR(20) NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE rol (id SERIAL NOT NULL, nombre VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE solicitud (id SERIAL NOT NULL, no_solicitud VARCHAR(9) DEFAULT NULL, fecha DATE NOT NULL, estatus VARCHAR(100) NOT NULL, referencia_bancaria VARCHAR(100) DEFAULT NULL, monto DOUBLE PRECISION DEFAULT NULL, tipo_pago VARCHAR(10) DEFAULT NULL, documento VARCHAR(255) DEFAULT NULL, url_archivo VARCHAR(255) DEFAULT NULL, validado BOOLEAN DEFAULT NULL, fecha_comprobante DATE DEFAULT NULL, observaciones VARCHAR(255) DEFAULT NULL, descripcion VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE solicitud (id SERIAL NOT NULL, no_solicitud VARCHAR(9) DEFAULT NULL, fecha DATE NOT NULL, estatus VARCHAR(100) NOT NULL, referencia_bancaria VARCHAR(100) DEFAULT NULL, monto DOUBLE PRECISION DEFAULT NULL, tipo_pago VARCHAR(10) DEFAULT NULL, documento VARCHAR(255) DEFAULT NULL, url_archivo VARCHAR(255) DEFAULT NULL, validado BOOLEAN DEFAULT NULL, fecha_comprobante DATE DEFAULT NULL, observaciones VARCHAR(255) DEFAULT NULL, confirmacion_oficio_adjunto BOOLEAN DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_96D27CC0415EAE2C ON solicitud (no_solicitud)');
         $this->addSql('CREATE TABLE tipo_unidad (id SERIAL NOT NULL, nombre VARCHAR(100) NOT NULL, descripcion VARCHAR(100) NOT NULL, nivel INT NOT NULL, grupo_tipo VARCHAR(6) NOT NULL, grupo_nombre VARCHAR(50) NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE traductor (id SERIAL NOT NULL, locale VARCHAR(2) NOT NULL, textos JSON NOT NULL, PRIMARY KEY(id))');

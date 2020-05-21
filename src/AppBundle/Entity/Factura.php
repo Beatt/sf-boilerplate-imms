@@ -2,14 +2,12 @@
 
 namespace AppBundle\Entity;
 
-use Carbon\Carbon;
-
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="factura")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\FacturaRepository")
+ * @ORM\Entity
  */
 class Factura
 {
@@ -21,7 +19,6 @@ class Factura
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
     /**
      * @var string
      *
@@ -37,18 +34,16 @@ class Factura
     private $fechaFacturacion;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="decimal", precision=10, scale=4)
+     * @ORM\Column(type="float", precision=24, scale=4, nullable=true)
      */
-    private $monto;
+     private $monto;
 
-    /**
+     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=100)
      */
-    private $folio;
+     private $folio;
 
     /**
      * @return int
@@ -59,20 +54,23 @@ class Factura
     }
 
     /**
-     * @return string
-     */
-    public function getZip()
-    {
-        return $this->zip;
-    }
-
-    /**
      * @param string $zip
+     * @return Factura
      */
-    public function setZip($zip)
-    {
-        $this->zip = $zip;
-    }
+     public function setZip($zip)
+     {
+         $this->zip = $zip;
+
+         return $this;
+     }
+
+     /**
+      * @return string
+      */
+     public function getZip()
+     {
+         return $this->zip;
+     }
 
     /**
      * @return DateTime
@@ -84,41 +82,51 @@ class Factura
 
     /**
      * @param DateTime $fechaFacturacion
+     * @return Factura
      */
     public function setFechaFacturacion($fechaFacturacion)
     {
         $this->fechaFacturacion = $fechaFacturacion;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @param float $monto
+     * @return Factura
      */
-    public function getMonto()
-    {
-        return $this->monto;
-    }
+     public function setMonto($monto)
+     {
+         $this->monto = $monto;
 
-    /**
-     * @param string $monto
-     */
-    public function setMonto($monto)
-    {
-        $this->monto = $monto;
-    }
+         return $this;
+     }
 
-    /**
-     * @return string
-     */
-    public function getFolio()
-    {
-        return $this->folio;
-    }
+     /**
+      * @return float
+      */
+     public function getMonto()
+     {
+         return $this->monto;
+     }
 
-    /**
+
+     /**
      * @param string $folio
+     * @return Factura
      */
-    public function setFolio($folio)
-    {
-        $this->folio = $folio;
-    }
+     public function setFolio($folio)
+     {
+         $this->folio = $folio;
+
+         return $this;
+     }
+
+     /**
+      * @return string
+      */
+     public function getFolio()
+     {
+         return $this->folio;
+     }
 }

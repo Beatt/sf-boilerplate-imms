@@ -3,11 +3,12 @@
 namespace AppBundle\Vich\Naming;
 
 use AppBundle\Entity\Pago;
+use AppBundle\Entity\Solicitud;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 use Vich\UploaderBundle\Naming\DirectoryNamerInterface;
 
-class ComprobantePagoDirectoryNamer implements DirectoryNamerInterface
+class InstitucionDirectoryNamer implements DirectoryNamerInterface
 {
     /**
      * @var InstitucionRepositoryInterface
@@ -20,16 +21,18 @@ class ComprobantePagoDirectoryNamer implements DirectoryNamerInterface
     }
 
     /**
-     * @param Pago $object
+     * @param $object
      * @param PropertyMapping $mapping
      * @return string|void
      */
     public function directoryName($object, PropertyMapping $mapping)
     {
-        $institucion = $this->institucionRepository->getInstitucionBySolicitudId(
-            $object->getSolicitud()->getId()
-        );
+        $id = null;
 
+        if($object instanceof Pago) $id = $object->getSolicitud()->getId();
+        elseif($object instanceof Solicitud) $id = $object->getId();
+
+        $institucion = $this->institucionRepository->getInstitucionBySolicitudId($id);
         return $institucion->getNombre();
     }
 }

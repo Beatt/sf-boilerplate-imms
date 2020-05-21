@@ -2,8 +2,8 @@
 
 namespace AppBundle\Repository;
 
-use Doctrine\Common\Persistence\ObjectRepository;
 use AppBundle\Entity\Pago;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 interface PagoRepositoryInterface extends ObjectRepository
 {

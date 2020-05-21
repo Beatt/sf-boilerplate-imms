@@ -127,6 +127,10 @@ class CampoClinico implements ComprobantePagoInterface
         return $this->fechaInicial;
     }
 
+    public function getDisplayFechaInicial() {
+      return $this->fechaInicial->format('d/m/Y');
+    }
+
     /**
      * @param DateTime $fechaFinal
      * @return CampoClinico
@@ -145,6 +149,10 @@ class CampoClinico implements ComprobantePagoInterface
     {
         return $this->fechaFinal;
     }
+
+  public function getDisplayFechaFinal() {
+    return $this->fechaFinal->format('d/m/Y');
+  }
 
     /**
      * @param string $horario

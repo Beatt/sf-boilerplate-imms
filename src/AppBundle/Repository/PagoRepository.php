@@ -37,4 +37,15 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         return Criteria::create()
             ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria));
     }
+
+    public function getPagosCampoClinicosBySolicitud($solicitud_id)
+    {
+       return $this->createQueryBuilder('pago')
+           ->innerJoin('pago.solicitud', 'solicitud')
+           ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
+           ->where('solicitud.id = :solicitud_id')
+           ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
+           ->setParameter('solicitud_id', $solicitud_id)
+           ->getQuery()->getResult();
+     }
 }

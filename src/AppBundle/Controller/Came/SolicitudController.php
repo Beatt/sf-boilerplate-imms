@@ -29,7 +29,7 @@ class SolicitudController extends DIEControllerController
             ->getAllSolicitudesByDelegacion(null/*simulado*/, $perPage, $page, $request->query->all());
         return $this->render('came/solicitud/index.html.twig', [
             'solicitudes' => $this->get('serializer')->normalize(
-                $solicitudes,
+                $solicitudes['data'],
                 'json',
                 [
                     'attributes' => [
@@ -44,7 +44,40 @@ class SolicitudController extends DIEControllerController
                         'camposClinicosAutorizados',
                     ]
                 ]
-            )
+            ),
+            'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
+        ]);
+    }
+
+    /**
+     * @Route("/api/solicitud", methods={"GET"}, name="solicitud.index.json")
+     */
+    public function indexApiAction(Request $request)
+    {
+        $perPage = $request->query->get('perPage', 10);
+        $page = $request->query->get('page', 1);
+        $solicitudes = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->getAllSolicitudesByDelegacion(null/*simulado*/, $perPage, $page, $request->query->all());
+        return $this->jsonResponse([
+            'object' => $this->get('serializer')->normalize(
+                $solicitudes['data'],
+                'json',
+                [
+                    'attributes' => [
+                        'id',
+                        'fecha',
+                        'estatus',
+                        'noSolicitud',
+                        'estatus',
+                        'estatusCameFormatted',
+                        'institucion' => ['id', 'nombre'],
+                        'camposClinicosSolicitados',
+                        'camposClinicosAutorizados',
+                    ]
+                ]
+            ),
+            'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
     }
 
@@ -63,9 +96,7 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax',
-                    'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
-                        'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax']]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
                 ['attributtes' => ['id', 'nombre']])
         ]);
@@ -255,7 +286,7 @@ class SolicitudController extends DIEControllerController
         }
 
         $form = $this->createForm(ValidaSolicitudType::class, $solicitud);
-        $form->get('montos_pagos')->setData($solicitud->getMontos());
+        $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -284,7 +315,7 @@ class SolicitudController extends DIEControllerController
         }
 
         $form = $this->createForm(ValidaSolicitudType::class);
-        $form->get('montos_pagos')->setData($solicitud->getMontos());
+        $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
 
         return $this->render('came/solicitud/valida_montos.html.twig', [
             'form' => $form->createView(),
@@ -294,7 +325,7 @@ class SolicitudController extends DIEControllerController
                     'estatusCameFormatted',
                     'documento', 'urlArchivo',
                     'institucion' => ['id', 'nombre'],
-                    'montos' => ['id', 'montoInscripcion', 'montoColegiatura',
+                    'montosCarreras' => ['id', 'montoInscripcion', 'montoColegiatura',
                         'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre'] ]]
                 ]]
             )

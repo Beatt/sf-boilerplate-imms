@@ -2,18 +2,20 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 use Exception;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Solicitud
- *
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
+ * @Vich\Uploadable
  */
 class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
 {
@@ -56,6 +58,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     private $camposClinicos;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud", cascade={"persist"})
+     */
+    private $montosCarreras;
+
+    /**
      * @ORM\Column(type="string", length=10, nullable=true)
      */
     private $tipoPago;
@@ -69,6 +76,13 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $urlArchivo;
+
+    /**
+     * @var File
+     *
+     * @Vich\UploadableField(mapping="comprobantes_inscripcion", fileNameProperty="urlArchivo")
+     */
+    private $urlArchivoFile;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -86,33 +100,24 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     private $observaciones;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $descripcion;
-
-    /**
-     * @var MontoCarrera
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud", cascade={"persist"})
-     */
-    private $montosCarrera;
-
-    /**
      * @var Pago
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
     */
     private $pagos;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     * @var string
+     *
+     * @ORM\Column(type="boolean", nullable=true)
      */
-    private $montos;
+    private $confirmacionOficioAdjunto;
 
     public function __construct()
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
         $this->pagos = new ArrayCollection();
-        $this->montosCarrera = new ArrayCollection();
+        $this->montosCarreras = new ArrayCollection();
     }
 
     /**
@@ -179,18 +184,13 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
             self::CREDENCIALES_GENERADAS
         ];
 
-        $estatusExist = array_filter($allowedStatus, function ($item) use($estatus) {
-            return $item === $estatus;
-        });
-
-        /*if(count($estatusExist) === 0) {
         if(!in_array($estatus, $allowedStatus)) {
             throw new \InvalidArgumentException(sprintf(
                 'El estatus %s no se puede asignar, selecciona una de las opciones validas %s',
                 $estatus,
                 implode(', ', $allowedStatus)
             ));
-        }*/
+        }
 
         $this->estatus = $estatus;
 
@@ -284,17 +284,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     {
         return $this->observaciones;
     }
-
-    /**
-     * @param string $descripcion
-     * @return Solicitud
-     */
-     public function setDescripcion($descripcion)
-     {
-         $this->descripcion = $descripcion;
- 
-         return $this;
-     } 
 
     /**
      * @param boolean $validado
@@ -546,32 +535,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @param MontoCarrera $montosCarrera
-     * @return Solicitud
-     */
-    public function addMontosCarrera(MontoCarrera $montosCarrera)
-    {
-        $this->montosCarrera[] = $montosCarrera;
-
-        return $this;
-    }
-
-    /**
-     * @param MontoCarrera $montosCarrera
-     */
-    public function removeMontosCarrera(MontoCarrera $montosCarrera)
-    {
-        $this->montosCarrera->removeElement($montosCarrera);
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescripcion(){
-        $this->descripcion;
-    }
-
-    /**
      * @return string
      */
     public function getExpedienteDescripcion()
@@ -598,25 +561,69 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         return $this->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
     }
 
-
-    public function getMontosCarrera()
-    {
-        return $this->montosCarrera;
-    }
-    
     /**
-     * @return mixed
+     * @param MontoCarrera $montosCarrera
+     * @return Solicitud
      */
-    public function getMontos()
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
     {
-        return $this->montos;
+        if(!$this->montosCarreras->contains($montosCarrera)) {
+            $this->montosCarreras[] = $montosCarrera;
+            $montosCarrera->setSolicitud($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @param mixed $montos
+     * @param MontoCarrera $montosCarrera
      */
-    public function setMontos($montos)
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
     {
-        $this->montos = $montos;
+        if($this->montosCarreras->contains($montosCarrera)) {
+            $this->montosCarreras->removeElement($montosCarrera);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getMontosCarreras()
+    {
+        return $this->montosCarreras;
+    }
+
+    /**
+     * @return File
+     */
+    public function getUrlArchivoFile()
+    {
+        return $this->urlArchivoFile;
+    }
+
+    /**
+     * @param File $urlArchivoFile
+     */
+    public function setUrlArchivoFile($urlArchivoFile = null)
+    {
+        $this->urlArchivoFile = $urlArchivoFile;
+
+        $this->setFechaComprobante(Carbon::now());
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfirmacionOficioAdjunto()
+    {
+        return $this->confirmacionOficioAdjunto;
+    }
+
+    /**
+     * @param string $confirmacionOficioAdjunto
+     */
+    public function setConfirmacionOficioAdjunto($confirmacionOficioAdjunto)
+    {
+        $this->confirmacionOficioAdjunto = $confirmacionOficioAdjunto;
     }
 }

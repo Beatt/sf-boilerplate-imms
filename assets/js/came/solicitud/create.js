@@ -11,6 +11,7 @@ const SolicitudCreate = (props) => {
     const [camposClinicos, setCamposClinicos] = React.useState([])
     const [isLoading, setIsLoading] = React.useState(false)
     const [solicitud, setSolicitud] = React.useState(null);
+    const [convenios, setConvenios] = React.useState([]);
 
     const callbackFunction = (institucion) => {
         setselectedInstitution(institucion);
@@ -59,13 +60,14 @@ const SolicitudCreate = (props) => {
               parentCallback = {callbackFunction}
               callbackIsLoading = {callbackIsLoading}
               disableSelect={!!solicitud}
+              conveniosCallback={result => setConvenios(result)}
           />
           <div style={{display : (selectedInstitution.id ? 'block' : 'none')}}>
-              <Convenios convenios={selectedInstitution.convenios ? selectedInstitution.convenios: []}/>
+              <Convenios convenios={convenios? convenios : []}/>
               <CamposClinicos campos={camposClinicos} />
               <CampoClinicoForm
                   unidades={props.unidades}
-                  convenios={selectedInstitution.convenios ? selectedInstitution.convenios: []}
+                  convenios={convenios ? convenios: []}
                   callbackCampoClinico = {callbackCampoClinico}
                   callbackIsLoading = {callbackIsLoading}
                   callbackSolicitud = {value => setSolicitud(value)}

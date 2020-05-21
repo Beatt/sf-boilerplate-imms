@@ -54,11 +54,11 @@ services:
       - AppBundle\Entity\EstatusCampo
     public: true
 
-  AppBundle\Repository\PagoRepositoryInterface:
+  AppBundle\Repository\MontoCarreraRepositoryInterface:
     class: Doctrine\ORM\EntityRepository
     factory: ["@doctrine.orm.entity_manager", getRepository]
     arguments:
-      - AppBundle\Entity\Pago
+      - AppBundle\Entity\MontoCarrera
     public: true
 
   AppBundle\Repository\MontoCarreraRepositoryInterface:

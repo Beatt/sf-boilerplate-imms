@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Migrations;
+namespace Tests\AppBundle\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20200511163543 extends AbstractMigration
+class Version20200511202655 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -21,7 +21,7 @@ class Version20200511163543 extends AbstractMigration
         $this->addSql('CREATE TABLE departamento (id SERIAL NOT NULL, unidad_id INT DEFAULT NULL, nombre VARCHAR(100) NOT NULL, clave_departamental VARCHAR(15) NOT NULL, clave_presupuestal VARCHAR(15) NOT NULL, es_unidad BOOLEAN NOT NULL, anio INT NOT NULL, fecha TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_40E497EB9D01464C ON departamento (unidad_id)');
         $this->addSql('CREATE TABLE region (id SERIAL NOT NULL, nombre VARCHAR(20) NOT NULL, activo BOOLEAN NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE pago (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, factura_id INT DEFAULT NULL, monto NUMERIC(10, 4) NOT NULL, comprobante_pago VARCHAR(100) DEFAULT NULL, referencia_bancaria VARCHAR(100) NOT NULL, validado BOOLEAN DEFAULT NULL, requiere_factura BOOLEAN NOT NULL, observaciones VARCHAR(100) DEFAULT NULL, fecha_actualizacion_comprobante TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE pago (id SERIAL NOT NULL, solicitud_id INT DEFAULT NULL, factura_id INT DEFAULT NULL, monto NUMERIC(10, 4) NOT NULL, fecha_pago DATE DEFAULT NULL, comprobante_pago VARCHAR(100) DEFAULT NULL, referencia_bancaria VARCHAR(100) NOT NULL, validado BOOLEAN DEFAULT NULL, requiere_factura BOOLEAN NOT NULL, observaciones VARCHAR(100) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F4DF5F3E1CB9D6E4 ON pago (solicitud_id)');
         $this->addSql('CREATE INDEX IDX_F4DF5F3EF04F795F ON pago (factura_id)');
         $this->addSql('CREATE TABLE categoria (id SERIAL NOT NULL, nombre VARCHAR(100) NOT NULL, clave VARCHAR(15) NOT NULL, PRIMARY KEY(id))');
@@ -67,7 +67,7 @@ class Version20200511163543 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_3307999A1CB9D6E4 ON campo_clinico (solicitud_id)');
         $this->addSql('CREATE INDEX IDX_3307999A44D087A7 ON campo_clinico (estatus_campo_id)');
         $this->addSql('CREATE INDEX IDX_3307999A9D01464C ON campo_clinico (unidad_id)');
-        $this->addSql('CREATE TABLE factura (id SERIAL NOT NULL, zip VARCHAR(100) NOT NULL, fecha_facturacion DATE NOT NULL, monto NUMERIC(10, 4) NOT NULL, folio VARCHAR(10) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE factura (id SERIAL NOT NULL, zip VARCHAR(100) NOT NULL, fecha_facturacion DATE NOT NULL, monto DOUBLE PRECISION DEFAULT NULL, folio VARCHAR(100) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE nivel_academico (id SERIAL NOT NULL, nombre VARCHAR(30) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE solicitud (id SERIAL NOT NULL, no_solicitud VARCHAR(9) DEFAULT NULL, fecha DATE NOT NULL, estatus VARCHAR(100) NOT NULL, referencia_bancaria VARCHAR(100) DEFAULT NULL, monto DOUBLE PRECISION DEFAULT NULL, tipo_pago VARCHAR(10) DEFAULT NULL, documento VARCHAR(255) DEFAULT NULL, url_archivo VARCHAR(255) DEFAULT NULL, validado BOOLEAN DEFAULT NULL, fecha_comprobante DATE DEFAULT NULL, observaciones VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_96D27CC0415EAE2C ON solicitud (no_solicitud)');

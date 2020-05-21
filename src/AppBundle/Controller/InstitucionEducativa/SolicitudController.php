@@ -2,19 +2,16 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
-use AppBundle\Form\Type\MontoCarreraType;
-use AppBundle\Form\Type\SolicitudMontoType;
 use AppBundle\Entity\Institucion;
-use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Solicitud;
-use AppBundle\Service\MontoCarreraManagerInterface;
+use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
-use AppBundle\Repository\CarreraRepositoryInterface;
-use AppBundle\Repository\MontoCarreraRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolicitudController extends Controller
 {
     /**
-     * @Route("/instituciones/{id}/solicitudes", methods={"GET"})
+     * @Route("/instituciones/{id}/solicitudes", methods={"GET"}, name="solicitudes#index")
      * @param $id
      * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
@@ -65,7 +62,7 @@ class SolicitudController extends Controller
     }
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="instituciones#show", methods={"GET"})
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="solicitudes#show", methods={"GET"})
      * @param integer $id
      * @param $solicitudId
      * @param Request $request
@@ -137,15 +134,13 @@ class SolicitudController extends Controller
 
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="instituciones#record", methods={"POST", "GET"})
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="solicitudes#record", methods={"POST", "GET"})
      * @param integer $id
      * @param $solicitudId
      * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
-     * @param CarreraRepositoryInterface $carreraRepository
-     * @param MontoCarreraManagerInterface $montoCarreraManager
-     * @param MontoCarreraRepository $montoCarreraRepository
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
     public function recordAction(
@@ -154,104 +149,42 @@ class SolicitudController extends Controller
         Request $request,
         InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
-        CarreraRepositoryInterface $carreraRepository,
-        MontoCarreraManagerInterface $montoCarreraManager,
-        MontoCarreraRepositoryInterface $montoCarreraRepository
+        EntityManagerInterface $entityManager
     ) {
 
-        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
-            $solicitudId,
-            null,
-            true
-        );
-
-        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud(
-            $solicitudId
-        );
-
+        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($solicitudId);
         $institucion = $institucionRepository->find($id);
 
+        /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($solicitudId);
 
-        $acc = 0;
-
-        foreach ($camposClinicos as $campoClinico) {
-            if($campoClinico->getLugaresAutorizados() > 0){
-                $acc++;
-            }
-        }
-
-
-        $montos = $montoCarreraRepository->getAllMontosCarreraByRequest(
-            $solicitudId
-        );
-
-
-        if($montos == null){
-            foreach ($carreras as $c){
-                $montoCarrera = new MontoCarrera();
-                $carrera = $carreraRepository->find($c["id"]);
-                $montoCarrera->setSolicitud($solicitud);
-                $montoCarrera->setCarrera($carrera);
-                $solicitud->getMontosCarrera()->add($montoCarrera);
-            }
-        }
-
-        $form = $this->createForm(SolicitudMontoType::class, $solicitud, [
-            'action' => $this->generateUrl('instituciones#record', [
+        $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
+            'action' => $this->generateUrl("solicitudes#record", [
                 'id' => $id,
-                'solicitudId' => $solicitudId
+                'solicitudId' => $solicitudId,
             ]),
+            'method' => 'POST'
         ]);
-    
-        if ($request->isMethod('POST')) {
-            $inscripciones = $request->get('montosInscripcion');
-            $colegiatura = $request->get('montosColegiatura');
-            $carrera = $request->get('carreraid');
 
-            $value = 0;
-            if($montos != null){
-                foreach ($montos as $c){
-                    $c->setMontoInscripcion($inscripciones[$value]);
-                    $c->setMontoColegiatura($colegiatura[$value]);
-                    $result = $montoCarreraManager->Create($c);
-                    $value++;
-                }    
-            }else{
-                foreach ($carreras as $c){
-                    $montoCarrera = new MontoCarrera();
-                    $montoCarrera->setMontoInscripcion($inscripciones[$value]);
-                    $montoCarrera->setMontoColegiatura($colegiatura[$value]);
-                    $montoCarrera->setSolicitud($solicitud);
-                    $carre = $carreraRepository->find($carrera[$value]);
-                    $montoCarrera->setCarrera($carre);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
 
-                    dump($montoCarrera);
+            $data = $form->getData();
+            $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
+            $entityManager->persist($data);
+            $entityManager->flush();
 
-                    $solicitud->getMontosCarrera()->add($montoCarrera);
-                    $result = $montoCarreraManager->Create($montoCarrera);
-                    $value++;
-                }
-            }
-            
+            $this->addFlash('success', 'Se ha guardado correctamente los montos');
 
-            return new JsonResponse([
-                'message' => $result ?
-                    "¡La información se actualizado correctamente!" :
-                    '¡Ha ocurrido un problema, intenta más tarde!',
-                'status' => $result ?
-                    Response::HTTP_OK :
-                    Response::HTTP_UNPROCESSABLE_ENTITY
+            return $this->redirectToRoute('solicitudes#index', [
+                'id' => $id
             ]);
-
-
         }
 
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
-            'autorizado' => $acc,
             'carreras' => $carreras,
             'montos' => $this->get('serializer')->normalize(
                 $solicitud,
@@ -267,7 +200,7 @@ class SolicitudController extends Controller
                             ]
                         ]
                     ]
-                ])
+                ]),
         ]);
     }
 

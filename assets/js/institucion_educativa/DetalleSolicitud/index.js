@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import { solicitudesGet } from "../api/camposClinicos";
-import { getActionNameByInstitucionEducativa } from "../../utils";
-
 
 const ListaCampos = ({
     institucion,
@@ -16,7 +14,21 @@ const ListaCampos = ({
         const [ camposClinicos, setCamposClinicos ] = useState([])
         const [ search, setSearch ] = useState('')
         const [ isLoading, toggleLoading ] = useState(false)
-        
+
+        let isPago;
+        let isFactura;
+
+        if(pago)
+            isPago = true;
+        else
+            isPago = false;
+
+        if(pago[0].factura)
+            isFactura = true;
+        else
+            isFactura = false;
+
+
 
         useEffect(() => {
             if(
@@ -48,20 +60,6 @@ const ListaCampos = ({
                 toggleLoading(false)
             })
         }
-
-    
-    let isPago = false;
-
-    let isFactura = false;
-
-    if(pago[0]){
-        isPago = true;
-
-        if(pago[0].requiereFactura){
-            isFactura = true;
-        }
-
-    }
 
     
         {console.log(pago)}
@@ -175,20 +173,18 @@ const ListaCampos = ({
                                         <td></td>
                                     </tr>
                                 }
-                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-        
     )
 }
 
 
-ReactDOM.render( 
-    <ListaCampos 
+ReactDOM.render(
+    <ListaCampos
     institucion = {window.INSTITUCION_PROP}
     solicitud={window.SOLICITUD_PROP}
     total={ window.TOTAL_PROP}

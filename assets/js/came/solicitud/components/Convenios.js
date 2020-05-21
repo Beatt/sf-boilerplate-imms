@@ -9,8 +9,9 @@ const Convenios = (props) => {
                 <h3>Convenios vigentes de la Institución Educativa</h3>
             </div>
             <div className="col-md-6">
-                <table className="table">
-                    <thead>
+                <div className="table-responsive">
+                    <table className="table">
+                        <thead>
                         <tr>
                             <th>Número</th>
                             <th>Grado</th>
@@ -18,23 +19,24 @@ const Convenios = (props) => {
                             <th>Carrera</th>
                             <th>Vigencia</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    {props.convenios.map(convenio => {
-                        if(convenio.carrera && convenio.cicloAcademico){
-                            return (
-                                <tr key={convenio.id} className={`label-${convenio.label}`}>
-                                    <td>{convenio.nombre}</td>
-                                    <td>{convenio.carrera.nivelAcademico.nombre}</td>
-                                    <td>{convenio.cicloAcademico.nombre}</td>
-                                    <td>{convenio.carrera.nombre}</td>
-                                    <td>{convenio.vigencia}</td>
-                                </tr>
-                            )
-                        }
-                    })}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {props.convenios.map(convenio => {
+                            if(convenio.carrera && convenio.cicloAcademico){
+                                return (
+                                    <tr key={convenio.id} className={`label-${convenio.label}`}>
+                                        <td>{convenio.nombre}</td>
+                                        <td>{convenio.carrera.nivelAcademico.nombre}</td>
+                                        <td>{convenio.cicloAcademico.nombre}</td>
+                                        <td>{convenio.carrera.nombre}</td>
+                                        <td>{convenio.vigencia}</td>
+                                    </tr>
+                                )
+                            }
+                        })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div className='col-md-6'>
                 <div className='tabla-vigencia'>

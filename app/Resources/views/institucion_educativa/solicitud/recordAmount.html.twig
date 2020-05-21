@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block body %}
-
     {{ render(controller('AppBundle:InstitucionEducativa\\Institucion:menu', {
         id: institucion.id
     })) }}
@@ -34,11 +33,10 @@
     {{ parent() }}
     <script>
       window.INSTITUCION_PROP = {{ institucion.nombre |json_encode|raw }}
-      window.AUTORIZADOS_PROP = {{ autorizado|json_encode|raw }}
       window.CARRERAS_PROP = {{ carreras|json_encode|raw }}
       window.MONTOS_PROP = {{ solicitud|json_encode|raw }}
-      window.SOLICITUD_PROP = {{ solicitud.id|json_encode|raw }}
-      window.ID_PROP = {{ institucion.id|json_encode|raw }}
+      window.SOLICITUD_ID_PROP = {{ solicitud.id|json_encode|raw }}
+      window.INSTITUCION_ID_PROP = {{ institucion.id|json_encode|raw }}
     </script>
     <script src="{{ asset('build/registrar-montos.js') }}"></script>
 

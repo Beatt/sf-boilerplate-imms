@@ -29,19 +29,34 @@ class Institucion
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min="10",
+     *  max="255",
+     *  minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
      */
     private $nombre;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=16, nullable=true)
+     * @Assert\Length(
+     *  min="10",
+     *  max="10",
+     *  minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres.",
+     *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres."
+     * )
      */
     private $telefono;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=254, nullable=true)
-     * @Assert\Email()
+     * @Assert\Email(
+     *    message = "Correo no válido"
+     * )
      */
     private $correo;
 
