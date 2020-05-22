@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use Exception;
 use Symfony\Component\HttpFoundation\File\File;
@@ -81,6 +82,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @var File
      *
      * @Vich\UploadableField(mapping="comprobantes_inscripcion", fileNameProperty="urlArchivo")
+     * @Assert\File(
+     *  maxSize="1000000",
+     *  mimeTypes = {"application/pdf", "application/x-pdf"},
+     * )
      */
     private $urlArchivoFile;
 

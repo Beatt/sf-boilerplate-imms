@@ -230,5 +230,24 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         return $queryBuilder->getQuery()->getResult();
     }
 
+    public function getAutorizadosBySolicitud($id)
+    {
+        try {
+            $stmt = $this->_em->getConnection()->prepare('
+                SELECT COUNT(*) as Autorizados
+                FROM campo_clinico
+                WHERE (lugares_autorizados <> 0 AND lugares_autorizados IS NOT NULL)
+                AND solicitud_id = :id
+            ');
+
+            $stmt->bindParam('id', $id);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (DBALException $e) {
+        }
+
+        return 0;
+    }
+
 
 }

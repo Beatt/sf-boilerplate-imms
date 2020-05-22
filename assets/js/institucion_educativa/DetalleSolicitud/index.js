@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import { solicitudesGet } from "../api/camposClinicos";
+import { getActionNameByInstitucionEducativa, isActionDisabledByInstitucionEducativa } from "../../utils";
+import { SOLICITUD } from "../../constants";
 
 const ListaCampos = ({
     institucion,
@@ -15,20 +17,41 @@ const ListaCampos = ({
         const [ search, setSearch ] = useState('')
         const [ isLoading, toggleLoading ] = useState(false)
 
-        let isPago;
-        let isFactura;
 
-        if(pago)
+        function handleStatusAction(solicitud) {
+            { console.log(solicitud) }
+            if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
+        
+            let redirectRoute = ''
+            if(
+                solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES 
+            ) {
+                redirectRoute = `/instituciones/${institucion}/solicitudes/${solicitud.id}/campos-clinicos`
+                { console.log("opcion 1") }
+            } else {
+                { console.log("opcion 2") }
+                switch(solicitud.estatus) {
+            case SOLICITUD.CONFIRMADA:
+                redirectRoute = `/instituciones/${institucion}/solicitudes/${solicitud.id}/registrar`
+                }
+            }
+
+            window.location.href = redirectRoute
+        }
+
+        let isPago = false;
+        let isFactura = false;
+
+        if(pago[0]){
             isPago = true;
+            if(pago[0].factura)
+                isFactura = true;
+        }            
         else
             isPago = false;
 
-        if(pago[0].factura)
-            isFactura = true;
-        else
-            isFactura = false;
 
-
+        {console.log(solicitud)}
 
         useEffect(() => {
             if(
@@ -62,7 +85,7 @@ const ListaCampos = ({
         }
 
     
-        {console.log(pago)}
+        {console.log(campos)}
 
     return(
         <div className='row'>
@@ -74,7 +97,14 @@ const ListaCampos = ({
             </div>
 
             <div className="col-md-6 mt-10">
-                <p className='text-bold'>Acción: {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}</p>
+                Acción
+                <button
+                    className='btn btn-default'
+                    disabled={isActionDisabledByInstitucionEducativa(campos[0].solicitud.estatus)}
+                    onClick={() => handleStatusAction(campos[0].solicitud)}
+                >
+                    {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}
+                </button>
             </div>
 
 

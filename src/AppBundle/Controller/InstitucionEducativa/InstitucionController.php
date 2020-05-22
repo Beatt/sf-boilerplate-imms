@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class InstitucionController extends Controller
+class InstitucionController extends DIEControllerController
 {
     /**
      * @Route("/instituciones/{id}/editar", name="instituciones#update", methods={"POST", "GET"})
@@ -43,15 +44,18 @@ class InstitucionController extends Controller
 
             $result = $institucionManager->Create($form->getData());
 
-            return new JsonResponse([
+            $this->addFlash('success', 'Se ha guardado correctamente los datos de la instituciòn');
+
+            /*return new JsonResponse([
                 'message' => $result ?
                     "¡La información se actualizado correctamente!" :
                     '¡Ha ocurrido un problema, intenta más tarde!',
                 'status' => $result ?
                     Response::HTTP_OK :
                     Response::HTTP_UNPROCESSABLE_ENTITY
-            ]);
+            ]);*/
         }
+        
 
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByInstitucion(
             $institucion->getId()
@@ -100,7 +104,8 @@ class InstitucionController extends Controller
                         'cedulaIdentificacion'
                     ]
                 ]
-            )
+            ),
+            'errores' => $this->getFormErrors($form)
         ]);
     }
 

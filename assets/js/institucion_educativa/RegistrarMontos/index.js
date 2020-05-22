@@ -8,10 +8,10 @@ const Registrar = (
     solicitudId,
     institucion,
     carreras,
-    institucionId
+    institucionId,
+    errores
   }) => {
 
-    {console.log(carreras)}
   return (
     <form
       action={`/instituciones/${institucionId}/solicitudes/${solicitudId}/registrar`}
@@ -19,8 +19,8 @@ const Registrar = (
       encType='multipart/form-data'
     >
       <div className='row'>
-        <div className="col-md-12 mb-10">
-          <p>Se autorizaron {autorizados} Campos Clínicos para las carreras de&nbsp;
+        <div className="col-md-12 mt-10 mb-10">
+          <p>Se autorizaron {autorizados[0].autorizados} Campos Clínicos para las carreras de&nbsp;
             <strong>{carreras.map(carrera => carrera.nombre).join(', ')}</strong>
           </p>
         </div>
@@ -34,6 +34,7 @@ const Registrar = (
               <input
                 type="file"
                 name='solicitud_validacion_montos[urlArchivoFile]'
+                required={true}
               />
             </div>
           </div>
@@ -70,6 +71,7 @@ const Registrar = (
                         />
                       </td>
                       <td>
+                      <div className="form-group">
                         <input
                           className='form-control'
                           type="text"
@@ -77,9 +79,13 @@ const Registrar = (
                           id="solicitud_validacion_montos_montosCarreras_${index}_montoInscripcion"
                           defaultValue={carrera.montoInscripcion}
                           required={true}
+                          pattern="^\d+(\.\d+)*$"
+                          placeholder="Ingrese solo numeros"
                         />
+                        </div>
                       </td>
                       <td>
+                      <div className="form-group">
                         <input
                           className='form-control'
                           type="text"
@@ -87,7 +93,10 @@ const Registrar = (
                           id="solicitud_validacion_montos_montosCarreras_${index}_montoColegiatura"
                           defaultValue={carrera.montoColegiatura}
                           required={true}
+                          pattern="^\d+(\.\d+)*$"
+                          placeholder="Ingrese solo numeros"
                         />
+                        </div>
                       </td>
                     </tr>
                   )
@@ -107,6 +116,7 @@ const Registrar = (
                 type="checkbox"
                 id='solicitud_validacion_montos_confirmacionOficioAdjunto'
                 name='solicitud_validacion_montos[confirmacionOficioAdjunto]'
+                required={true}
               />&nbsp;Confirmo información
             </label>
           </p>

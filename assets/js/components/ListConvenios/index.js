@@ -26,9 +26,6 @@ const ListConvenios = ({ convenios }) => {
                   <td>{ item.convenio.carrera ? item.convenio.carrera.nivelAcademico.nombre : 'No asignado'}</td>
                   <td>{ item.convenio.cicloAcademico ? item.convenio.cicloAcademico.nombre : 'No asignado'}</td>
                   <td>{ item.convenio.carrera ? item.convenio.carrera.nombre : 'No asingado'}</td>
-                  <td>{item.convenio.carrera.nivelAcademico.nombre}</td>
-                  <td>{item.convenio.cicloAcademico.nombre}</td>
-                  <td>{item.convenio.carrera.nombre}</td>
                   <td>{item.convenio.vigencia}</td>
                 </tr>
               ))}

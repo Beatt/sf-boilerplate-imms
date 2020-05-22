@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SolicitudController extends Controller
+class SolicitudController extends DIEControllerController
 {
     /**
      * @Route("/instituciones/{id}/solicitudes", methods={"GET"}, name="solicitudes#index")
@@ -154,6 +155,7 @@ class SolicitudController extends Controller
 
         $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($solicitudId);
         $institucion = $institucionRepository->find($id);
+        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($solicitudId);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
@@ -182,6 +184,7 @@ class SolicitudController extends Controller
             ]);
         }
 
+
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
@@ -201,6 +204,7 @@ class SolicitudController extends Controller
                         ]
                     ]
                 ]),
+            'autorizados' => $autorizados
         ]);
     }
 
