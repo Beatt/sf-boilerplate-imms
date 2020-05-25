@@ -9,7 +9,7 @@ const ComprobanteOficio = (props) => {
 
 const LinkPago = (props) => {
     if(props.pago)
-        return (<a href={`/pago/${props.pago.id}/dowload`} target={'_blank'}>Descargar</a>)
+        return (<a href={`/pago/${props.pago.id}/download`} target={'_blank'}>Descargar</a>)
     return (<></>);
 }
 
