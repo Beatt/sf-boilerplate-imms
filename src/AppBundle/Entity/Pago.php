@@ -287,4 +287,15 @@ class Pago
      {
          return $this->fechaPago;
      }
+
+    /**
+     * @return string
+     */
+     public function getFechaPagoFormatted()
+     {
+         if($this->getFechaPago()){
+             return $this->getFechaPago()->format('d-m-Y');
+         }
+         return '';
+     }
 }

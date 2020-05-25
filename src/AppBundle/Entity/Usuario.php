@@ -26,7 +26,7 @@ class Usuario implements UserInterface
 
     /**
      * @var integer
-     * @ORM\Column(type="integer", unique=true)
+     * @ORM\Column(type="integer", unique=true, nullable=true)
      * @Assert\Length(
      *     min="6",
      *     max="15",
@@ -141,6 +141,12 @@ class Usuario implements UserInterface
 
     /** @var string */
     private $plainPassword;
+
+    /**
+     * @var Institucion
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Institucion", mappedBy="usuario")
+     */
+    private $institucion;
 
     public function __construct()
     {
@@ -589,4 +595,13 @@ class Usuario implements UserInterface
     {
         return $this->delegaciones;
     }
+
+    /**
+     * @return Institucion
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
 }

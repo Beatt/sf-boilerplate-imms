@@ -10,9 +10,12 @@ const Institucion = (props) => {
     const [web, setWeb] = React.useState(props.institucion && props.institucion.sitioWeb ? props.institucion.sitioWeb : '');
     const [email, setEmail] = React.useState(props.institucion && props.institucion.correo ? props.institucion.correo : '');
     const [fax, setFax] = React.useState(props.institucion && props.institucion.fax ? props.institucion.fax : '');
+    const [representante, setRepresentante] = React.useState(props.institucion && props.institucion.representante ? props.institucion.representante : '')
 
     const [errores, setErrores] = React.useState({});
     const [alert, setAlert] = React.useState({});
+
+    const [disableSelect, setDisableSelect] = React.useState(false)
 
     const handleSelectedInstitution = (value) => {
         const results = props.instituciones.filter(item => {
@@ -26,12 +29,15 @@ const Institucion = (props) => {
         setWeb(institucion.sitioWeb ? institucion.sitioWeb : '');
         setEmail(institucion.correo ? institucion.correo : '');
         setFax(institucion.fax ? institucion.fax : '');
+        setRepresentante(institucion.representante ? institucion.representante : '');
         props.callbackIsLoading(true);
         fetch('/api/came/convenio/' + institucion.id)
             .then(response => {
                 return response.json()}, error => {
                 console.error(error)})
-            .then(json => props.conveniosCallback(json.data))
+            .then(json => {
+                props.conveniosCallback(json.data);
+            })
             .finally(() => {props.callbackIsLoading(false);});
         props.parentCallback(institucion);
         return institucion ? institucion : {};
@@ -49,6 +55,7 @@ const Institucion = (props) => {
         data.append('institucion[fax]', fax);
         data.append('institucion[sitioWeb]', web);
         data.append('institucion[telefono]', phone);
+        data.append('institucion[representante]', representante);
         fetch('/api/came/institucion/' + selectedInstitution.id, {
             method: 'post',
             body: data
@@ -63,6 +70,12 @@ const Institucion = (props) => {
                 message: json.message,
                 type: (json.status ? 'success' : 'danger')
             }))
+            if(json.data){
+                props.parentCallback(json.data);
+            }
+            if(json.status){
+                setDisableSelect(true);
+            }
         }).finally(() => {
             props.callbackIsLoading(false)
         });
@@ -86,7 +99,7 @@ const Institucion = (props) => {
                                     value={selectedInstitution.id ? selectedInstitution.id : ''}
                                     onChange={e => handleSelectedInstitution(e.target.value)}
                                     required={true}
-                                    disabled={props.disableSelect}
+                                    disabled={props.disableSelect || disableSelect}
                             >
                                 <option value="">Seleccionar ...</option>
                                 {props.instituciones.map(institucion => {
@@ -104,7 +117,20 @@ const Institucion = (props) => {
 
                 <div style={{display: (selectedInstitution.id ? 'block' : 'none')}}>
                     <div className="row">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
+                            <div className={`form-group ${errores.representante ? 'has-error has-feedback' : ''}`}>
+                                <label className="control-label" htmlFor="representante">Representante:</label>
+                                <input id="representante"
+                                       className={'form-control'}
+                                       required={true}
+                                       type="text"
+                                       value={representante}
+                                       onChange={e => setRepresentante(e.target.value)}
+                                />
+                                <span className="help-block">{errores.representante ? errores.representante[0] : ''}</span>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
                             <div className={`form-group ${errores.rfc ? 'has-error has-feedback' : ''}`}>
                                 <label className="control-label" htmlFor="rfc">RFC:</label>
                                 <input id="rfc"
@@ -117,7 +143,7 @@ const Institucion = (props) => {
                                 <span className="help-block">{errores.rfc ? errores.rfc[0] : ''}</span>
                             </div>
                         </div>
-                        <div className="col-md-9">
+                        <div className="col-md-4">
                             <div className={`form-group ${errores.direccion ? 'has-error has-feedback' : ''}`}>
                                 <label htmlFor="domicilio">Domicilio:</label>
                                 <input id={'domicilio'} className={'form-control'}
