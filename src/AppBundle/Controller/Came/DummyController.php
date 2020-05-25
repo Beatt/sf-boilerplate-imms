@@ -4,6 +4,7 @@
 namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\Solicitud;
+use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
@@ -78,5 +79,26 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
         }
         $downloadHandler = $this->get('vich_uploader.download_handler');
         return $downloadHandler->downloadObject($solicitud, 'urlArchivoFile');
+    }
+
+    /**
+     * @Route("/came/dummy/solicitud/{solicitud_id}/terminar", methods={"GET"}, name="came.dummy.solicitar.terminar")
+     * @param SolicitudManagerInterface $solicitudManager
+     * @param $solicitud_id
+     */
+    public function dummySolicitudTerminar(SolicitudManagerInterface $solicitudManager, $solicitud_id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($solicitud_id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $solicitud_id
+            );
+        }
+
+        $solicitudManager->finalizar($solicitud);
+        return $this->jsonResponse(['status' => true]);
     }
 }

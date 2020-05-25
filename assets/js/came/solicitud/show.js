@@ -1,6 +1,34 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
 
+const ComprobanteOficio = (props) => {
+    if(props.solicitud.fechaComprobante)
+        return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+    return (<></>);
+}
+
+const LinkPago = (props) => {
+    if(props.pago)
+        return (<a href={`/pago/${props.pago.id}/dowload`} target={'_blank'}>Descargar</a>)
+    return (<></>);
+}
+
+const LinkFactura = (props) => {
+    if(props.factura)
+        return (<a href={`/factura/${props.factura.id}/download`} target={'_blank'}>Descargar</a>)
+    return (<></>);
+}
+
+const searchPago = (pagos, campo_clinico) =>{
+    const results =  pagos.filter(item => {
+        return campo_clinico.referenciaBancaria.toString() === item.referenciaBancaria.toString();
+    });
+    if(results.length > 0){
+        return results[0];
+    }
+    return null;
+}
+
 const DetalleSolicitudDetallado = (props) => {
     const [isLoading, setIsLoading] = React.useState(false)
 
@@ -62,8 +90,8 @@ const DetalleSolicitudDetallado = (props) => {
                                 <td>{cc.lugaresAutorizados}</td>
                                 <td>{cc.fechaInicialFormatted}</td>
                                 <td>{cc.fechaFinalFormatted}</td>
-                                <td></td>
-                                <td></td>
+                                <td><LinkPago pago={searchPago(props.solicitud.pagos, cc)}/></td>
+                                <td><LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/></td>
                             </tr>
                         )
                     })}
@@ -75,11 +103,6 @@ const DetalleSolicitudDetallado = (props) => {
 }
 
 const ExpedienteUnico = (props) => {
-    const Comprobante = () => {
-        if(props.solicitud.fechaComprobante)
-            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
-        return (<></>);
-    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -94,17 +117,17 @@ const ExpedienteUnico = (props) => {
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
                     <td>{props.solicitud.fechaComprobanteFormatted}</td>
-                    <td><Comprobante/></td>
+                    <td><ComprobanteOficio solicitud={props.solicitud}/></td>
                 </tr>
                 <tr>
                     <td>Comprobante de Pago</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.pago? props.solicitud.pago.fechaPagoFormatted: ''}</td>
+                    <td><LinkPago pago={props.solicitud.pago}/></td>
                 </tr>
                 <tr>
                     <td>Factura (CFDI)</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.pago && props.solicitud.pago.factura? props.solicitud.pago.factura.fechaFacturacionFormatted: ''}</td>
+                    <td><LinkFactura factura={props.solicitud.pago && props.solicitud.pago.factura? props.solicitud.pago.factura :null}/></td>
                 </tr>
                 </tbody>
             </table>
@@ -113,11 +136,6 @@ const ExpedienteUnico = (props) => {
 }
 
 const ExpedienteDetallado = (props) => {
-    const Comprobante = () => {
-        if(props.solicitud.fechaComprobante)
-            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
-        return (<></>);
-    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -132,7 +150,7 @@ const ExpedienteDetallado = (props) => {
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
                     <td>{props.solicitud.fechaComprobanteFormatted}</td>
-                    <td><Comprobante/></td>
+                    <td><ComprobanteOficio solicitud={props.solicitud}/></td>
                 </tr>
                 </tbody>
             </table>

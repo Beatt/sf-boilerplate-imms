@@ -632,4 +632,17 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     {
         $this->confirmacionOficioAdjunto = $confirmacionOficioAdjunto;
     }
+
+    /**
+     * @return Pago|null
+     */
+    public function getPago()
+    {
+        $result = null;
+        $pagos = $this->getPagos();
+        if(count($pagos)>0) {
+            $result = $pagos[0];
+        }
+        return $result;
+    }
 }

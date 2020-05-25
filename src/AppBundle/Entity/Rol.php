@@ -38,6 +38,12 @@ class Rol
      */
     private $permisos;
 
+    /**
+     * @var String
+     * @ORM\Column(type="string", length=10)
+     */
+    private $clave;
+
     public function __construct()
     {
         $this->usuarios = new ArrayCollection();
@@ -132,4 +138,23 @@ class Rol
     {
         return $this->permisos;
     }
+
+    /**
+     * @return String
+     */
+    public function getClave()
+    {
+        return $this->clave;
+    }
+
+    /**
+     * @param String $clave
+     * @return Rol
+     */
+    public function setClave($clave)
+    {
+        $this->clave = $clave;
+        return $this;
+    }
+
 }

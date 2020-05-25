@@ -46,6 +46,13 @@ const SolicitudCreate = (props) => {
         });
     }
 
+    const isInstitucionComplete = () => {
+        return selectedInstitution.id &&
+            selectedInstitution.representante && selectedInstitution.correo
+            && selectedInstitution.rfc && selectedInstitution.direccion
+            && selectedInstitution.telefono;
+    }
+
     return (
       <>
           <Loader show={isLoading}/>
@@ -62,7 +69,7 @@ const SolicitudCreate = (props) => {
               disableSelect={!!solicitud}
               conveniosCallback={result => setConvenios(result)}
           />
-          <div style={{display : (selectedInstitution.id ? 'block' : 'none')}}>
+          <div style={{display : (isInstitucionComplete()? 'block' : 'none')}}>
               <Convenios convenios={convenios? convenios : []}/>
               <CamposClinicos campos={camposClinicos} />
               <CampoClinicoForm
@@ -80,6 +87,11 @@ const SolicitudCreate = (props) => {
                       </div>
                   </div>
               </form>
+          </div>
+          <div style={{display : (isInstitucionComplete()? 'none' : 'block')}}>
+              <div className={`alert alert-warning `}>
+                  Es necesario capturar la información de la institución para poder crear una nueva solicitud
+              </div>
           </div>
       </>
     );

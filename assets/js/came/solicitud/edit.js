@@ -39,6 +39,18 @@ const SolicitudEdit = (props) => {
         });
     }
 
+    const isInstitucionComplete = () => {
+        return props.solicitud.institucion.id &&
+            props.solicitud.institucion.representante && props.solicitud.institucion.correo
+            && props.solicitud.institucion.rfc && props.solicitud.institucion.direccion
+            && props.solicitud.institucion.telefono;
+    }
+
+    const callbackFunction = (institucion) => {
+        const institucion_o = Object.assign(props.solicitud.institucion, institucion);
+        props.solicitud = Object.assign(props.solicitud, institucion_o);
+    }
+
     return (
         <>
             <Loader show={isLoading}/>
@@ -48,25 +60,33 @@ const SolicitudEdit = (props) => {
             <Institucion
                 instituciones={props.instituciones}
                 callbackIsLoading = {callbackIsLoading}
+                parentCallback = {callbackFunction}
                 disableSelect={true}
                 institucion={props.solicitud.institucion}
             />
-            <Convenios convenios={props.solicitud.institucion.convenios}/>
-            <CamposClinicos campos={camposClinicos} />
-            <CampoClinicoForm
-                unidades={props.unidades}
-                convenios={props.solicitud.institucion.convenios}
-                callbackCampoClinico = {callbackCampoClinico}
-                callbackIsLoading = {callbackIsLoading}
-            />
-            <form onSubmit={handleSolicitudSubmit}>
-                <div className="row">
-                    <div className="col-md-12">
-                        <label htmlFor="btn_solicitud">&#160;</label>
-                        <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud</button>
+            <div style={{display : (isInstitucionComplete()? 'block' : 'none')}}>
+                <Convenios convenios={props.solicitud.institucion.convenios}/>
+                <CamposClinicos campos={camposClinicos} />
+                <CampoClinicoForm
+                    unidades={props.unidades}
+                    convenios={props.solicitud.institucion.convenios}
+                    callbackCampoClinico = {callbackCampoClinico}
+                    callbackIsLoading = {callbackIsLoading}
+                />
+                <form onSubmit={handleSolicitudSubmit}>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <label htmlFor="btn_solicitud">&#160;</label>
+                            <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud</button>
+                        </div>
                     </div>
+                </form>
+            </div>
+            <div style={{display : (isInstitucionComplete()? 'none' : 'block')}}>
+                <div className={`alert alert-warning `}>
+                    Es necesario capturar la información de la institución para poder modificar la solicitud
                 </div>
-            </form>
+            </div>
         </>
     );
 }

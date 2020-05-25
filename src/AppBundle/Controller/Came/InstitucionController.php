@@ -4,6 +4,7 @@
 namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\Institucion;
+use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,12 +27,29 @@ class InstitucionController extends \AppBundle\Controller\DIEControllerControlle
                 'Not found for id ' . $id
             );
         }
+        $correo_anterior = $institucion->getCorreo();
         $form = $this->createForm(InstitucionType::class, $institucion);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $institucionManager->Create($form->getData());
-            return $this->jsonResponse(['status' => $result,
-                'message' => $result? 'Institución Actualizada con éxito' : 'Se presento un problema al actualizar la institucion']);
+            $institucion = $this->getDoctrine()
+                ->getRepository(Institucion::class)
+                ->find($id);
+            if($institucion->getCorreo() !== $correo_anterior){
+                try{
+                    $usuario = $this->getDoctrine()->getRepository(Usuario::class)->findOneBy(['correo' => $correo_anterior]);
+                    if($usuario){
+                        $usuario->setActivo(false);
+                        $this->getDoctrine()->getManager()->persist($usuario);
+                    }
+                    $institucion->setUsuario(null);
+                    $this->getDoctrine()->getManager()->persist($institucion);
+                    $this->getDoctrine()->getManager()->flush();
+                }catch (\Exception $ex){
+                    return $this->failedResponse($ex->getMessage());
+                }
+            }
+            return $this->jsonResponse($result);
         }
         return $this->jsonErrorResponse($form, ['message' => 'Se presento un problema al actualizar la institucion']);
     }
