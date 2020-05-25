@@ -1,0 +1,37 @@
+<div>
+  <div>
+      <img src="{{ asset('build/logo_IMSS.png') }}" alt="IMSS" />
+  </div>
+  <div>
+      <h1>Instituto Mexicano del Seguro Social</h1>
+  </div>
+</div>
+
+{% if solicitud is not null %}
+<div>
+  <p style="text-align: right;" >{{ solicitud.noSolicitud }}</p>
+  <hr />
+  <h2>Formato para pago de Cuota de Recuperación para Solicitudes de Campos Clínicos </h2>
+
+  <h4>Datos de la Solicitud</h4>
+  Institución: <h3>{{ institucion.nombre | default("")  }}</h3>
+  <p>RFC: {{ institucion.rfc | default("")}}</p>
+
+  <h4>Datos para el pago:</h4>
+  No. de Referencia:
+
+  <p>Scotiabank Inverlat, S.A. de C.V.</p>
+  <p>No de cuenta: 00105530202</p>
+  <p>Clabe : 044180001055302023</p>
+
+  <p>Nombre de la Cuenta:</p>
+  <p>R19 GYR IMSS DMF Fondo de Fomento a la Educación Ing. 2</p>
+
+  <p>Importe: $ {{ campos| map(c => c.monto) |reduce(
+      (elem, acc) => elem + acc, 0)
+    | number_format(2, '.', ',') }}
+
+    </p>
+
+</div>
+{% endif %}

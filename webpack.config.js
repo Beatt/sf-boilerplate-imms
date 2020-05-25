@@ -18,6 +18,9 @@ Encore
   .enableVersioning(Encore.isProduction())
   .enableReactPreset()
   .enableSassLoader()
+  .copyFiles({
+    from: './assets/images'
+  })
 ;
 
 module.exports = Encore.getWebpackConfig();
