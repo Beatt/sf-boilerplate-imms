@@ -1,37 +1,74 @@
 <div>
   <div>
-      <img src="{{ asset('build/logo_IMSS.png') }}" alt="IMSS" />
+      <img src="{#{ asset('build/logo_IMSS.png') }#}" alt="IMSS" />
   </div>
-  <div>
+  <div style="text-align: center;">
       <h1>Instituto Mexicano del Seguro Social</h1>
   </div>
+  <p style="text-align: right;" >{{ solicitud.noSolicitud }}</p>
 </div>
+
+<hr />
 
 {% if solicitud is not null %}
 <div>
-  <p style="text-align: right;" >{{ solicitud.noSolicitud }}</p>
+  <div>
+    <h3>Formato para pago de Cuota de Recuperación para Solicitudes de Campo(s) Clínico(s) </h3>
+    <p>{{ institucion.nombre | default("")  }}</p>
+    <p>RFC: {{ institucion.rfc | default("")}}</p>
+  </div>
   <hr />
-  <h2>Formato para pago de Cuota de Recuperación para Solicitudes de Campos Clínicos </h2>
 
-  <h4>Datos de la Solicitud</h4>
-  Institución: <h3>{{ institucion.nombre | default("")  }}</h3>
-  <p>RFC: {{ institucion.rfc | default("")}}</p>
+  <div>
+    <h3 style="text-align: center;" >Forma de Pago: Solicitud de Campos Clínicos</h3>
+    <p>Detalle de campos clínicos que cubre el pago por solicitud</p>
+    <p>No. de Campos Autorizados: {{ campos|length }} </p>
 
-  <h4>Datos para el pago:</h4>
-  No. de Referencia:
+    <table style="text-align: center;">
+      <thead>
+        <th>Sede</th>
+        <th>Campo Clínico</th>
+        <th>Carrera</th>
+        <th>No. de lugares autorizados</th>
+        <th>Período</th>
+        <th>Número de Semanas</th>
+      </thead>
+      <tbody>
+        {% for campo in campos %}
+          <tr>
+            <td>{{ campo.unidad.nombre | default("") }}</td>
+            <td>{{ campo.nombreCicloAcademico| default("") }}</td>
+            <td>{{ campo.displayCarrera| default("") }}</td>
+            <td>{{ campo.lugaresAutorizados| default("") }}</td>
+            <td>{{ campo.fechaInicial|date("d/m/Y")| default("") }}
+              - {{ campo.fechaFinal|date("d/m/Y")| default("") }} </td>
+            <td>{{ max(  ( ( date(campo.fechaInicial|default(""))
+                        .diff(date(campo.fechaFina|default()))
+                          .days + 1 ) / 7.0 )|round(0, 'ceil')
+              , 1)  }} </td>
+          </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <hr />
+  <div>
+    <h3 style="text-align: center;" >Datos para realizar el pago:</h3>
+    <p>Banco: Scotiabank Inverlat, S.A. de C.V.</p>
+    <p>No de cuenta: 00105530202</p>
+    <p>CLABE: 044180001055302023</p>
 
-  <p>Scotiabank Inverlat, S.A. de C.V.</p>
-  <p>No de cuenta: 00105530202</p>
-  <p>Clabe : 044180001055302023</p>
+    <p>Nombre de la Cuenta:
+    R19 GYR IMSS DMF Fondo de Fomento a la Educación Ing. 2</p>
 
-  <p>Nombre de la Cuenta:</p>
-  <p>R19 GYR IMSS DMF Fondo de Fomento a la Educación Ing. 2</p>
+    <p>No. de Referecia:{{ solicitud.referenciaBancaria|default("") }} </p>
 
-  <p>Importe: $ {{ campos| map(c => c.monto) |reduce(
-      (elem, acc) => elem + acc, 0)
-    | number_format(2, '.', ',') }}
+    <p>Importe: $ {{ campos| map(c => c.monto) |reduce(
+        (elem, acc) => elem + acc, 0)
+      | number_format(2, '.', ',') }}
 
     </p>
+  </div>
 
 </div>
 {% endif %}

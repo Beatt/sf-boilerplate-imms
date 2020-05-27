@@ -86,7 +86,10 @@ class FormatoPagoController extends DIEControllerController
       'lugaresAutorizados',
       'referenciaBancaria',
       'monto',
-      'estatus' => ['id', 'nombre']
+      'estatus' => ['id', 'nombre'],
+      'unidad' => ['nombre'],
+      'nombreCicloAcademico',
+      'displayCarrera'
     ]]);
   }
 }

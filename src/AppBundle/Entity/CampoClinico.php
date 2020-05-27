@@ -287,6 +287,19 @@ class CampoClinico implements ComprobantePagoInterface
         return $this->convenio;
     }
 
+    public function getNombreCicloAcademico() {
+      return $this->convenio ?
+        $this->convenio->getCicloAcademico()->getNombre() : "";
+    }
+
+    public function getDisplayCarrera() {
+      $carrera = $this->convenio ?
+        $this->convenio->getCarrera() : null;
+
+      return $carrera ?
+        $carrera->getDisplayName() : "";
+    }
+
     /**
      * @param Solicitud $solicitud
      * @return CampoClinico
