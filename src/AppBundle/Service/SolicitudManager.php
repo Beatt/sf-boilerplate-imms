@@ -122,21 +122,23 @@ class SolicitudManager implements SolicitudManagerInterface
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false)
     {
         $solicitud->setValidado($is_valid);
-        if($is_valid){
-            $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
-        }else{
-            $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
-            $this->sendEmailMontosInvalidos($solicitud);
-        }
         try {
+            if ($is_valid) {
+                $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
+                $this->processMontos($solicitud);
+            } else {
+                $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
+                $this->sendEmailMontosInvalidos($solicitud);
+            }
+
             $this->entityManager->persist($solicitud);
             $this->entityManager->flush();
-            if($solicitud->getValidado()){
+            if ($solicitud->getValidado()) {
                 foreach ($montos as $monto) {
-                    if($monto->getMontoInscripcion() && $monto->getMontoColegiatura()){
+                    if ($monto->getMontoInscripcion() && $monto->getMontoColegiatura()) {
                         $this->entityManager->persist($monto);
                         $this->entityManager->flush();
-                    }else{
+                    } else {
                         throw new \Exception("Montos no puedes ser vacios");
                     }
                 }
@@ -218,5 +220,24 @@ class SolicitudManager implements SolicitudManagerInterface
             )
         ;
         $this->mailer->send($message);
+    }
+
+    private function processMontos(Solicitud $solicitud)
+    {
+        $monto_solicitud = 0;
+        foreach ($solicitud->getCampoClinicos() as $campoClinico) {
+            $total_campo = 0;
+            if($campoClinico->getConvenio()->getCicloAcademico()->getId() === 1){
+                $total_campo = $campoClinico->getSubTotal() * $campoClinico->getWeeks();
+            }else{
+                $total_campo = $campoClinico->getSubTotal();
+            }
+            $campoClinico->setMonto($total_campo);
+            $campoClinico+=$total_campo;
+            $this->entityManager->persist($campoClinico);
+        }
+        $solicitud->setMonto($monto_solicitud);
+        $this->entityManager->persist($solicitud);
+        $this->entityManager->flush();
     }
 }
