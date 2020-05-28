@@ -23,17 +23,23 @@ class FormatoPagoController extends DIEControllerController
                               SolicitudRepositoryInterface $solicitudRepository) {
 
     $solicitud = $solicitudRepository->find($solicitudId);
+
     $institucion = $solicitud ? $solicitud->getInstitucion() : null;
+
     $institucion = $institucion && $institucion->getId() == $institucionId ?
       $institucion : null;
     $solicitud = $institucion ? $solicitud : null;
     $campos = $solicitud && $solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
       ? $solicitud->getCamposClinicos() : null;
 
+    $esPagoUnico =  $solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO ? true : false;
+    $esPagoUnico = false;
+
     return $this->render('institucion_educativa/formatos/ReferenciaPago.html.twig',
       ['institucion' => $this->getNormalizeInstitucion($institucion),
         'solicitud' => $this->getNormalizeSolicitud($solicitud) ,
-      'campos' => $this->getNormalizeCampos($campos)]);
+      'campos' => $this->getNormalizeCampos($campos),
+      'esPagoUnico' => $esPagoUnico]);
   }
 
   /**

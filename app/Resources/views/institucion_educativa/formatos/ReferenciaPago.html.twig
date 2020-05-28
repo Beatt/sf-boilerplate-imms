@@ -1,37 +1,48 @@
-<div>
-  <div>
-      <img src="{#{ asset('build/logo_IMSS.png') }#}" alt="IMSS" />
+<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/modules/accordion_blocks/accordion_init.css?q1wfy3">
+<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/libraries/superfish/css/superfish.css?q1wfy3">
+<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/libraries/superfish/css/superfish-smallscreen.css?q1wfy3">
+<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/libraries/superfish/style/space.css?q1wfy3">
+<link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.css" media="all">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600,700">
+<script src="http://educacionensalud.imss.gob.mx/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js?v=1.10.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.js"></script>
+<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/themes/ces/assets/css/custom.css?q1wfy3">
+<link rel="stylesheet" href="{{ asset('build/layout.css') }}">
+<style>
+.center{
+  text-align: center;
+}
+</style>
+
+<div class="container" style="border-bottom: 1px solid #a3a3a3">
+  <div class="row">
+    <img src="{{ asset('build/logo_IMSS.png') }}" alt="IMSS" style="float: left;" />
+    <h1 style="text-align: center;  position: relative; top: 60px; font-weight: bold; color: black;">Instituto Mexicano del Seguro Social</h1>
   </div>
-  <div style="text-align: center;">
-      <h1>Instituto Mexicano del Seguro Social</h1>
-  </div>
-  <p style="text-align: right;" >{{ solicitud.noSolicitud }}</p>
+  <p style="text-align: right;" class="mb-20" ><strong>Número de solicitud: {{ solicitud.noSolicitud }}</strong></p>
 </div>
 
-<hr />
-
 {% if solicitud is not null %}
-<div>
-  <div>
-    <h3>Formato para pago de Cuota de Recuperación para Solicitudes de Campo(s) Clínico(s) </h3>
-    <p>{{ institucion.nombre | default("")  }}</p>
-    <p>RFC: {{ institucion.rfc | default("")}}</p>
+<div class="container">
+  <div class="mt-20" style="border-bottom: 1px solid #a3a3a3">
+    <h3 style="font-weight: bold; color: black;">Formato para pago de Cuota de Recuperación para Solicitudes de Campo(s) Clínico(s)</h3>
+    <p class="mt-10 mb-10">{{ institucion.nombre | default("")  }}</p>
+    <p class="mt-10 mb-20">RFC: {{ institucion.rfc | default("")}}</p>
   </div>
-  <hr />
 
-  <div>
-    <h3 style="text-align: center;" >Forma de Pago: Solicitud de Campos Clínicos</h3>
-    <p>Detalle de campos clínicos que cubre el pago por solicitud</p>
-    <p>No. de Campos Autorizados: {{ campos|length }} </p>
+  <div style="border-bottom: 1px solid #a3a3a3">
+    <h3 style="text-align: center; font-weight: bold; color: black;" class="mt-20 mb-10" >Forma de Pago: {{esPagoUnico ? "Solicitud de Campos Clínicos" : "Por campo clínico" }}</h3>
+    <p class="mt-10 mb-10">Detalle de campos clínicos que cubre el pago por solicitud</p>
+    {% if esPagoUnico %} <p class="mt-10 mb-10">No. de Campos Autorizados: {{ campos|length }} </p> {% endif %}
 
-    <table style="text-align: center;">
-      <thead>
-        <th>Sede</th>
-        <th>Campo Clínico</th>
-        <th>Carrera</th>
-        <th>No. de lugares autorizados</th>
-        <th>Período</th>
-        <th>Número de Semanas</th>
+    <table class="table table-bordered" style="text-align: center;" >
+      <thead style="background-color: lightgrey;">
+        <th class="center">Sede</th>
+        <th class="center">Campo Clínico</th>
+        <th class="center">Carrera</th>
+        <th class="center">No. de lugares autorizados</th>
+        <th class="center">Período</th>
+        <th class="center">Número de Semanas</th>
       </thead>
       <tbody>
         {% for campo in campos %}
@@ -51,19 +62,19 @@
       </tbody>
     </table>
   </div>
-  <hr />
-  <div>
-    <h3 style="text-align: center;" >Datos para realizar el pago:</h3>
-    <p>Banco: Scotiabank Inverlat, S.A. de C.V.</p>
-    <p>No de cuenta: 00105530202</p>
-    <p>CLABE: 044180001055302023</p>
 
-    <p>Nombre de la Cuenta:
+  <div class="mt-20">
+    <h3 class="mb-10" style="text-align: center; font-weight: bold; color: black;" >Datos para realizar el pago:</h3>
+    <p class="mb-10">Banco: Scotiabank Inverlat, S.A. de C.V.</p>
+    <p class="mb-10">No de cuenta: 00105530202</p>
+    <p class="mb-10">CLABE: 044180001055302023</p>
+
+    <p class="mb-10">Nombre de la Cuenta:
     R19 GYR IMSS DMF Fondo de Fomento a la Educación Ing. 2</p>
 
-    <p>No. de Referecia:{{ solicitud.referenciaBancaria|default("") }} </p>
+    <p class="mb-10" style="font-weight: bold;">No. de Referecia:{{ solicitud.referenciaBancaria|default("") }} </p>
 
-    <p>Importe: $ {{ campos| map(c => c.monto) |reduce(
+    <p class="mb-10" style="font-weight: bold;">Importe: $ {{ campos| map(c => c.monto) |reduce(
         (elem, acc) => elem + acc, 0)
       | number_format(2, '.', ',') }}
 
