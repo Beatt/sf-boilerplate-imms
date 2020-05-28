@@ -329,6 +329,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
+     * @return string
+     */
+    public function getFechaComprobanteFormatted()
+    {
+        return $this->getFechaComprobante()? $this->getFechaComprobante()->format('d-m-Y') : '';
+    }
+
+    /**
      * @param float $monto
      * @return Solicitud
      */

@@ -287,6 +287,19 @@ class CampoClinico implements ComprobantePagoInterface
         return $this->convenio;
     }
 
+    public function getNombreCicloAcademico() {
+      return $this->convenio ?
+        $this->convenio->getCicloAcademico()->getNombre() : "";
+    }
+
+    public function getDisplayCarrera() {
+      $carrera = $this->convenio ?
+        $this->convenio->getCarrera() : null;
+
+      return $carrera ?
+        $carrera->getDisplayName() : "";
+    }
+
     /**
      * @param Solicitud $solicitud
      * @return CampoClinico
@@ -390,5 +403,21 @@ class CampoClinico implements ComprobantePagoInterface
     public function getAsignatura()
     {
         return $this->asignatura;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFechaInicialFormatted()
+    {
+        return $this->getFechaInicial()->format('d/m/Y');
+    }
+
+    /**
+     * @return string
+     */
+    public function getFechaFinalFormatted()
+    {
+        return $this->getFechaFinal()->format('d/m/Y');
     }
 }

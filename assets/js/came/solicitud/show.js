@@ -49,9 +49,6 @@ const DetalleSolicitudDetallado = (props) => {
                         <th>Comprobante</th>
                         <th>Factura</th>
                     </tr>
-                    <tr>
-                        <th><input type="text" placeholder={'Sede'}/></th>
-                    </tr>
                     </thead>
                     <tbody>
                     {camposClinicos.map(cc => {
@@ -63,8 +60,8 @@ const DetalleSolicitudDetallado = (props) => {
                                 <td>{cc.convenio.carrera.nombre}</td>
                                 <td>{cc.lugaresSolicitados}</td>
                                 <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicial}</td>
-                                <td>{cc.fechaFinal}</td>
+                                <td>{cc.fechaInicialFormatted}</td>
+                                <td>{cc.fechaFinalFormatted}</td>
                                 <td></td>
                                 <td></td>
                             </tr>
@@ -78,6 +75,11 @@ const DetalleSolicitudDetallado = (props) => {
 }
 
 const ExpedienteUnico = (props) => {
+    const Comprobante = () => {
+        if(props.solicitud.fechaComprobante)
+            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+        return (<></>);
+    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -91,8 +93,8 @@ const ExpedienteUnico = (props) => {
                 <tbody>
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.fechaComprobanteFormatted}</td>
+                    <td><Comprobante/></td>
                 </tr>
                 <tr>
                     <td>Comprobante de Pago</td>
@@ -111,6 +113,11 @@ const ExpedienteUnico = (props) => {
 }
 
 const ExpedienteDetallado = (props) => {
+    const Comprobante = () => {
+        if(props.solicitud.fechaComprobante)
+            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+        return (<></>);
+    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -124,12 +131,8 @@ const ExpedienteDetallado = (props) => {
                 <tbody>
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                </tr>
-                <tr>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
+                    <td>{props.solicitud.fechaComprobanteFormatted}</td>
+                    <td><Comprobante/></td>
                 </tr>
                 </tbody>
             </table>
@@ -195,8 +198,8 @@ const DetalleSolicitudUnico = (props) => {
                                 <td>{cc.convenio.carrera.nombre}</td>
                                 <td>{cc.lugaresSolicitados}</td>
                                 <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicial}</td>
-                                <td>{cc.fechaFinal}</td>
+                                <td>{cc.fechaInicialFormatted}</td>
+                                <td>{cc.fechaFinalFormatted}</td>
                             </tr>
                         )
                     })}
@@ -210,7 +213,7 @@ const DetalleSolicitudUnico = (props) => {
 const SolicitudShow = (props) => {
     const Detalle = () => {
         if (props.solicitud.tipoPago === 'Multiple')
-            return (<DetalleSolicitudMultiple solicitud={props.solicitud}/>)
+            return (<DetalleSolicitudDetallado solicitud={props.solicitud}/>)
         return (<DetalleSolicitudUnico solicitud={props.solicitud}/>)
     }
 
@@ -268,7 +271,7 @@ const SolicitudShow = (props) => {
                                     <td>{convenio.carrera.nivelAcademico.nombre}</td>
                                     <td>{convenio.cicloAcademico.nombre}</td>
                                     <td>{convenio.carrera.nombre}</td>
-                                    <td>{convenio.vigencia}</td>
+                                    <td>{convenio.vigenciaFormatted}</td>
                                 </tr>
                             )
                         })}
