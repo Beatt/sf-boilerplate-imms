@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\InstitucionEducativa;
 
 use AppBundle\Form\Type\InstitucionType;
+use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
@@ -21,6 +22,7 @@ class InstitucionController extends Controller
      * @param InstitucionManagerInterface $institucionManager
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
      * @return Response
      */
     public function updateAction(
@@ -28,7 +30,8 @@ class InstitucionController extends Controller
         Request $request,
         InstitucionManagerInterface $institucionManager,
         InstitucionRepositoryInterface $institucionRepository,
-        CampoClinicoRepositoryInterface $campoClinicoRepository
+        CampoClinicoRepositoryInterface $campoClinicoRepository,
+        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
     ) {
         $institucion = $institucionRepository->find($id);
 
@@ -58,49 +61,8 @@ class InstitucionController extends Controller
         );
 
         return $this->render('institucion_educativa/institucion/update.html.twig', [
-            'convenios' => $this->get('serializer')->normalize(
-                $camposClinicos,
-            'json',
-            [
-                'attributes' => [
-                    'id',
-                    'cicloAcademico' => [
-                        'nombre'
-                    ],
-                    'convenio' => [
-                        'id',
-                        'vigencia',
-                        'label',
-                        'carrera' => [
-                            'nombre',
-                            'nivelAcademico' => [
-                                'nombre'
-                            ]
-                        ],
-                        'cicloAcademico' => [
-                            'nombre'
-                        ]
-                    ]
-                ]
-            ]
-            ),
-            'institucion' => $this->get('serializer')->normalize(
-                $institucion,
-                'json',
-                [
-                    'attributes' => [
-                        'id',
-                        'nombre',
-                        'rfc',
-                        'direccion',
-                        'correo',
-                        'telefono',
-                        'fax',
-                        'sitioWeb',
-                        'cedulaIdentificacion'
-                    ]
-                ]
-            )
+            'convenios' => $institucionPerfilNormalizer->normalizeCamposClinicos($camposClinicos),
+            'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion)
         ]);
     }
 
