@@ -7,6 +7,7 @@ use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
+use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
@@ -136,6 +137,7 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="solicitudes#record", methods={"POST", "GET"})
+     ** @Route("/instituciones/{id}/solicitudes/{solicitudId}/editar", name="solicitudes#recordEdit", methods={"POST", "GET"})
      * @param integer $id
      * @param $solicitudId
      * @param Request $request
@@ -152,6 +154,9 @@ class SolicitudController extends DIEControllerController
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         EntityManagerInterface $entityManager
     ) {
+
+        $routeName = $request->attributes->get('_route');
+
 
         $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($solicitudId);
         $institucion = $institucionRepository->find($id);
@@ -204,7 +209,62 @@ class SolicitudController extends DIEControllerController
                         ]
                     ]
                 ]),
-            'autorizados' => $autorizados
+            'autorizados' => $autorizados,
+            'route' => $routeName
+        ]);
+    }
+
+    /**
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrarPago", name="solicitudes#recordPayment", methods={"POST", "GET"})
+     * @param integer $id
+     * @param $solicitudId
+     * @param Request $request
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function recordPaymentAction(
+        $id,
+        $solicitudId,
+        Request $request,
+        InstitucionRepositoryInterface $institucionRepository,
+        CampoClinicoRepositoryInterface $campoClinicoRepository,
+        EntityManagerInterface $entityManager
+    ) {
+
+        $institucion = $institucionRepository->find($id);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
+        $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
+            'action' => $this->generateUrl("solicitudes#recordPayment", [
+                'id' => $id,
+                'solicitudId' => $solicitudId,
+            ]),
+            'method' => 'POST'
+        ]);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $data = $form->getData();
+            $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_FOFOE);
+            $entityManager->persist($data);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Se ha guardado correctamente los montos');
+
+            return $this->redirectToRoute('solicitudes#index', [
+                'id' => $id
+            ]);
+        }
+
+        return $this->render('institucion_educativa/solicitud/payment.html.twig',[
+            'institucion' => $institucion,
+            'solicitud' => $this->getNormalizeSolicitud($solicitud)
         ]);
     }
 
@@ -352,7 +412,10 @@ class SolicitudController extends DIEControllerController
                         'montoInscripcion',
                         'montoColegiatura',
                         'carrera'
-                    ]
+                    ],
+                    'observaciones',
+                    'referenciaBancaria',
+                    'monto'
                 ]
             ]
         );

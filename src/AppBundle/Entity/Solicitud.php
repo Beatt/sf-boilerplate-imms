@@ -106,7 +106,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
 
     /**
      * @var Pago
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud", cascade={"persist"})
     */
     private $pagos;
 

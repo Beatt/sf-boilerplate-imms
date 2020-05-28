@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import camelcaseKeys from 'camelcase-keys'
+import { SOLICITUD } from "../../constants";
 
 const Registrar = (
   {
@@ -9,12 +10,13 @@ const Registrar = (
     institucion,
     carreras,
     institucionId,
-    errores
+    url
   }) => {
 
+    {console.log(solicitudId)}
   return (
     <form
-      action={`/instituciones/${institucionId}/solicitudes/${solicitudId}/registrar`}
+      action={`/instituciones/${institucionId}/solicitudes/${solicitudId.id}/registrar`}
       method="post"
       encType='multipart/form-data'
     >
@@ -24,6 +26,19 @@ const Registrar = (
             <strong>{carreras.map(carrera => carrera.nombre).join(', ')}</strong>
           </p>
         </div>
+
+        {
+          solicitudId.estatus === SOLICITUD.MONTOS_INCORRECTOS_CAME  ? 
+
+          <div className="col-md-12 mt-10 mb-10">
+            <p className="error">Por favor, ingrese la información correcta correspondiente a los montos de inscripción y colegiatura</p>
+
+            <p className="mt-10 mb-10"><strong>Observaciones</strong></p>
+
+            <div className="mt-10 mb-10 observaciones"><p>El oficio adjunto no especifica los montos de inscripción para la carrera Trabajo Sociial</p></div>
+          </div> :
+          ""
+        }
 
         <div className="col-md-12 mb-10">
           <div className="row">
@@ -147,6 +162,7 @@ ReactDOM.render(
     carreras={camelcaseKeys(window.CARRERAS_PROP)}
     solicitudId={window.SOLICITUD_ID_PROP}
     institucionId={window.INSTITUCION_ID_PROP}
+    url={window.ROUTE_PROP}
   />,
   document.getElementById('registrar-component')
 );
