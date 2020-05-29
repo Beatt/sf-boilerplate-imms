@@ -391,4 +391,25 @@ class CampoClinico implements ComprobantePagoInterface
     {
         return $this->asignatura;
     }
+
+    public function getNumeroSemanas()
+    {
+        return Carbon::instance($this->fechaInicial)->diffInWeeks(
+            Carbon::instance($this->fechaFinal)
+        );
+    }
+
+    public function getEnlaceCalculoCuotas()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            sprintf('/campos_clinicos/%s/formato_fofoe/show', $this->id) :
+            '';
+    }
+
+    public function getMontoPagar()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            $this->monto :
+            'No aplica';
+    }
 }
