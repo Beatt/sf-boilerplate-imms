@@ -54,6 +54,7 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
             }
         }
 
+        $solicitud->setEstatus(SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS);
         $this->entityManager->flush();
     }
 

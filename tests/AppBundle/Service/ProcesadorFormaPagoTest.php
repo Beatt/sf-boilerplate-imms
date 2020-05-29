@@ -49,7 +49,6 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
             'estatus' => SolicitudInterface::CONFIRMADA
         ]);
         $solicitud->setTipoPago(Solicitud::TIPO_PAGO_UNICO);
-        $this->entityManager->flush();
 
         $generadorReferenciaBancaria = $this->createMock(GeneradorReferenciaBancaria::class);
         $generadorReferenciaBancaria
@@ -75,6 +74,7 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
         foreach($solicitud->getCamposClinicos() as $camposClinico) {
             $this->assertNull($camposClinico->getReferenciaBancaria());
         }
+        $this->assertEquals(SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS, $solicitud->getEstatus());
     }
 
     public function testPagarSolicitudPorPagoMultiple()
@@ -84,7 +84,6 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
             'estatus' => SolicitudInterface::CONFIRMADA
         ]);
         $solicitud->setTipoPago(SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE);
-        $this->entityManager->flush();
 
         $generadorReferenciaBancaria = $this->createMock(GeneradorReferenciaBancaria::class);
         $generadorReferenciaBancaria
@@ -112,14 +111,16 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
             $this->assertEquals('1000001', $pago->getReferenciaBancaria());
         }
         $this->assertNull($solicitud->getReferenciaBancaria());
+        $this->assertEquals(SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS, $solicitud->getEstatus());
     }
 
     protected function settingDefaultValuesToSolicitud()
     {
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->findOneBy([
-            'estatus' => SolicitudInterface::CONFIRMADA
+            'estatus' => SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS
         ]);
+        $solicitud->setEstatus(SolicitudInterface::CONFIRMADA);
         $solicitud->setTipoPago(null);
         $solicitud->setReferenciaBancaria(null);
         $camposClinicos = $solicitud->getCamposClinicos();
