@@ -45,8 +45,8 @@ services:
     AppBundle\Vich\Naming\ComprobanteInscripcionNamer:
         public: true
 
-    AppBundle\Service\PagoVichNamer:
-        public: true
+#    AppBundle\Service\PagoVichNamer:
+#        public: true
 
     AppBundle\DataFixtures\:
         resource: '../../src/AppBundle/DataFixtures'
@@ -78,4 +78,8 @@ services:
 
     app.directory_namer.institucion:
         class: AppBundle\Vich\Naming\InstitucionDirectoryNamer
+        public: true
+
+    AppBundle\Service\ProcesadorFormaPagoInterface:
+        class: AppBundle\Service\ProcesadorFormaPago
         public: true

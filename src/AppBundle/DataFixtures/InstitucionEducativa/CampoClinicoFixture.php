@@ -38,6 +38,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
             $unidad,
             $solicitud
         );
+        $campo1->setReferenciaBancaria(null);
         $manager->persist($campo1);
 
         /** @var Convenio $convenio2 */

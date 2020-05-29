@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\File\File;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  * @Vich\Uploadable
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface, ReferenciaBancariaInterface
 {
 
     /**
