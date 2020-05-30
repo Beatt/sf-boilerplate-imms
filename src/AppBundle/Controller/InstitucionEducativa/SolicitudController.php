@@ -5,6 +5,7 @@ namespace AppBundle\Controller\InstitucionEducativa;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
@@ -12,6 +13,7 @@ use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -206,21 +208,43 @@ class SolicitudController extends Controller
      * @Route("/instituciones/{id}/solicitudes/{solicitudId}/seleccionar-forma-de-pago", name="solicitudes#seleccionar_forma_de_pago")
      * @param int $id
      * @param int $solicitudId
+     * @param Request $request
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param FormaPagoNormalizer $formaPagoNormalizer
+     * @param ProcesadorFormaPagoInterface $procesadorFormaPago
      * @return Response
      */
     public function seleccionarFormaDePagoAction(
         $id,
         $solicitudId,
+        Request $request,
         InstitucionRepositoryInterface $institucionRepository,
-        FormaPagoNormalizer $formaPagoNormalizer
+        FormaPagoNormalizer $formaPagoNormalizer,
+        ProcesadorFormaPagoInterface $procesadorFormaPago
     ) {
         $institucion = $institucionRepository->find($id);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($solicitudId);
+
+        $form = $this->createForm(FormaPagoType::class, $solicitud, [
+            'action' => $this->generateUrl('solicitudes#seleccionar_forma_de_pago', [
+                'id' => $id,
+                'solicitudId' => $solicitudId
+            ])
+        ]);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $solicitud = $form->getData();
+            $procesadorFormaPago->procesar($solicitud);
+
+            return $this->redirectToRoute('solicitudes#show', [
+                'id' => $id,
+                'solicitudId' => $solicitudId
+            ]);
+        }
 
         $camposClinicos = $formaPagoNormalizer->normalizeCamposClinicos(
             $solicitud->getCamposClinicos()

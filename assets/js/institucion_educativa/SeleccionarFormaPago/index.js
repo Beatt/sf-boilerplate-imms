@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   )
   ReactDOM.render(
     <ReferenciaPago
+      action={window.ACTION}
     />,
     document.getElementById('referencia_pago-component')
   )
