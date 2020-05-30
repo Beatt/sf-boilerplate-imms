@@ -1,11 +1,44 @@
 import * as React from 'react'
 import { TIPO_PAGO } from "../../../constants";
+import Swal from 'sweetalert2'
+import 'sweetalert2/src/sweetalert2.scss'
 
 const ReferenciaPago = ({ action }) => {
+
+  const { useRef } = React
+  const formRef = useRef(null)
+
+  function handleSubmit(event) {
+    event.preventDefault()
+
+    Swal.fire({
+      title: '¿Estás seguro que deseas pagar por campos clinicos?',
+      text: "Recuerda que esta opción es inamovible durante el resto del proceso",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '¡Si, estoy seguro!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+        //formRef.current.submit()
+      }
+    })
+
+  }
+
   return(
     <form
       action={action}
       method={'post'}
+      onSubmit={handleSubmit}
+      ref={formRef}
     >
       <div className='row'>
         <div className="col-md-5">

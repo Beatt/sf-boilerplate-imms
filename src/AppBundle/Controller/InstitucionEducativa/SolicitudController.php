@@ -238,7 +238,7 @@ class SolicitudController extends Controller
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $solicitud = $form->getData();
-            $procesadorFormaPago->procesar($solicitud);
+            //$procesadorFormaPago->procesar($solicitud);
 
             return $this->redirectToRoute('solicitudes#show', [
                 'id' => $id,
