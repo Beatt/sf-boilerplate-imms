@@ -238,7 +238,7 @@ class SolicitudController extends Controller
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $solicitud = $form->getData();
-            //$procesadorFormaPago->procesar($solicitud);
+            $procesadorFormaPago->procesar($solicitud);
 
             return $this->redirectToRoute('solicitudes#show', [
                 'id' => $id,
@@ -254,6 +254,30 @@ class SolicitudController extends Controller
             'solicitud' => $solicitud,
             'institucion' => $institucion,
             'camposClinicos' => $camposClinicos
+        ]);
+    }
+
+    /**
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/detalle-forma-de-pago", name="solicitudes#detalle_forma_de_pago")
+     * @param $id
+     * @param $solicitudId
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @return Response
+     */
+    public function detalleFormaDePago(
+        $id,
+        $solicitudId,
+        InstitucionRepositoryInterface $institucionRepository
+    ) {
+        $institucion = $institucionRepository->find($id);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
+        return $this->render('institucion_educativa/solicitud/detalle_forma_pago.html.twig', [
+            'institucion' => $institucion,
+            'solicitud' => $solicitud
         ]);
     }
 

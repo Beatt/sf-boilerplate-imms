@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ render(controller('AppBundle:InstitucionEducativa\\Institucion:menu', {
+        id: institucion.id
+    })) }}
+
+    <div class="section-md">
+        <div class='container-fluid'>
+            <div class='container'>
+                <div class="row mb-20">
+                    <div class="col-md-12">
+                        <h1 class="text-bold text-center mb-20">Detalle de forma de pago para solicitud</h1>
+                        <p class="text-bold mt-10">Solicitud {{ solicitud.noSolicitud }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="mb-20"><strong>La forma de pago seleccionada fue:</strong></h3>
+                        <div id="referencia_pago-component"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.TIPO_PAGO_SELECTED = {{ solicitud.tipoPago|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/detalle_forma_pago.js') }}"></script>
+{% endblock %}
