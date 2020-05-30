@@ -33,7 +33,7 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
             <th>No. de lugares autorizados</th>
             <th>Periodo</th>
             <th>No. de semanas</th>
-            <th>Acciones</th>
+            <th>Formato de calculo de cuotas</th>
             <th>Monto a pagar por campo clínico</th>
           </tr>
           </thead>
@@ -55,7 +55,7 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
                     href={campoClinico.enlaceCalculoCuotas}
                     target='_blank'
                   >
-                    Formato de calculo de cuotas
+                    Descargar
                   </a>
                 </td>
                 <td className='text-right'>{moneyFormat(campoClinico.montoPagar)}</td>
