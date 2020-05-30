@@ -6,6 +6,7 @@ use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
+use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
@@ -200,6 +201,37 @@ class SolicitudController extends Controller
         ]);
     }
 
+
+    /**
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/seleccionar-forma-de-pago", name="solicitudes#seleccionar_forma_de_pago")
+     * @param int $id
+     * @param int $solicitudId
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param FormaPagoNormalizer $formaPagoNormalizer
+     * @return Response
+     */
+    public function seleccionarFormaDePagoAction(
+        $id,
+        $solicitudId,
+        InstitucionRepositoryInterface $institucionRepository,
+        FormaPagoNormalizer $formaPagoNormalizer
+    ) {
+        $institucion = $institucionRepository->find($id);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
+        $camposClinicos = $formaPagoNormalizer->normalizeCamposClinicos(
+            $solicitud->getCamposClinicos()
+        );
+
+        return $this->render('institucion_educativa/solicitud/seleccionar_forma_pago.html.twig', [
+            'solicitud' => $solicitud,
+            'institucion' => $institucion,
+            'camposClinicos' => $camposClinicos
+        ]);
+    }
 
 
     /**
