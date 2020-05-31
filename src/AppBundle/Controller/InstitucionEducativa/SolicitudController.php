@@ -13,13 +13,18 @@ use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use ZipArchive;
 
 class SolicitudController extends Controller
 {
@@ -279,6 +284,39 @@ class SolicitudController extends Controller
             'institucion' => $institucion,
             'solicitud' => $solicitud
         ]);
+    }
+
+    /**
+     * @Route("/pdf", name="pdf")
+     */
+    public function pdf(GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP)
+    {
+        /*$this->get('knp_snappy.pdf')->generate('http://www.google.fr', __DIR__.'/referencias/mifile.pdf', [], true);
+        $zip = new ZipArchive();
+        $zipName = 'Documents.zip';
+        $zip->open($zipName,  ZipArchive::CREATE);
+
+        $finder = new Finder();
+        $finder->files()->in(__DIR__ . '/referencias');
+        foreach ($finder as $file) {
+            $zip->addFromString(basename($file),  file_get_contents($file));
+        }
+
+        $zip->close();
+
+        $filesystem = new Filesystem();
+        $filesystem->remove(__DIR__.'/referencias');
+
+        $response = new Response(file_get_contents($zipName));
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $zipName . '"');
+        $response->headers->set('Content-length', filesize($zipName));
+
+        unlink($zipName);
+
+        return $response;*/
+
+        return $generadorReferenciaBancariaZIP->generarZipResponse(new Solicitud());
     }
 
 

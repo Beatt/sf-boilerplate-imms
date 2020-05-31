@@ -1,7 +1,7 @@
 # Learn more about services, parameters and containers at
 # https://symfony.com/doc/current/service_container.html
 parameters:
-    #parameter_name: value
+    referencias_bancarias_dir: '%kernel.root_dir%/var/referencias_bancarias'
 
 imports:
     - { resource: './services/repositories.yml' }
@@ -80,3 +80,20 @@ services:
     AppBundle\Service\ProcesadorFormaPagoInterface:
         class: AppBundle\Service\ProcesadorFormaPago
         public: true
+
+    Knp\Snappy\Pdf:
+        public: true
+        arguments:
+            - '/usr/local/bin/wkhtmltopdf'
+
+    AppBundle\Service\GeneradorReferenciaBancariaPDFInterface:
+        class: AppBundle\Service\GeneradorReferenciaBancariaPDF
+        public: true
+
+    AppBundle\Service\GeneradorReferenciaBancariaZIPInterface:
+        class: AppBundle\Service\GeneradorReferenciaBancariaZIP
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@AppBundle\Service\GeneradorReferenciaBancariaPDF'
+            - '%referencias_bancarias_dir%'
