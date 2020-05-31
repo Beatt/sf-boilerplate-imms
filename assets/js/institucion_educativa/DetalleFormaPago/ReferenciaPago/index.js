@@ -7,6 +7,10 @@ const ReferenciaPago = (
     descargarReferenciasBancariasPath
   }
   ) => {
+
+  const { useState } = React
+  const [ isDownload, setIsDownload ] = useState(false)
+
   return(
     <div className='row'>
       <div className="col-md-5">
@@ -47,13 +51,24 @@ const ReferenciaPago = (
         <div className="row">
           <div className="col-md-4"/>
           <div className="col-md-4">
-            <a
-              href={descargarReferenciasBancariasPath}
-              className='btn btn-success btn-block'
-              download
-            >
-              ¡Descargar referencia bancaria!
-            </a>
+            {
+              !isDownload ?
+                <a
+                  href={descargarReferenciasBancariasPath}
+                  className='btn btn-success btn-block'
+                  download
+                  onClick={({ target }) => setIsDownload(true)}
+                >
+                  ¡Descargar referencia bancaria!
+                </a> :
+                <button
+                  type='button'
+                  className='btn btn-success btn-block'
+                  disabled={true}
+                >
+                  Descargando referencias bancarias, por favor espere...
+                </button>
+            }
           </div>
         </div>
       </div>
