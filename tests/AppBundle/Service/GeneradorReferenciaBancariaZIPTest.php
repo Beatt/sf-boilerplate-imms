@@ -33,7 +33,7 @@ class GeneradorReferenciaBancariaZIPTest extends AbstractWebTestCase
 
         $this->generadorReferenciaBancariaPDF = $this->container->get(GeneradorReferenciaBancariaPDFInterface::class);
         $this->solicitudRepository = $this->container->get(SolicitudRepositoryInterface::class);
-        $this->directoryOutput = $this->container->get('kernel')->getRootDir() . '/var/referencias';
+        $this->directoryOutput = $this->container->getParameter('referencias_bancarias_dir');
     }
 
     public function testCreateZIPSuccessfully()
