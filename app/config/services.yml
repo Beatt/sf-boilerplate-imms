@@ -84,7 +84,7 @@ services:
     Knp\Snappy\Pdf:
         public: true
         arguments:
-            - '/usr/local/bin/wkhtmltopdf'
+            - '%wkhtmltopdf_path%'
 
     AppBundle\Service\GeneradorReferenciaBancariaPDFInterface:
         class: AppBundle\Service\GeneradorReferenciaBancariaPDF
