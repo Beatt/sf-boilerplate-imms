@@ -10,6 +10,8 @@ use ZipArchive;
 
 class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPInterface
 {
+    const ZIP_NAME = 'ReferenciasBancarias.zip';
+
     private $entityManager;
 
     private $generadorReferenciaBancariaPDF;
@@ -33,21 +35,51 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
             $this->directoryOutput
         );
 
-        $zip = new ZipArchive();
-        $zipName = 'Documents.zip';
-        $zip->open($zipName,  ZipArchive::CREATE);
-        foreach($files as $file) $zip->addFromString(basename($file), file_get_contents($file));
-        $zip->close();
+        $this->createZip($files);
+        $response = $this->getZipResponse();
 
-        $response = new Response(file_get_contents($zipName));
-        $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $zipName . '"');
-        $response->headers->set('Content-length', filesize($zipName));
-
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->directoryOutput);
-        unlink($zipName);
+        $this->removeFiles();
 
         return $response;
+    }
+
+    /**
+     * @param $files
+     * @return string
+     */
+    protected function createZip($files)
+    {
+        $zip = new ZipArchive();
+        $zip->open(self::ZIP_NAME, ZipArchive::CREATE);
+        $this->addFilesToZip($files, $zip);
+        $zip->close();
+    }
+
+    /**
+     * @return Response
+     */
+    protected function getZipResponse()
+    {
+        $response = new Response(file_get_contents(self::ZIP_NAME));
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . self::ZIP_NAME . '"');
+        $response->headers->set('Content-length', filesize(self::ZIP_NAME));
+        return $response;
+    }
+
+    protected function removeFiles()
+    {
+        $filesystem = new Filesystem();
+        $filesystem->remove($this->directoryOutput);
+        unlink(self::ZIP_NAME);
+    }
+
+    /**
+     * @param $files
+     * @param ZipArchive $zip
+     */
+    protected function addFilesToZip($files, ZipArchive $zip)
+    {
+        foreach ($files as $file) $zip->addFromString(basename($file), file_get_contents($file));
     }
 }
