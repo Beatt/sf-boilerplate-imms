@@ -23,6 +23,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\Routing\Annotation\Route;
 use ZipArchive;
 
@@ -244,6 +245,8 @@ class SolicitudController extends Controller
         if($form->isSubmitted() && $form->isValid()) {
             $solicitud = $form->getData();
             $procesadorFormaPago->procesar($solicitud);
+
+            $this->addFlash('success', '¡Su forma de pago ha sido guardada correctamente!');
 
             return $this->redirectToRoute('solicitudes#detalle_forma_de_pago', [
                 'id' => $id,
