@@ -22,7 +22,7 @@ const ReferenciaPago = ({ action }) => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.value) {
-        //formRef.current.submit()
+        formRef.current.submit()
       }
     })
 
