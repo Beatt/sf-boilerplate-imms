@@ -245,7 +245,7 @@ class SolicitudController extends Controller
             $solicitud = $form->getData();
             $procesadorFormaPago->procesar($solicitud);
 
-            return $this->redirectToRoute('solicitudes#show', [
+            return $this->redirectToRoute('solicitudes#detalle_forma_de_pago', [
                 'id' => $id,
                 'solicitudId' => $solicitudId
             ]);
