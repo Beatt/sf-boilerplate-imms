@@ -96,4 +96,10 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@AppBundle\Service\GeneradorReferenciaBancariaPDF'
+            - '@event_dispatcher'
             - '%referencias_bancarias_dir%'
+
+    app.bank_references_created.event:
+        class: AppBundle\EventListener\BankReferencesCreatedListener
+        tags:
+            - { name: kernel.event_listener, event: bank_references.created, method: handleBankReferencesCreated }

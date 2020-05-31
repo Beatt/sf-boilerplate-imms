@@ -3,7 +3,9 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Solicitud;
+use AppBundle\Event\BankReferencesCreatedEvent;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 use ZipArchive;
@@ -16,16 +18,20 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
 
     private $generadorReferenciaBancariaPDF;
 
+    private $dispatcher;
+
     private $directoryOutput;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         GeneradorReferenciaBancariaPDFInterface $generadorReferenciaBancariaPDF,
+        EventDispatcherInterface $dispatcher,
         $directoryOutput
     ) {
         $this->entityManager = $entityManager;
         $this->generadorReferenciaBancariaPDF = $generadorReferenciaBancariaPDF;
         $this->directoryOutput = $directoryOutput;
+        $this->dispatcher = $dispatcher;
     }
 
     public function generarZipResponse(Solicitud $solicitud)
@@ -39,6 +45,11 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
         $response = $this->getZipResponse();
 
         $this->removeFiles();
+
+        $this->dispatcher->dispatch(
+            BankReferencesCreatedEvent::NAME,
+            new BankReferencesCreatedEvent($solicitud)
+        );
 
         return $response;
     }
