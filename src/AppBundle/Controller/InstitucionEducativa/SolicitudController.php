@@ -287,36 +287,21 @@ class SolicitudController extends Controller
     }
 
     /**
-     * @Route("/pdf", name="pdf")
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/descargar-referencias-bancarias", name="solicitudes#descargar_referencias_bancarias")
+     * @param $id
+     * @param $solicitudId
+     * @param GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
      */
-    public function pdf(GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP)
-    {
-        /*$this->get('knp_snappy.pdf')->generate('http://www.google.fr', __DIR__.'/referencias/mifile.pdf', [], true);
-        $zip = new ZipArchive();
-        $zipName = 'Documents.zip';
-        $zip->open($zipName,  ZipArchive::CREATE);
+    public function descargarReferenciasBancarias(
+        $id,
+        $solicitudId,
+        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+    ) {
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
 
-        $finder = new Finder();
-        $finder->files()->in(__DIR__ . '/referencias');
-        foreach ($finder as $file) {
-            $zip->addFromString(basename($file),  file_get_contents($file));
-        }
-
-        $zip->close();
-
-        $filesystem = new Filesystem();
-        $filesystem->remove(__DIR__.'/referencias');
-
-        $response = new Response(file_get_contents($zipName));
-        $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $zipName . '"');
-        $response->headers->set('Content-length', filesize($zipName));
-
-        unlink($zipName);
-
-        return $response;*/
-
-        return $generadorReferenciaBancariaZIP->generarZipResponse(new Solicitud());
+        return $generadorReferenciaBancariaZIP->generarZipResponse($solicitud);
     }
 
 

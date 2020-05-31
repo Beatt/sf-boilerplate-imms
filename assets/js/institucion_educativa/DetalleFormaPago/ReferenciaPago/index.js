@@ -1,7 +1,12 @@
 import * as React from 'react'
 import { TIPO_PAGO } from "../../../constants";
 
-const ReferenciaPago = ({ tipoPagoSelected }) => {
+const ReferenciaPago = (
+  {
+    tipoPagoSelected,
+    descargarReferenciasBancariasPath
+  }
+  ) => {
   return(
     <div className='row'>
       <div className="col-md-5">
@@ -42,12 +47,13 @@ const ReferenciaPago = ({ tipoPagoSelected }) => {
         <div className="row">
           <div className="col-md-4"/>
           <div className="col-md-4">
-            <button
-              type="submit"
+            <a
+              href={descargarReferenciasBancariasPath}
               className='btn btn-success btn-block'
+              download
             >
               ¡Descargar referencia bancaria!
-            </button>
+            </a>
           </div>
         </div>
       </div>
