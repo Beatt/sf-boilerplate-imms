@@ -33,11 +33,11 @@ class Pago
      */
     private $monto;
 
-     /**
-      *
-      * @ORM\Column(type="date", nullable=true)
+    /**
+     *
+     * @ORM\Column(type="date", nullable=true)
      */
-     private $fechaPago;
+    private $fechaPago;
 
     /**
      * @var Solicitud
@@ -45,7 +45,7 @@ class Pago
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pago")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
-     private $solicitud;
+    private $solicitud;
 
     /**
      * @var string
@@ -225,14 +225,6 @@ class Pago
     public function getFactura()
     {
         return $this->factura;
-    }
-
-    /**
-     * @param Factura $factura
-     */
-    public function setFactura(Factura $factura)
-    {
-        $this->factura = $factura;
     }
 
     /**

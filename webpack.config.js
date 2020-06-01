@@ -11,6 +11,7 @@ Encore
   .addEntry('detalle-campos', './assets/js/institucion_educativa/DetalleSolicitud/index.js')
   .addEntry('detalle_solicitud_multiple', './assets/js/institucion_educativa/DetalleSolicitudMultiple/index.js')
   .addEntry('registrar-montos', './assets/js/institucion_educativa/RegistrarMontos/index.js')
+  .addEntry('registrar-pagos', './assets/js/institucion_educativa/RegistrarPago/index.js')
   .addEntry('mis-solicitudes', './assets/js/institucion_educativa/MisSolicitudes/index.js')
   .addEntry('came_solicitud_index', './assets/js/came/solicitud/index.js')
   .addEntry('pregrado_reporte', './assets/js/pregrado/reporte/index.js')

@@ -11,8 +11,8 @@ use AppBundle\Entity\Unidad;
 use AppBundle\Form\Type\SolicitudType;
 use AppBundle\Form\Type\ValidaSolicitudType;
 use AppBundle\Service\SolicitudManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SolicitudController extends DIEControllerController

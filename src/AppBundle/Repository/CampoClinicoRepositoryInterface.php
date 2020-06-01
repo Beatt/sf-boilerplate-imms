@@ -15,4 +15,6 @@ interface CampoClinicoRepositoryInterface extends ObjectRepository
     function getDistinctCarrerasBySolicitud($id);
 
     function getAllCamposByPage($filtros);
+
+    function getAutorizadosBySolicitud($id);
 }

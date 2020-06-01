@@ -29,20 +29,36 @@ class Institucion
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min="10",
+     *  max="255",
+     *  minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
      */
     private $nombre;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=16, nullable=true)
+     * @Assert\Regex(
+     *  pattern="/^(0|[1-9][0-9]*)$/",
+     *  message="Solo se pueden ingresar números"
+     * )
+     * @Assert\Length(
+     *  min="8",
+     *  max="10",
+     *  minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres.",
+     *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres."
+     * )
      */
     private $telefono;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=254, nullable=true)
-     * @Assert\Email()
-     */
+    */
     private $correo;
 
     /**
@@ -66,8 +82,9 @@ class Institucion
     /**
      * @Vich\UploadableField(mapping="institucion_cedulas", fileNameProperty="cedulaIdentificacion")
      * @Assert\File(
-     *     maxSize="1000000",
-     *     mimeTypes = {"application/pdf", "application/x-pdf"},
+     *  maxSize="1000000",
+     *  mimeTypes = {"application/pdf", "application/x-pdf"},
+     *  mimeTypesMessage = "Solo se admiten archivos PDF"
      * )
      * @var File
      */
@@ -88,6 +105,9 @@ class Institucion
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(
+     *  message="Este campo no puede estar vacio"
+     * )
      */
     private $direccion;
 

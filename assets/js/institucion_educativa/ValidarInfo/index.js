@@ -2,7 +2,8 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ListConvenios from "../../components/ListConvenios";
 
-const ValidarInfo = ({ institucion }) => {
+const ValidarInfo = ({ institucion, errores }) => {
+
   return(
 
     <form
@@ -12,7 +13,7 @@ const ValidarInfo = ({ institucion }) => {
     >
       <div className='row'>
         <div className='col-md-6'>
-          <div className='form-group'>
+          <div className={`form-group ${errores.rfc ? 'has-error has-feedback' : ''}`}>
             <label htmlFor="institucion_rfc">RFC</label>
             <input
               className='form-control'
@@ -22,12 +23,13 @@ const ValidarInfo = ({ institucion }) => {
               defaultValue={institucion.rfc}
               required={true}
             />
+            <span className="help-block">{errores.rfc ? errores.rfc[0] : ''}</span>
           </div>
         </div>
       </div>
       <div className='row'>
         <div className="col-md-12">
-          <div className='form-group'>
+          <div className={`form-group ${errores.direccion ? 'has-error has-feedback' : ''}`}>
             <label htmlFor="institucion_direccion">Domicilio</label>
             <input
               className='form-control'
@@ -37,6 +39,7 @@ const ValidarInfo = ({ institucion }) => {
               defaultValue={institucion.direccion}
               required={true}
             />
+            <span className="help-block">{errores.direccion ? errores.direccion[0] : ''}</span>
           </div>
         </div>
       </div>
@@ -47,7 +50,7 @@ const ValidarInfo = ({ institucion }) => {
             <label htmlFor="institucion_correo">Correo</label>
             <input
               className='form-control'
-              type="text"
+              type="email"
               name="institucion[correo]"
               id="institucion_correo"
               defaultValue={institucion.correo}
@@ -57,7 +60,7 @@ const ValidarInfo = ({ institucion }) => {
         </div>
 
         <div className="col-md-4">
-          <div className='form-group'>
+          <div className={`form-group ${errores.telefono ? 'has-error has-feedback' : ''}`}>
             <label htmlFor="institucion_telefono">Telefono</label>
             <input
               className='form-control'
@@ -67,6 +70,7 @@ const ValidarInfo = ({ institucion }) => {
               defaultValue={institucion.telefono}
               required={true}
             />
+            <span className="help-block">{errores.telefono ? errores.telefono[0] : ''}</span>
           </div>
         </div>
 
@@ -86,7 +90,7 @@ const ValidarInfo = ({ institucion }) => {
 
       <div className='row'>
         <div className="col-md-4">
-          <div className='form-group'>
+          <div className='form-group' >
             <label htmlFor="institucion_sitioWeb">Página web (opcional)</label>
             <input className='form-control'
               type="text"
@@ -102,9 +106,10 @@ const ValidarInfo = ({ institucion }) => {
             type="file"
             name="institucion[cedulaFile][file]"
             id="institucion_cedulaFile_file"
-            required={true}
+            required={false}
           />
         </div>
+        <span className="help-block">{errores.cedulaFile ? errores.cedulaFile[0] : ''}</span>
       </div>
 
       <div className='row'>
@@ -123,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <ValidarInfo
       institucion={window.INSTITUCION_PROP}
+      errores={window.ERRORS}
     />,
     document.getElementById('validar-info-component')
   )
