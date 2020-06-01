@@ -40,4 +40,9 @@ abstract class AbstractWebTestCase extends WebTestCase
     {
         $this->entityManager->getConnection()->exec('DELETE FROM pago');
     }
+
+    protected function clearTablaPagoById($id)
+    {
+        $this->entityManager->getConnection()->exec('DELETE FROM pago WHERE id = ' . $id);
+    }
 }

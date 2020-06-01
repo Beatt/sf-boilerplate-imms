@@ -13,27 +13,9 @@ class SolicitudFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $solicitudConfirmada = $this->create(
-            '1000001',
-            SolicitudInterface::CONFIRMADA,
-            Carbon::now()->addMonths(3)
-        );
-        $manager->persist($solicitudConfirmada);
-
-        $solicitudFormatoPago = $this->create(
-            '1000002',
-            SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS,
-            Carbon::now()->addMonths(6)
-        );
-        $manager->persist($solicitudFormatoPago);
-
-        $solicitudCargandoComprobantes = $this->create(
-            '100003',
-            SolicitudInterface::CARGANDO_COMPROBANTES,
-            Carbon::now()->addMonths(5),
-            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
-        );
-        $manager->persist($solicitudCargandoComprobantes);
+        $solicitudConfirmada = $this->createSolicitudConfirmada($manager);
+        $solicitudFormatoPago = $this->createSolicitudFormatosDePagoGenerados($manager);
+        $solicitudCargandoComprobantes = $this->createSolicitudCargandoComprobantes($manager);
 
         $manager->flush();
 
@@ -54,10 +36,10 @@ class SolicitudFixture extends Fixture
     }
 
     private function create(
-        $referenciaBancaria,
         $estatus,
         $fecha,
-        $tipoPago = null
+        $tipoPago = null,
+        $referenciaBancaria = null
     ) {
         $tipoPago = $tipoPago ?: SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
 
@@ -69,5 +51,49 @@ class SolicitudFixture extends Fixture
         $solicitud->setTipoPago($tipoPago);
 
         return $solicitud;
+    }
+
+    /**
+     * @param ObjectManager $manager
+     * @return Solicitud
+     */
+    protected function createSolicitudConfirmada(ObjectManager $manager)
+    {
+        $solicitudConfirmada = $this->create(
+            SolicitudInterface::CONFIRMADA,
+            Carbon::now()->addMonths(3)
+        );
+        $manager->persist($solicitudConfirmada);
+        return $solicitudConfirmada;
+    }
+
+    /**
+     * @param ObjectManager $manager
+     * @return Solicitud
+     */
+    protected function createSolicitudFormatosDePagoGenerados(ObjectManager $manager)
+    {
+        $solicitudFormatoPago = $this->create(
+            SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS,
+            Carbon::now()->addMonths(6)
+        );
+        $manager->persist($solicitudFormatoPago);
+        return $solicitudFormatoPago;
+    }
+
+    /**
+     * @param ObjectManager $manager
+     * @return Solicitud
+     */
+    protected function createSolicitudCargandoComprobantes(ObjectManager $manager)
+    {
+        $solicitudCargandoComprobantes = $this->create(
+            '100003',
+            SolicitudInterface::CARGANDO_COMPROBANTES,
+            Carbon::now()->addMonths(5),
+            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
+        );
+        $manager->persist($solicitudCargandoComprobantes);
+        return $solicitudCargandoComprobantes;
     }
 }

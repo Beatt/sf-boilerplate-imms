@@ -29,7 +29,7 @@ class SolicitudController extends DIEControllerController
             ->getAllSolicitudesByDelegacion(null/*simulado*/, $perPage, $page, $request->query->all());
         return $this->render('came/solicitud/index.html.twig', [
             'solicitudes' => $this->get('serializer')->normalize(
-                $solicitudes,
+                $solicitudes['data'],
                 'json',
                 [
                     'attributes' => [
@@ -44,7 +44,8 @@ class SolicitudController extends DIEControllerController
                         'camposClinicosAutorizados',
                     ]
                 ]
-            )
+            ),
+            'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
     }
 
@@ -60,7 +61,7 @@ class SolicitudController extends DIEControllerController
             ->getAllSolicitudesByDelegacion(null/*simulado*/, $perPage, $page, $request->query->all());
         return $this->jsonResponse([
             'object' => $this->get('serializer')->normalize(
-                $solicitudes,
+                $solicitudes['data'],
                 'json',
                 [
                     'attributes' => [
@@ -75,7 +76,8 @@ class SolicitudController extends DIEControllerController
                         'camposClinicosAutorizados',
                     ]
                 ]
-            )
+            ),
+            'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
     }
 
@@ -94,7 +96,7 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax']]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax', 'representante']]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
                 ['attributtes' => ['id', 'nombre']])
         ]);
@@ -137,14 +139,14 @@ class SolicitudController extends DIEControllerController
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones,
                 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax']]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax', 'representante']]),
             'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
                 ['attributes' => ['id', 'campoClinicos' => ['id',
                     'convenio' => ['cicloAcademico' => ['id', 'nombre'],
                         'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
                     'fechaInicial', 'fechaFinal'], 'institucion' => ['id', 'nombre', 'fax',
-                    'telefono', 'correo', 'sitioWeb', 'direccion', 'rfc', 'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                    'telefono', 'correo', 'sitioWeb', 'direccion', 'rfc', 'representante', 'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
                         'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]
                 ]]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
@@ -201,25 +203,24 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/show.html.twig', [
             'solicitud' => $this->get('serializer')->normalize(
                 $solicitud, 'json', ['attributes' => [
-                'id', 'noSolicitud', 'estatusCameFormatted', 'tipoPago',
+                'id', 'noSolicitud', 'estatusCameFormatted', 'tipoPago', 'fechaComprobanteFormatted',
+                'fechaComprobante',
                 'institucion' => ['id', 'nombre'],
                 'camposClinicosSolicitados', 'camposClinicosAutorizados',
                 'campoClinicos' => ['id',
                     'convenio' => ['cicloAcademico' => ['id', 'nombre'],
-                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',
+                        'id', 'vigencia', 'vigenciaFormatted','label', 'carrera' => ['id', 'nombre',
                             'nivelAcademico' => ['id', 'nombre']], 'numero'],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
-                    'fechaInicial', 'fechaFinal', 'referenciaBancaria'],
-                'expediente' => ['id', 'descripcion', 'urlArchivo', 'nombreArchivo', 'fecha'],
-                'pago' => ['id', 'comprobantePago', 'fecha', 'factura' => ['fechaFacturacion', 'id', 'zip']]]
+                    'fechaInicial', 'fechaFinal', 'referenciaBancaria', 'fechaInicialFormatted', 'fechaFinalFormatted'],
+                'pago' => ['id', 'comprobantePago', 'fechaPago', 'fechaPagoFormatted', 'referenciaBancaria', 'factura' => ['fechaFacturacion', 'id', 'fechaFacturacionFormatted']],
+                'pagos' => ['id', 'comprobantePago', 'fechaPago', 'fechaPagoFormatted','referenciaBancaria', 'factura' => ['fechaFacturacion', 'id', 'fechaFacturacionFormatted']]]
             ]),
             'convenios' => $this->get('serializer')->normalize($convenios, 'json', ['attributes' => [
                 'cicloAcademico' => ['id', 'nombre'],
-                'id', 'vigencia', 'label',
+                'id', 'vigencia','vigenciaFormatted', 'label',
                 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]]
-            ]),
-            'pagosCamposClinicos' => $this->get('serializer')->normalize($pagosCamposClinicos, 'json',
-                ['atributtes' => ['id', 'referenciaBancaria', 'comprobantePago', 'factura' => ['id', 'zip']]])
+            ])
         ]);
     }
 
@@ -284,7 +285,7 @@ class SolicitudController extends DIEControllerController
         }
 
         $form = $this->createForm(ValidaSolicitudType::class, $solicitud);
-        $form->get('montos_pagos')->setData($solicitud->getMontos());
+        $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -313,7 +314,7 @@ class SolicitudController extends DIEControllerController
         }
 
         $form = $this->createForm(ValidaSolicitudType::class);
-        $form->get('montos_pagos')->setData($solicitud->getMontos());
+        $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
 
         return $this->render('came/solicitud/valida_montos.html.twig', [
             'form' => $form->createView(),
@@ -323,10 +324,49 @@ class SolicitudController extends DIEControllerController
                     'estatusCameFormatted',
                     'documento', 'urlArchivo',
                     'institucion' => ['id', 'nombre'],
-                    'montos' => ['id', 'montoInscripcion', 'montoColegiatura',
+                    'montosCarreras' => ['id', 'montoInscripcion', 'montoColegiatura',
                         'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre'] ]]
                 ]]
             )
         ]);
+    }
+
+    /**
+     * @Route("/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="came.solicitud.oficio_montos")
+     * @param $solicitud_id
+     * @return mixed
+     */
+    public function downloadOficioMontosAction($solicitud_id)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($solicitud_id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $solicitud_id
+            );
+        }
+        $downloadHandler = $this->get('vich_uploader.download_handler');
+        return $downloadHandler->downloadObject($solicitud, 'urlArchivoFile');
+    }
+
+    /**
+     * @Route("/solicitud/email/montos_invalidos", methods={"GET"}, name="solicitud.email.montos_invalidos")
+     * @param Request $request
+     * @param $id
+     */
+    public function showMailTemplateAction($solicitud_id = 1)
+    {
+        $solicitud = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->find($solicitud_id);
+
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $solicitud_id
+            );
+        }
+        return $this->render('emails/came/montos_invalidos.html.twig', ['solicitud' => $solicitud]);
     }
 }

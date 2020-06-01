@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use http\Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,7 +48,7 @@ abstract class DIEControllerController extends Controller
         }
         if(isset($data['message'])){
             $json['message'] = $data['message'];
-        }else if($json['status']){
+        }else if(isset($data['status']) && $json['status']){
             $json['message'] = 'Solicitud procesada con éxito';
         }
         if (isset($result['error'])) {
@@ -57,6 +56,9 @@ abstract class DIEControllerController extends Controller
         }
         if (isset($data['object'])) {
             $json['data'] = $data['object'];
+        }
+        if(isset($data['meta'])){
+            $json['meta'] = $data['meta'];
         }
         return new JsonResponse($json, $status);
 

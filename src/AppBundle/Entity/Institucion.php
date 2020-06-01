@@ -93,6 +93,7 @@ class Institucion
 
     /**
      * @var string
+     * @Assert\NotNull
      * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $representante;
@@ -102,6 +103,13 @@ class Institucion
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Convenio", mappedBy="institucion")
      */
     private $convenios;
+
+    /**
+     * @var Usuario
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Usuario", inversedBy="institucion")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id")
+     */
+    private $usuario;
 
     public function __construct()
     {
@@ -274,7 +282,7 @@ class Institucion
      */
     public function setRepresentante($representante)
     {
-        $this->direccion = $representante;
+        $this->representante = $representante;
 
         return $this;
     }
@@ -329,4 +337,24 @@ class Institucion
     {
         return $this->convenios;
     }
+
+    /**
+     * @return Usuario
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    /**
+     * @param Usuario $usuario
+     * @return Institucion
+     */
+    public function setUsuario(Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+        return $this;
+    }
+
+
 }

@@ -2,20 +2,22 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 use Exception;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Solicitud
- *
  * @ORM\Table(name="solicitud")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
+ * @Vich\Uploadable
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface, ReferenciaBancariaInterface
 {
 
     /**
@@ -55,11 +57,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      */
     private $camposClinicos;
 
-
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud", cascade={"persist"})
      */
-    private $montosCarrera;
+    private $montosCarreras;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
@@ -75,6 +76,13 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $urlArchivo;
+
+    /**
+     * @var File
+     *
+     * @Vich\UploadableField(mapping="comprobantes_inscripcion", fileNameProperty="urlArchivo")
+     */
+    private $urlArchivoFile;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -98,16 +106,18 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     private $pagos;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud")
+     * @var string
+     *
+     * @ORM\Column(type="boolean", nullable=true)
      */
-    private $montos;
+    private $confirmacionOficioAdjunto;
 
     public function __construct()
     {
         $this->fecha = new \DateTime();
         $this->camposClinicos = new ArrayCollection();
         $this->pagos = new ArrayCollection();
-        $this->montosCarrera = new ArrayCollection();
+        $this->montosCarreras = new ArrayCollection();
     }
 
     /**
@@ -309,6 +319,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     public function getFechaComprobante()
     {
         return $this->fechaComprobante;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFechaComprobanteFormatted()
+    {
+        return $this->getFechaComprobante()? $this->getFechaComprobante()->format('d-m-Y') : '';
     }
 
     /**
@@ -523,33 +541,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @param MontoCarrera $montosCarrera
-     * @return Solicitud
-     */
-    public function addMontosCarrera(MontoCarrera $montosCarrera)
-    {
-        $this->montosCarrera[] = $montosCarrera;
-
-        return $this;
-    }
-
-    /**
-     * @param MontoCarrera $montosCarrera
-     */
-    public function removeMontosCarrera(MontoCarrera $montosCarrera)
-    {
-        $this->montosCarrera->removeElement($montosCarrera);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getMontosCarrera()
-    {
-        return $this->montosCarrera;
-    }
-
-    /**
      * @return string
      */
     public function getExpedienteDescripcion()
@@ -577,18 +568,81 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @return mixed
+     * @param MontoCarrera $montosCarrera
+     * @return Solicitud
      */
-    public function getMontos()
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
     {
-        return $this->montos;
+        if(!$this->montosCarreras->contains($montosCarrera)) {
+            $this->montosCarreras[] = $montosCarrera;
+            $montosCarrera->setSolicitud($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @param mixed $montos
+     * @param MontoCarrera $montosCarrera
      */
-    public function setMontos($montos)
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
     {
-        $this->montos = $montos;
+        if($this->montosCarreras->contains($montosCarrera)) {
+            $this->montosCarreras->removeElement($montosCarrera);
+        }
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMontosCarreras()
+    {
+        return $this->montosCarreras;
+    }
+
+    /**
+     * @return File
+     */
+    public function getUrlArchivoFile()
+    {
+        return $this->urlArchivoFile;
+    }
+
+    /**
+     * @param File $urlArchivoFile
+     */
+    public function setUrlArchivoFile($urlArchivoFile = null)
+    {
+        $this->urlArchivoFile = $urlArchivoFile;
+
+        $this->setFechaComprobante(Carbon::now());
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfirmacionOficioAdjunto()
+    {
+        return $this->confirmacionOficioAdjunto;
+    }
+
+    /**
+     * @param string $confirmacionOficioAdjunto
+     */
+    public function setConfirmacionOficioAdjunto($confirmacionOficioAdjunto)
+    {
+        $this->confirmacionOficioAdjunto = $confirmacionOficioAdjunto;
+    }
+
+    /**
+     * @return Pago|null
+     */
+    public function getPago()
+    {
+        $result = null;
+        $pagos = $this->getPagos();
+        if(count($pagos)>0) {
+            $result = $pagos[0];
+        }
+        return $result;
     }
 }

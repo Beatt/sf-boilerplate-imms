@@ -15,7 +15,7 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @Assert\GroupSequenceProvider
  * @UniqueEntity(
  *     groups={"Específico"},
- *     fields={ "institucion", "carrera", "cicloAcademico", "gradoAcademico", "vigencia"},
+ *     fields={ "institucion", "carrera", "cicloAcademico", "vigencia"},
  *     errorPath="institucion",
  *     message="La institución ya tiene registrado un convenio específico con esa vigencia."
  * )
@@ -24,6 +24,13 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  *     fields={"institucion", "vigencia"},
  *     errorPath="institucion",
  *     message="La institución ya tiene registrado un convenio general con esa vigencia."
+ * )
+ * @UniqueEntity(
+ *     groups={"Convenio"},
+ *     fields={"institucion", "vigencia", "tipo", "carrera", "cicloAcademico"},
+ *     ignoreNull=false,
+ *     errorPath="institucion",
+ *     message="La institución ya tiene registrado un convenio con esa vigencia."
  * )
  */
 class Convenio implements GroupSequenceProviderInterface
@@ -70,7 +77,7 @@ class Convenio implements GroupSequenceProviderInterface
     /**
      * @var DateTime
      * @ORM\Column(type="date")
-     * @Assert\NotBlank(message="Vigencia no debe estar vacìo o debe ser una fecha válida con formato: AAAA-MM-DD")
+     * @Assert\NotBlank(message="Vigencia no debe estar vacío o debe ser una fecha válida con formato: AAAA-MM-DD")
      */
     private $vigencia;
 
@@ -78,7 +85,8 @@ class Convenio implements GroupSequenceProviderInterface
      * @var CicloAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\CicloAcademico")
      * @ORM\JoinColumn(name="ciclo_academico_id", referencedColumnName="id", nullable=true)
-     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO})
+     * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
+     *   message="Debe especificar un valor del catálogo de Tipos de ciclos académicos.")
      */
     private $cicloAcademico;
 
@@ -87,7 +95,8 @@ class Convenio implements GroupSequenceProviderInterface
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id", nullable=true)
      * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
-        message="Este valor debería ser un valor del catálogo de Carreras.") */
+        message="Debe especificar el grado y el nombre de la carrera,
+        de acuerdo al catálogo de Carreras.") */
     private $carrera;
 
     /**
@@ -102,7 +111,7 @@ class Convenio implements GroupSequenceProviderInterface
      * @var Delegacion
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Delegacion")
      * @ORM\JoinColumn(name="delegacion_id", referencedColumnName="id")
-     * @Assert\NotBlank
+     * @Assert\NotBlank(message="Debe especificar un valor del catálogo de Delegaciones.")
      */
     private $delegacion;
 
@@ -117,6 +126,15 @@ class Convenio implements GroupSequenceProviderInterface
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="convenio")
      */
     private $camposClinicos;
+
+  /**
+   * @var Convenio
+   * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
+   *   message="Los convenios específicos deben estar asociados a un convenio General.
+        Verifique que existe un convenio general para la institución."
+   *  )
+   */
+    private $general;
 
     public function __construct()
     {
@@ -222,6 +240,10 @@ class Convenio implements GroupSequenceProviderInterface
         return $this->cicloAcademico;
     }
 
+    public function getCiclo() {
+      return $this->getCicloAcademico();
+    }
+
     /**
      * @param Carrera $carrera
      * @return Convenio
@@ -238,6 +260,12 @@ class Convenio implements GroupSequenceProviderInterface
     public function getCarrera()
     {
         return $this->carrera;
+    }
+
+    public function getGrado() {
+      return $this->carrera ?
+        $this->carrera->getNivelAcademico()->getNombre()
+      : null;
     }
 
     /**
@@ -325,5 +353,29 @@ class Convenio implements GroupSequenceProviderInterface
     public function __toString()
     {
         return $this->getNombre();
+    }
+
+    /**
+     * @return Convenio
+     */
+    public function getGeneral()
+    {
+      return $this->general;
+    }
+
+    /**
+     * @param Convenio $general
+     */
+    public function setGeneral(Convenio $general = null)
+    {
+      $this->general = $general;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVigenciaFormatted()
+    {
+        return $this->getVigencia()->format('d/m/Y');
     }
 }

@@ -74,11 +74,13 @@ doctrine:
                 greatest: DoctrineExtensions\Query\Postgresql\Greatest
                 least: DoctrineExtensions\Query\Postgresql\Least
                 regexp_replace: DoctrineExtensions\Query\Postgresql\RegexpReplace
+                unaccent: AppBundle\Doctrine\DQL\Unaccent
 
 # Swiftmailer Configuration
 swiftmailer:
     transport: '%mailer_transport%'
     host: '%mailer_host%'
+    port: '%mailer_port%'
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
@@ -97,9 +99,25 @@ vich_uploader:
             uri_prefix: '%app.path.instituciones%'
             upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
             namer: AppBundle\Vich\Naming\CedulaNamer
-            directory_namer: app.directory_namer.comprobantepago
+            directory_namer: app.directory_namer.institucion
         comprobantes_pagos:
             uri_prefix: '%app.path.instituciones%'
             upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
             namer: AppBundle\Vich\Naming\ComprobantePagoNamer
-            directory_namer: app.directory_namer.comprobantepago
+            directory_namer: app.directory_namer.institucion
+        comprobantes_inscripcion:
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\ComprobanteInscripcionNamer
+            directory_namer: app.directory_namer.institucion
+        facturas:
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\FacturaNamer
+            directory_namer: app.directory_namer.institucion
+
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     '%wkhtmltopdf_path%'
+        options:    []

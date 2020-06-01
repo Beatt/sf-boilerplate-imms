@@ -5,7 +5,6 @@ namespace AppBundle\Entity;
 use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico implements ComprobantePagoInterface
+class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterface
 {
     /**
      * @var int
@@ -127,6 +126,10 @@ class CampoClinico implements ComprobantePagoInterface
         return $this->fechaInicial;
     }
 
+    public function getDisplayFechaInicial() {
+      return $this->fechaInicial->format('d/m/Y');
+    }
+
     /**
      * @param DateTime $fechaFinal
      * @return CampoClinico
@@ -145,6 +148,10 @@ class CampoClinico implements ComprobantePagoInterface
     {
         return $this->fechaFinal;
     }
+
+  public function getDisplayFechaFinal() {
+    return $this->fechaFinal->format('d/m/Y');
+  }
 
     /**
      * @param string $horario
@@ -382,5 +389,111 @@ class CampoClinico implements ComprobantePagoInterface
     public function getAsignatura()
     {
         return $this->asignatura;
+    }
+
+    public function getNumeroSemanas()
+    {
+        return Carbon::instance($this->fechaInicial)->diffInWeeks(
+            Carbon::instance($this->fechaFinal)
+        );
+    }
+
+    public function getEnlaceCalculoCuotas()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            sprintf('/campos_clinicos/%s/formato_fofoe/show', $this->id) :
+            '';
+    }
+
+    public function getMontoPagar()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            $this->monto :
+            'No aplica';
+    }
+
+    /**
+     * @return string
+     */
+    public function getFechaInicialFormatted()
+    {
+        return $this->getFechaInicial()->format('d/m/Y');
+    }
+
+    /**
+     * @return string
+     */
+    public function getFechaFinalFormatted()
+    {
+        return $this->getFechaFinal()->format('d/m/Y');
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getMontoInscripcion()
+    {
+        $result = null;
+        $montos = $this->getSolicitud()->getMontosCarreras();
+        if($montos){
+            foreach ($montos as $monto){
+                if($monto->getCarrera()->getId() === $this->getConvenio()->getCarrera()->getId()){
+                    $result = $monto->getMontoInscripcion();
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getMontoColegiatura()
+    {
+        $result = null;
+        $montos = $this->getSolicitud()->getMontosCarreras();
+        if($montos){
+            foreach ($montos as $monto){
+                if($monto->getCarrera()->getId() === $this->getConvenio()->getCarrera()->getId()){
+                    $result = $monto->getMontoColegiatura();
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getImporteColegiaturaAnualIntegrada()
+    {
+        return $this->getMontoColegiatura() + $this->getMontoInscripcion();
+    }
+
+    /**
+     * @return float
+     */
+    public function getFactorSemanalAutorizado()
+    {
+        return $this->getImporteColegiaturaAnualIntegrada() * .005;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getImporteAlumno()
+    {
+        if($this->getConvenio()->getCicloAcademico()->getId() === 1){
+            return $this->getImporteColegiaturaAnualIntegrada() * $this->getFactorSemanalAutorizado();
+        }
+        return $this->getImporteColegiaturaAnualIntegrada() * .50;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getSubTotal()
+    {
+        return $this->getImporteAlumno() * $this->getLugaresAutorizados();
     }
 }

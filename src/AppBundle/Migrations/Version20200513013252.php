@@ -15,9 +15,9 @@ class Version20200513013252 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
-        // this up() migration is auto-generated, please modify it to your needs
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
         $this->addSql('alter table campo_clinico alter column horario drop not null');
-        $this->addSql('alter table campo_clinico alter column horario drop not null');
+        $this->addSql('alter table campo_clinico alter column promocion drop not null');
     }
 
     /**
@@ -27,6 +27,6 @@ class Version20200513013252 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('alter table campo_clinico alter column horario drop not null');
-        $this->addSql('alter table campo_clinico alter column horario drop not null');
+        $this->addSql('alter table campo_clinico alter column promocion drop not null');
     }
 }

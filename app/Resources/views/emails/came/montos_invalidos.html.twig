@@ -1,0 +1,33 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block body %}
+    <main>
+        <h1 class="text-center text-green">Sistema de Administración del FOFOE</h1>
+
+        <p>{{ solicitud.institucion.nombre }}</p>
+        <p>{{ solicitud.institucion.representante }}</p>
+        <p>Presente</p>
+        <p>Por medio del presente, tengo el agrado de notificar que por medio del <strong>Sistema de Administración del FOFOE</strong>
+            que usted puede consultar el estado y autorización de
+            campos clínicos asociados a su solicitud <strong>{{ solicitud.noSolicitud }}</strong></p>
+        <p>El acceso es mediante la siguiente liga:</p>
+
+        <p>__________________________________________</p>
+
+        <p>Sus credenciales de acceso son:</p>
+        <p><strong>Usuario: </strong>_________</p>
+        <p><strong>Contraseña: </strong>__________</p>
+        <p>Sin otro particular, le enviamos un cordial saludo.</p>
+
+
+        <div class="text-center text-green">
+            <p>Atentamente</p>
+            <p>@Nombre del CAME</p>
+            <p>@Delegación</p>
+        </div>
+
+
+
+    </main>
+
+{% endblock %}

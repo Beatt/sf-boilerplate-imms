@@ -19,7 +19,7 @@
     <div class='container-fluid wrapper-came'>
         <div class='row'>
             <div class='col-md-12'>
-                <h1 style="text-align: center">Detalle de Solicitud de Campos Clínicos</h1>
+                <h1 style="text-align: center; padding-bottom: 40px">Detalle de Solicitud de Campos Clínicos</h1>
             </div>
         </div>
         <div id="solicitud-show-wrapper"></div>
@@ -31,7 +31,6 @@
     <script>
         window.SOLICITUD = {{ solicitud | json_encode | raw }}
         window.CONVENIOS = {{ convenios | json_encode | raw }}
-        window.PAGOSCAMPOSCLINICOS = {{ pagosCamposClinicos | json_encode | raw }};
     </script>
     <script src="{{ asset('build/came_solicitud_index.js') }}"></script>
 

@@ -1,0 +1,92 @@
+{%extends'formatos/base.html.twig'%}
+
+{%block body%}
+    <div id="cabecera">
+        <p>INSTITUTO MEXICANO DEL SEGURO SOCIAL</p>
+        <p>DIRECCIÓN DE PRESTACIONES MÉDICAS</p>
+        <p>UNIDAD DE EDUCACIÓN, INVESTIGACIÓN YPOLITICAS DESALUD</p>
+        <p>COORDINACIÓN DE EDUCACIÓN EN SALUD</p>
+        <p>FORMATO DE CÁLCULO DE CUOTAS DE RECUPERACIÓN DE CICLOS CLÍNICOS PARA</p>
+        <p>CARRERAS DEL ÁREA DE LA SALUD</p>
+    </div>
+
+    <div>
+        <p>DELEGACIÓN IMSS : {{ campo_clinico.convenio.delegacion.nombre |upper }}</p>
+        <p>SEDE: {{ campo_clinico.unidad.nombre | upper }}</p>
+        <p>ESCUELA O FACULTAD: {{ campo_clinico.convenio.institucion.nombre | upper }}</p>
+        <p>NOMBRE DE LA CARRERA: {{ campo_clinico.convenio.carrera.nombre | upper }}</p>
+        <p>NÚMERO DEL CONVENIO: {{ campo_clinico.convenio.numero | upper }}</p>
+        <p>VIGENCIA DEL CONVENIO: {{ campo_clinico.convenio.vigenciaFormatted }}</p>
+        <p>CICLO ACADÉMICO: {{ campo_clinico.convenio.cicloAcademico.nombre | upper }}</p>
+    </div>
+    <div id="periodo">
+        <p>FECHA DE INICIO: {{ campo_clinico.displayFechaInicial }}</p>
+        <p>FECHA DE TERMINO: {{ campo_clinico.displayFechaFinal }}</p>
+    </div>
+    <div id="montos">
+        <div class="monto">
+            <div class="monto_name"><p>INSCRIPCION</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.montoInscripcion | number_format(2)  }}</p></div>
+        </div>
+        <div class="monto">
+            <div class="monto_name"><p>COLEGIATURA</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.montoColegiatura | number_format(2) }}</p></div>
+        </div>
+        <div class="monto">
+            <div class="monto_name"><p>IMPORTE COLEGIATURA ANUAL INTEGRADA (CAI)</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.importeColegiaturaAnualIntegrada | number_format(2) }}</p></div>
+        </div>
+        {% if campo_clinico.convenio.cicloAcademico.id == 1 %}
+        <div class="monto">
+            <div class="monto_name"><p>FACTOR SEMANAL AUTORIZADO</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.factorSemanalAutorizado | number_format(2) }}</p></div>
+        </div>
+        {% else %}
+        <div class="monto">
+            <div class="monto_name"><p>PORCENTAJE AUTORIZADO</p></div>
+            <div class="monto_value"><p>50%</p></div>
+        </div>
+        {% endif %}
+        <div class="monto">
+            <div class="monto_name"><p>IMPORTE POR ALUMNO</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.importeAlumno | number_format(2)}}</p></div>
+        </div>
+        <div class="monto">
+            <div class="monto_name"><p>NÚMERO DE ALUMNOS</p></div>
+            <div class="monto_value"><p>{{ campo_clinico.lugaresAutorizados }}</p></div>
+        </div>
+        {% if campo_clinico.convenio.cicloAcademico.id == 1 %}
+        <div class="monto">
+            <div class="monto_name"><p>SUBTOTAL 1:</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.subTotal | number_format(2)}}</p></div>
+        </div>
+        <div class="monto">
+            <div class="monto_name"><p>NÚMERO DE SEMANAS:</p></div>
+            <div class="monto_value"><p>{{ campo_clinico.weeks }}</p></div>
+        </div>
+        {% endif %}
+        <div class="monto">
+            <div class="monto_name"><p>TOTAL DE LA APORTACION A FOFOE:</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.monto | number_format(2)}}</p></div>
+        </div>
+    </div>
+
+    <div id="firmas">
+        <div>
+            <p>ELABORÓ</p>
+            {% if came %}
+                <p>{{ came.nombre | upper }}</p>
+            {% else %}
+                <p>SIN ASIGNAR EN EL SISTEMA</p>
+            {% endif %}
+            <hr>
+            <p>NOMBRE Y CARGO IMSS</p>
+        </div>
+        <div>
+            <p>ACEPTÓ</p>
+            <p>{{ campo_clinico.convenio.institucion.representante | upper }}</p>
+            <hr>
+            <p>NOMBRE Y CARGO INSTITUCIÓN EDUCATIVA</p>
+        </div>
+    </div>
+{%endblock%}

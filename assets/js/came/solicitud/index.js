@@ -6,6 +6,7 @@ import SolicitudAccion from "./components/SolicitudAccion";
 import SolicitudShow from "./show";
 import SolicitudValidaMontos from "./validaMontos";
 import Loader from "../../components/Loader/Loader";
+import ReactPaginate from 'react-paginate';
 
 const CameTableExample = (props) => {
     return (
@@ -90,13 +91,15 @@ const SolicitudIndex = (props) => {
 
     const [solicitudes, setSolicitudes] = React.useState(props.solicitudes ? props.solicitudes : [])
     const [isLoading, setIsLoading] = React.useState(false)
+    const [meta, setMeta] = React.useState(props.meta);
+    const [query, setQuery] = React.useState('');
 
     const handleSearchEvent = (query) => {
 
         setIsLoading(true);
-        fetch(`/api/solicitud?no_solicitud=${query}`)
+        fetch(`/api/solicitud?no_solicitud=${query}&page=${meta.page}&perPage=${meta.perPage}`)
             .then(response => { return response.json()}, error => {console.error(error)})
-            .then(json => {setSolicitudes(json.data)})
+            .then(json => {setSolicitudes(json.data); setMeta(json.meta)})
             .finally(() => { setIsLoading(false)});
 
     }
@@ -104,15 +107,29 @@ const SolicitudIndex = (props) => {
     return (
         <>
             <Loader show={isLoading}/>
-            <div className="col-md-2">
+            <div className="col-md-3">
                 <a href={'/solicitud/create'} id="btn_solicitud" className={'form-control btn btn-default'}>Agregar
                     Solicitud</a>
             </div>
-            <div className="col-md-6"/>
+            <div className="col-md-2"/>
+            <div className="col-md-3">
+                <div className={`form-group`}>
+                    <select id="perpage" className="form-control"
+                            onChange={e => {setMeta(Object.assign(meta, {perPage: e.target.value, page: 1}));  handleSearchEvent(query); }}>
+                        {/*<option value="1">1</option>*/}
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                    </select>
+                    <span className="help-block"> </span>
+                </div>
+            </div>
             <div className="col-md-4">
                 <form action="/solicitud" method={'get'}>
                     <div className="input-group">
-                        <input type="text" className="form-control" placeholder="Buscar por Número de Solicitud" name="no_solicitud" onChange={e => {handleSearchEvent(e.target.value)}}/>
+                        <input type="text" className="form-control" placeholder="Buscar por Número de Solicitud" name="no_solicitud" onChange={e => {setQuery(e.target.value); handleSearchEvent(e.target.value)}}/>
                         <div className="input-group-btn">
                             <button className="btn btn-default" type="submit">
                                 <i className="glyphicon glyphicon-search"/>
@@ -122,34 +139,53 @@ const SolicitudIndex = (props) => {
                 </form>
             </div>
             <div className="col-md-12">
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>No. de solicitud</th>
-                        <th>Institución Educativa</th>
-                        <th>No. de campos clínicos solicitados</th>
-                        <th>No. de campos clínicos autorizados</th>
-                        <th>Fecha Solicitud</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {solicitudes.map(solicitud => {
-                        return (
-                            <tr key={solicitud.id}>
-                                <td><a href={`/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
-                                <td>{solicitud.institucion.nombre}</td>
-                                <td>{solicitud.camposClinicosSolicitados}</td>
-                                <td>{solicitud.camposClinicosAutorizados}</td>
-                                <td>{solicitud.fecha}</td>
-                                <td>{solicitud.estatusCameFormatted}</td>
-                                <td><SolicitudAccion solicitud={solicitud}/></td>
-                            </tr>
-                        )
-                    })}
-                    </tbody>
-                </table>
+                <div className={'table-responsive'}>
+                    <table className="table">
+                        <thead>
+                        <tr>
+                            <th>No. de solicitud</th>
+                            <th>Institución Educativa</th>
+                            <th>No. de campos clínicos solicitados</th>
+                            <th>No. de campos clínicos autorizados</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {solicitudes.map(solicitud => {
+                            return (
+                                <tr key={solicitud.id}>
+                                    <td><a href={`/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
+                                    <td>{solicitud.institucion.nombre}</td>
+                                    <td>{solicitud.camposClinicosSolicitados}</td>
+                                    <td>{solicitud.camposClinicosAutorizados}</td>
+                                    <td>{solicitud.fecha}</td>
+                                    <td>{solicitud.estatusCameFormatted}</td>
+                                    <td><SolicitudAccion solicitud={solicitud}/></td>
+                                </tr>
+                            )
+                        })}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style={{textAlign: "center"}}>
+                    <ReactPaginate
+                        previousLabel={'Anterior'}
+                        nextLabel={'Siguiente'}
+                        breakLabel={'...'}
+                        breakClassName={'break-me'}
+                        pageCount={meta.total / meta.perPage}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={meta.perPage}
+                        onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
+                        containerClassName={'pagination'}
+                        subContainerClassName={'pages pagination'}
+                        activeClassName={'active'}
+                    />
+                </div>
+
             </div>
         </>
     );
@@ -168,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ReactDOM.render(
             <SolicitudIndex
                 solicitudes={window.SOLICITUDES}
+                meta={window.META}
             />, indexDom
         )
     }
@@ -193,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <SolicitudShow
                 solicitud={window.SOLICITUD}
                 convenios={window.CONVENIOS}
-                pagosCamposClinicos={window.PAGOSCAMPOSCLINICOS}
             />, showDom
         )
     }

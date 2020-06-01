@@ -4,9 +4,9 @@ namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Institucion;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class InstitucionType extends AbstractType
 {
@@ -19,7 +19,8 @@ class InstitucionType extends AbstractType
             ->add('telefono')
             ->add('fax')
             ->add('sitioWeb')
-            ->add('cedulaFile', VichFileType::class)
+            ->add('representante')
+            ->add('cedulaFile', FileType::class)
         ;
     }
 

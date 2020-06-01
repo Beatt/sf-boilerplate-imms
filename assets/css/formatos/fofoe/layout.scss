@@ -1,0 +1,62 @@
+body{
+  margin: 16px;
+  font-size: 10px;
+}
+
+header {
+  padding: 16px;
+  border: 1px solid;
+}
+
+main {
+  padding: 16px;
+  border: 1px solid;
+  margin-top: 16px;
+}
+
+@media print {
+  .sf-toolbarreset {
+    display: none;
+  }
+}
+
+#cabecera {
+  text-align: center;
+}
+
+#periodo {
+  display: flex;
+  text-align: center;
+}
+
+#periodo p {
+  width: 50%;
+}
+
+.monto {
+  display: flex;
+}
+
+.monto_name {
+  flex: 2;
+}
+
+.monto_value{
+  flex: 1;
+  text-align: right;
+  border: solid 1px;
+}
+
+.monto_value p {
+  margin-right: 16px;
+}
+
+#firmas {
+  margin-top: 80px;
+  display: flex;
+  text-align: center;
+}
+
+#firmas div {
+  width: 50%;
+}

@@ -12,20 +12,20 @@ easy_admin:
           - id
           - sector
           - tipo
-          - vigencia
-          - { property: gradoAcademico.nombre, label: 'Grado académico' }
-          - { property: cicloAcademico.nombre, label: 'Ciclo académico' }
-          - { property: carrera.nombre, label: 'Carrera' }
-          - { property: institucion.nombre, label: 'Institución' }
           - { property: delegacion.nombre, label: 'Delegación' }
+          - { property: cicloAcademico.nombre, label: 'Ciclo académico' }
+          - { property: carrera.displayName, label: 'Carrera' }
+          - { property: institucion.nombre, label: 'Institución' }
+          - vigencia
       form:
-        title: 'Crear Convenio'
         fields:
+          -  { property: nombre, label: 'Nombre' }
+          -  { property: numero, label: 'Numero' }
           - { property: sector, label: 'Sector', type: choice, type_options: { choices: { 'Público': 'Público', 'Privado': 'Privado' } } }
           - { property: tipo, label: 'Tipo', type: choice, type_options: { choices: { 'General': 'General', 'Específico': 'Específico' } } }
           - vigencia
-          - { property: gradoAcademico, label: 'Grado académico', type: entity, type_options: { choice_label: nombre } }
-          - { property: cicloAcademico, label: 'Ciclo académico', type: entity, type_options: { choice_label: nombre } }
-          - { property: carrera, label: 'Carrera', type: entity, type_options: { choice_label: nombre } }
+          - { property: cicloAcademico, label: 'Ciclo académico', type: entity, type_options: { choice_label: nombre , required: false } }
+          - { property: carrera, label: 'Carrera', type: entity, type_options: { choice_label: displayName , required: false } }
           - { property: institucion, label: 'Institución', type: entity, type_options: { choice_label: nombre } }
           - { property: delegacion, label: 'Delegación', type: entity, type_options: { choice_label: nombre } }
+        form_options: { validation_groups: ['Convenio', tipo] }

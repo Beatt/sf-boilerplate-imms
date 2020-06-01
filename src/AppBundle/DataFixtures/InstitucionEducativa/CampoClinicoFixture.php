@@ -19,7 +19,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
     {
         /** @var Convenio $convenio1 */
         $convenio1 = $manager->getRepository(Convenio::class)
-            ->find(1);
+            ->find(3);
 
         /** @var EstatusCampo $estatusCampoNuevo */
         $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
@@ -38,11 +38,12 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
             $unidad,
             $solicitud
         );
+        $campo1->setReferenciaBancaria(null);
         $manager->persist($campo1);
 
         /** @var Convenio $convenio2 */
         $convenio2 = $manager->getRepository(Convenio::class)
-            ->find(4);
+            ->find(79);
 
         /** @var EstatusCampo $estatusCampoNuevo */
         $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
@@ -65,7 +66,7 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
 
         /** @var Convenio $convenio3 */
         $convenio3 = $manager->getRepository(Convenio::class)
-            ->find(14);
+            ->find(93);
 
         /** @var EstatusCampo $estatusCampoNuevo */
         $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)

@@ -59,6 +59,8 @@ class ComprobantePagoUploadedListener
         /** @var Pago $pago */
         $pago = $event->getObject();
 
+        if(!$event->getObject() instanceof Pago) return;
+
         $estatusPagado = $this->estatusCampoRepository->getEstatusPagado();
 
         if($pago->getSolicitud()->isPagoUnico()) {

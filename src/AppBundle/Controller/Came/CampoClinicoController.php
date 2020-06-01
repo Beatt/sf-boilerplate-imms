@@ -77,4 +77,31 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             )
         ]);
     }
+
+    /**
+     * @Route("/campos_clinicos/{campo_clinico_id}/formato_fofoe/show", methods={"GET"}, name="campo_clinico.formato_fofoe.show")
+     * @param $campo_clinico_id
+     */
+    public function showFormatoFofoeAction($campo_clinico_id)
+    {
+        $campo_clinico = $this->getDoctrine()
+            ->getRepository(CampoClinico::class)
+            ->find($campo_clinico_id);
+
+        if (!$campo_clinico) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $campo_clinico
+            );
+        }
+        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico, 'came' => null]);
+    }
+
+    /**
+     * @Route("/campos_clinicos/{campo_clinico_id}/formato_fofoe/dowload", methods={"GET"}, name="campo_clinico.formato_fofoe.download")
+     * @param $campo_clinico_id
+     */
+    public function downloadFormatoFofoeAction($campo_clinico_id)
+    {
+
+    }
 }

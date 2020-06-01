@@ -16,4 +16,4 @@ easy_admin:
         fields:
           - { property: nombre, label: 'Nombre' }
           - { property: nivelAcademico, label: 'Nivel académico', type: entity, type_options: { choice_label: nombre } }
-          - activo
+          - { property: activo, label: 'Activo' }

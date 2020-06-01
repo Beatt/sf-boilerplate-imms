@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -34,9 +35,19 @@ class Carrera
     /**
      * @var NivelAcademico
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\NivelAcademico", cascade={"persist"})
-     * @ORM\JoinColumn(name="nivel_academico_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="nivel_academico_id", referencedColumnName="id", nullable=false)
      */
     private $nivelAcademico;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="carrera")
+     */
+    private $montosCarreras;
+
+    public function __construct()
+    {
+        $this->montosCarreras = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * @return integer
@@ -63,6 +74,14 @@ class Carrera
     public function getNombre()
     {
         return $this->nombre;
+    }
+
+  /**
+   * @return string
+   */
+    public function getDisplayName() {
+      return $this->nivelAcademico->getNombre()
+          . " - " . $this->nombre;
     }
 
     /**
@@ -106,5 +125,32 @@ class Carrera
     public function __toString()
     {
         return $this->getNombre();
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     * @return Carrera
+     */
+    public function addMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarreras[] = $montosCarrera;
+
+        return $this;
+    }
+
+    /**
+     * @param MontoCarrera $montosCarrera
+     */
+    public function removeMontosCarrera(MontoCarrera $montosCarrera)
+    {
+        $this->montosCarreras->removeElement($montosCarrera);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMontosCarreras()
+    {
+        return $this->montosCarreras;
     }
 }

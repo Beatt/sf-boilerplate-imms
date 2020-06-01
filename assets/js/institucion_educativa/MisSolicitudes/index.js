@@ -75,6 +75,9 @@ const Index = (
     ) {
       redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/campos-clinicos`
     }
+    else if(solicitud.estatus === SOLICITUD.CONFIRMADA) {
+      redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/registrar`
+    }
 
     window.location.href = redirectRoute
   }

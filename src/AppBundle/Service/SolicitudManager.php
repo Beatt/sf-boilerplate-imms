@@ -4,27 +4,55 @@
 namespace AppBundle\Service;
 
 
+use AppBundle\Entity\Institucion;
+use AppBundle\Entity\Rol;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Usuario;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Swift_Mailer;
 
 class SolicitudManager implements SolicitudManagerInterface
 {
 
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
-
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
+    /**
+     * @var EncoderFactoryInterface
+     */
+    private $encoderFactory;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
+    /**
+     * @var Swift_Mailer
+     */
+    private $mailer;
+
+    /**
+     * @var \Twig_Environment
+     */
+    private $templating;
+
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
+        Swift_Mailer $mailer, \Twig_Environment $templating, EncoderFactoryInterface $encoderFactory)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->mailer     = $mailer;
+        $this->templating = $templating;
+        $this->encoderFactory = $encoderFactory;
     }
 
     public function update(Solicitud $solicitud)
@@ -68,7 +96,7 @@ class SolicitudManager implements SolicitudManagerInterface
         ];
     }
 
-    public function finalizar(Solicitud $solicitud)
+    public function finalizar(Solicitud $solicitud, Usuario $came_user = null)
     {
         $solicitud->setEstatus(Solicitud::CONFIRMADA);
         try {
@@ -81,6 +109,11 @@ class SolicitudManager implements SolicitudManagerInterface
                 'error' => $exception->getMessage()
             ];
         }
+
+        if(!$solicitud->getInstitucion()->getUsuario()) {
+            $this->generateUser($solicitud, $came_user);
+        }
+
         return [
             'status' => true
         ];
@@ -89,20 +122,23 @@ class SolicitudManager implements SolicitudManagerInterface
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false)
     {
         $solicitud->setValidado($is_valid);
-        if($is_valid){
-            $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
-        }else{
-            $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
-        }
         try {
+            if ($is_valid) {
+                $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
+                $this->processMontos($solicitud);
+            } else {
+                $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
+                $this->sendEmailMontosInvalidos($solicitud);
+            }
+
             $this->entityManager->persist($solicitud);
             $this->entityManager->flush();
-            if($solicitud->getValidado()){
+            if ($solicitud->getValidado()) {
                 foreach ($montos as $monto) {
-                    if($monto->getMontoInscripcion() && $monto->getMontoColegiatura()){
+                    if ($monto->getMontoInscripcion() && $monto->getMontoColegiatura()) {
                         $this->entityManager->persist($monto);
                         $this->entityManager->flush();
-                    }else{
+                    } else {
                         throw new \Exception("Montos no puedes ser vacios");
                     }
                 }
@@ -118,6 +154,90 @@ class SolicitudManager implements SolicitudManagerInterface
         return [
             'status' => true
         ];
+    }
 
+    public function sendEmailMontosInvalidos(Solicitud $solicitud)
+    {
+        $message = (new \Swift_Message('Los montos de la solicitud ' . $solicitud->getNoSolicitud() . ' son invalidos'))
+            ->setFrom('send@example.com') //cambiar el destinatario XD
+            ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
+            ->setBody(
+                $this->templating->render('emails/came/montos_invalidos.html.twig',['solicitud' => $solicitud]),
+                'text/html'
+            )
+        ;
+        $this->mailer->send($message);
+    }
+
+    public function generateUser(Solicitud $solicitud, Usuario $came_usuario = null)
+    {
+        $institucion = $solicitud->getInstitucion();
+        $nueva_password = substr(md5(mt_rand()), 0, 8);
+
+        $user_db = $this->entityManager->getRepository(Usuario::class)->findOneBy(['correo' => $institucion->getCorreo()]);
+        if(!$user_db){
+            $user = new Usuario();
+            $user->setCorreo($institucion->getCorreo());
+            $user->setNombre(substr($institucion->getRepresentante(), 0, 50));
+            $user->setApellidoPaterno(substr($institucion->getNombre(), 0, 50));
+            $user->setContrasena($this->encoderFactory->getEncoder($user)->encodePassword($nueva_password, $user->getSalt()));
+            $user->setCurp('0');
+            $user->setRfc('0');
+            $user->setSexo('0');
+            $user->setFechaIngreso(Carbon::now());
+            $user->setRegims(0);
+        }else{
+            $user = $user_db;
+        }
+        $user->setActivo(true);
+        $user->addRol($this->entityManager->getRepository(Rol::class)->findOneBy(['clave' => 'IE']));
+
+        $this->entityManager->persist($user);
+        try {
+            $this->entityManager->flush();
+        } catch(OptimisticLockException $exception) {
+            $this->logger->critical($exception->getMessage());
+        }
+        $institucion->setUsuario($user);
+        $this->entityManager->persist($institucion);
+        try {
+            $this->entityManager->flush();
+        } catch(OptimisticLockException $exception) {
+            $this->logger->critical($exception->getMessage());
+        }
+        $this->sendEmailBienvenida($solicitud, $nueva_password);
+    }
+
+
+    private function sendEmailBienvenida(Solicitud $solicitud,  $password,  Usuario $came_usuario = null)
+    {
+        $message = (new \Swift_Message('Sistema de Administración del FOFOE'))
+            ->setFrom('send@example.com') //cambiar el destinatario XD
+            ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
+            ->setBody(
+                $this->templating->render('emails/came/institucion_bienvenida.html.twig',['solicitud' => $solicitud, 'password' => $password, 'came' => $came_usuario]),
+                'text/html'
+            )
+        ;
+        $this->mailer->send($message);
+    }
+
+    private function processMontos(Solicitud $solicitud)
+    {
+        $monto_solicitud = 0;
+        foreach ($solicitud->getCampoClinicos() as $campoClinico) {
+            $total_campo = 0;
+            if($campoClinico->getConvenio()->getCicloAcademico()->getId() === 1){
+                $total_campo = $campoClinico->getSubTotal() * $campoClinico->getWeeks();
+            }else{
+                $total_campo = $campoClinico->getSubTotal();
+            }
+            $campoClinico->setMonto($total_campo);
+            $monto_solicitud+=$total_campo;
+            $this->entityManager->persist($campoClinico);
+        }
+        $solicitud->setMonto($monto_solicitud);
+        $this->entityManager->persist($solicitud);
+        $this->entityManager->flush();
     }
 }

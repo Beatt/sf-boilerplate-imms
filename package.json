@@ -10,6 +10,9 @@
     "sass-loader": "^7.0.1"
   },
   "dependencies": {
-    "react-paginate": "^6.3.2"
+    "camelcase": "^6.0.0",
+    "camelcase-keys": "^6.2.2",
+    "react-paginate": "^6.3.2",
+    "sweetalert2": "^9.13.4"
   }
 }

@@ -30,12 +30,12 @@ doctrine:
 #                driver:   pdo_sqlite
 #                path:     %kernel.cache_dir%/test.db
 
-doctrine_migrations:
-    dir_name: "%kernel.root_dir%/../tests/AppBundle/Migrations"
-    namespace: Tests\AppBundle\Migrations
-    table_name: migration_versions
-    name: Application Migrations
-    organize_migrations: false
+#doctrine_migrations:
+#    dir_name: "%kernel.root_dir%/../tests/AppBundle/Migrations"
+#    namespace: Tests\AppBundle\Migrations
+#    table_name: migration_versions
+#    name: Application Migrations
+#    organize_migrations: false
 
 vich_uploader:
     db_driver: orm
