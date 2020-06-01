@@ -88,10 +88,10 @@ class SolicitudFixture extends Fixture
     protected function createSolicitudCargandoComprobantes(ObjectManager $manager)
     {
         $solicitudCargandoComprobantes = $this->create(
-            '100003',
             SolicitudInterface::CARGANDO_COMPROBANTES,
             Carbon::now()->addMonths(5),
-            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
+            SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE,
+            '100003'
         );
         $manager->persist($solicitudCargandoComprobantes);
         return $solicitudCargandoComprobantes;
