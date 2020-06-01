@@ -81,13 +81,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @var File
      *
      * @Vich\UploadableField(mapping="comprobantes_inscripcion", fileNameProperty="urlArchivo")
-<<<<<<< HEAD
-=======
      * @Assert\File(
      *  maxSize="1000000",
      *  mimeTypes = {"application/pdf", "application/x-pdf"},
      * )
->>>>>>> b2ae1368e1337dc3f3d1bf1cac222c68e138fb70
      */
     private $urlArchivoFile;
 
