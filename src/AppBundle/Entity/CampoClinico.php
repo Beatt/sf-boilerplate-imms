@@ -447,7 +447,7 @@ class CampoClinico implements ComprobantePagoInterface
      */
     public function getImporteColegiaturaAnualIntegrada()
     {
-        return $this->getMontoColegiatura() * $this->getMontoInscripcion();
+        return $this->getMontoColegiatura() + $this->getMontoInscripcion();
     }
 
     /**

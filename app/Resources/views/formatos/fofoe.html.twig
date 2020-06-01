@@ -26,20 +26,20 @@
     <div id="montos">
         <div class="monto">
             <div class="monto_name"><p>INSCRIPCION</p></div>
-            <div class="monto_value"><p>{{ campo_clinico.montoInscripcion }}</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.montoInscripcion | number_format(2)  }}</p></div>
         </div>
         <div class="monto">
             <div class="monto_name"><p>COLEGIATURA</p></div>
-            <div class="monto_value"><p>{{ campo_clinico.montoColegiatura }}</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.montoColegiatura | number_format(2) }}</p></div>
         </div>
         <div class="monto">
             <div class="monto_name"><p>IMPORTE COLEGIATURA ANUAL INTEGRADA (CAI)</p></div>
-            <div class="monto_value"><p>{{ campo_clinico.montoColegiatura }}</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.importeColegiaturaAnualIntegrada | number_format(2) }}</p></div>
         </div>
         {% if campo_clinico.convenio.cicloAcademico.id == 1 %}
         <div class="monto">
             <div class="monto_name"><p>FACTOR SEMANAL AUTORIZADO</p></div>
-            <div class="monto_value"><p>{{ campo_clinico.importeColegiaturaAnualIntegrada }}</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.factorSemanalAutorizado | number_format(2) }}</p></div>
         </div>
         {% else %}
         <div class="monto">
@@ -49,7 +49,7 @@
         {% endif %}
         <div class="monto">
             <div class="monto_name"><p>IMPORTE POR ALUMNO</p></div>
-            <div class="monto_value"><p>{{ campo_clinico.importeAlumno }}</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.importeAlumno | number_format(2)}}</p></div>
         </div>
         <div class="monto">
             <div class="monto_name"><p>NÚMERO DE ALUMNOS</p></div>
@@ -58,7 +58,7 @@
         {% if campo_clinico.convenio.cicloAcademico.id == 1 %}
         <div class="monto">
             <div class="monto_name"><p>SUBTOTAL 1:</p></div>
-            <div class="monto_value"><p>{{ campo_clinico.subTotal }}</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.subTotal | number_format(2)}}</p></div>
         </div>
         <div class="monto">
             <div class="monto_name"><p>NÚMERO DE SEMANAS:</p></div>
@@ -67,7 +67,7 @@
         {% endif %}
         <div class="monto">
             <div class="monto_name"><p>TOTAL DE LA APORTACION A FOFOE:</p></div>
-            <div class="monto_value"><p>{{ campo_clinico.monto }}</p></div>
+            <div class="monto_value"><p>$ {{ campo_clinico.monto | number_format(2)}}</p></div>
         </div>
     </div>
 

@@ -233,7 +233,7 @@ class SolicitudManager implements SolicitudManagerInterface
                 $total_campo = $campoClinico->getSubTotal();
             }
             $campoClinico->setMonto($total_campo);
-            $campoClinico+=$total_campo;
+            $monto_solicitud+=$total_campo;
             $this->entityManager->persist($campoClinico);
         }
         $solicitud->setMonto($monto_solicitud);
