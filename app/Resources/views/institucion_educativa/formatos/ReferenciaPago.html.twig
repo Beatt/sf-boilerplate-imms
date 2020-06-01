@@ -16,10 +16,10 @@
 
 <div class="container" style="border-bottom: 1px solid #a3a3a3">
   <div class="row">
-    <img src="{{ asset('build/logo_IMSS.png') }}" alt="IMSS" style="float: left;" />
+    <img src="{{ asset('build/images/logo_IMSS.png') }}" alt="IMSS" style="float: left;" />
     <h1 style="text-align: center;  position: relative; top: 60px; font-weight: bold; color: black;">Instituto Mexicano del Seguro Social</h1>
   </div>
-  <p style="text-align: right;" class="mb-20" ><strong>Número de solicitud: {{ solicitud.noSolicitud }}</strong></p>
+  <p style="text-align: right;" class="mb-20" ><strong>Número de solicitud: {{ solicitud.noSolicitud|default("") }}</strong></p>
 </div>
 
 {% if solicitud is not null %}
