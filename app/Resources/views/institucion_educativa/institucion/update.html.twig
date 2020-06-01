@@ -45,6 +45,7 @@
     <script>
       window.INSTITUCION_PROP = {{ institucion|json_encode|raw }}
       window.CONVENIOS_PROP = {{ convenios|json_encode|raw }}
+      window.ERRORS = {{ errores|json_encode|raw }}
     </script>
     <script src="{{ asset('build/validar-info.js') }}"></script>
 

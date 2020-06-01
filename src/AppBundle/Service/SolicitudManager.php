@@ -26,6 +26,7 @@ class SolicitudManager implements SolicitudManagerInterface
      * @var EntityManagerInterface
      */
     private $entityManager;
+<<<<<<< HEAD
     /**
      * @var LoggerInterface
      */
@@ -47,12 +48,23 @@ class SolicitudManager implements SolicitudManagerInterface
 
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
         Swift_Mailer $mailer, \Twig_Environment $templating, EncoderFactoryInterface $encoderFactory)
+=======
+    private $logger;
+    private $mailer;
+    private $templating;
+
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
+        Swift_Mailer $mailer, \Twig_Environment $templating)
+>>>>>>> b2ae1368e1337dc3f3d1bf1cac222c68e138fb70
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->mailer     = $mailer;
         $this->templating = $templating;
+<<<<<<< HEAD
         $this->encoderFactory = $encoderFactory;
+=======
+>>>>>>> b2ae1368e1337dc3f3d1bf1cac222c68e138fb70
     }
 
     public function update(Solicitud $solicitud)
@@ -122,6 +134,15 @@ class SolicitudManager implements SolicitudManagerInterface
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false)
     {
         $solicitud->setValidado($is_valid);
+<<<<<<< HEAD
+=======
+        if($is_valid){
+            $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
+        }else{
+            $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
+            $this->sendEmailMontosInvalidos($solicitud);
+        }
+>>>>>>> b2ae1368e1337dc3f3d1bf1cac222c68e138fb70
         try {
             if ($is_valid) {
                 $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
@@ -155,6 +176,7 @@ class SolicitudManager implements SolicitudManagerInterface
             'status' => true
         ];
     }
+<<<<<<< HEAD
 
     public function sendEmailMontosInvalidos(Solicitud $solicitud)
     {
@@ -216,10 +238,21 @@ class SolicitudManager implements SolicitudManagerInterface
             ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
             ->setBody(
                 $this->templating->render('emails/came/institucion_bienvenida.html.twig',['solicitud' => $solicitud, 'password' => $password, 'came' => $came_usuario]),
+=======
+
+    public function sendEmailMontosInvalidos(Solicitud $solicitud)
+    {
+        $message = (new \Swift_Message('Los montos de la solicitud ' . $solicitud->getNoSolicitud() . ' son invalidos'))
+            ->setFrom('send@example.com') //cambiar el destinatario XD
+            ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
+            ->setBody(
+                $this->templating->render('emails/came/montos_invalidos.html.twig',['solicitud' => $solicitud]),
+>>>>>>> b2ae1368e1337dc3f3d1bf1cac222c68e138fb70
                 'text/html'
             )
         ;
         $this->mailer->send($message);
+<<<<<<< HEAD
     }
 
     private function processMontos(Solicitud $solicitud)
@@ -239,5 +272,7 @@ class SolicitudManager implements SolicitudManagerInterface
         $solicitud->setMonto($monto_solicitud);
         $this->entityManager->persist($solicitud);
         $this->entityManager->flush();
+=======
+>>>>>>> b2ae1368e1337dc3f3d1bf1cac222c68e138fb70
     }
 }

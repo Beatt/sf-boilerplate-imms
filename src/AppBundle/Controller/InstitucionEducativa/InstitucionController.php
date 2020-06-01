@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class InstitucionController extends Controller
+class InstitucionController extends DIEControllerController
 {
     /**
      * @Route("/instituciones/{id}/editar", name="instituciones#update", methods={"POST", "GET"})
@@ -46,15 +47,18 @@ class InstitucionController extends Controller
 
             $result = $institucionManager->Create($form->getData());
 
-            return new JsonResponse([
-                'message' => $result['status'] ?
+            $this->addFlash('success', 'Se ha guardado correctamente los datos de la instituciòn');
+
+            /*return new JsonResponse([
+                'message' => $result ?
                     "¡La información se actualizado correctamente!" :
                     '¡Ha ocurrido un problema, intenta más tarde!',
                 'status' => $result['status'] ?
                     Response::HTTP_OK :
                     Response::HTTP_UNPROCESSABLE_ENTITY
-            ]);
+            ]);*/
         }
+
 
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByInstitucion(
             $institucion->getId()
@@ -62,7 +66,8 @@ class InstitucionController extends Controller
 
         return $this->render('institucion_educativa/institucion/update.html.twig', [
             'convenios' => $institucionPerfilNormalizer->normalizeCamposClinicos($camposClinicos),
-            'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion)
+            'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
+            'errores' => $this->getFormErrors($form)
         ]);
     }
 

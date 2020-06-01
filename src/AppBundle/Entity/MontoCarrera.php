@@ -24,6 +24,10 @@ class MontoCarrera
      * @ORM\Column(type="float", precision=24, scale=4, nullable=false)
      * @Assert\NotNull
      * @Assert\NotBlank
+     * @Assert\Regex(
+     *  pattern="/^(0|[1-9][0-9]*)$/",
+     *  message="Solo se pueden ingresar números"
+     * )
      */
     private $montoInscripcion;
 

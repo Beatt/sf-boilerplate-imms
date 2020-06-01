@@ -136,6 +136,11 @@ const ExpedienteUnico = (props) => {
 }
 
 const ExpedienteDetallado = (props) => {
+    const Comprobante = () => {
+        if(props.solicitud.fechaComprobante)
+            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+        return (<></>);
+    }
     return (
         <div className="table-responsive">
             <table className="table">
