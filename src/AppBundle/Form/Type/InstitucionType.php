@@ -19,6 +19,7 @@ class InstitucionType extends AbstractType
             ->add('telefono')
             ->add('fax')
             ->add('sitioWeb')
+            ->add('representante')
             ->add('cedulaFile', FileType::class)
         ;
     }

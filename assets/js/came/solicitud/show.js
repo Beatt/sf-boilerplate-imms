@@ -1,6 +1,34 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
 
+const ComprobanteOficio = (props) => {
+    if(props.solicitud.fechaComprobante)
+        return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+    return (<></>);
+}
+
+const LinkPago = (props) => {
+    if(props.pago)
+        return (<a href={`/pago/${props.pago.id}/download`} target={'_blank'}>Descargar</a>)
+    return (<></>);
+}
+
+const LinkFactura = (props) => {
+    if(props.factura)
+        return (<a href={`/factura/${props.factura.id}/download`} target={'_blank'}>Descargar</a>)
+    return (<></>);
+}
+
+const searchPago = (pagos, campo_clinico) =>{
+    const results =  pagos.filter(item => {
+        return campo_clinico.referenciaBancaria.toString() === item.referenciaBancaria.toString();
+    });
+    if(results.length > 0){
+        return results[0];
+    }
+    return null;
+}
+
 const DetalleSolicitudDetallado = (props) => {
     const [isLoading, setIsLoading] = React.useState(false)
 
@@ -49,9 +77,6 @@ const DetalleSolicitudDetallado = (props) => {
                         <th>Comprobante</th>
                         <th>Factura</th>
                     </tr>
-                    <tr>
-                        <th><input type="text" placeholder={'Sede'}/></th>
-                    </tr>
                     </thead>
                     <tbody>
                     {camposClinicos.map(cc => {
@@ -63,10 +88,10 @@ const DetalleSolicitudDetallado = (props) => {
                                 <td>{cc.convenio.carrera.nombre}</td>
                                 <td>{cc.lugaresSolicitados}</td>
                                 <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicial}</td>
-                                <td>{cc.fechaFinal}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{cc.fechaInicialFormatted}</td>
+                                <td>{cc.fechaFinalFormatted}</td>
+                                <td><LinkPago pago={searchPago(props.solicitud.pagos, cc)}/></td>
+                                <td><LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/></td>
                             </tr>
                         )
                     })}
@@ -91,18 +116,18 @@ const ExpedienteUnico = (props) => {
                 <tbody>
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.fechaComprobanteFormatted}</td>
+                    <td><ComprobanteOficio solicitud={props.solicitud}/></td>
                 </tr>
                 <tr>
                     <td>Comprobante de Pago</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.pago? props.solicitud.pago.fechaPagoFormatted: ''}</td>
+                    <td><LinkPago pago={props.solicitud.pago}/></td>
                 </tr>
                 <tr>
                     <td>Factura (CFDI)</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.pago && props.solicitud.pago.factura? props.solicitud.pago.factura.fechaFacturacionFormatted: ''}</td>
+                    <td><LinkFactura factura={props.solicitud.pago && props.solicitud.pago.factura? props.solicitud.pago.factura :null}/></td>
                 </tr>
                 </tbody>
             </table>
@@ -124,12 +149,8 @@ const ExpedienteDetallado = (props) => {
                 <tbody>
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
-                </tr>
-                <tr>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
+                    <td>{props.solicitud.fechaComprobanteFormatted}</td>
+                    <td><ComprobanteOficio solicitud={props.solicitud}/></td>
                 </tr>
                 </tbody>
             </table>
@@ -195,8 +216,8 @@ const DetalleSolicitudUnico = (props) => {
                                 <td>{cc.convenio.carrera.nombre}</td>
                                 <td>{cc.lugaresSolicitados}</td>
                                 <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicial}</td>
-                                <td>{cc.fechaFinal}</td>
+                                <td>{cc.fechaInicialFormatted}</td>
+                                <td>{cc.fechaFinalFormatted}</td>
                             </tr>
                         )
                     })}
@@ -210,7 +231,7 @@ const DetalleSolicitudUnico = (props) => {
 const SolicitudShow = (props) => {
     const Detalle = () => {
         if (props.solicitud.tipoPago === 'Multiple')
-            return (<DetalleSolicitudMultiple solicitud={props.solicitud}/>)
+            return (<DetalleSolicitudDetallado solicitud={props.solicitud}/>)
         return (<DetalleSolicitudUnico solicitud={props.solicitud}/>)
     }
 
@@ -268,7 +289,7 @@ const SolicitudShow = (props) => {
                                     <td>{convenio.carrera.nivelAcademico.nombre}</td>
                                     <td>{convenio.cicloAcademico.nombre}</td>
                                     <td>{convenio.carrera.nombre}</td>
-                                    <td>{convenio.vigencia}</td>
+                                    <td>{convenio.vigenciaFormatted}</td>
                                 </tr>
                             )
                         })}

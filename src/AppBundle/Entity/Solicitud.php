@@ -322,6 +322,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
+     * @return string
+     */
+    public function getFechaComprobanteFormatted()
+    {
+        return $this->getFechaComprobante()? $this->getFechaComprobante()->format('d-m-Y') : '';
+    }
+
+    /**
      * @param float $monto
      * @return Solicitud
      */
@@ -623,5 +631,18 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     public function setConfirmacionOficioAdjunto($confirmacionOficioAdjunto)
     {
         $this->confirmacionOficioAdjunto = $confirmacionOficioAdjunto;
+    }
+
+    /**
+     * @return Pago|null
+     */
+    public function getPago()
+    {
+        $result = null;
+        $pagos = $this->getPagos();
+        if(count($pagos)>0) {
+            $result = $pagos[0];
+        }
+        return $result;
     }
 }

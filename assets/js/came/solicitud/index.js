@@ -230,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <SolicitudShow
                 solicitud={window.SOLICITUD}
                 convenios={window.CONVENIOS}
-                pagosCamposClinicos={window.PAGOSCAMPOSCLINICOS}
             />, showDom
         )
     }

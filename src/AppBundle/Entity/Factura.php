@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Table(name="factura")
@@ -45,6 +47,14 @@ class Factura
      * @ORM\Column(type="string", length=100)
      */
      private $folio;
+
+    /**
+     * @var File
+     *
+     * @Vich\UploadableField(mapping="facturas", fileNameProperty="zip")
+     */
+    private $zipFile;
+
 
     /**
      * @return int
@@ -129,5 +139,16 @@ class Factura
      public function getFolio()
      {
          return $this->folio;
+     }
+
+    /**
+     * @return string
+     */
+     public function getFechaFacturacionFormatted()
+     {
+         if($this->getFechaFacturacion()){
+             return $this->getFechaFacturacion()->format('d-m-Y');
+         }
+         return '';
      }
 }

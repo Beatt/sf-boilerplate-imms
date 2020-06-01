@@ -47,10 +47,10 @@ class InstitucionController extends Controller
             $result = $institucionManager->Create($form->getData());
 
             return new JsonResponse([
-                'message' => $result ?
+                'message' => $result['status'] ?
                     "¡La información se actualizado correctamente!" :
                     '¡Ha ocurrido un problema, intenta más tarde!',
-                'status' => $result ?
+                'status' => $result['status'] ?
                     Response::HTTP_OK :
                     Response::HTTP_UNPROCESSABLE_ENTITY
             ]);

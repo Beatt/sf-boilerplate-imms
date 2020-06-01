@@ -5,6 +5,7 @@ Encore
   .setOutputPath('web/build/')
   // public path used by the web server to access the output path
   .setPublicPath('/build')
+  .copyFiles( {from: './assets/images', to: 'images/[path][name].[ext]'})
   .addStyleEntry('layout', './assets/css/layout.scss')
   .addEntry('validar-info', './assets/js/institucion_educativa/ValidarInfo/index.js')
   .addEntry('detalle-campos', './assets/js/institucion_educativa/DetalleSolicitud/index.js')
@@ -15,6 +16,7 @@ Encore
   .addEntry('pregrado_reporte', './assets/js/pregrado/reporte/index.js')
   .addEntry('seleccionar_forma_pago', './assets/js/institucion_educativa/SeleccionarFormaPago/index.js')
   .addEntry('detalle_forma_pago', './assets/js/institucion_educativa/DetalleFormaPago/index.js')
+  .addStyleEntry('layout-formato-fofoe', './assets/css/formatos/fofoe/layout.scss')
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
   .enableSourceMaps(!Encore.isProduction())

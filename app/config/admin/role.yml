@@ -10,7 +10,9 @@ easy_admin:
         fields:
           - id
           - nombre
+          - clave
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
+          - { property: clave, label: 'Clave' }
           - { property: permisos, label: 'Permisos', type: entity, type_options: { class: AppBundle\Entity\Permiso, choice_label: AppBundle\Util\AdminUtil::getPermissionName, query_builder: AppBundle\Repository\Admin\AdminRepository::getAll, expanded: true, multiple: true, by_reference: false } }

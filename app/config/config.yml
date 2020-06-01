@@ -110,6 +110,11 @@ vich_uploader:
             upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
             namer: AppBundle\Vich\Naming\ComprobanteInscripcionNamer
             directory_namer: app.directory_namer.institucion
+        facturas:
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\FacturaNamer
+            directory_namer: app.directory_namer.institucion
 
 knp_snappy:
     pdf:
