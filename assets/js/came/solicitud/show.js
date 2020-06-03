@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
+import './show.scss';
 
 const ComprobanteOficio = (props) => {
     if(props.solicitud.fechaComprobante)
@@ -9,13 +10,13 @@ const ComprobanteOficio = (props) => {
 
 const LinkPago = (props) => {
     if(props.pago)
-        return (<a href={`/pago/${props.pago.id}/download`} target={'_blank'}>Descargar</a>)
+        return (<a href={`/pago/${props.pago.id}/download`} target={'_blank'}>Comprobante de pago</a>)
     return (<></>);
 }
 
 const LinkFactura = (props) => {
     if(props.factura)
-        return (<a href={`/factura/${props.factura.id}/download`} target={'_blank'}>Descargar</a>)
+        return (<a href={`/factura/${props.factura.id}/download`} target={'_blank'}>Factura</a>)
     return (<></>);
 }
 
@@ -70,12 +71,9 @@ const DetalleSolicitudDetallado = (props) => {
                                    onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
                         <th><input type="text" placeholder={'Carrera'}
                                    onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
-                        <th>No. de lugares solicitados</th>
-                        <th>No. de lugares autorizados</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Término</th>
-                        <th>Comprobante</th>
-                        <th>Factura</th>
+                        <th>No. de lugares</th>
+                        <th>Fechas</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -86,12 +84,12 @@ const DetalleSolicitudDetallado = (props) => {
                                 <td>{cc.convenio.cicloAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nombre}</td>
-                                <td>{cc.lugaresSolicitados}</td>
-                                <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicialFormatted}</td>
-                                <td>{cc.fechaFinalFormatted}</td>
-                                <td><LinkPago pago={searchPago(props.solicitud.pagos, cc)}/></td>
-                                <td><LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/></td>
+                                <td>Solicitados {cc.lugaresSolicitados} <br/> Autorizados {cc.lugaresAutorizados}</td>
+                                <td>Inicio {cc.fechaInicialFormatted} <br/> Final {cc.fechaFinalFormatted}</td>
+                                <td>
+                                    <LinkPago pago={searchPago(props.solicitud.pagos, cc)}/> <br/>
+                                    <LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/>
+                                </td>
                             </tr>
                         )
                     })}
@@ -200,10 +198,9 @@ const DetalleSolicitudUnico = (props) => {
                                    onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
                         <th><input type="text" placeholder={'Carrera'}
                                    onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
-                        <th>No. de lugares solicitados</th>
-                        <th>No. de lugares autorizados</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Término</th>
+                        <th>No. de lugares</th>
+                        <th>Fechas</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -214,10 +211,9 @@ const DetalleSolicitudUnico = (props) => {
                                 <td>{cc.convenio.cicloAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nombre}</td>
-                                <td>{cc.lugaresSolicitados}</td>
-                                <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicialFormatted}</td>
-                                <td>{cc.fechaFinalFormatted}</td>
+                                <td>Solicitados {cc.lugaresSolicitados} <br/> Autorizados {cc.lugaresAutorizados}</td>
+                                <td>Inicio {cc.fechaInicialFormatted} <br/> Final {cc.fechaFinalFormatted}</td>
+                                <td> </td>
                             </tr>
                         )
                     })}
@@ -231,8 +227,8 @@ const DetalleSolicitudUnico = (props) => {
 const SolicitudShow = (props) => {
     const Detalle = () => {
         if (props.solicitud.tipoPago === 'Multiple')
-            return (<DetalleSolicitudDetallado solicitud={props.solicitud}/>)
-        return (<DetalleSolicitudUnico solicitud={props.solicitud}/>)
+            return (<div className={'panel panel-default came-table-detalle'}><DetalleSolicitudDetallado solicitud={props.solicitud}/></div>)
+        return (<div className={'panel panel-default came-table-detalle'}><DetalleSolicitudUnico solicitud={props.solicitud}/></div>)
     }
 
     const Expediente = () => {
