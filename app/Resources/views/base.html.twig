@@ -89,19 +89,7 @@
 
 {% block body %}{% endblock %}
 
-<footer class="panel-footer"
-        id="pie"
-        style="background-image: url('{{ asset('build/images/footer/background.jpg') }}')"
->
-    <section id="f-header" class="container-fluid">
-        <div class="container">
-            <div class="region region-separator3">
-                <section id="block-block-2" class="block block-block clearfix">
-                    <div class="col-xs-12 col-sm-12 col-md-12"><h4 style="text-align: center;">&nbsp;</h4></div>
-                </section>
-            </div>
-        </div>
-    </section>
+<footer class="section-md" style="background-image: url('{{ asset('build/images/footer/background.jpg') }}')">
     <div class="container">
         <section class="col-xs-12 col-sm-6 col-md-3">
             <div class="region region-footer-t1">
@@ -112,65 +100,36 @@
             </div>
         </section>
         <section class="col-xs-12 col-sm-6 col-md-3">
-            <div class="footer__list">
-                <p class="list__title">Enlaces</p>
-                <ul class="list__item">
-                    <li><a href="https://www.gob.mx/participa">Participa</a></li>
-                    <li><a href="https://www.gob.mx/publicaciones">Publicaciones Oficiales</a></li>
-                    <li><a href="http://www.ordenjuridico.gob.mx/"><span style="color:#ffffff;">Marco Jurídico</span></a></li>
-                    <li><a href="https://consultapublicamx.inai.org.mx/vut-web/">Plataforma Nacional de Transparencia</a></li>
-                </ul>
-            </div>
+            <p class="list__title">Enlaces</p>
+            <ul class="list">
+                <li><a href="https://www.gob.mx/participa">Participa</a></li>
+                <li><a href="https://www.gob.mx/publicaciones">Publicaciones Oficiales</a></li>
+                <li><a href="http://www.ordenjuridico.gob.mx/"><span style="color:#ffffff;">Marco Jurídico</span></a></li>
+                <li><a href="https://consultapublicamx.inai.org.mx/vut-web/">Plataforma Nacional de Transparencia</a></li>
+            </ul>
         </section>
         <section class="col-xs-12 col-sm-12 col-md-3">
-            <div>
-                <p>
-                    <span style="color:#ffffff;"><span style="font-size:16px;">¿Qué es gob.mx?</span></span>
-                </p>
-                <p><span style="font-size:14px;"><span style="color:#ffffff;">Es el portal único de trámites, información y participación ciudadana.&nbsp;</span><ins><a
-                                    href="https://www.gob.mx/que-es-gobmx"><span style="color:#ffffff;">Leer más</span></a></ins></span>
-                </p>
-                <p><span style="font-size:14px;"><a href="https://datos.gob.mx/"><span
-                                    style="color:#ffffff;">Portal de datos abiertos</span></a></span>
-                </p>
-                <p><span style="font-size:14px;"><a href="https://www.gob.mx/accesibilidad"><span
-                                    style="color:#ffffff;">Declaración de accesibilidad</span></a></span>
-                </p>
-                <p><span style="font-size:14px;"><a href="https://www.gob.mx/privacidadintegral"><span
-                                    style="color:#ffffff;">Aviso de privacidad integral</span></a></span>
-                </p>
-                <p><span style="font-size:14px;"><a
-                                href="https://www.gob.mx/privacidadsimplificado"><span
-                                    style="color:#ffffff;">Aviso de privacidad simplificado</span></a></span>
-                </p>
-                <p><span style="font-size:14px;"><a href="https://www.gob.mx/terminos"><span
-                                    style="color:#ffffff;">Términos y condiciones</span></a></span></p>
-                <p><span style="font-size:14px;"><a
-                                href="https://www.gob.mx/terminos#medidas-seguridad-informacion"><span
-                                    style="color:#ffffff;">Política de seguridad</span></a></span></p>
-                <p><span style="font-size:14px;"><a href="https://www.gob.mx/sitemap"><span
-                                    style="color:#ffffff;">Mapa del sitio</span></a></span></p>
-            </div>
+            <p class="list__title">¿Qué es gob.mx?</p>
+            <ul class="list">
+                <li><a href="https://www.gob.mx/que-es-gobmx">Es el portal único de trámites, información y participación ciudadana. Leer más</a></li>
+                <li><a href="https://datos.gob.mx/">Portal de datos abiertos</a></li>
+                <li><a href="https://www.gob.mx/accesibilidad">Declaración de accesibilidad</a></li>
+                <li><a href="https://www.gob.mx/privacidadintegral">Aviso de privacidad integral</a></li>
+                <li><a href="https://www.gob.mx/privacidadsimplificado">Aviso de privacidad simplificado</a></li>
+                <li><a href="https://www.gob.mx/terminos">Términos y condiciones</a></li>
+                <li><a href="https://www.gob.mx/terminos#medidas-seguridad-informacion">Política de seguridad</a></li>
+                <li><a href="https://www.gob.mx/sitemap">Mapa del sitio</a></li>
+            </ul>
         </section>
         <section class="col-xs-12 col-sm-12 col-md-3">
-            <div>
-                <p><span style="color:#ffffff;"><span style="font-size:16px;">Otros trámites</span></span></p>
-                <p><span style="color:#ffffff;"><span style="font-size:14px;">Mesa de ayuda: dudas e información</span></span>
-                </p>
-                <p><span style="color:#ffffff;"><span style="font-size:14px;"><a
-                                    href="mailto:gobmx@funcionpublica.gob.mx">gobmx@funcionpublica.gob.mx</a></span></span>
-                </p>
-                <p><span style="color:#ffffff;"><span style="font-size:14px;">Denuncia contra servidores públicos</span></span>
-                </p>
-                <p><span style="color:#ffffff;"><span style="font-size:14px;">Síguenos en:</span></span></p>
-                <p><span style="font-size:14px;"><br><a href="https://www.facebook.com/gobmexico/"><img alt=""
-                                                                                                        src="http://educacionensalud.imss.gob.mx/?q=es/system/files/facebook.png"
-                                                                                                        style="width: 24px; height: 24px;"></a><a
-                                href="https://twitter.com/GobiernoMX"><img alt=""
-                                                                           src="http://educacionensalud.imss.gob.mx/?q=es/system/files/twitter.png"
-                                                                           style="width: 24px; height: 24px;"></a></span>
-                </p>
-            </div>
+            <p class="list__title">Otros trámites</p>
+            <ul class="list">
+                <li>Mesa de ayuda: dudas e información</li>
+                <li><a class="link" href="mailto:gobmx@funcionpublica.gob.mx">gobmx@funcionpublica.gob.mx</a></li>
+                <li>Denuncia contra servidores públicos</li>
+                <li>Síguenos en:</li>
+                <li><a href="https://www.facebook.com/gobmexico/"><img alt="" src="http://educacionensalud.imss.gob.mx/?q=es/system/files/facebook.png"></a>&nbsp;<a href="https://twitter.com/GobiernoMX"><img alt="" src="http://educacionensalud.imss.gob.mx/?q=es/system/files/twitter.png"></a></li>
+            </ul>
         </section>
     </div>
 </footer>
