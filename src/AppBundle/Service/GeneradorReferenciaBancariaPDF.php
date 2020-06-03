@@ -52,16 +52,14 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
           }
         }
 
-      $this->
-
-        $finder = new Finder();
-        $finder->files()->in($directoryOutput);
+      $finder = new Finder();
+      $finder->files()->in($directoryOutput);
 
         return $finder;
     }
 
     private function generarPDFPago($solicitud, $institucion, $campos, $esPagoUnico, $output) {
-      $this->pdf->generate(
+      $this->pdf->generateFromHtml(
         $this->templating->render(
           'institucion_educativa/formatos/ReferenciaPago.html.twig',
           ['institucion' => $this->getNormalizeInstitucion($institucion),
