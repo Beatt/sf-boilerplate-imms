@@ -9,13 +9,14 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Twig\Environment;
 
 class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFInterface
 {
     private $pdf;
 
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     private $templating;
 
@@ -24,7 +25,7 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
      */
     private $serializer;
 
-    public function __construct(Pdf $pdf, \Twig_Environment $templating)
+    public function __construct(Pdf $pdf, Environment $templating)
     {
         $this->pdf = $pdf;
         $this->templating = $templating;
@@ -52,16 +53,14 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
           }
         }
 
-      $this->
-
-        $finder = new Finder();
+      $finder = new Finder();
         $finder->files()->in($directoryOutput);
 
         return $finder;
     }
 
     private function generarPDFPago($solicitud, $institucion, $campos, $esPagoUnico, $output) {
-      $this->pdf->generate(
+      $this->pdf->generateFromHtml(
         $this->templating->render(
           'institucion_educativa/formatos/ReferenciaPago.html.twig',
           ['institucion' => $this->getNormalizeInstitucion($institucion),

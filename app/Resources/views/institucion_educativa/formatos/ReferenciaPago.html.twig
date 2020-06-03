@@ -1,22 +1,15 @@
-<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/modules/accordion_blocks/accordion_init.css?q1wfy3">
-<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/libraries/superfish/css/superfish.css?q1wfy3">
-<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/libraries/superfish/css/superfish-smallscreen.css?q1wfy3">
-<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/libraries/superfish/style/space.css?q1wfy3">
-<link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.css" media="all">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600,700">
-<script src="http://educacionensalud.imss.gob.mx/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js?v=1.10.2"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.js"></script>
-<link rel="stylesheet" href="http://educacionensalud.imss.gob.mx/sites/all/themes/ces/assets/css/custom.css?q1wfy3">
-<link rel="stylesheet" href="{{ asset('build/layout.css') }}">
-<style>
-.center{
-  text-align: center;
-}
-</style>
+<html>
+<head>
+  <style>
+    .center{
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
 
 <div class="container" style="border-bottom: 1px solid #a3a3a3">
   <div class="row">
-    <img src="{{ asset('build/images/logo_IMSS.png') }}" alt="IMSS" style="float: left;" />
     <h1 style="text-align: center;  position: relative; top: 60px; font-weight: bold; color: black;">Instituto Mexicano del Seguro Social</h1>
   </div>
   <p style="text-align: right;" class="mb-20" ><strong>Número de solicitud: {{ solicitud.noSolicitud|default("") }}</strong></p>
@@ -83,3 +76,5 @@
 
 </div>
 {% endif %}
+</body>
+</html>
