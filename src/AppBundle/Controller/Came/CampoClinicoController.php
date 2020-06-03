@@ -6,6 +6,8 @@ use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\CampoClinicoType;
 use AppBundle\Service\CampoClinicoManagerInterface;
+use AppBundle\Service\GeneradorCredencialesInterface;
+use AppBundle\Service\GeneradorFormatoFofoeInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -98,11 +100,66 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
-     * @Route("/campos_clinicos/{campo_clinico_id}/formato_fofoe/dowload", methods={"GET"}, name="campo_clinico.formato_fofoe.download")
+     * @Route("/campos_clinicos/{campo_clinico_id}/formato_fofoe/download", methods={"GET"}, name="campo_clinico.formato_fofoe.download")
+     * @param Request $request
+     * @param GeneradorFormatoFofoeInterface $generadorFormatoFofoe
      * @param $campo_clinico_id
      */
-    public function downloadFormatoFofoeAction($campo_clinico_id)
+    public function downloadFormatoFofoeAction(Request $request, GeneradorFormatoFofoeInterface $generadorFormatoFofoe, $campo_clinico_id)
     {
+        $campo_clinico = $this->getDoctrine()
+            ->getRepository(CampoClinico::class)
+            ->find($campo_clinico_id);
+
+        if (!$campo_clinico) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $campo_clinico
+            );
+        }
+
+        $overwrite = $request->query->get('overwrite', false);
+        return $generadorFormatoFofoe->responsePdf($this->container->getParameter('formato_fofoe_dir'), $campo_clinico, null, $overwrite);
+
+    }
+
+    /**
+     * @Route("/campos_clinicos/{campo_clinico_id}/credenciales/show", methods={"GET"}, name="campo_clinico.credenciales.show")
+     * @param $campo_clinico_id
+     */
+    public function showCredencialesAction($campo_clinico_id)
+    {
+        $campo_clinico = $this->getDoctrine()
+            ->getRepository(CampoClinico::class)
+            ->find($campo_clinico_id);
+
+        if (!$campo_clinico) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $campo_clinico
+            );
+        }
+        return  $this->render('formatos/credenciales.html.twig', ['campo_clinico' => $campo_clinico, 'total' => $campo_clinico->getLugaresAutorizados()]);
+    }
+
+    /**
+     * @Route("/campos_clinicos/{campo_clinico_id}/credenciales/download", methods={"GET"}, name="campo_clinico.credenciales.download")
+     * @param Request $request
+     * @param GeneradorCredencialesInterface $generadorCredenciales
+     * @param $campo_clinico_id
+     */
+    public function downloadCredencialesAction(Request $request, GeneradorCredencialesInterface $generadorCredenciales, $campo_clinico_id)
+    {
+        $campo_clinico = $this->getDoctrine()
+            ->getRepository(CampoClinico::class)
+            ->find($campo_clinico_id);
+
+        if (!$campo_clinico) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $campo_clinico
+            );
+        }
+
+        $overwrite = $request->query->get('overwrite', false);
+        return $generadorCredenciales->responsePdf($this->container->getParameter('credenciales_dir'), $campo_clinico, $overwrite);
 
     }
 }
