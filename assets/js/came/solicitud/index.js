@@ -15,22 +15,24 @@ const CameTableExample = (props) => {
                 <label htmlFor="">Filtro</label><input name={'solicitudNo'} type="text"/>
                 <button type={'submit'}>Enviar</button>
             </form>
-            <table className="table">
-                <thead>
-                <tr>
-                    <td>Head1</td>
-                    <td>Head2</td>
-                    <td>Head3</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Col1</td>
-                    <td>Col2</td>
-                    <td>Col3</td>
-                </tr>
-                </tbody>
-            </table>
+            <div className="panel panel-default">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <td>Head1</td>
+                        <td>Head2</td>
+                        <td>Head3</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Col1</td>
+                        <td>Col2</td>
+                        <td>Col3</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </>
     );
 }
@@ -139,53 +141,53 @@ const SolicitudIndex = (props) => {
                 </form>
             </div>
             <div className="col-md-12">
-                <div className={'table-responsive'}>
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th>No. de solicitud</th>
-                            <th>Institución Educativa</th>
-                            <th>No. de campos clínicos solicitados</th>
-                            <th>No. de campos clínicos autorizados</th>
-                            <th>Fecha Solicitud</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {solicitudes.map(solicitud => {
-                            return (
-                                <tr key={solicitud.id}>
-                                    <td><a href={`/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
-                                    <td>{solicitud.institucion.nombre}</td>
-                                    <td>{solicitud.camposClinicosSolicitados}</td>
-                                    <td>{solicitud.camposClinicosAutorizados}</td>
-                                    <td>{solicitud.fecha}</td>
-                                    <td>{solicitud.estatusCameFormatted}</td>
-                                    <td><SolicitudAccion solicitud={solicitud}/></td>
-                                </tr>
-                            )
-                        })}
-                        </tbody>
-                    </table>
+                <div className="panel panel-default">
+                    <div className={'table-responsive'}>
+                        <table className="table">
+                            <thead>
+                            <tr>
+                                <th>No. de solicitud</th>
+                                <th>Institución Educativa</th>
+                                <th>No. de campos clínicos solicitados</th>
+                                <th>No. de campos clínicos autorizados</th>
+                                <th>Fecha Solicitud</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {solicitudes.map(solicitud => {
+                                return (
+                                    <tr key={solicitud.id}>
+                                        <td><a href={`/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
+                                        <td>{solicitud.institucion.nombre}</td>
+                                        <td>{solicitud.camposClinicosSolicitados}</td>
+                                        <td>{solicitud.camposClinicosAutorizados}</td>
+                                        <td>{solicitud.fecha}</td>
+                                        <td>{solicitud.estatusCameFormatted}</td>
+                                        <td><SolicitudAccion solicitud={solicitud}/></td>
+                                    </tr>
+                                )
+                            })}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style={{textAlign: "center"}}>
+                        <ReactPaginate
+                            previousLabel={'Anterior'}
+                            nextLabel={'Siguiente'}
+                            breakLabel={'...'}
+                            breakClassName={'break-me'}
+                            pageCount={meta.total / meta.perPage}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={meta.perPage}
+                            onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'}
+                        />
+                    </div>
                 </div>
-
-                <div style={{textAlign: "center"}}>
-                    <ReactPaginate
-                        previousLabel={'Anterior'}
-                        nextLabel={'Siguiente'}
-                        breakLabel={'...'}
-                        breakClassName={'break-me'}
-                        pageCount={meta.total / meta.perPage}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={meta.perPage}
-                        onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'}
-                    />
-                </div>
-
             </div>
         </>
     );
