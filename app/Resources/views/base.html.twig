@@ -50,41 +50,43 @@
             </div>
         </div>
     </nav>
-    <div class="navbar  navbar-inverse sub-navbar">
-        <div class="container-fluid " style="backgroundcolor: #2c4838">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="collapse in navbar-collapse" id="navbar-1">
-                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-                    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 " style="padding: 0px">
-                        <div class="region region-navigation">
-                            <section id="block-superfish-1"
-                                     class="block block-superfish contextual-links-region clearfix">
-                                <ul id="superfish-1"
-                                    class="menu nav navbar-nav sf-menu sf-main-menu sf-horizontal sf-style-space sf-total-items-7 sf-parent-items-0 sf-single-items-7 superfish-processed sf-js-enabled sf-shadow">
-                                    <li id="menu-238-1" class="first odd sf-item-1 sf-depth-1 sf-no-children"><a
-                                                href="#" class="sf-depth-1">Inicio</a></li>
-                                    <li id="menu-728-1"
-                                        class="active-trail middle even sf-item-2 sf-depth-1 sf-no-children"><a href="#"
-                                                                                                                title=""
-                                                                                                                class="sf-depth-1 active">Instituciones</a>
-                                    </li>
-                                    <li id="menu-1917-1" class="middle odd sf-item-3 sf-depth-1 sf-no-children"><a
-                                                href="#" class="sf-depth-1">Lista de solicitudes</a></li>
-                                    <li id="menu-1231-1" class="middle even sf-item-4 sf-depth-1 sf-no-children"><a
-                                                href="#" title="" class="sf-depth-1">Reportes</a></li>
-                                    <li id="menu-955-1" class="middle odd sf-item-5 sf-depth-1 sf-no-children"><a
-                                                href="#" title="" class="sf-depth-1">Perfil</a></li>
-                                    <li id="menu-2572-1" class="middle even sf-item-6 sf-depth-1 sf-no-children"><a
-                                                href="#" title="" class="sf-depth-1">Login</a></li>
-                                </ul>
-                            </section>
+    {% if app.user %}
+        <div class="navbar  navbar-inverse sub-navbar">
+            <div class="container-fluid " style="backgroundcolor: #2c4838">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="collapse in navbar-collapse" id="navbar-1">
+                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 " style="padding: 0px">
+                            <div class="region region-navigation">
+                                <section id="block-superfish-1"
+                                         class="block block-superfish contextual-links-region clearfix">
+                                    <ul id="superfish-1"
+                                        class="menu nav navbar-nav sf-menu sf-main-menu sf-horizontal sf-style-space sf-total-items-7 sf-parent-items-0 sf-single-items-7 superfish-processed sf-js-enabled sf-shadow">
+                                        <li id="menu-238-1" class="first odd sf-item-1 sf-depth-1 sf-no-children"><a
+                                                    href="#" class="sf-depth-1">Inicio</a></li>
+                                        <li id="menu-728-1"
+                                            class="active-trail middle even sf-item-2 sf-depth-1 sf-no-children"><a href="#"
+                                                                                                                    title=""
+                                                                                                                    class="sf-depth-1 active">Instituciones</a>
+                                        </li>
+                                        <li id="menu-1917-1" class="middle odd sf-item-3 sf-depth-1 sf-no-children"><a
+                                                    href="#" class="sf-depth-1">Lista de solicitudes</a></li>
+                                        <li id="menu-1231-1" class="middle even sf-item-4 sf-depth-1 sf-no-children"><a
+                                                    href="#" title="" class="sf-depth-1">Reportes</a></li>
+                                        <li id="menu-955-1" class="middle odd sf-item-5 sf-depth-1 sf-no-children"><a
+                                                    href="#" title="" class="sf-depth-1">Perfil</a></li>
+                                        <li id="menu-2572-1" class="middle even sf-item-6 sf-depth-1 sf-no-children"><a
+                                                    href="#" title="" class="sf-depth-1">Login</a></li>
+                                    </ul>
+                                </section>
+                            </div>
                         </div>
+                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
                     </div>
-                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 </header>
 
 {% block body %}{% endblock %}
@@ -94,8 +96,7 @@
         <section class="col-xs-12 col-sm-6 col-md-3">
             <div class="region region-footer-t1">
                 <section class="block block-block clearfix">
-                    <p><img alt="" src="http://educacionensalud.imss.gob.mx/?q=es/system/files/logofooter.png"
-                            style="width: 229px; height: 76px;"></p>
+                    <p><img alt="" src="http://educacionensalud.imss.gob.mx/?q=es/system/files/logofooter.png" style="width: 229px; height: 76px;"></p>
                 </section>
             </div>
         </section>
