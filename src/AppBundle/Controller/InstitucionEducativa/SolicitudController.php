@@ -2,23 +2,25 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SolicitudController extends Controller
+class SolicitudController extends DIEControllerController
 {
     /**
      * @Route("/instituciones/{id}/solicitudes", methods={"GET"}, name="solicitudes#index")
@@ -33,7 +35,8 @@ class SolicitudController extends Controller
         Request $request,
         InstitucionRepositoryInterface $institucionRepository,
         SolicitudRepositoryInterface $solicitudRepository
-    ) {
+    )
+    {
         /** @var Institucion $institucion */
         $institucion = $institucionRepository->find($id);
 
@@ -47,7 +50,7 @@ class SolicitudController extends Controller
             $search
         );
 
-        if($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)) {
+        if ($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)) {
             return new JsonResponse([
                 'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
                 'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
@@ -80,7 +83,8 @@ class SolicitudController extends Controller
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         ExpedienteRepositoryInterface $expedienteRepository,
         PagoRepositoryInterface $pagoRepository
-    ) {
+    )
+    {
 
 
         $isSearchSet = $request->query->get('search');
@@ -105,13 +109,13 @@ class SolicitudController extends Controller
         $acc = 0;
 
         foreach ($camposClinicos as $campoClinico) {
-            if($campoClinico->getLugaresAutorizados() > 0){
+            if ($campoClinico->getLugaresAutorizados() > 0) {
                 $acc++;
             }
         }
 
-        if(
-            isset($isSearchSet)
+        if (
+        isset($isSearchSet)
         ) {
             return new JsonResponse([
                 'totalCampos' => $totalCampos,
@@ -121,7 +125,7 @@ class SolicitudController extends Controller
 
         }
 
-        return $this->render('institucion_educativa/solicitud/show.html.twig',[
+        return $this->render('institucion_educativa/solicitud/show.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $solicitud,
             'totalCampos' => $totalCampos,
@@ -135,6 +139,7 @@ class SolicitudController extends Controller
 
     /**
      * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="solicitudes#record", methods={"POST", "GET"})
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/editar", name="solicitudes#recordEdit", methods={"POST", "GET"})
      * @param integer $id
      * @param $solicitudId
      * @param Request $request
@@ -150,10 +155,12 @@ class SolicitudController extends Controller
         InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         EntityManagerInterface $entityManager
-    ) {
-
+    )
+    {
+        $routeName = $request->attributes->get('_route');
         $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($solicitudId);
         $institucion = $institucionRepository->find($id);
+        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($solicitudId);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
@@ -168,7 +175,7 @@ class SolicitudController extends Controller
         ]);
 
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
             $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
@@ -182,7 +189,8 @@ class SolicitudController extends Controller
             ]);
         }
 
-        return $this->render('institucion_educativa/solicitud/recordAmount.html.twig',[
+
+        return $this->render('institucion_educativa/solicitud/recordAmount.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
             'carreras' => $carreras,
@@ -193,13 +201,116 @@ class SolicitudController extends Controller
                     'attributes' => [
                         'montosCarrera' => [
                             'montoInscripcion',
-                            'montoColegiatura'
+                            'montoColegiatura',
+                            'carrera' => [
+                                'id',
+                                'nombre'
+                            ]
                         ]
                     ]
                 ]),
         ]);
     }
 
+
+    /**
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/seleccionar-forma-de-pago", name="solicitudes#seleccionar_forma_de_pago")
+     * @param int $id
+     * @param int $solicitudId
+     * @param Request $request
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function seleccionarFormaDePagoAction(
+        $id,
+        $solicitudId,
+        Request $request,
+        InstitucionRepositoryInterface $institucionRepository,
+        CampoClinicoRepositoryInterface $campoClinicoRepository,
+        EntityManagerInterface $entityManager
+    )
+    {
+
+        $institucion = $institucionRepository->find($id);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
+        $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
+            'action' => $this->generateUrl('solicitudes#seleccionar_forma_de_pago', [
+                'id' => $id,
+                'solicitudId' => $solicitudId,
+            ]),
+            'method' => 'POST'
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $data = $form->getData();
+            $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_FOFOE);
+            $entityManager->persist($data);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Se ha guardado correctamente los montos');
+
+            return $this->redirectToRoute('solicitudes#index', [
+                'id' => $id
+            ]);
+        }
+
+        return $this->render('institucion_educativa/solicitud/payment.html.twig', [
+            'institucion' => $institucion,
+            'solicitud' => $this->getNormalizeSolicitud($solicitud)
+        ]);
+    }
+
+    /**
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/detalle-forma-de-pago", name="solicitudes#detalle_forma_de_pago")
+     * @param $id
+     * @param $solicitudId
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @return Response
+     */
+    public function detalleFormaDePago(
+        $id,
+        $solicitudId,
+        InstitucionRepositoryInterface $institucionRepository
+    )
+    {
+        $institucion = $institucionRepository->find($id);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
+        return $this->render('institucion_educativa/solicitud/detalle_forma_pago.html.twig', [
+            'institucion' => $institucion,
+            'solicitud' => $solicitud
+        ]);
+    }
+
+    /**
+     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/descargar-referencias-bancarias", name="solicitudes#descargar_referencias_bancarias")
+     * @param $id
+     * @param $solicitudId
+     * @param GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+     */
+    public function descargarReferenciasBancarias(
+        $id,
+        $solicitudId,
+        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+    )
+    {
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
+            ->find($solicitudId);
+
+        return $generadorReferenciaBancariaZIP->generarZipResponse($solicitud);
+    }
 
 
     /**
@@ -239,9 +350,9 @@ class SolicitudController extends Controller
                     'monto',
                     'fechaPago',
                     'comprobantePago',
-                    'factura',
+                    'requiereFactura',
                     'referenciaBancaria',
-                    'facturas'
+                    'factura'
                 ]
             ]);
     }
@@ -342,8 +453,12 @@ class SolicitudController extends Controller
                     'fecha',
                     'montosCarrera' => [
                         'montoInscripcion',
-                        'montoColegiatura'
-                    ]
+                        'montoColegiatura',
+                        'carrera'
+                    ],
+                    'observaciones',
+                    'referenciaBancaria',
+                    'monto'
                 ]
             ]
         );

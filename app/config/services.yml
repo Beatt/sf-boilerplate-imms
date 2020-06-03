@@ -1,7 +1,7 @@
 # Learn more about services, parameters and containers at
 # https://symfony.com/doc/current/service_container.html
 parameters:
-    #parameter_name: value
+    referencias_bancarias_dir: '%kernel.root_dir%/../var/referencias_bancarias'
 
 imports:
     - { resource: './services/repositories.yml' }
@@ -45,9 +45,6 @@ services:
     AppBundle\Vich\Naming\ComprobanteInscripcionNamer:
         public: true
 
-    AppBundle\Service\PagoVichNamer:
-        public: true
-
     AppBundle\DataFixtures\:
         resource: '../../src/AppBundle/DataFixtures'
 
@@ -79,3 +76,30 @@ services:
     app.directory_namer.institucion:
         class: AppBundle\Vich\Naming\InstitucionDirectoryNamer
         public: true
+
+    AppBundle\Service\ProcesadorFormaPagoInterface:
+        class: AppBundle\Service\ProcesadorFormaPago
+        public: true
+
+    Knp\Snappy\Pdf:
+        public: true
+        arguments:
+            - '%wkhtmltopdf_path%'
+
+    AppBundle\Service\GeneradorReferenciaBancariaPDFInterface:
+        class: AppBundle\Service\GeneradorReferenciaBancariaPDF
+        public: true
+
+    AppBundle\Service\GeneradorReferenciaBancariaZIPInterface:
+        class: AppBundle\Service\GeneradorReferenciaBancariaZIP
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@AppBundle\Service\GeneradorReferenciaBancariaPDF'
+            - '@event_dispatcher'
+            - '%referencias_bancarias_dir%'
+
+    app.bank_references_created.event:
+        class: AppBundle\EventListener\BankReferencesCreatedListener
+        tags:
+            - { name: kernel.event_listener, event: bank_references.created, method: handleBankReferencesCreated }

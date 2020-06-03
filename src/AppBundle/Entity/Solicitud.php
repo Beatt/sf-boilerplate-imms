@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use Exception;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\File\File;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  * @Vich\Uploadable
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface, ReferenciaBancariaInterface
 {
 
     /**
@@ -81,6 +81,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @var File
      *
      * @Vich\UploadableField(mapping="comprobantes_inscripcion", fileNameProperty="urlArchivo")
+     * @Assert\File(
+     *  maxSize="1000000",
+     *  mimeTypes = {"application/pdf", "application/x-pdf"},
+     * )
      */
     private $urlArchivoFile;
 
@@ -101,8 +105,8 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
 
     /**
      * @var Pago
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud")
-     */
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud", cascade={"persist"})
+    */
     private $pagos;
 
     /**
@@ -195,7 +199,9 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         $this->estatus = $estatus;
 
         return $this;
+        //}
     }
+
 
     /**
      * @return string

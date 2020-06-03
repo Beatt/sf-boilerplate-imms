@@ -115,3 +115,9 @@ vich_uploader:
             upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
             namer: AppBundle\Vich\Naming\FacturaNamer
             directory_namer: app.directory_namer.institucion
+
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     '%wkhtmltopdf_path%'
+        options:    []

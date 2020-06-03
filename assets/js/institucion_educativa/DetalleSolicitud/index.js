@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import { solicitudesGet } from "../api/camposClinicos";
+import { getActionNameByInstitucionEducativa, isActionDisabledByInstitucionEducativa } from "../../utils";
+import { SOLICITUD } from "../../constants";
 
 const ListaCampos = ({
     institucion,
@@ -15,20 +17,41 @@ const ListaCampos = ({
         const [ search, setSearch ] = useState('')
         const [ isLoading, toggleLoading ] = useState(false)
 
-        let isPago;
-        let isFactura;
 
-        if(pago)
+        function handleStatusAction(solicitud) {
+            { console.log(solicitud) }
+            if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
+        
+            let redirectRoute = ''
+            if(
+                solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES 
+            ) {
+                redirectRoute = `/instituciones/${institucion}/solicitudes/${solicitud.id}/campos-clinicos`
+                { console.log("opcion 1") }
+            } else {
+                { console.log("opcion 2") }
+                switch(solicitud.estatus) {
+            case SOLICITUD.CONFIRMADA:
+                redirectRoute = `/instituciones/${institucion}/solicitudes/${solicitud.id}/registrar`
+                }
+            }
+
+            window.location.href = redirectRoute
+        }
+
+        let isPago = false;
+        let isFactura = false;
+
+        if(pago[0]){
             isPago = true;
+            if(pago[0].factura)
+                isFactura = true;
+        }            
         else
             isPago = false;
 
-        if(pago[0].factura)
-            isFactura = true;
-        else
-            isFactura = false;
 
-
+        {console.log(solicitud)}
 
         useEffect(() => {
             if(
@@ -61,7 +84,8 @@ const ListaCampos = ({
             })
         }
 
-        {console.log(pago)}
+    
+        {console.log(campos)}
 
     return(
         <div className='row'>
@@ -73,7 +97,14 @@ const ListaCampos = ({
             </div>
 
             <div className="col-md-6 mt-10">
-                <p className='text-bold'>Acción: {campos[0].solicitud.estatus}</p>
+                Acción
+                <button
+                    className='btn btn-default'
+                    disabled={isActionDisabledByInstitucionEducativa(campos[0].solicitud.estatus)}
+                    onClick={() => handleStatusAction(campos[0].solicitud)}
+                >
+                    {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}
+                </button>
             </div>
 
 
@@ -102,10 +133,10 @@ const ListaCampos = ({
                                 </tr> :
                                 camposClinicos.map((item, index) => {
                                 return <tr key={index}>
-                                    <td>{item.unidad.nombre}</td>
-                                    <td>{item.convenio.cicloAcademico.nombre}</td>
-                                    <td>{item.convenio.carrera.nivelAcademico.nombre}</td>
-                                    <td>{item.convenio.carrera.nombre}</td>
+                                    <td>{item.unidad.nombre ? item.unidad.nombre : 'No asignado'}</td>
+                                    <td>{item.convenio.cicloAcademico ? item.convenio.cicloAcademico.nombre : 'No asignado'}</td>
+                                    <td>{item.convenio.carrera ? item.convenio.carrera.nivelAcademico.nombre : 'No asignado' }</td>
+                                    <td>{item.convenio.carrera ? item.convenio.carrera.nombre : 'No asignado'}</td>
                                     <td>{item.lugaresSolicitados}</td>
                                     <td>{item.lugaresAutorizados}</td>
                                     <td>{item.fechaInicial}</td>
@@ -135,10 +166,10 @@ const ListaCampos = ({
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{campos[0].solicitud.documento}</td>
-                                    <td>{campos[0].solicitud.fechaComprobante}</td>
-                                    <td>{campos[0].solicitud.descripcion}</td>
-                                    <td><a href='#'>{campos[0].solicitud.urlArchivo}</a></td>
+                                    <td>{campos[0].solicitud.documento ? campos[0].solicitud.documento : 'Oficio de Montos de Colgiatura e inscripción'}</td>
+                                    <td>{campos[0].solicitud.fechaComprobante ? campos[0].solicitud.fechaComprobante : ''}</td>
+                                    <td>{campos[0].solicitud.descripcion ? campos[0].solicitud.descripcion : ''}</td>
+                                    <td><a href='#'>{campos[0].solicitud.urlArchivo ? campos[0].solicitud.urlArchivo : ''}</a></td>
                                 </tr>
                                 {
                                     isPago ?
@@ -161,9 +192,9 @@ const ListaCampos = ({
 
                                     <tr>
                                         <td>Factura (CFDI)</td>
-                                        <td>{pago[0].facturas.fechaFacturacion}</td>
+                                        <td>{pago[0].factura.fechaFacturacion}</td>
                                         <td></td>
-                                        <td><a href='#'>{pago[0].facturas.zip}</a></td>
+                                        <td><a href='#'>{pago[0].factura.zip}</a></td>
                                     </tr> :
                                     <tr>
                                         <td>Factura (CFDI)</td>
@@ -172,14 +203,12 @@ const ListaCampos = ({
                                         <td></td>
                                     </tr>
                                 }
-
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-
     )
 }
 

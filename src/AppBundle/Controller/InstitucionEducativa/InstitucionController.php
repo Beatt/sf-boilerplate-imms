@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller\InstitucionEducativa;
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\Form\Type\InstitucionType;
+use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
@@ -12,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class InstitucionController extends Controller
+class InstitucionController extends DIEControllerController
 {
     /**
      * @Route("/instituciones/{id}/editar", name="instituciones#update", methods={"POST", "GET"})
@@ -21,6 +23,7 @@ class InstitucionController extends Controller
      * @param InstitucionManagerInterface $institucionManager
      * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
      * @return Response
      */
     public function updateAction(
@@ -28,7 +31,8 @@ class InstitucionController extends Controller
         Request $request,
         InstitucionManagerInterface $institucionManager,
         InstitucionRepositoryInterface $institucionRepository,
-        CampoClinicoRepositoryInterface $campoClinicoRepository
+        CampoClinicoRepositoryInterface $campoClinicoRepository,
+        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
     ) {
         $institucion = $institucionRepository->find($id);
 
@@ -43,64 +47,27 @@ class InstitucionController extends Controller
 
             $result = $institucionManager->Create($form->getData());
 
-            return new JsonResponse([
-                'message' => $result['status'] ?
+            $this->addFlash('success', 'Se ha guardado correctamente los datos de la instituciòn');
+
+            /*return new JsonResponse([
+                'message' => $result ?
                     "¡La información se actualizado correctamente!" :
                     '¡Ha ocurrido un problema, intenta más tarde!',
                 'status' => $result['status'] ?
                     Response::HTTP_OK :
                     Response::HTTP_UNPROCESSABLE_ENTITY
-            ]);
+            ]);*/
         }
+
 
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByInstitucion(
             $institucion->getId()
         );
 
         return $this->render('institucion_educativa/institucion/update.html.twig', [
-            'convenios' => $this->get('serializer')->normalize(
-                $camposClinicos,
-            'json',
-            [
-                'attributes' => [
-                    'id',
-                    'cicloAcademico' => [
-                        'nombre'
-                    ],
-                    'convenio' => [
-                        'id',
-                        'vigencia',
-                        'label',
-                        'carrera' => [
-                            'nombre',
-                            'nivelAcademico' => [
-                                'nombre'
-                            ]
-                        ],
-                        'cicloAcademico' => [
-                            'nombre'
-                        ]
-                    ]
-                ]
-            ]
-            ),
-            'institucion' => $this->get('serializer')->normalize(
-                $institucion,
-                'json',
-                [
-                    'attributes' => [
-                        'id',
-                        'nombre',
-                        'rfc',
-                        'direccion',
-                        'correo',
-                        'telefono',
-                        'fax',
-                        'sitioWeb',
-                        'cedulaIdentificacion'
-                    ]
-                ]
-            )
+            'convenios' => $institucionPerfilNormalizer->normalizeCamposClinicos($camposClinicos),
+            'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
+            'errores' => $this->getFormErrors($form)
         ]);
     }
 

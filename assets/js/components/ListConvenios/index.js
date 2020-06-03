@@ -2,6 +2,7 @@ import * as React from "react";
 import './styles.scss'
 
 const ListConvenios = ({ convenios }) => {
+
   return (
     <div className='list-convenios'>
       <div className='row flex align-items-center'>
@@ -22,9 +23,9 @@ const ListConvenios = ({ convenios }) => {
               convenios.map((item) => (
                 <tr className={`label-${item.convenio.label}`}>
                   <td>{item.id}</td>
-                  <td>{item.convenio.carrera.nivelAcademico.nombre}</td>
-                  <td>{item.convenio.cicloAcademico.nombre}</td>
-                  <td>{item.convenio.carrera.nombre}</td>
+                  <td>{ item.convenio.carrera ? item.convenio.carrera.nivelAcademico.nombre : 'No asignado'}</td>
+                  <td>{ item.convenio.cicloAcademico ? item.convenio.cicloAcademico.nombre : 'No asignado'}</td>
+                  <td>{ item.convenio.carrera ? item.convenio.carrera.nombre : 'No asingado'}</td>
                   <td>{item.convenio.vigencia}</td>
                 </tr>
               ))}

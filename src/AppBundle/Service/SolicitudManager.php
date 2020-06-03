@@ -26,6 +26,7 @@ class SolicitudManager implements SolicitudManagerInterface
      * @var EntityManagerInterface
      */
     private $entityManager;
+
     /**
      * @var LoggerInterface
      */
@@ -122,6 +123,13 @@ class SolicitudManager implements SolicitudManagerInterface
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false)
     {
         $solicitud->setValidado($is_valid);
+
+        if($is_valid){
+            $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
+        }else{
+            $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
+            $this->sendEmailMontosInvalidos($solicitud);
+        }
         try {
             if ($is_valid) {
                 $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);

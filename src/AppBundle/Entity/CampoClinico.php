@@ -5,7 +5,6 @@ namespace AppBundle\Entity;
 use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico implements ComprobantePagoInterface
+class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterface
 {
     /**
      * @var int
@@ -287,6 +286,19 @@ class CampoClinico implements ComprobantePagoInterface
         return $this->convenio;
     }
 
+    public function getNombreCicloAcademico() {
+      return $this->convenio ?
+        $this->convenio->getCicloAcademico()->getNombre() : "";
+    }
+
+    public function getDisplayCarrera() {
+      $carrera = $this->convenio ?
+        $this->convenio->getCarrera() : null;
+
+      return $carrera ?
+        $carrera->getDisplayName() : "";
+    }
+
     /**
      * @param Solicitud $solicitud
      * @return CampoClinico
@@ -390,6 +402,27 @@ class CampoClinico implements ComprobantePagoInterface
     public function getAsignatura()
     {
         return $this->asignatura;
+    }
+
+    public function getNumeroSemanas()
+    {
+        return Carbon::instance($this->fechaInicial)->diffInWeeks(
+            Carbon::instance($this->fechaFinal)
+        );
+    }
+
+    public function getEnlaceCalculoCuotas()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            sprintf('/campos_clinicos/%s/formato_fofoe/show', $this->id) :
+            '';
+    }
+
+    public function getMontoPagar()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            $this->monto :
+            'No aplica';
     }
 
     /**

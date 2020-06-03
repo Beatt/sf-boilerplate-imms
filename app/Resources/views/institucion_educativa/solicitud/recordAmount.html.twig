@@ -13,7 +13,7 @@
     <div class="section-md">
         <div class='container-fluid'>
             <div class='container'>
-                <h1 class="text-bold text-center">Registrar montos</h1>
+                <h1 class="text-bold text-center">{{ route == "solicitudes#record" ? "Registrar montos" : "Editar Montos" }}</h1>
                 <div style="display: flex;">
                     <p class="text-bold mt-10">Solicitud {{ solicitud.noSolicitud }}</p>
                     <div id="noSolicitud"></div>
@@ -34,9 +34,11 @@
     <script>
       window.INSTITUCION_PROP = {{ institucion.nombre |json_encode|raw }}
       window.CARRERAS_PROP = {{ carreras|json_encode|raw }}
+      window.AUTORIZADOS_PROP = {{ autorizados|json_encode|raw }}
       window.MONTOS_PROP = {{ solicitud|json_encode|raw }}
-      window.SOLICITUD_ID_PROP = {{ solicitud.id|json_encode|raw }}
+      window.SOLICITUD_ID_PROP = {{ solicitud|json_encode|raw }}
       window.INSTITUCION_ID_PROP = {{ institucion.id|json_encode|raw }}
+      window.ROUTE_PROP = {{ route|json_encode|raw }}
     </script>
     <script src="{{ asset('build/registrar-montos.js') }}"></script>
 
