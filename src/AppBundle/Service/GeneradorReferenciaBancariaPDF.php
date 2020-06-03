@@ -54,7 +54,7 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
         }
 
       $finder = new Finder();
-        $finder->files()->in($directoryOutput);
+      $finder->files()->in($directoryOutput);
 
         return $finder;
     }

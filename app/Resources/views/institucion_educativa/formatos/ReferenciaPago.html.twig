@@ -1,16 +1,21 @@
-<html>
-<head>
-  <style>
-    .center{
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.css" media="all">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600,700">
+<script src="http://educacionensalud.imss.gob.mx/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js?v=1.10.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.js"></script>
+<link rel="stylesheet" href="{{ asset('build/layout-formato-fofoe.css') }}">
+<link rel="stylesheet" href="{{ asset('build/layout.css') }}">
+<style>
+.center{
+  text-align: center;
+}
+</style>
 
 <div class="container" style="border-bottom: 1px solid #a3a3a3">
   <div class="row">
-    <h1 style="text-align: center;  position: relative; top: 60px; font-weight: bold; color: black;">Instituto Mexicano del Seguro Social</h1>
+    <img src="{{absolute_url(asset('build/images/logo_IMSS.png'))}}" alt="IMSS" style="float: left;" />
+    <h1 class="mt-20" style="text-align: center; font-weight: bold; color: black;">Instituto Mexicano del Seguro Social</h1>
   </div>
   <p style="text-align: right;" class="mb-20" ><strong>Número de solicitud: {{ solicitud.noSolicitud|default("") }}</strong></p>
 </div>
