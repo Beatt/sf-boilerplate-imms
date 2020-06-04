@@ -13,6 +13,7 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
         try {
             return $this->createQueryBuilder('u')
                 ->where("(u.matricula is not null and concat(u.matricula, '') = :username) OR u.correo = :email")
+                ->andWhere('u.activo = true')
                 ->setParameter('username', $username)
                 ->setParameter('email', $username)
                 ->getQuery()
