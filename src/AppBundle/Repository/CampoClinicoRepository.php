@@ -209,8 +209,8 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         }
 
         if(isset($filters['carrera']) && $filters['carrera']){
-            $queryBuilder->andWhere('upper(unidad.nombre) like :unidad')
-                ->setParameter('unidad', '%'.strtoupper($filters['unidad']).'%');
+            $queryBuilder->andWhere('upper(carrera.nombre) like :carrera')
+                ->setParameter('carrera', '%'.strtoupper($filters['carrera']).'%');
         }
 
         if(isset($filters['cicloAcademico']) && $filters['cicloAcademico']){

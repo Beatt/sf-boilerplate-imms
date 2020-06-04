@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Solicitud;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -87,5 +88,37 @@ abstract class DIEControllerController extends Controller
             'message' => $message,
             'status' => true,
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    protected function getUserDelegacionId($query_delegacion)
+    {
+        $result = null;
+        $user = $this->getUser();
+        if($user){
+            if(!$query_delegacion){
+                $del_object = $user->getDelegaciones()->first();
+                $result = $del_object ? $del_object->getId() : $result;
+            }else{
+                if($user->getDelegaciones()->exists(function($key, $value)  use ($query_delegacion){
+                    return $value->getId() === $query_delegacion;
+                })){
+                    $result = $query_delegacion;
+                };
+            }
+        }
+        return $result;
+    }
+
+    protected function validarSolicitudDelegacion(Solicitud $solicitud)
+    {
+        $result = true;
+        $delegacion = $solicitud->getDelegacion();
+        if($delegacion){
+            $user = $this->getUser();
+            $result = $user->getDelegaciones()->exists(function($key, $value)  use ($delegacion){
+                return $value->getId() === $delegacion->getId();
+            });
+        }
+        return $result;
     }
 }

@@ -651,4 +651,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         }
         return $result;
     }
+
+    public function getDelegacion()
+    {
+        $result = null;
+        $cc = $this->getCampoClinicos()->first();
+        if($cc){
+            $result = $cc->getConvenio()->getDelegacion();
+        }
+        return $result;
+    }
 }

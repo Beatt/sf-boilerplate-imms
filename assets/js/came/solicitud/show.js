@@ -2,6 +2,23 @@ import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
 import './show.scss';
 
+const LinkCredenciales = (props) => {
+    const status = [4,7];
+    if(status.indexOf(props.campoClinico.estatus.id)>-1){
+        return (<a href={`/campos_clinicos/${props.campoClinico.id}/credenciales/download`} target={'_blank'}>Credenciales</a>);
+    }
+    return (<></>);
+}
+
+const LinkFormatoFofoe = (props) => {
+    const status = [2, 3, 4, 5, 6, 7];
+    if (status.indexOf(props.campoClinico.estatus.id) > -1) {
+        return (<a href={`/campos_clinicos/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
+            FOFOE</a>);
+    }
+    return (<></>);
+}
+
 const ComprobanteOficio = (props) => {
     if(props.solicitud.fechaComprobante)
         return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
@@ -88,7 +105,9 @@ const DetalleSolicitudDetallado = (props) => {
                                 <td>Inicio {cc.fechaInicialFormatted} <br/> Final {cc.fechaFinalFormatted}</td>
                                 <td>
                                     <LinkPago pago={searchPago(props.solicitud.pagos, cc)}/> <br/>
-                                    <LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/>
+                                    <LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/> <br/>
+                                    <LinkFormatoFofoe campoClinico={cc}/> <br/>
+                                    <LinkCredenciales campoClinico={cc}/>
                                 </td>
                             </tr>
                         )
@@ -213,7 +232,10 @@ const DetalleSolicitudUnico = (props) => {
                                 <td>{cc.convenio.carrera.nombre}</td>
                                 <td>Solicitados {cc.lugaresSolicitados} <br/> Autorizados {cc.lugaresAutorizados}</td>
                                 <td>Inicio {cc.fechaInicialFormatted} <br/> Final {cc.fechaFinalFormatted}</td>
-                                <td> </td>
+                                <td>
+                                    <LinkFormatoFofoe campoClinico={cc}/> <br/>
+                                    <LinkCredenciales campoClinico={cc}/>
+                                </td>
                             </tr>
                         )
                     })}
