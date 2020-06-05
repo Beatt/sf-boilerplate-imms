@@ -1,6 +1,7 @@
 @import "variables";
 @import "util";
 @import "components/navbar";
+@import "components/list";
 
 h1 {
   font-size: 24px;
@@ -39,4 +40,8 @@ a {
 .error-message {
   font-size: 11px;
   color: red;
+}
+
+.link {
+  color: #2ea8ff;
 }

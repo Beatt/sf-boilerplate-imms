@@ -7,18 +7,12 @@
         <p>{{ solicitud.institucion.nombre }}</p>
         <p>{{ solicitud.institucion.representante }}</p>
         <p>Presente</p>
-        <p>Por medio del presente, tengo el agrado de notificar que por medio del <strong>Sistema de Administración del FOFOE</strong>
-            que usted puede consultar el estado y autorización de
-            campos clínicos asociados a su solicitud <strong>{{ solicitud.noSolicitud }}</strong></p>
-        <p>El acceso es mediante la siguiente liga:</p>
-
-        <p>__________________________________________</p>
-
-        <p>Sus credenciales de acceso son:</p>
-        <p><strong>Usuario: </strong>_________</p>
-        <p><strong>Contraseña: </strong>__________</p>
-        <p>Sin otro particular, le enviamos un cordial saludo.</p>
-
+        <p>En seguimiento al oficio de montos que ha cargado en el sistema, de la
+            solicitud <strong>{{ solicitud.noSolicitud }}</strong> se ha detectado que se tienen las siguientes observaciones
+        <strong>{{ solicitud.observaciones }}</strong></p>
+        <p>Por lo que pedimos de su apoyo para ingresar al sistema a rectificar su información,
+            con base en las observaciones anteriores, el objeto de que el proceso de su solicitud
+            no se vea afectado y pueda continuar.</p>
 
         <div class="text-center text-green">
             <p>Atentamente</p>

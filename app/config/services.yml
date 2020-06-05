@@ -2,6 +2,8 @@
 # https://symfony.com/doc/current/service_container.html
 parameters:
     referencias_bancarias_dir: '%kernel.root_dir%/../var/referencias_bancarias'
+    formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
+    credenciales_dir: '%kernel.root_dir%/../var/credenciales'
 
 imports:
     - { resource: './services/repositories.yml' }

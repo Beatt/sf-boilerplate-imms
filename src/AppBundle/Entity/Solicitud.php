@@ -598,7 +598,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @return string
+     * @return Collection
      */
     public function getMontosCarreras()
     {

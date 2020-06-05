@@ -5,9 +5,11 @@ namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\Solicitud;
 use AppBundle\Service\SolicitudManagerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Vich\UploaderBundle\Handler\DownloadHandler;
 
 class DummyController extends \AppBundle\Controller\DIEControllerController
 {

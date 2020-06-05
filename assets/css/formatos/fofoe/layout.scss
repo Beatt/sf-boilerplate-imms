@@ -1,17 +1,25 @@
 body{
   margin: 16px;
-  font-size: 10px;
+  //font-size: 10px;
 }
 
 header {
   padding: 16px;
-  border: 1px solid;
+  //border: 1px solid;
+}
+
+h1 {
+  text-align: center;
 }
 
 main {
   padding: 16px;
-  border: 1px solid;
+  //border: 1px solid;
   margin-top: 16px;
+}
+
+#cabecera img {
+  width: 40px;
 }
 
 @media print {
@@ -26,6 +34,7 @@ main {
 
 #periodo {
   display: flex;
+  display: -webkit-box; /* wkhtmltopdf uses this one */
   text-align: center;
 }
 
@@ -35,14 +44,15 @@ main {
 
 .monto {
   display: flex;
+  display: -webkit-box; /* wkhtmltopdf uses this one */
 }
 
 .monto_name {
-  flex: 2;
+  width: 60%;
 }
 
 .monto_value{
-  flex: 1;
+  width: 40%;
   text-align: right;
   border: solid 1px;
 }
@@ -52,8 +62,9 @@ main {
 }
 
 #firmas {
-  margin-top: 80px;
+  margin-top: 120px;
   display: flex;
+  display: -webkit-box; /* wkhtmltopdf uses this one */
   text-align: center;
 }
 
