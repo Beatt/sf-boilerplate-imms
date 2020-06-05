@@ -1,7 +1,33 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
+import {getReporteIngresos} from "./reporteIngresos";
 
 const Index = () => {
+
+  const {useState, useEffect} = React
+  const [reporteIngresos, setReporteIngresos] = useState([])
+  const [isLoading, toggleLoading] = useState(false)
+  const [anioSel, setAnioSel] = useState(new Date().getFullYear());
+
+  useEffect(() => {
+    getDatosReporte();
+  }, []);
+
+  function getDatosReporte() {
+    getReporteIngresos().then((res) => {
+      setReporteIngresos(res.reporte)
+    })
+  }
+
+  function exportar() {
+    getReporteIngresos(anioSel, 1);
+  }
+
+  let urlExport = `/fofoe/reporte_ingresos?anio=${anioSel}&export=1`
+  let totalIngsCCs = 0
+  let totalIngsInt = 0
+  let totalGrl = 0
+
   return (
     <div className="panel panel-default">
 
@@ -9,41 +35,35 @@ const Index = () => {
         Reporte de ingresos por concepto
       </div>
       <div className="panel-body">
-        <a href="#" onClick="#">Download as CSV</a>
+        <a href={urlExport} >Descargar CSV</a>
 
         <table className="table">
           <thead>
-          <th>Mes/Año</th>
-          <th>CC Área de la Salud</th>
-          <th>Int. Méd</th>
-          <th>Total Mensual</th>
+          <tr>
+            <td>Mes/Año</td>
+            <td>CC Área de la Salud</td>
+            <td>Int. Méd</td>
+            <td>Total Mensual</td>
+          </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>01/2020</td>
-            <td>45,793,865</td>
-            <td>0</td>
-            <td>45,793,865</td>
-          </tr>
-          <tr>
-            <td>02/2020</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td>03/2020</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-          </tr>
+          {
+            reporteIngresos.map( (ingresos, index) => (
+              <tr key={index}>
+                <td> {ingresos.Mes} / { ingresos.Anio}</td>
+                <td> {ingresos.ingCCS}</td>
+                <td> {ingresos.ingINT}</td>
+                <td> {ingresos.Total}</td>
+              </tr>
+            ))
+          }
           </tbody>
           <tfoot>
           <tr>
             <td>Total por ciclo</td>
-            <td>45,793,865</td>
-            <td>0</td>
-            <td>45,793,865</td>
+            <td> {totalIngsCCs} </td>
+            <td> {totalIngsInt} </td>
+            <td> {totalGrl} </td>
           </tr>
           </tfoot>
         </table>

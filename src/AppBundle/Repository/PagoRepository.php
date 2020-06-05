@@ -71,7 +71,9 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
              'pago.referenciaBancaria = campos_clinicos.referenciaBancaria'
            )
          );
-       //$qb->andWhere('pago.validado');
+       $qb->andWhere('pago.validado');
+       $qb->andWhere('Anio = :anio')
+         ->setParameter('anio', $anio);
 
        $qb->groupBy('Anio, Mes')
         ->orderBy('Anio', 'DESC')
