@@ -21,9 +21,18 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
      **/
     public function storeAction(Request $request, CampoClinicoManagerInterface $campo_clinico_manager)
     {
+        $solicitud_id = $request->request->get('campo_clinico')['solicitud'];
         $solicitud = $this->getDoctrine()
             ->getRepository(Solicitud::class)
-            ->find($request->request->get('campo_clinico')['solicitud']);
+            ->find($solicitud_id);
+        if (!$solicitud) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $solicitud_id
+            );
+        }
+        if(!$this->validarSolicitudDelegacion($solicitud)){
+            throw $this->createAccessDeniedException();
+        }
         $form = $this->createForm(CampoClinicoType::class);
         $form->handleRequest($request);
         if($solicitud && $form->isSubmitted() && $form->isValid()) {
@@ -58,7 +67,9 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $id
             );
         }
-
+        if(!$this->validarSolicitudDelegacion($solicitud)){
+            throw $this->createAccessDeniedException();
+        }
         $perPage = $request->query->get('perPage', 10);
         $page = $request->query->get('page', 1);
         $camposClinicos = $this->getDoctrine()
@@ -75,7 +86,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                                 'nivelAcademico' => ['id', 'nombre']], 'numero'],
                         'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
                         'fechaInicial', 'fechaFinal', 'referenciaBancaria', 'fechaInicialFormatted',
-                        'fechaFinalFormatted']
+                        'fechaFinalFormatted', 'estatus' => ['id', 'nombre']]
                 ]
             )
         ]);
@@ -137,6 +148,9 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
+        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+            throw $this->createAccessDeniedException();
+        }
         return  $this->render('formatos/credenciales.html.twig', ['campo_clinico' => $campo_clinico, 'total' => $campo_clinico->getLugaresAutorizados()]);
     }
 
@@ -157,7 +171,9 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
-
+        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+            throw $this->createAccessDeniedException();
+        }
         $overwrite = $request->query->get('overwrite', false);
         return $generadorCredenciales->responsePdf($this->container->getParameter('credenciales_dir'), $campo_clinico, $overwrite);
 

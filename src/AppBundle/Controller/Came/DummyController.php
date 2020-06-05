@@ -101,4 +101,22 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
         $solicitudManager->finalizar($solicitud);
         return $this->jsonResponse(['status' => true]);
     }
+
+    /**
+    * @Route("/came/dummy/show_roles", methods={"GET"})
+    */
+    public function dummyShowRolesAction()
+    {
+        $user = $this->getUser();
+        return $this->json([
+            'roles' => $this->get('serializer')->normalize(
+                $user->getRols(), 'json', ['attributes' => ['id', 'nombre']]
+            ),
+            'permisos' => $this->get('serializer')->normalize(
+                $user->getRoles(), 'json', ['attributes' => ['id', 'nombre']]
+            )
+        ]);
+    }
+
+
 }

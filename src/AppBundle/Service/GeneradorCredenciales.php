@@ -5,6 +5,8 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampo;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -20,12 +22,18 @@ class GeneradorCredenciales implements GeneradorCredencialesInterface
      * @var Environment
      */
     private $templating;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
     public function __construct(
+        EntityManagerInterface $entityManager,
         Pdf $pdf,
         Environment $templating
     )
     {
+        $this->entityManager = $entityManager;
         $this->pdf = $pdf;
         $this->templating = $templating;
     }
@@ -43,6 +51,15 @@ class GeneradorCredenciales implements GeneradorCredencialesInterface
                 ['page-size' => 'Letter','encoding' => 'utf-8'],
                 $overwrite
             );
+            try{
+                //7 es el estado de contraseñas generados
+                if(is_null($campoClinico->getEstatus()) || $campoClinico->getEstatus()->getId() !== 7){
+                    $estatus = $this->entityManager->getRepository(EstatusCampo::class)->find(7);
+                    $campoClinico->setEstatus($estatus);
+                    $this->entityManager->persist($campoClinico);
+                    $this->entityManager->flush();
+                }
+            }catch (\Exception $ex){}
         }
 
         $response = new Response(file_get_contents($file));

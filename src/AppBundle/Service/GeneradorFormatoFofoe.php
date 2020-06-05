@@ -5,7 +5,9 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampo;
 use AppBundle\Entity\Usuario;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Snappy\Pdf;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,14 +25,20 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
      * @var Environment
      */
     private $templating;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
     public function __construct(
+        EntityManagerInterface $entityManager,
         Pdf $pdf,
         Environment $templating
     )
     {
         $this->pdf = $pdf;
         $this->templating = $templating;
+        $this->entityManager = $entityManager;
     }
 
     public function responsePdf($path, CampoClinico $campoClinico, Usuario $came = null, $overwrite = false)
@@ -46,6 +54,15 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
                 ['page-size' => 'Letter','encoding' => 'utf-8'],
                 $overwrite
             );
+            try{
+                //2 es el estado de pendiente de pago
+                if(is_null($campoClinico->getEstatus()) || $campoClinico->getEstatus()->getId() === 1){
+                    $estatus = $this->entityManager->getRepository(EstatusCampo::class)->find(2);
+                    $campoClinico->setEstatus($estatus);
+                    $this->entityManager->persist($campoClinico);
+                    $this->entityManager->flush();
+                }
+            }catch (\Exception $ex){}
         }
 
         $response = new Response(file_get_contents($file));
