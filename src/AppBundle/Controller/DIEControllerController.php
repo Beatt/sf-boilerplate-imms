@@ -90,8 +90,9 @@ abstract class DIEControllerController extends Controller
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    protected function getUserDelegacionId($query_delegacion)
+    protected function getUserDelegacionId()
     {
+        $query_delegacion = $this->container->get('session')->get('user_delegacion');
         $result = null;
         $user = $this->getUser();
         if($user){
@@ -100,7 +101,7 @@ abstract class DIEControllerController extends Controller
                 $result = $del_object ? $del_object->getId() : $result;
             }else{
                 if($user->getDelegaciones()->exists(function($key, $value)  use ($query_delegacion){
-                    return $value->getId() === $query_delegacion;
+                    return $value->getId() == $query_delegacion;
                 })){
                     $result = $query_delegacion;
                 };

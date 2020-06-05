@@ -26,7 +26,7 @@ class SolicitudController extends DIEControllerController
     {
         $perPage = $request->query->get('perPage', 10);
         $page = $request->query->get('page', 1);
-        $delegacion = $this->getUserDelegacionId($request->query->get('delegacion'));
+        $delegacion = $this->getUserDelegacionId();
         if(is_null($delegacion)){
             throw $this->createAccessDeniedException();
         }
@@ -63,7 +63,7 @@ class SolicitudController extends DIEControllerController
     {
         $perPage = $request->query->get('perPage', 10);
         $page = $request->query->get('page', 1);
-        $delegacion = $this->getUserDelegacionId($request->query->get('delegacion'));
+        $delegacion = $this->getUserDelegacionId();
         if(is_null($delegacion)){
             throw $this->createAccessDeniedException();
         }
@@ -100,7 +100,7 @@ class SolicitudController extends DIEControllerController
     {
         $form = $this->createForm(SolicitudType::class);
         $this->getUser();
-        $delegacion = $this->getUserDelegacionId($request->query->get('delegacion'));
+        $delegacion = $this->getUserDelegacionId();
         if(is_null($delegacion)){
             throw $this->createAccessDeniedException();
         }
@@ -139,7 +139,7 @@ class SolicitudController extends DIEControllerController
      */
     public function editAction(Request $request, $id)
     {
-        $delegacion = $this->getUserDelegacionId($request->query->get('delegacion'));
+        $delegacion = $this->getUserDelegacionId();
         if(is_null($delegacion)){
             throw $this->createAccessDeniedException();
         }

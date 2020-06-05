@@ -14,7 +14,7 @@ class UnidadController extends \AppBundle\Controller\DIEControllerController
      */
     public function indexAction(Request $request)
     {
-        $delegacion = $this->getUserDelegacionId($request->query->get('delegacion'));
+        $delegacion = $this->getUserDelegacionId();
         if(is_null($delegacion)){
             throw $this->createAccessDeniedException();
         }
