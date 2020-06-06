@@ -59,7 +59,7 @@ const DetalleSolicitudDetallado = (props) => {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {
@@ -90,7 +90,7 @@ const DetalleSolicitudDetallado = (props) => {
                                    onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
                         <th>No. de lugares</th>
                         <th>Fechas</th>
-                        <th>Acciones</th>
+                        <th> </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -188,7 +188,7 @@ const DetalleSolicitudUnico = (props) => {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {
@@ -219,7 +219,7 @@ const DetalleSolicitudUnico = (props) => {
                                    onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
                         <th>No. de lugares</th>
                         <th>Fechas</th>
-                        <th>Acciones</th>
+                        <th> </th>
                     </tr>
                     </thead>
                     <tbody>

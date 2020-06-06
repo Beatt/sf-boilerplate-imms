@@ -58,7 +58,7 @@ const CampoClinicoForm = (props) => {
 
     const storeSolicitud = () => {
         return new Promise((resolve, reject) => {
-            fetch('/api/solicitud', {
+            fetch('/came/api/solicitud', {
                 method: 'post'
             }).then(response => {
                 return response.json();
@@ -114,7 +114,7 @@ const CampoClinicoForm = (props) => {
         data.append('campo_clinico[fechaFinal][day]', fechaF.getDate());
         data.append('campo_clinico[asignatura]', asignatura);
 
-        fetch('/api/came/campo_clinico', {
+        fetch('/came/api/campo_clinico', {
             method: 'post',
             body: data
         }).then(response => {

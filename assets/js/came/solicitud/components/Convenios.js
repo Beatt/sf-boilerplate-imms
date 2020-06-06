@@ -25,11 +25,11 @@ const Convenios = (props) => {
                             if(convenio.carrera && convenio.cicloAcademico){
                                 return (
                                     <tr key={convenio.id} className={`label-${convenio.label}`}>
-                                        <td>{convenio.nombre}</td>
+                                        <td>{convenio.numero}</td>
                                         <td>{convenio.carrera.nivelAcademico.nombre}</td>
                                         <td>{convenio.cicloAcademico.nombre}</td>
                                         <td>{convenio.carrera.nombre}</td>
-                                        <td>{convenio.vigencia}</td>
+                                        <td>{convenio.vigenciaFormatted}</td>
                                     </tr>
                                 )
                             }

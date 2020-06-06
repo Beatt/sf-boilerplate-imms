@@ -31,7 +31,7 @@ const SolicitudCreate = (props) => {
         event.preventDefault();
         setIsLoading(true);
 
-        fetch('/api/solicitud/terminar/' + solicitud.id , {
+        fetch('/came/api/solicitud/terminar/' + solicitud.id , {
             method: 'post'
         }).then(response => {
             return response.json()
@@ -39,7 +39,7 @@ const SolicitudCreate = (props) => {
             console.error(error);
         }).then(json => {
             if(json.status){
-                document.location.href = '/solicitud';
+                document.location.href = '/came/solicitud';
             }
         }).finally(() => {
             setIsLoading(false);

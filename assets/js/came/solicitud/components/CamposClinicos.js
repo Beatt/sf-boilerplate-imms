@@ -28,7 +28,7 @@ const CamposClinicos = (props) => {
                                         <td>{cc.convenio.cicloAcademico.nombre}</td>
                                         <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
                                         <td>{cc.convenio.carrera.nombre}</td>
-                                        <td>{cc.fechaInicial} - {cc.fechaFinal}</td>
+                                        <td>{cc.fechaInicialFormatted} - {cc.fechaFinalFormatted}</td>
                                         <td>{cc.unidad.nombre}</td>
                                         <td>{cc.lugaresSolicitados}</td>
                                         <td>{cc.lugaresAutorizados}</td>

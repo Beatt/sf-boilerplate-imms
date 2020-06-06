@@ -27,9 +27,7 @@ security:
 
     access_control:
         - { path: '^/admin', roles: ROLE_SUPER_ADMIN}
-        - { path: '^/solicitud', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/api/solicitud', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/api/came', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/campos_clinicos', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/formatos', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/came', roles: [IS_AUTHENTICATED_FULLY] }
         - { path: '^/factura', roles: [IS_AUTHENTICATED_FULLY] }
         - { path: '^/pago', roles: [IS_AUTHENTICATED_FULLY] }

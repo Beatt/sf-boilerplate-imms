@@ -31,7 +31,7 @@ const Institucion = (props) => {
         setFax(institucion.fax ? institucion.fax : '');
         setRepresentante(institucion.representante ? institucion.representante : '');
         props.callbackIsLoading(true);
-        fetch('/api/came/convenio/' + institucion.id)
+        fetch('/came/api/convenio/' + institucion.id)
             .then(response => {
                 return response.json()}, error => {
                 console.error(error)})
@@ -56,7 +56,7 @@ const Institucion = (props) => {
         data.append('institucion[sitioWeb]', web);
         data.append('institucion[telefono]', phone);
         data.append('institucion[representante]', representante);
-        fetch('/api/came/institucion/' + selectedInstitution.id, {
+        fetch('/came/api/institucion/' + selectedInstitution.id, {
             method: 'post',
             body: data
         }).then(response => response.json(), error => {

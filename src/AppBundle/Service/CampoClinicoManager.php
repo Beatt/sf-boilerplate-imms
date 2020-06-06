@@ -59,7 +59,7 @@ class CampoClinicoManager implements CampoClinicoManagerInterface
                         'cicloAcademico' => ['id', 'nombre'],
                     ],
                     'lugaresSolicitados',
-                    'fechaInicial', 'fechaFinal'
+                    'fechaInicial', 'fechaFinal','fechaInicialFormatted', 'fechaFinalFormatted'
                 ]
             ])
         ];

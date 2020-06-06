@@ -23,7 +23,7 @@ const SolicitudEdit = (props) => {
     const handleSolicitudSubmit = (event) => {
         event.preventDefault();
         setIsLoading(true);
-        fetch('/api/solicitud/terminar/' + props.solicitud.id , {
+        fetch('/came/api/solicitud/terminar/' + props.solicitud.id , {
             method: 'post'
         }).then(response => {
             return response.json()
@@ -31,11 +31,11 @@ const SolicitudEdit = (props) => {
             console.error(error);
         }).then(json => {
             if(json.status){
-                document.location.href = '/solicitud';
+                document.location.href = '/came/solicitud';
             }
         }).finally(() => {
             setIsLoading(false);
-            document.location.href = '/solicitud';
+            document.location.href = '/came/solicitud';
         });
     }
 

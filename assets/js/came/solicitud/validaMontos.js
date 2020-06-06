@@ -27,7 +27,7 @@ const SolicitudValidaMontos = (props) => {
             data.append('solicitud[validado]', validos);
         }
 
-        fetch('/api/solicitud/validar_montos/' + props.solicitud.id , {
+        fetch('/came/api/solicitud/validar_montos/' + props.solicitud.id , {
             method: 'post',
             body: data
         }).then(response => {

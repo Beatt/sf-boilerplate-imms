@@ -19,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class SolicitudController extends DIEControllerController
 {
     /**
-     * @Route("/solicitud", methods={"GET"}, name="solicitud.index")
+     * @Route("/came/solicitud", methods={"GET"}, name="solicitud.index")
      * @Security("has_role('ROLE_CONSULTAR_SOLICITUDES')")
      */
     public function indexAction(Request $request)
@@ -56,7 +56,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/api/solicitud", methods={"GET"}, name="solicitud.index.json")
+     * @Route("/came/api/solicitud", methods={"GET"}, name="solicitud.index.json")
      * @Security("has_role('ROLE_CONSULTAR_SOLICITUDES')")
      */
     public function indexApiAction(Request $request)
@@ -93,7 +93,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitud/create", methods={"GET"}, name="solicitud.create")
+     * @Route("/came/solicitud/create", methods={"GET"}, name="solicitud.create")
      * @Security("has_role('ROLE_AGREGAR_SOLICITUD')")
      */
     public function createAction(Request $request)
@@ -121,7 +121,7 @@ class SolicitudController extends DIEControllerController
 
 
     /**
-     * @Route("/api/solicitud", methods={"POST"}, name="solicitud.store")
+     * @Route("/came/api/solicitud", methods={"POST"}, name="solicitud.store")
      * @Security("has_role('ROLE_AGREGAR_SOLICITUD')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
@@ -133,7 +133,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitud/{id}/edit", methods={"GET"}, name="solicitud.edit")
+     * @Route("/came/solicitud/{id}/edit", methods={"GET"}, name="solicitud.edit")
      * @param Request $request
      * @Security("has_role('ROLE_EDITAR_SOLICITUD')")
      */
@@ -170,11 +170,12 @@ class SolicitudController extends DIEControllerController
             'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
                 ['attributes' => ['id', 'campoClinicos' => ['id',
                     'convenio' => ['cicloAcademico' => ['id', 'nombre'],
-                        'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]],
+                        'id', 'vigencia', 'vigenciaFormatted', 'label', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
-                    'fechaInicial', 'fechaFinal'], 'institucion' => ['id', 'nombre', 'fax',
-                    'telefono', 'correo', 'sitioWeb', 'direccion', 'rfc', 'representante', 'convenios' => ['id', 'nombre', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
-                        'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'label']]
+                    'fechaInicial', 'fechaFinal', 'fechaInicialFormatted', 'fechaFinalFormatted'], 'institucion' => ['id', 'nombre', 'fax',
+                    'telefono', 'correo', 'sitioWeb', 'direccion', 'rfc', 'representante', 'convenios' => ['id', 'nombre',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'vigenciaFormatted', 'label']]
                 ]]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
                 ['attributes' => ['id', 'nombre']]),
@@ -182,7 +183,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update")
+     * @Route("/came/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update")
      * @Security("has_role('ROLE_EDITAR_SOLICITUD')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
@@ -210,7 +211,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitud/{id}", methods={"GET"}, name="solicitud.show")
+     * @Route("/came/solicitud/{id}", methods={"GET"}, name="solicitud.show")
      * @Security("has_role('ROLE_DETALLE_SOLICITUD')")
      */
     public function showAction($id)
@@ -259,7 +260,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/api/solicitud/{id}", methods={"DELETE"}, name="solicitud.delete")
+     * @Route("/came/api/solicitud/{id}", methods={"DELETE"}, name="solicitud.delete")
      */
     public function deleteAction($id)
     {
@@ -282,7 +283,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/api/solicitud/terminar/{id}", methods={"POST"}, name="solicitud.terminar")
+     * @Route("/came/api/solicitud/terminar/{id}", methods={"POST"}, name="solicitud.terminar")
      * @Security("has_role('ROLE_TERMINAR_SOLICITUDES')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
@@ -307,7 +308,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/api/solicitud/validar_montos/{id}", methods={"POST"}, name="solicitud.store_validar_montos")
+     * @Route("/came/api/solicitud/validar_montos/{id}", methods={"POST"}, name="solicitud.store_validar_montos")
      * @Security("has_role('ROLE_VALIDACION_MONTOS')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
@@ -340,7 +341,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitud/{id}/validar_montos", methods={"GET"}, name="solicitud.validar_montos")
+     * @Route("/came/solicitud/{id}/validar_montos", methods={"GET"}, name="solicitud.validar_montos")
      * @Security("has_role('ROLE_VALIDACION_MONTOS')")
      * @param Request $request
      * @param $id
@@ -380,7 +381,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="came.solicitud.oficio_montos")
+     * @Route("/came/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="came.solicitud.oficio_montos")
      * @Security("has_role('ROLE_DESCARGAR_OFICIO_MONTOS')")
      * @param $solicitud_id
      * @return mixed
@@ -403,7 +404,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitud/email/montos_invalidos", methods={"GET"}, name="solicitud.email.montos_invalidos")
+     * @Route("/came/solicitud/email/montos_invalidos", methods={"GET"}, name="solicitud.email.montos_invalidos")
      * @param Request $request
      * @param $id
      */

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 class InstitucionController extends \AppBundle\Controller\DIEControllerController
 {
     /**
-     * @Route("/api/came/institucion/{id}", methods={"POST"}, name="came.institucion.update")
+     * @Route("/came/api/institucion/{id}", methods={"POST"}, name="came.institucion.update")
      * @param Request $request
      * @param InstitucionManagerInterface $institucionManager
      * @param $id
