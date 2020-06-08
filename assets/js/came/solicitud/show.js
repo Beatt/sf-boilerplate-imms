@@ -52,6 +52,8 @@ const DetalleSolicitudDetallado = (props) => {
 
     const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
 
+    const [query, setQuery] = React.useState({});
+
     const handleSearchEvent = (query) => {
         setIsLoading(true);
         let querystring = '';
@@ -80,14 +82,14 @@ const DetalleSolicitudDetallado = (props) => {
                 <table className="table">
                     <thead>
                     <tr>
-                        <th><input type="text" placeholder={'Sede'}
-                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Campo Clínico'}
-                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Nivel'}
-                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Carrera'}
-                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                        <th>Sede <br/> <input type="text" placeholder={'Sede'}
+                                   onChange={e => {setQuery(Object.assign(query,{unidad: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Campo Clínico <br/> <input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => {setQuery(Object.assign(query,{cicloAcademico: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Nivel <br/> <input type="text" placeholder={'Nivel'}
+                                   onChange={e => {setQuery(Object.assign(query,{nivelAcademico: e.target.value} )); handleSearchEvent()}}/></th>
+                        <th>Carrera <br/> <input type="text" placeholder={'Carrera'}
+                                   onChange={e => {setQuery(Object.assign(query, {carrera: e.target.value})); handleSearchEvent()}}/></th>
                         <th>No. de lugares</th>
                         <th>Fechas</th>
                         <th> </th>
@@ -181,7 +183,9 @@ const DetalleSolicitudUnico = (props) => {
 
     const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
 
-    const handleSearchEvent = (query) => {
+    const [query, setQuery] = React.useState({});
+
+    const handleSearchEvent = () => {
         setIsLoading(true);
         let querystring = '';
         for (const i in query) {
@@ -209,14 +213,14 @@ const DetalleSolicitudUnico = (props) => {
                 <table className="table">
                     <thead>
                     <tr>
-                        <th><input type="text" placeholder={'Sede'}
-                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Campo Clínico'}
-                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Nivel'}
-                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Carrera'}
-                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                        <th>Sede <br/> <input type="text" placeholder={'Sede'}
+                                   onChange={e => {setQuery(Object.assign(query,{unidad: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Campo Clínico <br/> <input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => {setQuery(Object.assign(query,{cicloAcademico: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Nivel <br/> <input type="text" placeholder={'Nivel'}
+                                   onChange={e => {setQuery(Object.assign(query,{nivelAcademico: e.target.value} )); handleSearchEvent()}}/></th>
+                        <th>Carrera <br/> <input type="text" placeholder={'Carrera'}
+                                   onChange={e => {setQuery(Object.assign(query, {carrera: e.target.value})); handleSearchEvent()}}/></th>
                         <th>No. de lugares</th>
                         <th>Fechas</th>
                         <th> </th>

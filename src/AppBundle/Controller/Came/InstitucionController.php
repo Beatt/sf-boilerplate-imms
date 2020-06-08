@@ -51,6 +51,6 @@ class InstitucionController extends \AppBundle\Controller\DIEControllerControlle
             }
             return $this->jsonResponse($result);
         }
-        return $this->jsonErrorResponse($form, ['message' => 'Se presento un problema al actualizar la institucion']);
+        return $this->jsonErrorResponse($form, ['message' => 'Se presentó un problema al actualizar la institución']);
     }
 }

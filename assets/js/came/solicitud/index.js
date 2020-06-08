@@ -94,12 +94,16 @@ const SolicitudIndex = (props) => {
     const [solicitudes, setSolicitudes] = React.useState(props.solicitudes ? props.solicitudes : [])
     const [isLoading, setIsLoading] = React.useState(false)
     const [meta, setMeta] = React.useState(props.meta);
-    const [query, setQuery] = React.useState('');
+    const [query, setQuery] = React.useState({});
 
-    const handleSearchEvent = (query) => {
-
+    const handleSearchEvent = () => {
         setIsLoading(true);
-        fetch(`/came/api/solicitud?no_solicitud=${query}&page=${meta.page}&perPage=${meta.perPage}`)
+        let querystring = '';
+        for (const i in query) {
+            querystring += `${i}=${query[i]}&`;
+        }
+
+        fetch(`/came/api/solicitud?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
             .then(response => { return response.json()}, error => {console.error(error)})
             .then(json => {setSolicitudes(json.data); setMeta(json.meta)})
             .finally(() => { setIsLoading(false)});
@@ -124,7 +128,7 @@ const SolicitudIndex = (props) => {
                 <div className={``}>
                     <label htmlFor="perpage">Tamaño de Página: </label>
                     <select id="perpage" className="form-control"
-                            onChange={e => {setMeta(Object.assign(meta, {perPage: e.target.value, page: 1}));  handleSearchEvent(query); }}>
+                            onChange={e => {setMeta(Object.assign(meta, {perPage: e.target.value, page: 1}));  handleSearchEvent(); }}>
                         {/*<option value="1">1</option>*/}
                         <option value="10">10</option>
                         <option value="20">20</option>
@@ -142,11 +146,13 @@ const SolicitudIndex = (props) => {
                         <table className="table">
                             <thead>
                             <tr>
-                                <th>No. de solicitud</th>
-                                <th>Institución Educativa</th>
-                                <th>No. de campos clínicos solicitados</th>
-                                <th>No. de campos clínicos autorizados</th>
-                                <th>Fecha Solicitud</th>
+                                <th>No. de solicitud <br/><input type="text" placeholder={'No. de solicitud'}
+                                           onChange={e => {setQuery(Object.assign(query,{no_solicitud: e.target.value})); handleSearchEvent()}}/></th>
+                                <th>Institución Educativa <br/> <input type="text" placeholder={'Institución Educativa'}
+                                            onChange={e => {setQuery(Object.assign(query,{institucion: e.target.value})); handleSearchEvent()}}/></th>
+                                <th>Fecha <input type="date" placeholder={'Año-mes-día'}
+                                                  onChange={e => {setQuery(Object.assign(query,{fecha: e.target.value})); handleSearchEvent()}}/></th>
+                                <th>No. de campos clínicos</th>
                                 <th>Estado</th>
                                 <th> </th>
                             </tr>
@@ -157,9 +163,11 @@ const SolicitudIndex = (props) => {
                                     <tr key={solicitud.id}>
                                         <td><a href={`/came/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
                                         <td>{solicitud.institucion.nombre}</td>
-                                        <td>{solicitud.camposClinicosSolicitados}</td>
-                                        <td>{solicitud.camposClinicosAutorizados}</td>
                                         <td>{solicitud.fecha}</td>
+                                        <td>
+                                            Solicitados: {solicitud.camposClinicosSolicitados} <br/>
+                                            Autorizados: {solicitud.camposClinicosAutorizados}
+                                        </td>
                                         <td>{solicitud.estatusCameFormatted}</td>
                                         <td><SolicitudAccion solicitud={solicitud}/></td>
                                     </tr>
