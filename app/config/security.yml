@@ -26,9 +26,9 @@ security:
                 target: /
 
     access_control:
-        - { path: '^/admin', roles: ROLE_ADMIN }
-        - { path: '^/fofoe', roles: ROLE_FOFOE }
-        - { path: '^/ie', roles: ROLE_IE }
-        - { path: '^/came', roles: ROLE_CAME }
+        - { path: '^/admin', roles: ROLE_SUPER }
+        - { path: '^/fofoe', roles: [ROLE_SUPER, ROLE_FOFOE] }
+        - { path: '^/ie', roles: [ROLE_SUPER, ROLE_IE] }
+        - { path: '^/came', roles: [ROLE_SUPER, ROLE_CAME] }
         - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/', roles: ROLE_USER }

@@ -2,8 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,22 +34,10 @@ class Permiso
     private $descripcion;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=80)
-     */
-    private $rolSeguridad;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Rol", inversedBy="permisos")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rol", inversedBy="permisos")
      * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
      */
-    private $roles;
-
-    public function __construct()
-    {
-        $this->roles = new ArrayCollection();
-    }
+    private $rol;
 
     /**
      * Get id
@@ -112,55 +98,18 @@ class Permiso
     }
 
     /**
-     * Set rolSeguridad
-     *
-     * @param string $rolSeguridad
-     *
-     * @return Permiso
+     * @return Rol
      */
-    public function setRolSeguridad($rolSeguridad)
+    public function getRol()
     {
-        $this->rolSeguridad = $rolSeguridad;
-
-        return $this;
+        return $this->rol;
     }
 
     /**
-     * Get rolSeguridad
-     *
-     * @return string
+     * @param Rol $rol
      */
-    public function getRolSeguridad()
+    public function setRol(Rol $rol)
     {
-        return $this->rolSeguridad;
-    }
-
-    /**
-     * @param Rol $role
-     * @return Permiso
-     */
-    public function addRole(Rol $role)
-    {
-        if(!$this->roles->contains($role)) {
-            $this->roles[] = $role;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Rol $role
-     */
-    public function removeRole(Rol $role)
-    {
-        $this->roles->removeElement($role);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getRoles()
-    {
-        return $this->roles;
+        $this->rol = $rol;
     }
 }

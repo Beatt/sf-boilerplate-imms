@@ -134,10 +134,10 @@ class Usuario implements UserInterface
     private $categoria;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Rol", inversedBy="usuarios")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rol", inversedBy="usuarios")
      * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
      */
-    private $rols;
+    private $rol;
 
     /** @var string */
     private $plainPassword;
@@ -150,7 +150,6 @@ class Usuario implements UserInterface
 
     public function __construct()
     {
-        $this->rols = new ArrayCollection();
         $this->delegaciones = new ArrayCollection();
         $this->fechaIngreso = new \DateTime();
     }
@@ -216,18 +215,7 @@ class Usuario implements UserInterface
      */
     public function getRoles()
     {
-        $securityRoles = ['ROLE_ADMIN'];
-
-        /** @var Rol $role */
-        foreach($this->rols as $role) {
-
-            /** @var Permiso $permiso */
-            foreach($role->getPermisos() as $permiso) {
-                $securityRoles[] = $permiso->getRolSeguridad();
-            }
-        }
-
-        return $securityRoles;
+        return $this->getRol()->getClave();
     }
 
     /**
@@ -260,35 +248,6 @@ class Usuario implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
-    }
-
-    /**
-     * @param Rol $role
-     * @return Usuario
-     */
-    public function addRol(Rol $role)
-    {
-        if(!$this->rols->contains($role)) {
-            $this->rols[] = $role;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Rol $role
-     */
-    public function removeRol(Rol $role)
-    {
-        $this->rols->removeElement($role);
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getRols()
-    {
-        return $this->rols;
     }
 
     /**
@@ -537,33 +496,6 @@ class Usuario implements UserInterface
     }
 
     /**
-     * @return string
-     */
-    public function getAssignRoles()
-    {
-        $roles = [];
-
-        /** @var Rol $rol */
-        foreach($this->rols as $rol) {
-            array_push($roles, $rol->getNombre());
-        }
-
-        return implode($roles);
-    }
-
-   /* public function getAssignDepartments()
-    {
-        $departments = [];
-
-        foreach($this->departamentos as $departamento) {
-            array_push($departments, $departamento->getNombre());
-        }
-
-        return implode($departments);
-    }*/
-
-
-    /**
      * @param Delegacion $delegacione
      * @return Usuario
      */
@@ -604,4 +536,19 @@ class Usuario implements UserInterface
         return $this->institucion;
     }
 
+    /**
+     * @return Rol
+     */
+    public function getRol()
+    {
+        return $this->rol;
+    }
+
+    /**
+     * @param Rol $rol
+     */
+    public function setRol(Rol $rol)
+    {
+        $this->rol = $rol;
+    }
 }

@@ -29,12 +29,12 @@ class Rol
     private $nombre;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="roles")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="rol")
      */
     private $usuarios;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permiso", mappedBy="roles")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Permiso", mappedBy="rol")
      */
     private $permisos;
 
@@ -111,7 +111,6 @@ class Rol
     {
         if(!$this->permisos->contains($permiso)) {
             $this->permisos[] = $permiso;
-            $permiso->addRole($this);
         }
 
         return $this;
@@ -125,7 +124,6 @@ class Rol
     {
         if($this->permisos->contains($permiso)) {
             $this->permisos->removeElement($permiso);
-            $permiso->removeRole($this);
         }
 
         return $this;
