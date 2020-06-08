@@ -216,7 +216,7 @@ class Usuario implements UserInterface
      */
     public function getRoles()
     {
-        $securityRoles = [];
+        $securityRoles = ['ROLE_ADMIN'];
 
         /** @var Rol $role */
         foreach($this->rols as $role) {
