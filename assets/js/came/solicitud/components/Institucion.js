@@ -49,40 +49,43 @@ const Institucion = (props) => {
 
     const handleUpdateInstitucion = (event) => {
         event.preventDefault();
-        setErrores({});
         setAlert({});
         props.callbackIsLoading(true);
-        let data = new FormData();
-        data.append('institucion[rfc]', rfc);
-        data.append('institucion[direccion]', domicilio);
-        data.append('institucion[correo]', email);
-        data.append('institucion[fax]', fax);
-        data.append('institucion[sitioWeb]', web);
-        data.append('institucion[telefono]', phone);
-        data.append('institucion[representante]', representante);
-        fetch('/came/api/institucion/' + selectedInstitution.id, {
-            method: 'post',
-            body: data
-        }).then(response => response.json(), error => {
-            console.error(error);
-        }).then(json => {
-            if (json.errors) {
-                setErrores(json.errors);
-            }
-            setAlert(Object.assign(alert, {
-                show: true,
-                message: json.message,
-                type: (json.status ? 'success' : 'danger')
-            }))
-            if(json.data){
-                props.parentCallback(json.data);
-            }
-            if(json.status){
-                setDisableSelect(true);
-            }
-        }).finally(() => {
+        if(validateForm()){
+            let data = new FormData();
+            data.append('institucion[rfc]', rfc);
+            data.append('institucion[direccion]', domicilio);
+            data.append('institucion[correo]', email);
+            data.append('institucion[fax]', fax);
+            data.append('institucion[sitioWeb]', web);
+            data.append('institucion[telefono]', phone);
+            data.append('institucion[representante]', representante);
+            fetch('/came/api/institucion/' + selectedInstitution.id, {
+                method: 'post',
+                body: data
+            }).then(response => response.json(), error => {
+                console.error(error);
+            }).then(json => {
+                if (json.errors) {
+                    setErrores(json.errors);
+                }
+                setAlert(Object.assign(alert, {
+                    show: true,
+                    message: json.message,
+                    type: (json.status ? 'success' : 'danger')
+                }))
+                if(json.data){
+                    props.parentCallback(json.data);
+                }
+                if(json.status){
+                    setDisableSelect(true);
+                }
+            }).finally(() => {
+                props.callbackIsLoading(false)
+            });
+        }else {
             props.callbackIsLoading(false)
-        });
+        }
     }
 
     const getInstituciones = () =>{
@@ -90,6 +93,33 @@ const Institucion = (props) => {
         props.instituciones.map(item => {
             result.push({value: item.id.toString(), name:item.nombre});
         })
+        return result;
+    }
+
+    const validateForm = () => {
+        let result = true;
+        let obj_errors = {};
+        if(rfc.toString().length != 13){
+            result = false;
+            obj_errors = Object.assign(obj_errors, {'rfc': ['Este valor debería tener exactamente 13 caracteres.']});
+        }
+        if(phone.toString().length != 10){
+            result = false;
+            obj_errors = Object.assign(obj_errors, {'telefono': ['Este valor debería tener exactamente 10 caracteres.']});
+        }
+        if(!(/^\d+$/.test(phone))) {
+            result = false;
+            obj_errors = Object.assign(obj_errors, {'telefono': ['Solo se pueden ingresar números']});
+        }
+        if(!(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email))){
+            result = false;
+            obj_errors = Object.assign(obj_errors, {'correo': ['Este valor no es una dirección de email válida']});
+        }
+        if(!result){
+            setErrores(obj_errors);
+        }else{
+            setErrores({});
+        }
         return result;
     }
 
@@ -107,6 +137,7 @@ const Institucion = (props) => {
                             </div>
                             <label htmlFor="institucion_name">Nombre de la institución:</label>
                             <SelectSearch
+                                id={'institucion_name'}
                                 options={getInstituciones()}
                                 search
                                 onChange={value => handleSelectedInstitution(value)}

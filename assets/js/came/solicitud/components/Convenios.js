@@ -3,6 +3,18 @@ import './Convenios.scss';
 
 const Convenios = (props) => {
 
+    const ciclosAutorizados = [1, 2];
+
+    const filterConvenios = () => {
+        const result = [];
+        props.convenios.map(item => {
+            if(item.carrera && item.cicloAcademico && ciclosAutorizados.indexOf(item.cicloAcademico.id) > -1 ){
+                result.push(item);
+            }
+        });
+        return result;
+    }
+
     return (
         <div className={'list-convenios'}>
             <div className="col-md-12">
@@ -21,18 +33,17 @@ const Convenios = (props) => {
                         </tr>
                         </thead>
                         <tbody>
-                        {props.convenios.map(convenio => {
-                            if(convenio.carrera && convenio.cicloAcademico){
-                                return (
-                                    <tr key={convenio.id} className={`label-${convenio.label}`}>
-                                        <td>{convenio.numero}</td>
-                                        <td>{convenio.carrera.nivelAcademico.nombre}</td>
-                                        <td>{convenio.cicloAcademico.nombre}</td>
-                                        <td>{convenio.carrera.nombre}</td>
-                                        <td>{convenio.vigenciaFormatted}</td>
-                                    </tr>
-                                )
-                            }
+                        {filterConvenios().map(convenio => {
+                            return (
+                                <tr key={convenio.id} className={`label-${convenio.label}`}>
+                                    <td>{convenio.numero}</td>
+                                    <td>{convenio.carrera.nivelAcademico.nombre}</td>
+                                    <td>{convenio.cicloAcademico.nombre}</td>
+                                    <td>{convenio.carrera.nombre}</td>
+                                    <td>{convenio.vigenciaFormatted}</td>
+                                </tr>
+                            )
+
                         })}
                         </tbody>
                     </table>

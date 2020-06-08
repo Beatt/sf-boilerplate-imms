@@ -1,4 +1,5 @@
 import * as React from 'react'
+import SelectSearch from "react-select-search";
 
 const CampoClinicoForm = (props) => {
 
@@ -27,10 +28,12 @@ const CampoClinicoForm = (props) => {
         return data;
     }
 
+    const ciclosAutorizados = [1,2];
+
     const getConveniosActivos = (convenios) => {
         let data = [];
         for (const i of convenios) {
-            if (i.carrera && i.cicloAcademico && i.label.toString() !== 'red') {
+            if (i.carrera && i.cicloAcademico && i.label.toString() !== 'red' && ciclosAutorizados.indexOf(i.cicloAcademico.id) > -1) {
                 data.push(i);
             }
         }
@@ -84,7 +87,7 @@ const CampoClinicoForm = (props) => {
         let result = true;
         const fechaI = new Date(fechaInicial);
         const fechaF = new Date(fechaFinal);
-        if (fechaI >= fechaF) {
+        if (fechaI > fechaF) {
             setAlert({show: true, type: 'alert', message: 'Fechas incorrectas'});
             setErrores({
                 fechaInicial: ['Fecha Inicial debe ser menor a Fecha Final'],
@@ -156,6 +159,14 @@ const CampoClinicoForm = (props) => {
         return unidad;
     }
 
+    const getUnidades = () => {
+        const result = [{value:'-', name: 'Seleccionar ...'}];
+        props.unidades.map(item => {
+            result.push({value: item.id.toString(), name:item.nombre});
+        })
+        return result;
+    }
+
     return (
         <>
             <div className="row">
@@ -199,7 +210,7 @@ const CampoClinicoForm = (props) => {
                 <div className="row">
                     <div className="col-md-3">
                         <div className={`form-group ${errores.fechaInicial ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="fecha_inicial">Inicio</label>
+                            <label htmlFor="fecha_inicial">Inicio <br/>  &#160;</label>
                             <input id="fecha_inicial" type="date" value={fechaInicial} className={'form-control'}
                                    onChange={e => setFechaInicial(e.target.value)} required={true}/>
                             <span className="help-block">{errores.fechaInicial ? errores.fechaInicial[0] : ''}</span>
@@ -207,7 +218,7 @@ const CampoClinicoForm = (props) => {
                     </div>
                     <div className="col-md-3">
                         <div className={`form-group ${errores.fechaFinal ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="fecha_final">Fin</label>
+                            <label htmlFor="fecha_final">Fin <br/>&#160;</label>
                             <input id="fecha_final" type="date" value={fechaFinal} className={'form-control'}
                                    onChange={e => setFechaFinal(e.target.value)} required={true}/>
                             <span className="help-block">{errores.fechaFinal ? errores.fechaFinal[0] : ''}</span>
@@ -223,9 +234,13 @@ const CampoClinicoForm = (props) => {
                     </div>
                     <div className="col-md-3">
                         <div className={`form-group ${errores.promocion ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="promocion">Promoción de Inicio [solo para Internado]</label>
+                            <label htmlFor="promocion">Promoción de Inicio
+                                <span style={{display: (convenio && convenio.cicloAcademico.id === 2)? 'block': 'none'}}>&#160;</span>
+                                <span style={{display: (!convenio || (convenio && convenio.cicloAcademico.id !== 2) )? 'block': 'none'}}>[solo para Internado]</span>
+                            </label>
                             <input id="promocion" className={'form-control'}
                                    disabled={!convenio || (convenio && convenio.cicloAcademico.id !== 2)}
+                                   required={convenio && convenio.cicloAcademico.id === 2}
                                    type="text" value={promocion} onChange={e => setPromocion(e.target.value)}/>
                             <span className="help-block">{errores.promocion ? errores.promocion[0] : ''}</span>
                         </div>
@@ -236,17 +251,12 @@ const CampoClinicoForm = (props) => {
                     <div className="col-md-12">
                         <div className={`form-group ${errores.unidad ? 'has-error has-feedback' : ''}`}>
                             <label htmlFor="unidad">Unidad Sede</label>
-                            <select name="unidad" id="unidad"
-                                    className={'form-control'}
-                                    value={unidad ? unidad.id : ''}
-                                    required={true} onChange={e => setUnidad(findUnidad(e.target.value))}>
-                                <option value="">Seleccionar</option>
-                                {props.unidades.map(unidad => {
-                                    return (
-                                        <option key={unidad.id} value={unidad.id}>{unidad.nombre}</option>
-                                    )
-                                })}
-                            </select>
+                            <SelectSearch id={'unidad'}
+                                          search
+                                          options={getUnidades()}
+                                          value={unidad ? unidad.id.toString() : ''}
+                                          required={true}
+                                          onChange={value => setUnidad(findUnidad(value))}/>
                             <span className="help-block">{errores.unidad ? errores.unidad[0] : ''}</span>
                         </div>
                     </div>
