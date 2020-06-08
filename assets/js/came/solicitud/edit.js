@@ -64,8 +64,8 @@ const SolicitudEdit = (props) => {
                 disableSelect={true}
                 institucion={props.solicitud.institucion}
             />
+            <Convenios convenios={props.solicitud.institucion.convenios}/>
             <div style={{display : (isInstitucionComplete()? 'block' : 'none')}}>
-                <Convenios convenios={props.solicitud.institucion.convenios}/>
                 <CamposClinicos campos={camposClinicos} />
                 <CampoClinicoForm
                     unidades={props.unidades}

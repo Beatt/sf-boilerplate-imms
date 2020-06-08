@@ -69,8 +69,10 @@ const SolicitudCreate = (props) => {
               disableSelect={!!solicitud}
               conveniosCallback={result => setConvenios(result)}
           />
+          <div style={{display : (selectedInstitution.id ? 'block': 'none')}}>
+          <Convenios convenios={convenios? convenios : []}/>
+          </div>
           <div style={{display : (isInstitucionComplete()? 'block' : 'none')}}>
-              <Convenios convenios={convenios? convenios : []}/>
               <CamposClinicos campos={camposClinicos} />
               <CampoClinicoForm
                   unidades={props.unidades}
@@ -88,9 +90,11 @@ const SolicitudCreate = (props) => {
                   </div>
               </form>
           </div>
-          <div style={{display : (isInstitucionComplete()? 'none' : 'block')}}>
-              <div className={`alert alert-warning `}>
-                  Es necesario capturar la información de la institución para poder crear una nueva solicitud
+          <div className={'col-md-12'}>
+              <div style={{display : (isInstitucionComplete()? 'none' : 'block')}}>
+                  <div className={`alert alert-warning `}>
+                      Es necesario capturar la información de la institución para poder crear una nueva solicitud
+                  </div>
               </div>
           </div>
       </>
