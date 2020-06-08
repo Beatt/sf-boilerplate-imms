@@ -3182,6 +3182,11 @@ function-bind@^1.1.1:
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
 
+fuse.js@^3.4.5:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.6.1.tgz#7de85fdd6e1b3377c23ce010892656385fd9b10c"
+  integrity sha512-hT9yh/tiinkmirKrlv4KWOjztdoZo1mx9Qh4KvWqC7isoXwdUY3PNWUxceF4/qO9R6riA2C29jdTOeQOIROjgw==
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
@@ -5645,6 +5650,13 @@ react-paginate@^6.3.2:
   integrity sha512-Ch++Njfv8UHpLtIMiQouAPeJQA5Ki86kIYfCer6c1B96Rvn3UF27se+goCilCP8oHNXNsA2R2kxvzanY1YIkyg==
   dependencies:
     prop-types "^15.6.1"
+
+react-select-search@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-select-search/-/react-select-search-2.0.3.tgz#96d4e1e49ab2203a64f8f1e3f4f903f212d8c129"
+  integrity sha512-lcQFRtnQP/9QLecBmrJPOM1Du07j1AgAfXn8By67e5XLrrUjg92Tl09Lf7mJcl9XTkeucY5ceI0AVhXNZFbZvA==
+  optionalDependencies:
+    fuse.js "^3.4.5"
 
 react@^16.13.1:
   version "16.13.1"

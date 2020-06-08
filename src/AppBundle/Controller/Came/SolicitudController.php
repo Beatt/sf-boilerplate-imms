@@ -19,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class SolicitudController extends DIEControllerController
 {
     /**
-     * @Route("/came/solicitud", methods={"GET"}, name="solicitud.index")
+     * @Route("/came/solicitud", methods={"GET"}, name="came.solicitud.index")
      * @Security("has_role('ROLE_CONSULTAR_SOLICITUDES')")
      */
     public function indexAction(Request $request)

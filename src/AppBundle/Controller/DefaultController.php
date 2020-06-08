@@ -47,7 +47,7 @@ class DefaultController extends Controller
         if(in_array('SUPER', $roles)){
             return $this->redirect('/admin');
         }else if(in_array('CAME', $roles)){
-            return $this->redirectToRoute('solicitud.index');
+            return $this->redirectToRoute('came.solicitud.index');
         }else if(in_array('IE', $roles)){
             return $this->redirectToRoute('solicitudes#index');
         }else if(in_array('FOFOE', $roles)){

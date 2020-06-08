@@ -1,4 +1,6 @@
 import * as React from 'react'
+import SelectSearch from "react-select-search";
+import './Institucion.scss';
 
 const Institucion = (props) => {
 
@@ -30,16 +32,18 @@ const Institucion = (props) => {
         setEmail(institucion.correo ? institucion.correo : '');
         setFax(institucion.fax ? institucion.fax : '');
         setRepresentante(institucion.representante ? institucion.representante : '');
-        props.callbackIsLoading(true);
-        fetch('/came/api/convenio/' + institucion.id)
-            .then(response => {
-                return response.json()}, error => {
-                console.error(error)})
-            .then(json => {
-                props.conveniosCallback(json.data);
-            })
-            .finally(() => {props.callbackIsLoading(false);});
-        props.parentCallback(institucion);
+        if(institucion.id){
+            props.callbackIsLoading(true);
+            fetch('/came/api/convenio/' + institucion.id)
+                .then(response => {
+                    return response.json()}, error => {
+                    console.error(error)})
+                .then(json => {
+                    props.conveniosCallback(json.data);
+                })
+                .finally(() => {props.callbackIsLoading(false);});
+            props.parentCallback(institucion);
+        }
         return institucion ? institucion : {};
     }
 
@@ -81,6 +85,15 @@ const Institucion = (props) => {
         });
     }
 
+    const getInstituciones = () =>{
+        const result = [{value:'-', name: 'Seleccionar ...'}];
+        props.instituciones.map(item => {
+            result.push({value: item.id.toString(), name:item.nombre});
+        })
+        return result;
+    }
+
+
     return (
         <>
             <form onSubmit={handleUpdateInstitucion}>
@@ -93,22 +106,15 @@ const Institucion = (props) => {
                                 {alert.message}
                             </div>
                             <label htmlFor="institucion_name">Nombre de la institución:</label>
-                            <select name="institucion_name"
-                                    id="institucion_name"
-                                    className={'form-control'}
-                                    value={selectedInstitution.id ? selectedInstitution.id : ''}
-                                    onChange={e => handleSelectedInstitution(e.target.value)}
-                                    required={true}
-                                    disabled={props.disableSelect || disableSelect}
-                            >
-                                <option value="">Seleccionar ...</option>
-                                {props.instituciones.map(institucion => {
-                                    return (
-                                        <option key={institucion.id}
-                                                value={institucion.id}>{institucion.nombre}</option>
-                                    )
-                                })}
-                            </select>
+                            <SelectSearch
+                                options={getInstituciones()}
+                                search
+                                onChange={value => handleSelectedInstitution(value)}
+                                value={selectedInstitution.id ? selectedInstitution.id.toString() : ''}
+                                placeholder="Seleccionar ..."
+                                required={true}
+                                disabled={props.disableSelect || disableSelect}
+                            />
                             <span className="help-block">{errores.institucion ? errores.institucion[0] : ''}</span>
                             {/*<p><strong>Seleccionada: </strong> {selectedInstitution.nombre}</p>*/}
                         </div>

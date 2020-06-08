@@ -28,6 +28,6 @@ class CameController extends Controller
     {
         $delegacion_id = $request->request->get('delegacion_came');
         $this->container->get('session')->set('user_delegacion', $delegacion_id);
-        return $this->redirectToRoute('solicitud.index');
+        return $this->redirectToRoute('came.solicitud.index');
     }
 }
