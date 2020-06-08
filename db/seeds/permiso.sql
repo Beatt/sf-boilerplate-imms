@@ -15,3 +15,7 @@ INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Consultar fact
 INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Cargar factura', 'Cargar factura', 'ROLE_CARGAR_FACTURA');
 INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Registro de montos', 'Registro de montos', 'ROLE_REGISTRO_MONTOS');
 INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Consultar seguimiento', 'Seguimiento consultar', 'ROLE_CONSULTAR_SEGUIMIENTO');
+INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Ver solicitudes', 'Ver solicitudes', 'ROLE_CONSULTAR_SOLICITUDES');
+INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Terminar solicitud', 'Terminar solicitud', 'ROLE_TERMINAR_SOLICITUDES');
+INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Descargar formato FOFOE', 'Descargar formato FOFOE', 'ROLE_FORMATO_FOFOE');
+INSERT INTO permiso (nombre, descripcion, rol_seguridad) VALUES ('Descargar oficio montos', 'Descargar oficio montos', 'ROLE_DESCARGAR_OFICIO_MONTOS');

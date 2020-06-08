@@ -3,10 +3,17 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('build/came_solicitud_index.css') }}">
+    <style>
+        .wrapper-came{
+            margin-top: 80px;
+            margin-bottom: 80px;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-    <div class='container-fluid'>
+    {{ render(controller('AppBundle:Came\\Came:menu')) }}
+    <div class='container-fluid  wrapper-came'>
         <div class="container">
             <div class='row'>
                 <div class='col-md-12'>
