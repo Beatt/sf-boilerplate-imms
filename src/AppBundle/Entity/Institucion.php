@@ -126,7 +126,7 @@ class Institucion
 
     /**
      * @var Usuario
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Usuario", inversedBy="institucion")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Usuario", inversedBy="institucion")
      * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id")
      */
     private $usuario;

@@ -9,28 +9,24 @@ class DefaultController extends Controller
 {
     /**
      * @Route("/", name="homepage")
+     * @throws \Exception
      */
     public function indexAction()
     {
-        $user = $this->getUser();
-        $roles = $this->getRoles($user->getRols());
-        if(in_array('SUPER', $roles)){
-            return $this->redirectToRoute('admin');
-        }else if(in_array('CAME', $roles)){
-            return $this->redirectToRoute('solicitud.index');
-        }else if(in_array('IE', $roles)){
-            return $this->redirectToRoute('solicitudes#index');
-        }else if(in_array('FOFOE', $roles)){
-
+        $roles = $this->getUser()->getRoles();
+        switch($roles[0]) {
+            case 'ROLE_SUPER':
+                return $this->redirectToRoute('admin');
+            case 'ROLE_CAME':
+                return $this->redirectToRoute('solicitud.index');
+            case 'ROLE_IE':
+                return $this->redirectToRoute('solicitudes#index', [
+                    'id' => $this->getUser()->getInstitucion()->getId()
+                ]);
+            case 'ROLE_FOFOE':
+                break;
+            default:
+                throw new \Exception('El usuario no tiene un rol asignado');
         }
-    }
-
-    private function getRoles($roles)
-    {
-        $result = [];
-        foreach ($roles as $role) {
-            $result[] = $role->getClave();
-        }
-        return $result;
     }
 }

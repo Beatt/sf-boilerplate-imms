@@ -134,17 +134,17 @@ class Usuario implements UserInterface
     private $categoria;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rol", inversedBy="usuarios")
-     * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permiso", inversedBy="usuarios")
+     * @ORM\JoinColumn(name="permiso_id", referencedColumnName="id")
      */
-    private $rol;
+    private $permisos;
 
     /** @var string */
     private $plainPassword;
 
     /**
      * @var Institucion
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Institucion", mappedBy="usuario")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Institucion", mappedBy="usuario")
      */
     private $institucion;
 
@@ -215,7 +215,14 @@ class Usuario implements UserInterface
      */
     public function getRoles()
     {
-        return $this->getRol()->getClave();
+        $roles = [];
+
+        /** @var Permiso $permiso */
+        foreach($this->getPermisos() as $permiso) {
+            $roles[] = sprintf('ROLE_%s', $permiso->getClave());
+        }
+
+        return $roles;
     }
 
     /**
@@ -537,18 +544,40 @@ class Usuario implements UserInterface
     }
 
     /**
-     * @return Rol
+     * @param Permiso $permiso
+     * @return Usuario
      */
-    public function getRol()
+    public function addPermiso(Permiso $permiso)
     {
-        return $this->rol;
+        $this->permisos[] = $permiso;
+
+        return $this;
     }
 
     /**
-     * @param Rol $rol
+     * @param Permiso $permiso
      */
-    public function setRol(Rol $rol)
+    public function removePermiso(Permiso $permiso)
     {
-        $this->rol = $rol;
+        $this->permisos->removeElement($permiso);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPermisos()
+    {
+        return $this->permisos;
+    }
+
+    /**
+     * @param Institucion $institucion
+     * @return Usuario
+     */
+    public function setInstitucion(Institucion $institucion = null)
+    {
+        $this->institucion = $institucion;
+
+        return $this;
     }
 }

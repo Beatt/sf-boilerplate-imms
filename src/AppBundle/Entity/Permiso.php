@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,13 +33,23 @@ class Permiso
      *
      * @ORM\Column(type="string", length=255)
      */
-    private $descripcion;
+    private $clave;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rol", inversedBy="permisos")
      * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
      */
     private $rol;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="usuarios")
+     */
+    private $usuarios;
+
+    public function __construct()
+    {
+        $this->usuarios = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -74,27 +86,19 @@ class Permiso
     }
 
     /**
-     * Set descripcion
-     *
-     * @param string $descripcion
-     *
-     * @return Permiso
+     * @return string
      */
-    public function setDescripcion($descripcion)
+    public function getClave()
     {
-        $this->descripcion = $descripcion;
-
-        return $this;
+        return $this->clave;
     }
 
     /**
-     * Get descripcion
-     *
-     * @return string
+     * @param string $clave
      */
-    public function getDescripcion()
+    public function setClave($clave)
     {
-        return $this->descripcion;
+        $this->clave = $clave;
     }
 
     /**
@@ -111,5 +115,32 @@ class Permiso
     public function setRol(Rol $rol)
     {
         $this->rol = $rol;
+    }
+
+    /**
+     * @param Usuario $usuario
+     * @return Permiso
+     */
+    public function addUsuario(Usuario $usuario)
+    {
+        $this->usuarios[] = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * @param Usuario $usuario
+     */
+    public function removeUsuario(Usuario $usuario)
+    {
+        $this->usuarios->removeElement($usuario);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getUsuarios()
+    {
+        return $this->usuarios;
     }
 }

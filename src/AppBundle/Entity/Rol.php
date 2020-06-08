@@ -29,11 +29,6 @@ class Rol
     private $nombre;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="rol")
-     */
-    private $usuarios;
-
-    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Permiso", mappedBy="rol")
      */
     private $permisos;
@@ -46,7 +41,6 @@ class Rol
 
     public function __construct()
     {
-        $this->usuarios = new ArrayCollection();
         $this->permisos = new ArrayCollection();
     }
 
@@ -72,35 +66,6 @@ class Rol
     public function setNombre($nombre)
     {
         $this->nombre = $nombre;
-    }
-
-    /**
-     * @param Usuario $usuario
-     * @return Rol
-     */
-    public function addUsuario(Usuario $usuario)
-    {
-        if(!$this->usuarios->contains($usuario)) {
-            $this->usuarios[] = $usuario;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Usuario $usuario
-     */
-    public function removeUsuario(Usuario $usuario)
-    {
-        $this->usuarios->removeElement($usuario);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getUsuarios()
-    {
-        return $this->usuarios;
     }
 
     /**

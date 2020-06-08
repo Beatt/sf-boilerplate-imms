@@ -1,25 +1,9 @@
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Super admin', 'Acceso a todas las secciones');
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Fofeo inicio', 'FOFOE_INICIO', (select id from rol where rol.clave = 'FOFOE'));
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Validar pago', 'FOFOE_VALIDAR_PAGO', (select id from rol where rol.clave = 'FOFOE'));
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Validar pago multiple', 'FOFOE_VALIDAR_PAGO_MULTIPLE', (select id from rol where rol.clave = 'FOFOE'));
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Registrar facturar', 'FOFOE_REGISTRAR_FACTURAR', (select id from rol where rol.clave = 'FOFOE'));
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Detalle institución educativa', 'FOFOE_DETALLE_INSTITUCION_EDUCATIVA', (select id from rol where rol.clave = 'FOFOE'));
 
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('came/inicio', 'Agregar solicitud');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('came/agregar-solicitud', 'Detalle de solicitud');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Editar solicitud', 'Edición de solicitud');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Validar montos', 'Validación de montos');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Editar montos', 'Edición de montos');
-
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Inicio de validación de información', 'Valida la información');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Generar formatos', 'Generación de formatos');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Cargar comprobante', 'Cargar comprobante');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Corrección de pago', 'Corregir comprobante de pago');
-
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Consultar comprobante de pago', 'Consultar el comprobante de pago');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Validación de comprobante de pago', 'Validar el comprobante de pago');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Consultar detalle IE', 'Consultar detalle de EI');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Consultar factura', 'Consultar factura');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Cargar factura', 'Cargar factura');
-
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Registro de montos', 'Registro de montos');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Consultar seguimiento', 'Seguimiento consultar');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Ver solicitudes', 'Ver solicitudes');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Terminar solicitud', 'Terminar solicitud');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Descargar formato FOFOE', 'Descargar formato FOFOE');
-INSERT INTO permiso (nombre, descripcion, rol_id) VALUES ('Descargar oficio montos', 'Descargar oficio montos');
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('CAME', 'CAME', (select id from rol where rol.clave = 'CAME'));
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('IE', 'IE', (select id from rol where rol.clave = 'IE'));
+INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Super admin', 'SUPER', (select id from rol where rol.clave = 'SUPER'));
