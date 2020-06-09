@@ -188,7 +188,6 @@ class SolicitudManager implements SolicitudManagerInterface
             $user->setCorreo($institucion->getCorreo());
             $user->setNombre(substr($institucion->getRepresentante(), 0, 50));
             $user->setApellidoPaterno(substr($institucion->getNombre(), 0, 50));
-            $user->setContrasena($this->encoderFactory->getEncoder($user)->encodePassword($nueva_password, $user->getSalt()));
             $user->setCurp('0');
             $user->setRfc('0');
             $user->setSexo('0');
@@ -197,6 +196,7 @@ class SolicitudManager implements SolicitudManagerInterface
         }else{
             $user = $user_db;
         }
+        $user->setContrasena($this->encoderFactory->getEncoder($user)->encodePassword($nueva_password, $user->getSalt()));
         $user->setActivo(true);
         $user->addRol($this->entityManager->getRepository(Rol::class)->findOneBy(['clave' => 'IE']));
 

@@ -25,7 +25,6 @@ class DIEUserProvider implements UserProviderInterface
 
     public function loadUserByUsername($username)
     {
-        dump($username);
         return $this->fetchUser($username);
     }
 
