@@ -272,7 +272,7 @@ const SolicitudShow = (props) => {
                 <p><strong>Estado:</strong> {props.solicitud.estatusCameFormatted}</p>
             </div>
             <div className="col-md-12">
-                <p><strong>Insitución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
+                <p><strong>Institución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
             </div>
             <div className="col-md-12">
                 <p>Se <strong>autorizaron</strong> {props.solicitud.camposClinicosAutorizados} de {props.solicitud.camposClinicosSolicitados} Campos

@@ -101,7 +101,7 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
             );
         }
 
-        $solicitudManager->finalizar($solicitud);
+        $solicitudManager->finalizar($solicitud, $this->getUser());
         return $this->jsonResponse(['status' => true]);
     }
 
@@ -125,12 +125,9 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
      * @Route("/came/dummy/test", methods={"GET"})
      */
     public function testAction(){
-        /* @var $cc CampoClinico */
-        $cc = $this->getDoctrine()->getRepository(CampoClinico::class)->find(2);
+        $sender = $this->getParameter('mailer_sender');
         return new JsonResponse([
-            'colegiatura' => $cc->getMontoColegiatura(),
-            'inscripcion' => $cc->getMontoInscripcion(),
-            'subtotal' => $cc->getSubTotal()
+            'sender' => $sender
         ]);
     }
 }

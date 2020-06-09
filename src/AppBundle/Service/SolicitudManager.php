@@ -45,15 +45,19 @@ class SolicitudManager implements SolicitudManagerInterface
      * @var \Twig_Environment
      */
     private $templating;
+    private $sender;
 
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
-        Swift_Mailer $mailer, \Twig_Environment $templating, EncoderFactoryInterface $encoderFactory)
+        Swift_Mailer $mailer, \Twig_Environment $templating, EncoderFactoryInterface $encoderFactory,
+        $sender
+    )
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->mailer     = $mailer;
         $this->templating = $templating;
         $this->encoderFactory = $encoderFactory;
+        $this->sender = $sender;
     }
 
     public function update(Solicitud $solicitud)
@@ -111,16 +115,14 @@ class SolicitudManager implements SolicitudManagerInterface
             ];
         }
 
-        if(!$solicitud->getInstitucion()->getUsuario()) {
-            $this->generateUser($solicitud, $came_user);
-        }
+        $this->generateUser($solicitud, $came_user);
 
         return [
             'status' => true
         ];
     }
 
-    public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false)
+    public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null)
     {
         $solicitud->setValidado($is_valid);
 
@@ -136,7 +138,7 @@ class SolicitudManager implements SolicitudManagerInterface
                 $this->processMontos($solicitud);
             } else {
                 $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
-                $this->sendEmailMontosInvalidos($solicitud);
+                $this->sendEmailMontosInvalidos($solicitud, $came_usuario);
             }
 
             $this->entityManager->persist($solicitud);
@@ -164,13 +166,13 @@ class SolicitudManager implements SolicitudManagerInterface
         ];
     }
 
-    public function sendEmailMontosInvalidos(Solicitud $solicitud)
+    public function sendEmailMontosInvalidos(Solicitud $solicitud, Usuario $came_usuario)
     {
         $message = (new \Swift_Message('Los montos de la solicitud ' . $solicitud->getNoSolicitud() . ' son invalidos'))
             ->setFrom('send@example.com') //cambiar el destinatario XD
             ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
             ->setBody(
-                $this->templating->render('emails/came/montos_invalidos.html.twig',['solicitud' => $solicitud]),
+                $this->templating->render('emails/came/montos_invalidos.html.twig',['solicitud' => $solicitud, 'came' => $came_usuario]),
                 'text/html'
             )
         ;
@@ -193,10 +195,12 @@ class SolicitudManager implements SolicitudManagerInterface
             $user->setSexo('0');
             $user->setFechaIngreso(Carbon::now());
             $user->setRegims(0);
+            $user->setContrasena($this->encoderFactory->getEncoder($user)->encodePassword($nueva_password, $user->getSalt()));
         }else{
             $user = $user_db;
+            $nueva_password = '';
         }
-        $user->setContrasena($this->encoderFactory->getEncoder($user)->encodePassword($nueva_password, $user->getSalt()));
+
         $user->setActivo(true);
         $user->addRol($this->entityManager->getRepository(Rol::class)->findOneBy(['clave' => 'IE']));
 
@@ -213,14 +217,14 @@ class SolicitudManager implements SolicitudManagerInterface
         } catch(OptimisticLockException $exception) {
             $this->logger->critical($exception->getMessage());
         }
-        $this->sendEmailBienvenida($solicitud, $nueva_password);
+        $this->sendEmailBienvenida($solicitud, $nueva_password, $came_usuario);
     }
 
 
     private function sendEmailBienvenida(Solicitud $solicitud,  $password,  Usuario $came_usuario = null)
     {
         $message = (new \Swift_Message('Sistema de Administración del FOFOE'))
-            ->setFrom('send@example.com') //cambiar el destinatario XD
+            ->setFrom($this->sender)
             ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
             ->setBody(
                 $this->templating->render('emails/came/institucion_bienvenida.html.twig',['solicitud' => $solicitud, 'password' => $password, 'came' => $came_usuario]),
