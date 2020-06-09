@@ -1,4 +1,34 @@
 import * as React from 'react'
+import './CamposClinicos.scss';
+const SpecialRow = ({cc, handleDelete, canDelete}) => {
+    const [collapse, setCollapse] = React.useState(true);
+    return (
+        <>
+            <tr>
+                <td>{cc.convenio.cicloAcademico.nombre}</td>
+                <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
+                <td>{cc.convenio.carrera.nombre}</td>
+                <td>{cc.fechaInicialFormatted} - {cc.fechaFinalFormatted}</td>
+                <td>{cc.unidad.nombre}</td>
+                <td>{cc.lugaresSolicitados}</td>
+                <td>{cc.lugaresAutorizados}</td>
+                <td>
+                    <a className={'cc'} onClick={e => {setCollapse(!collapse)}}>Detalles</a><br/>
+                    <a style={{display: (canDelete ? 'block': 'none')}} className={'cc'} onClick={e => {canDelete? handleDelete(cc.id): ''}}>Eliminar</a>
+                </td>
+            </tr>
+            <tr className={`cc_tr ${(collapse ? 'tr_hide' : 'tr_show')}`}>
+                <td colSpan={8} id={`cc_collapse_${cc.id}`} >
+                    <ul>
+                        <li><strong>Horario del campo clínico</strong>: {(cc.horario? cc.horario : 'Sin Asignar')}</li>
+                        <li style={{display: (cc.convenio.cicloAcademico.id === 2 ? 'list-item': 'none')}}><strong>Promoción de Inicio</strong>: {(cc.promocion? cc.promocion : 'Sin Asignar')}</li>
+                        <li><strong>Asignatura</strong>: {(cc.asignatura? cc.asignatura : 'Sin Asignar')}</li>
+                    </ul>
+                </td>
+            </tr>
+        </>
+    )
+}
 
 const CamposClinicos = (props) => {
 
@@ -24,15 +54,11 @@ const CamposClinicos = (props) => {
                             <tbody>
                             {props.campos.map(cc => {
                                 return (
-                                    <tr key={cc.id}>
-                                        <td>{cc.convenio.cicloAcademico.nombre}</td>
-                                        <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
-                                        <td>{cc.convenio.carrera.nombre}</td>
-                                        <td>{cc.fechaInicialFormatted} - {cc.fechaFinalFormatted}</td>
-                                        <td>{cc.unidad.nombre}</td>
-                                        <td>{cc.lugaresSolicitados}</td>
-                                        <td>{cc.lugaresAutorizados}</td>
-                                    </tr>
+                                    <SpecialRow
+                                        cc={cc}
+                                        key={cc.id}
+                                        canDelete={props.campos.length > 1}
+                                        handleDelete={campo => {props.handleDelete(campo)}}/>
                                 )
                             })}
                             </tbody>

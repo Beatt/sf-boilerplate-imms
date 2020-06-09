@@ -126,6 +126,7 @@ const CampoClinicoForm = (props) => {
         data.append('campo_clinico[fechaFinal][month]', fechaF.getMonth() + 1);
         data.append('campo_clinico[fechaFinal][day]', fechaF.getDate());
         data.append('campo_clinico[asignatura]', asignatura);
+        data.append('campo_clinico[promocion]', promocion);
 
         fetch('/came/api/campo_clinico', {
             method: 'post',

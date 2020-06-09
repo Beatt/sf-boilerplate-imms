@@ -23,14 +23,14 @@ const SolicitudEdit = (props) => {
     const handleSolicitudSubmit = (event) => {
         event.preventDefault();
         setIsLoading(true);
-        fetch('/came/api/solicitud/terminar/' + props.solicitud.id , {
+        fetch('/came/api/solicitud/terminar/' + props.solicitud.id, {
             method: 'post'
         }).then(response => {
             return response.json()
         }, error => {
             console.error(error);
         }).then(json => {
-            if(json.status){
+            if (json.status) {
                 document.location.href = '/came/solicitud';
             }
         }).finally(() => {
@@ -51,6 +51,34 @@ const SolicitudEdit = (props) => {
         props.solicitud = Object.assign(props.solicitud, institucion_o);
     }
 
+    const handleDeleteEvent = (campo) => {
+        setIsLoading(true);
+        fetch(`/came/api/campo_clinico/${campo}`, {
+            method: 'delete'
+        }).then(response => {
+            return response.json()
+        }, error => {
+            console.error(error);
+        }).then(json => {
+            if (json.status) {
+                removeCampo(campo);
+            }
+        }).finally(() => {
+            setIsLoading(false);
+        });
+    }
+
+    const removeCampo = (campo) => {
+
+        const nuevos = [];
+        camposClinicos.map(item => {
+            if (item.id.toString() !== campo.toString()) {
+                nuevos.push(item);
+            }
+        })
+        setCamposClinicos(nuevos);
+    }
+
     return (
         <>
             <Loader show={isLoading}/>
@@ -59,31 +87,37 @@ const SolicitudEdit = (props) => {
             </div>
             <Institucion
                 instituciones={props.instituciones}
-                callbackIsLoading = {callbackIsLoading}
-                parentCallback = {callbackFunction}
+                callbackIsLoading={callbackIsLoading}
+                parentCallback={callbackFunction}
                 disableSelect={true}
                 institucion={props.solicitud.institucion}
             />
             <Convenios convenios={props.solicitud.institucion.convenios}/>
-            <div style={{display : (isInstitucionComplete()? 'block' : 'none')}}>
-                <CamposClinicos campos={camposClinicos} />
+            <div style={{display: (isInstitucionComplete() ? 'block' : 'none')}}>
+                <CamposClinicos
+                    campos={camposClinicos}
+                    handleDelete={campo => {
+                        handleDeleteEvent(campo)
+                    }}
+                />
                 <CampoClinicoForm
                     unidades={props.unidades}
                     solicitud={props.solicitud}
                     convenios={props.solicitud.institucion.convenios}
-                    callbackCampoClinico = {callbackCampoClinico}
-                    callbackIsLoading = {callbackIsLoading}
+                    callbackCampoClinico={callbackCampoClinico}
+                    callbackIsLoading={callbackIsLoading}
                 />
                 <form onSubmit={handleSolicitudSubmit}>
                     <div className="row">
                         <div className="col-md-12">
                             <label htmlFor="btn_solicitud">&#160;</label>
-                            <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud</button>
+                            <button id="btn_solicitud" className={'form-control btn btn-success'}>Terminar Solicitud
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
-            <div style={{display : (isInstitucionComplete()? 'none' : 'block')}}>
+            <div style={{display: (isInstitucionComplete() ? 'none' : 'block')}}>
                 <div className={`alert alert-warning `}>
                     Es necesario capturar la información de la institución para poder modificar la solicitud
                 </div>

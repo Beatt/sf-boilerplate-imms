@@ -45,6 +45,34 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
+     * @Route("/came/api/campo_clinico/{campo_clinico_id}", methods={"DELETE"}, name="came.campo_clinico.delete", requirements={"id"="\d+"})
+     * @param Request $request
+     * @param CampoClinicoManagerInterface $campo_clinico_manager
+     * @param $campo_clinico_id
+     */
+    public function deleteAction(Request $request, CampoClinicoManagerInterface $campo_clinico_manager, $campo_clinico_id)
+    {
+        /* @var CampoClinico $campoClinico */
+        $campoClinico = $this->getDoctrine()->getRepository(CampoClinico::class)->find($campo_clinico_id);
+        if(!$campoClinico){
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
+        }
+        if(!$this->validarSolicitudDelegacion($campoClinico->getSolicitud())){
+            return $this->httpErrorResponse();
+        }
+        if(!in_array($campoClinico->getSolicitud()->getEstatus(), [Solicitud::CREADA])){
+            $this->addFlash('success', 'Se presentó un error al procesar su solicitud');
+            return $this->httpErrorResponse('Campo Clinico only can delete if solicitud.status is "CREADA"');
+        }
+        if($campoClinico->getSolicitud()->getCampoClinicos()->count()<=1){
+            $this->addFlash('success', 'Se presentó un error al procesar su solicitud');
+            return $this->httpErrorResponse('Must exist almost one campoclinico');
+        }
+        $result = $campo_clinico_manager->delete($campoClinico);
+        return $this->jsonResponse($result);
+    }
+
+    /**
      * @Route("/came/campo_clinico/create", methods={"GET"}, name="came.campo_clinico.create")
      */
     public function createAction(){

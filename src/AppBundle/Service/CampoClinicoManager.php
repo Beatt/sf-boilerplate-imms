@@ -59,9 +59,27 @@ class CampoClinicoManager implements CampoClinicoManagerInterface
                         'cicloAcademico' => ['id', 'nombre'],
                     ],
                     'lugaresSolicitados',
-                    'fechaInicial', 'fechaFinal','fechaInicialFormatted', 'fechaFinalFormatted'
+                    'fechaInicial', 'fechaFinal','fechaInicialFormatted', 'fechaFinalFormatted',
+                    'horario', 'promocion', 'asignatura'
                 ]
             ])
+        ];
+    }
+
+    public function delete(CampoClinico $campoClinico)
+    {
+        try{
+            $this->entityManager->remove($campoClinico);
+            $this->entityManager->flush();
+
+        }catch (\Exception $ex) {
+            return [
+                'status' => false,
+                'error' => $ex->getMessage()
+            ];
+        }
+        return [
+            'status' => true
         ];
     }
 }
