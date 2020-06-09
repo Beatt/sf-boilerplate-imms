@@ -8,6 +8,7 @@ use AppBundle\Form\Type\CampoClinicoType;
 use AppBundle\Service\CampoClinicoManagerInterface;
 use AppBundle\Service\GeneradorCredencialesInterface;
 use AppBundle\Service\GeneradorFormatoFofoeInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,12 +27,13 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             ->getRepository(Solicitud::class)
             ->find($solicitud_id);
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $solicitud_id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse();
+        }
+        if(!in_array($solicitud->getEstatus(), [Solicitud::CREADA])){
+            return $this->httpErrorResponse('No puedes modificar la solicitud '.$solicitud->getNoSolicitud());
         }
         $form = $this->createForm(CampoClinicoType::class);
         $form->handleRequest($request);
@@ -63,12 +65,10 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse('No puedes ver una solicitud de otra delegación');
         }
         $perPage = $request->query->get('perPage', 10);
         $page = $request->query->get('page', 1);

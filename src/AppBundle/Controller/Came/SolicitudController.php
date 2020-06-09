@@ -203,6 +203,9 @@ class SolicitudController extends DIEControllerController
         if(!$this->validarSolicitudDelegacion($solicitud)){
             return $this->httpErrorResponse();
         }
+        if(!in_array($solicitud->getEstatus(), [Solicitud::CREADA])){
+            return $this->httpErrorResponse('No puedes modificar la solicitud '.$solicitud->getNoSolicitud());
+        }
         $form = $this->createForm(SolicitudType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

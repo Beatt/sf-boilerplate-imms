@@ -7,6 +7,7 @@ use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Service\InstitucionManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,9 +24,7 @@ class InstitucionController extends \AppBundle\Controller\DIEControllerControlle
             ->getRepository(Institucion::class)
             ->find($id);
         if (!$institucion) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         $correo_anterior = $institucion->getCorreo();
         $form = $this->createForm(InstitucionType::class, $institucion);
