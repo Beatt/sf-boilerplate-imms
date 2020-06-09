@@ -28,7 +28,7 @@ const CampoClinicoForm = (props) => {
         return data;
     }
 
-    const ciclosAutorizados = [1,2];
+    const ciclosAutorizados = [1, 2];
 
     const getConveniosActivos = (convenios) => {
         let data = [];
@@ -87,13 +87,23 @@ const CampoClinicoForm = (props) => {
         let result = true;
         const fechaI = new Date(fechaInicial);
         const fechaF = new Date(fechaFinal);
+        let errores = {};
         if (fechaI > fechaF) {
-            setAlert({show: true, type: 'danger', message: 'Fechas incorrectas'});
-            setErrores({
+            errores = Object.assign(errores, {
                 fechaInicial: ['Fecha Inicial debe ser menor a Fecha Final'],
                 fechaFinal: ['Fecha Inicial debe ser mayor a Fecha Inicial']
             });
             result = false;
+        }
+        if(!unidad){
+            errores = Object.assign(errores, {
+                unidad: ['Por favor selecciona un objeto de la lista']
+            });
+            result = false;
+        }
+        if(!result){
+            setAlert({show: true, type: 'danger', message: 'Se presentaron errores al procesar su solicitud'});
+            setErrores(errores);
         }
         return result;
     }
@@ -160,9 +170,9 @@ const CampoClinicoForm = (props) => {
     }
 
     const getUnidades = () => {
-        const result = [{value:'-', name: 'Seleccionar ...'}];
+        const result = [{value: '-', name: 'Seleccionar ...'}];
         props.unidades.map(item => {
-            result.push({value: item.id.toString(), name:item.nombre});
+            result.push({value: item.id.toString(), name: item.nombre});
         })
         return result;
     }
@@ -184,122 +194,132 @@ const CampoClinicoForm = (props) => {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className={`form-group ${errores.convenio ? 'has-error has-feedback' : ''}`}>
-                            <select name="convenio" id="campo_convenio" className={'form-control'}
-                                    value={convenio ? convenio.id : ''}
-                                    required={true} onChange={e => handleConvenioEvent(e.target.value)}>
-                                <option value="">Seleccionar ...</option>
-                                {getConveniosActivos(props.convenios).map(c => {
-                                    return (
-                                        <option key={c.id}
-                                                value={c.id}>{c.cicloAcademico.nombre} - {c.carrera.nivelAcademico.nombre} - {c.carrera.nombre}</option>
-                                    )
-                                })}
-                            </select>
-                            <span className="help-block">{errores.convenio ? errores.convenio[0] : ''}</span>
-                        </div>
+            <div className="row">
+                <div className="col-md-12">
+                    <div className={`form-group ${errores.convenio ? 'has-error has-feedback' : ''}`}>
+                        <select name="convenio" id="campo_convenio" className={'form-control'}
+                                value={convenio ? convenio.id : ''}
+                                form="campo-clinico-form"
+                                required={true} onChange={e => handleConvenioEvent(e.target.value)}>
+                            <option value="">Seleccionar ...</option>
+                            {getConveniosActivos(props.convenios).map(c => {
+                                return (
+                                    <option key={c.id}
+                                            value={c.id}>{c.cicloAcademico.nombre} - {c.carrera.nivelAcademico.nombre} - {c.carrera.nombre}</option>
+                                )
+                            })}
+                        </select>
+                        <span className="help-block">{errores.convenio ? errores.convenio[0] : ''}</span>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <label htmlFor="fecha_inicial">Periodo</label>
-                    </div>
+            </div>
+            <div className="row">
+                <div className="col-md-12">
+                    <label htmlFor="fecha_inicial">Periodo</label>
                 </div>
+            </div>
 
-                <div className="row">
-                    <div className="col-md-3">
-                        <div className={`form-group ${errores.fechaInicial ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="fecha_inicial">Inicio <br/>  &#160;</label>
-                            <input id="fecha_inicial" type="date" value={fechaInicial} className={'form-control'}
-                                   onChange={e => setFechaInicial(e.target.value)} required={true}/>
-                            <span className="help-block">{errores.fechaInicial ? errores.fechaInicial[0] : ''}</span>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className={`form-group ${errores.fechaFinal ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="fecha_final">Fin <br/>&#160;</label>
-                            <input id="fecha_final" type="date" value={fechaFinal} className={'form-control'}
-                                   onChange={e => setFechaFinal(e.target.value)} required={true}/>
-                            <span className="help-block">{errores.fechaFinal ? errores.fechaFinal[0] : ''}</span>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className={`form-group ${errores.horario ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="horario">Horario del campo clínico (Opcional)</label>
-                            <input id="horario" className={'form-control'}
-                                   type="text" value={horario} onChange={e => setHorario(e.target.value)}/>
-                            <span className="help-block">{errores.horario ? errores.horario[0] : ''}</span>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className={`form-group ${errores.promocion ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="promocion">Promoción de Inicio
-                                <span style={{display: (convenio && convenio.cicloAcademico.id === 2)? 'block': 'none'}}>&#160;</span>
-                                <span style={{display: (!convenio || (convenio && convenio.cicloAcademico.id !== 2) )? 'block': 'none'}}>[solo para Internado]</span>
-                            </label>
-                            <input id="promocion" className={'form-control'}
-                                   disabled={!convenio || (convenio && convenio.cicloAcademico.id !== 2)}
-                                   required={convenio && convenio.cicloAcademico.id === 2}
-                                   type="text" value={promocion} onChange={e => setPromocion(e.target.value)}/>
-                            <span className="help-block">{errores.promocion ? errores.promocion[0] : ''}</span>
-                        </div>
+            <div className="row">
+                <div className="col-md-3">
+                    <div className={`form-group ${errores.fechaInicial ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="fecha_inicial">Inicio <br/>  &#160;</label>
+                        <input id="fecha_inicial" type="date" value={fechaInicial} className={'form-control'}
+                               form="campo-clinico-form"
+                               onChange={e => setFechaInicial(e.target.value)} required={true}/>
+                        <span className="help-block">{errores.fechaInicial ? errores.fechaInicial[0] : ''}</span>
                     </div>
                 </div>
-
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className={`form-group ${errores.unidad ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="unidad">Unidad Sede</label>
-                            <SelectSearch id={'unidad'}
-                                          search
-                                          options={getUnidades()}
-                                          value={unidad ? unidad.id.toString() : ''}
-                                          required={true}
-                                          onChange={value => setUnidad(findUnidad(value))}/>
-                            <span className="help-block">{errores.unidad ? errores.unidad[0] : ''}</span>
-                        </div>
+                <div className="col-md-3">
+                    <div className={`form-group ${errores.fechaFinal ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="fecha_final">Fin <br/>&#160;</label>
+                        <input id="fecha_final" type="date" value={fechaFinal} className={'form-control'}
+                               form="campo-clinico-form"
+                               onChange={e => setFechaFinal(e.target.value)} required={true}/>
+                        <span className="help-block">{errores.fechaFinal ? errores.fechaFinal[0] : ''}</span>
                     </div>
                 </div>
-
-                <div className="row">
-                    <div className="col-md-3">
-                        <div className={`form-group ${errores.lugaresSolicitados ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="lugaresSolicitados">No. de lugares solicitados</label>
-                            <input id={'lugaresSolicitados'}
-                                   type="number" value={lugaresSolicitados}
-                                   min={0}
-                                   className={'form-control'}
-                                   onChange={e => setLugaresSolicitados(e.target.value)} required={true}/>
+                <div className="col-md-3">
+                    <div className={`form-group ${errores.horario ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="horario">Horario del campo clínico (Opcional)</label>
+                        <input id="horario" className={'form-control'}
+                               form="campo-clinico-form"
+                               type="text" value={horario} onChange={e => setHorario(e.target.value)}/>
+                        <span className="help-block">{errores.horario ? errores.horario[0] : ''}</span>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className={`form-group ${errores.promocion ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="promocion">Promoción de Inicio
                             <span
-                                className="help-block">{errores.lugaresSolicitados ? errores.lugaresSolicitados[0] : ''}</span>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className={`form-group ${errores.lugaresAutorizados ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="lugaresAutorizados">No. de lugares autorizados</label>
-                            <input id={'lugaresAutorizados'}
-                                   type="number" value={lugaresAutorizados}
-                                   min={0}
-                                   className={'form-control'}
-                                   onChange={e => setLugaresAutorizados(e.target.value)} required={true}/>
+                                style={{display: (convenio && convenio.cicloAcademico.id === 2) ? 'block' : 'none'}}>&#160;</span>
                             <span
-                                className="help-block">{errores.lugaresAutorizados ? errores.lugaresAutorizados[0] : ''}</span>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className={`form-group ${errores.asignatura ? 'has-error has-feedback' : ''}`}>
-                            <label htmlFor="asignatura">Asignatura</label>
-                            <input type="text"
-                                   id={'asignatura'}
-                                   className={'form-control'} value={asignatura}
-                                   onChange={e => setAsignatura(e.target.value)}/>
-                            <span className="help-block">{errores.asignatura ? errores.asignatura[0] : ''}</span>
-                        </div>
+                                style={{display: (!convenio || (convenio && convenio.cicloAcademico.id !== 2)) ? 'block' : 'none'}}>[solo para Internado]</span>
+                        </label>
+                        <input id="promocion" className={'form-control'}
+                               form="campo-clinico-form"
+                               disabled={!convenio || (convenio && convenio.cicloAcademico.id !== 2)}
+                               required={convenio && convenio.cicloAcademico.id === 2}
+                               type="text" value={promocion} onChange={e => setPromocion(e.target.value)}/>
+                        <span className="help-block">{errores.promocion ? errores.promocion[0] : ''}</span>
                     </div>
                 </div>
+            </div>
+
+            <div className="row">
+                <div className="col-md-12">
+                    <div className={`form-group ${errores.unidad ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="unidad">Unidad Sede</label>
+                        <SelectSearch id={'unidad'}
+                                      search
+                                      options={getUnidades()}
+                                      value={unidad ? unidad.id.toString() : ''}
+                                      required={true}
+                                      onChange={value => setUnidad(findUnidad(value))}/>
+                        <span className="help-block">{errores.unidad ? errores.unidad[0] : ''}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-md-3">
+                    <div className={`form-group ${errores.lugaresSolicitados ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="lugaresSolicitados">No. de lugares solicitados</label>
+                        <input id={'lugaresSolicitados'}
+                               type="number" value={lugaresSolicitados}
+                               min={0}
+                               form="campo-clinico-form"
+                               className={'form-control'}
+                               onChange={e => setLugaresSolicitados(e.target.value)} required={true}/>
+                        <span
+                            className="help-block">{errores.lugaresSolicitados ? errores.lugaresSolicitados[0] : ''}</span>
+                    </div>
+                </div>
+                <div className="col-md-3">
+                    <div className={`form-group ${errores.lugaresAutorizados ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="lugaresAutorizados">No. de lugares autorizados</label>
+                        <input id={'lugaresAutorizados'}
+                               type="number" value={lugaresAutorizados}
+                               min={0}
+                               form="campo-clinico-form"
+                               className={'form-control'}
+                               onChange={e => setLugaresAutorizados(e.target.value)} required={true}/>
+                        <span
+                            className="help-block">{errores.lugaresAutorizados ? errores.lugaresAutorizados[0] : ''}</span>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className={`form-group ${errores.asignatura ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="asignatura">Asignatura</label>
+                        <input type="text"
+                               form="campo-clinico-form"
+                               id={'asignatura'}
+                               className={'form-control'} value={asignatura}
+                               onChange={e => setAsignatura(e.target.value)}/>
+                        <span className="help-block">{errores.asignatura ? errores.asignatura[0] : ''}</span>
+                    </div>
+                </div>
+            </div>
+            <form id="campo-clinico-form" onSubmit={handleSubmit}>
                 <div className="row">
                     <div className="col-md-6">
                         <label htmlFor="btn_campo_clinico">&#160;</label>

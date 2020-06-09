@@ -126,31 +126,32 @@ const Institucion = (props) => {
 
     return (
         <>
-            <form onSubmit={handleUpdateInstitucion}>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className={`form-group ${errores.institucion ? 'has-error has-feedback' : ''}`}>
-                            <div className={`alert alert-${alert.type} `}
-                                 style={{display: (alert.show ? 'block' : 'none')}}>
-                                <a className="close" onClick={e => setAlert({})}>&times;</a>
-                                {alert.message}
-                            </div>
-                            <label htmlFor="institucion_name">Nombre de la institución:</label>
-                            <SelectSearch
-                                id={'institucion_name'}
-                                options={getInstituciones()}
-                                search
-                                onChange={value => handleSelectedInstitution(value)}
-                                value={selectedInstitution.id ? selectedInstitution.id.toString() : ''}
-                                placeholder="Seleccionar ..."
-                                required={true}
-                                disabled={props.disableSelect || disableSelect}
-                            />
-                            <span className="help-block">{errores.institucion ? errores.institucion[0] : ''}</span>
-                            {/*<p><strong>Seleccionada: </strong> {selectedInstitution.nombre}</p>*/}
+            <div className="row">
+                <div className="col-md-12">
+                    <div className={`form-group ${errores.institucion ? 'has-error has-feedback' : ''}`}>
+                        <div className={`alert alert-${alert.type} `}
+                             style={{display: (alert.show ? 'block' : 'none')}}>
+                            <a className="close" onClick={e => setAlert({})}>&times;</a>
+                            {alert.message}
                         </div>
+                        <label htmlFor="institucion_name">Nombre de la institución:</label>
+                        <SelectSearch
+                            id={'institucion_name'}
+                            options={getInstituciones()}
+                            search
+                            onChange={value => handleSelectedInstitution(value)}
+                            value={selectedInstitution.id ? selectedInstitution.id.toString() : ''}
+                            placeholder="Seleccionar ..."
+                            required={true}
+                            disabled={props.disableSelect || disableSelect}
+                        />
+                        <span className="help-block">{errores.institucion ? errores.institucion[0] : ''}</span>
+                        {/*<p><strong>Seleccionada: </strong> {selectedInstitution.nombre}</p>*/}
                     </div>
                 </div>
+            </div>
+            <form onSubmit={handleUpdateInstitucion}>
+
 
                 <div style={{display: (selectedInstitution.id ? 'block' : 'none')}}>
                     <div className="row">
