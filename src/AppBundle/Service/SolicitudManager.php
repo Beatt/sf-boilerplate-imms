@@ -169,7 +169,7 @@ class SolicitudManager implements SolicitudManagerInterface
     public function sendEmailMontosInvalidos(Solicitud $solicitud, Usuario $came_usuario)
     {
         $message = (new \Swift_Message('Los montos de la solicitud ' . $solicitud->getNoSolicitud() . ' son invalidos'))
-            ->setFrom('send@example.com') //cambiar el destinatario XD
+            ->setFrom($this->sender)
             ->setTo($solicitud->getInstitucion()->getCorreo() ? $solicitud->getInstitucion()->getCorreo() : 'recipient@example.com' )
             ->setBody(
                 $this->templating->render('emails/came/montos_invalidos.html.twig',['solicitud' => $solicitud, 'came' => $came_usuario]),
