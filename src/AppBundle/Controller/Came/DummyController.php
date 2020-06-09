@@ -3,10 +3,13 @@
 
 namespace AppBundle\Controller\Came;
 
+use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Vich\UploaderBundle\Handler\DownloadHandler;
@@ -118,5 +121,16 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
         ]);
     }
 
-
+    /**
+     * @Route("/came/dummy/test", methods={"GET"})
+     */
+    public function testAction(){
+        /* @var $cc CampoClinico */
+        $cc = $this->getDoctrine()->getRepository(CampoClinico::class)->find(2);
+        return new JsonResponse([
+            'colegiatura' => $cc->getMontoColegiatura(),
+            'inscripcion' => $cc->getMontoInscripcion(),
+            'subtotal' => $cc->getSubTotal()
+        ]);
+    }
 }
