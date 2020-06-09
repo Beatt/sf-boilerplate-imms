@@ -88,7 +88,7 @@ const CampoClinicoForm = (props) => {
         const fechaI = new Date(fechaInicial);
         const fechaF = new Date(fechaFinal);
         if (fechaI > fechaF) {
-            setAlert({show: true, type: 'alert', message: 'Fechas incorrectas'});
+            setAlert({show: true, type: 'danger', message: 'Fechas incorrectas'});
             setErrores({
                 fechaInicial: ['Fecha Inicial debe ser menor a Fecha Final'],
                 fechaFinal: ['Fecha Inicial debe ser mayor a Fecha Inicial']
@@ -169,16 +169,18 @@ const CampoClinicoForm = (props) => {
 
     return (
         <>
-            <div className="row">
-                <div className="col-md-12">
-                    <h3>Ingrese la información correspondiente a la carrera solicitada para campo clínico</h3>
-                </div>
-            </div>
+
 
             <div className="col-md-12">
                 <div className={`alert alert-${alert.type} `} style={{display: (alert.show ? 'block' : 'none')}}>
                     <a className="close" onClick={e => setAlert({})}>&times;</a>
                     {alert.message}
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-md-12">
+                    <h3>Ingrese la información correspondiente a la carrera solicitada para campo clínico</h3>
                 </div>
             </div>
 
