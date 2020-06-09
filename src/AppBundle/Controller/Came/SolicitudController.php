@@ -308,6 +308,7 @@ class SolicitudController extends DIEControllerController
             return $this->httpErrorResponse('Solicitud can be finished only if has status "CREADA"');
         }
         $solicitudManager->finalizar($solicitud);
+        $this->addFlash('success', "Se ha procesado la solicitud {$solicitud->getNoSolicitud()} con éxito");
         return $this->jsonResponse(['status' => true]);
     }
 
@@ -340,6 +341,9 @@ class SolicitudController extends DIEControllerController
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $solicitudManager->validarMontos($form->getData(),
                 $form->get('montos_pagos')->getData(), isset($request->request->get('solicitud')['validado']));
+            if($result['status']){
+                $this->addFlash('success', "Se ha procesado la validación de montos de la solicitud {$solicitud->getNoSolicitud()} con éxito");
+            }
             return $this->jsonResponse($result);
         }
         return $this->jsonErrorResponse($form);
