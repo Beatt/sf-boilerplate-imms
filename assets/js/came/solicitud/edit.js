@@ -69,6 +69,7 @@ const SolicitudEdit = (props) => {
                 <CamposClinicos campos={camposClinicos} />
                 <CampoClinicoForm
                     unidades={props.unidades}
+                    solicitud={props.solicitud}
                     convenios={props.solicitud.institucion.convenios}
                     callbackCampoClinico = {callbackCampoClinico}
                     callbackIsLoading = {callbackIsLoading}

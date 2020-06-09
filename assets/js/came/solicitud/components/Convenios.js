@@ -26,8 +26,8 @@ const Convenios = (props) => {
                         <thead>
                         <tr>
                             <th>Número</th>
-                            <th>Grado</th>
                             <th>Ciclo</th>
+                            <th>Grado</th>
                             <th>Carrera</th>
                             <th>Vigencia</th>
                         </tr>
@@ -37,8 +37,8 @@ const Convenios = (props) => {
                             return (
                                 <tr key={convenio.id} className={`label-${convenio.label}`}>
                                     <td>{convenio.numero}</td>
-                                    <td>{convenio.carrera.nivelAcademico.nombre}</td>
                                     <td>{convenio.cicloAcademico.nombre}</td>
+                                    <td>{convenio.carrera.nivelAcademico.nombre}</td>
                                     <td>{convenio.carrera.nombre}</td>
                                     <td>{convenio.vigenciaFormatted}</td>
                                 </tr>

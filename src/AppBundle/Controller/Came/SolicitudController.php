@@ -5,7 +5,6 @@ namespace AppBundle\Controller\Came;
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
-use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Unidad;
 use AppBundle\Form\Type\SolicitudType;
@@ -15,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
 
 class SolicitudController extends DIEControllerController
 {
@@ -133,7 +133,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/came/solicitud/{id}/edit", methods={"GET"}, name="solicitud.edit")
+     * @Route("/came/solicitud/{id}/edit", methods={"GET"}, name="solicitud.edit", requirements={"id"="\d+"})
      * @param Request $request
      * @Security("has_role('ROLE_EDITAR_SOLICITUD')")
      */
@@ -148,12 +148,16 @@ class SolicitudController extends DIEControllerController
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            $this->addFlash('danger', 'No existe la solicitud indicada');
+            return $this->redirectToRoute('came.solicitud.index');
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            $this->addFlash('danger', 'No puedes modificar una solicitud de otra delegación');
+            return $this->redirectToRoute('came.solicitud.index');
+        }
+        if(!in_array($solicitud->getEstatus(), [Solicitud::CREADA])){
+            $this->addFlash('danger', 'No puedes modificar la solicitud '.$solicitud->getNoSolicitud());
+            return $this->redirectToRoute('came.solicitud.index');
         }
         $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
@@ -183,7 +187,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/came/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update")
+     * @Route("/came/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update", requirements={"id"="\d+"})
      * @Security("has_role('ROLE_EDITAR_SOLICITUD')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
@@ -194,12 +198,10 @@ class SolicitudController extends DIEControllerController
             ->getRepository(Solicitud::class)
             ->find($id);
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse();
         }
         $form = $this->createForm(SolicitudType::class);
         $form->handleRequest($request);
@@ -211,7 +213,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/came/solicitud/{id}", methods={"GET"}, name="solicitud.show")
+     * @Route("/came/solicitud/{id}", methods={"GET"}, name="solicitud.show", requirements={"id"="\d+"})
      * @Security("has_role('ROLE_DETALLE_SOLICITUD')")
      */
     public function showAction($id)
@@ -221,13 +223,13 @@ class SolicitudController extends DIEControllerController
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            $this->addFlash('danger', 'No existe la solicitud indicada');
+            return $this->redirectToRoute('came.solicitud.index');
         }
 
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
+            return $this->redirectToRoute('came.solicitud.index');
         }
 
         $convenios = $this->getDoctrine()
@@ -260,7 +262,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/came/api/solicitud/{id}", methods={"DELETE"}, name="solicitud.delete")
+     * @Route("/came/api/solicitud/{id}", methods={"DELETE"}, name="solicitud.delete", requirements={"id"="\d+"})
      */
     public function deleteAction($id)
     {
@@ -269,12 +271,10 @@ class SolicitudController extends DIEControllerController
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse();
         }
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($solicitud);
@@ -283,7 +283,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/came/api/solicitud/terminar/{id}", methods={"POST"}, name="solicitud.terminar")
+     * @Route("/came/api/solicitud/terminar/{id}", methods={"POST"}, name="solicitud.terminar", requirements={"id"="\d+"})
      * @Security("has_role('ROLE_TERMINAR_SOLICITUDES')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
@@ -296,19 +296,20 @@ class SolicitudController extends DIEControllerController
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse();
+        }
+        if(!in_array($solicitud->getEstatus(), [Solicitud::CREADA])){
+            return $this->httpErrorResponse('Solicitud can be finished only if has status "CREADA"');
         }
         $solicitudManager->finalizar($solicitud);
         return $this->jsonResponse(['status' => true]);
     }
 
     /**
-     * @Route("/came/api/solicitud/validar_montos/{id}", methods={"POST"}, name="solicitud.store_validar_montos")
+     * @Route("/came/api/solicitud/validar_montos/{id}", methods={"POST"}, name="solicitud.store_validar_montos", requirements={"id"="\d+"})
      * @Security("has_role('ROLE_VALIDACION_MONTOS')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
@@ -321,12 +322,13 @@ class SolicitudController extends DIEControllerController
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse();
+        }
+        if(!in_array($solicitud->getEstatus(), [Solicitud::EN_VALIDACION_DE_MONTOS_CAME])){
+            return $this->httpErrorResponse('Solicitud can be finished only if has status "EN_VALIDACION_DE_MONTOS_CAME"');
         }
         $form = $this->createForm(ValidaSolicitudType::class, $solicitud);
         $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
@@ -341,7 +343,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/came/solicitud/{id}/validar_montos", methods={"GET"}, name="solicitud.validar_montos")
+     * @Route("/came/solicitud/{id}/validar_montos", methods={"GET"}, name="solicitud.validar_montos", requirements={"id"="\d+"})
      * @Security("has_role('ROLE_VALIDACION_MONTOS')")
      * @param Request $request
      * @param $id
@@ -353,13 +355,18 @@ class SolicitudController extends DIEControllerController
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            $this->addFlash('danger', 'No existe la solicitud indicada');
+            return $this->redirectToRoute('came.solicitud.index');
         }
 
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            $this->addFlash('danger', 'No puedes modificar una solicitud de otra delegación');
+            return $this->redirectToRoute('came.solicitud.index');
+        }
+
+        if(!in_array($solicitud->getEstatus(), [Solicitud::EN_VALIDACION_DE_MONTOS_CAME])){
+            $this->addFlash('danger', 'No es posible validar montos de la solicitud indicada');
+            return $this->redirectToRoute('came.solicitud.index');
         }
 
         $form = $this->createForm(ValidaSolicitudType::class);
@@ -381,7 +388,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/came/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="came.solicitud.oficio_montos")
+     * @Route("/came/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="came.solicitud.oficio_montos", requirements={"id"="\d+"})
      * @Security("has_role('ROLE_DESCARGAR_OFICIO_MONTOS')")
      * @param $solicitud_id
      * @return mixed

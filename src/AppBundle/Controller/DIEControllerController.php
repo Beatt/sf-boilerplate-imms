@@ -90,6 +90,14 @@ abstract class DIEControllerController extends Controller
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
+    protected function httpErrorResponse($message = '', $http_code = Response::HTTP_FORBIDDEN)
+    {
+        return new JsonResponse([
+            'message' => $message,
+            'status' => false,
+        ], $http_code);
+    }
+
     protected function getUserDelegacionId()
     {
         $query_delegacion = $this->container->get('session')->get('user_delegacion');
@@ -115,10 +123,13 @@ abstract class DIEControllerController extends Controller
         $result = true;
         $delegacion = $solicitud->getDelegacion();
         if($delegacion){
-            $user = $this->getUser();
-            $result = $user->getDelegaciones()->exists(function($key, $value)  use ($delegacion){
-                return $value->getId() === $delegacion->getId();
-            });
+            $delegacion_came = $this->container->get('session')->get('user_delegacion');
+            if($delegacion_came){
+                $result = $delegacion_came == $delegacion->getId();
+            }else{
+                $user = $this->getUser();
+                $result = $user->getDelegaciones()->first()->getId() === $delegacion->getId();
+            }
         }
         return $result;
     }
