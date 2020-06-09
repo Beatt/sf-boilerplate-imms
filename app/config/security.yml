@@ -6,8 +6,9 @@ security:
             algorithm: bcrypt
 
     providers:
-        die_user_provider:
-            id: AppBundle\Security\DIEUserProvider
+        users:
+            entity:
+                class: AppBundle\Entity\Usuario
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -20,16 +21,19 @@ security:
             form_login:
                 login_path: login
                 check_path: login
-            provider: die_user_provider
             logout:
                 path:   /logout
                 target: /
 
     access_control:
-        - { path: '^/admin', roles: ROLE_SUPER_ADMIN}
-        - { path: '^/solicitud', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/api/solicitud', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/api/came', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/campos_clinicos', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/factura', roles: [IS_AUTHENTICATED_FULLY] }
-        - { path: '^/pago', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/admin', roles: ROLE_SUPER }
+        - { path: '^/ie', roles: [ROLE_SUPER, ROLE_IE] }
+        - { path: '^/came', roles: [ROLE_SUPER, ROLE_CAME] }
+        - { path: '^/fofoe', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO, ROLE_FOFEO_VALIDAR_PAGO, ROLE_FOFEO_VALIDAR_PAGO_MULTIPLE, ROLE_FOFEO_REGISTRAR_FACTURA, ROLE_FOFEO_DETALLE_INSTITUCION_EDUCATIVA] }
+        - { path: '^/fofoe/inicio', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO] }
+        - { path: '^/fofoe/validar-pago', roles: [ROLE_SUPER, ROLE_FOFEO_VALIDAR_PAGO] }
+        - { path: '^/fofoe/validar-pago-multiple', roles: [ROLE_SUPER, ROLE_FOFEO_VALIDAR_PAGO_MULTIPLE] }
+        - { path: '^/fofoe/registrar-factura', roles: [ROLE_SUPER, ROLE_FOFEO_REGISTRAR_FACTURA] }
+        - { path: '^/fofoe/detalle-institucion-educativa', roles: [ROLE_SUPER, ROLE_FOFEO_DETALLE_INSTITUCION_EDUCATIVA] }
+        - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/', roles: IS_AUTHENTICATED_FULLY }

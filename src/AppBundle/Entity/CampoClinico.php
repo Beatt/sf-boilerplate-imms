@@ -34,12 +34,12 @@ class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterf
     private $fechaFinal;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $horario;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $promocion;
 

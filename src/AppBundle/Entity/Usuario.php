@@ -134,23 +134,22 @@ class Usuario implements UserInterface
     private $categoria;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Rol", inversedBy="usuarios")
-     * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permiso", inversedBy="usuarios")
+     * @ORM\JoinColumn(name="permiso_id", referencedColumnName="id")
      */
-    private $rols;
+    private $permisos;
 
     /** @var string */
     private $plainPassword;
 
     /**
      * @var Institucion
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Institucion", mappedBy="usuario")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Institucion", mappedBy="usuario")
      */
     private $institucion;
 
     public function __construct()
     {
-        $this->rols = new ArrayCollection();
         $this->delegaciones = new ArrayCollection();
         $this->fechaIngreso = new \DateTime();
     }
@@ -216,18 +215,14 @@ class Usuario implements UserInterface
      */
     public function getRoles()
     {
-        $securityRoles = [];
+        $roles = [];
 
-        /** @var Rol $role */
-        foreach($this->rols as $role) {
-
-            /** @var Permiso $permiso */
-            foreach($role->getPermisos() as $permiso) {
-                $securityRoles[] = $permiso->getRolSeguridad();
-            }
+        /** @var Permiso $permiso */
+        foreach($this->getPermisos() as $permiso) {
+            $roles[] = sprintf('ROLE_%s', $permiso->getClave());
         }
 
-        return $securityRoles;
+        return $roles;
     }
 
     /**
@@ -260,35 +255,6 @@ class Usuario implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
-    }
-
-    /**
-     * @param Rol $role
-     * @return Usuario
-     */
-    public function addRol(Rol $role)
-    {
-        if(!$this->rols->contains($role)) {
-            $this->rols[] = $role;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Rol $role
-     */
-    public function removeRol(Rol $role)
-    {
-        $this->rols->removeElement($role);
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getRols()
-    {
-        return $this->rols;
     }
 
     /**
@@ -537,33 +503,6 @@ class Usuario implements UserInterface
     }
 
     /**
-     * @return string
-     */
-    public function getAssignRoles()
-    {
-        $roles = [];
-
-        /** @var Rol $rol */
-        foreach($this->rols as $rol) {
-            array_push($roles, $rol->getNombre());
-        }
-
-        return implode($roles);
-    }
-
-   /* public function getAssignDepartments()
-    {
-        $departments = [];
-
-        foreach($this->departamentos as $departamento) {
-            array_push($departments, $departamento->getNombre());
-        }
-
-        return implode($departments);
-    }*/
-
-
-    /**
      * @param Delegacion $delegacione
      * @return Usuario
      */
@@ -604,4 +543,41 @@ class Usuario implements UserInterface
         return $this->institucion;
     }
 
+    /**
+     * @param Permiso $permiso
+     * @return Usuario
+     */
+    public function addPermiso(Permiso $permiso)
+    {
+        $this->permisos[] = $permiso;
+
+        return $this;
+    }
+
+    /**
+     * @param Permiso $permiso
+     */
+    public function removePermiso(Permiso $permiso)
+    {
+        $this->permisos->removeElement($permiso);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPermisos()
+    {
+        return $this->permisos;
+    }
+
+    /**
+     * @param Institucion $institucion
+     * @return Usuario
+     */
+    public function setInstitucion(Institucion $institucion = null)
+    {
+        $this->institucion = $institucion;
+
+        return $this;
+    }
 }
