@@ -16,6 +16,11 @@
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
                         <form  action="{{ path('login') }}" method="post">
+                            {% if error is not null %}
+                                <div class="alert alert-danger">
+                                    <p>{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                                </div>
+                            {% endif %}
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Correo electrónico o matrícula</label>
                                 <input type="text" required class="form-control" name="_username">
