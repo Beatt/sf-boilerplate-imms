@@ -21,10 +21,10 @@ const ListaCampos = ({
         function handleStatusAction(solicitud) {
             { console.log(solicitud) }
             if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
-        
+
             let redirectRoute = ''
             if(
-                solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES 
+                solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES
             ) {
                 redirectRoute = `/instituciones/${institucion}/solicitudes/${solicitud.id}/campos-clinicos`
                 { console.log("opcion 1") }
@@ -46,7 +46,7 @@ const ListaCampos = ({
             isPago = true;
             if(pago[0].factura)
                 isFactura = true;
-        }            
+        }
         else
             isPago = false;
 
@@ -84,7 +84,7 @@ const ListaCampos = ({
             })
         }
 
-    
+
         {console.log(campos)}
 
     return(
@@ -221,4 +221,4 @@ ReactDOM.render(
     autorizado={window.AUTORIZADO_PROP}
     campos={window.CAMPOS_PROP}
     pago={window.PAGO_PROP} />
-,document.getElementById('solicitud-index-component'));
+,document.getElementById('detalle-solicitud'));

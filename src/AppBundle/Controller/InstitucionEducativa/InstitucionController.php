@@ -9,8 +9,6 @@ use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -65,7 +63,7 @@ class InstitucionController extends DIEControllerController
             $institucion->getId()
         );
 
-        return $this->render('institucion_educativa/institucion/update.html.twig', [
+        return $this->render('institucion_educativa/institucion/perfil.html.twig', [
             'convenios' => $institucionPerfilNormalizer->normalizeCamposClinicos($camposClinicos),
             'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
             'errores' => $this->getFormErrors($form)

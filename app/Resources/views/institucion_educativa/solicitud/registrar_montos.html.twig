@@ -20,7 +20,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="registrar-component"></div>
+                        <div id="registrar-montos-component"></div>
                     </div>
                 </div>
             </div>
@@ -40,6 +40,6 @@
       window.INSTITUCION_ID_PROP = {{ institucion.id|json_encode|raw }}
       window.ROUTE_PROP = {{ route|json_encode|raw }}
     </script>
-    <script src="{{ asset('build/registrar-montos.js') }}"></script>
+    <script src="{{ asset('build/ie.registrar.montos.js') }}"></script>
 
 {% endblock %}

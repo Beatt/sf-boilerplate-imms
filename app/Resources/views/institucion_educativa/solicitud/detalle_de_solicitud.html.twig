@@ -21,7 +21,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="solicitud-index-component"></div>
+                        <div id="detalle-solicitud-component"></div>
                     </div>
                 </div>
             </div>
@@ -39,5 +39,5 @@
       window.CAMPOS_PROP = {{ camposClinicos|json_encode|raw }}
       window.PAGO_PROP = {{ pago|json_encode|raw }}
     </script>
-    <script src="{{ asset('build/detalle-campos.js') }}"></script>
+    <script src="{{ asset('build/ie.detalle.solicitud.js') }}"></script>
 {% endblock %}

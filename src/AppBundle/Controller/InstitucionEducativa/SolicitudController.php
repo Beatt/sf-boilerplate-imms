@@ -33,8 +33,7 @@ class SolicitudController extends DIEControllerController
     public function inicioAction(
         Request $request,
         SolicitudRepositoryInterface $solicitudRepository
-    )
-    {
+    ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
 
@@ -225,7 +224,7 @@ class SolicitudController extends DIEControllerController
             ->find($id);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
-            'action' => $this->generateUrl('solicitudes#seleccionar_forma_de_pago', [
+            'action' => $this->generateUrl('ie#seleccionar_forma_de_pago', [
                 'id' => $id,
             ]),
             'method' => 'POST'

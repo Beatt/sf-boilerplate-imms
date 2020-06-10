@@ -8,6 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tipoPagoSelected={window.TIPO_PAGO_SELECTED}
       descargarReferenciasBancariasPath={window.DESCARGAR_REFERENCIAS_BANCARIAS_PATH}
     />,
-    document.getElementById('referencia_pago-component')
+    document.getElementById('detalle-forma-pago-component')
   )
 })

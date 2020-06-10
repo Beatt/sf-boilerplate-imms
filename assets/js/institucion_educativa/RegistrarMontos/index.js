@@ -136,5 +136,5 @@ ReactDOM.render(
     solicitudId={window.SOLICITUD_ID_PROP}
     institucionId={window.INSTITUCION_ID_PROP}
   />,
-  document.getElementById('registrar-component')
+  document.getElementById('registrar-montos-component')
 );

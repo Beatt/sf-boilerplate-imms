@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       errores={window.ERRORS}
       action={window.ACTION}
     />,
-    document.getElementById('validar-info-component')
+    document.getElementById('perfil-component')
   )
 
   ReactDOM.render(
