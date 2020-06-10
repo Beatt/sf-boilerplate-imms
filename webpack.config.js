@@ -17,6 +17,7 @@ Encore
   .addEntry('pregrado_reporte', './assets/js/pregrado/reporte/index.js')
   .addEntry('seleccionar_forma_pago', './assets/js/institucion_educativa/SeleccionarFormaPago/index.js')
   .addEntry('detalle_forma_pago', './assets/js/institucion_educativa/DetalleFormaPago/index.js')
+  .addEntry('fofoe_pago', './assets/js/fofoe/pago/index.js')
   .addStyleEntry('layout-formato-fofoe', './assets/css/formatos/fofoe/layout.scss')
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()

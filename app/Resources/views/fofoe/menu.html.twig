@@ -1,0 +1,82 @@
+<style>
+    .menu {
+        padding: 20px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .menu__image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .menu__content {
+        margin-left: 20px;
+        height: 60px;
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+    }
+
+    .submenu {
+        background-color: whitesmoke;
+        text-align: right;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .submenu > * {
+        margin-right: 15px;
+    }
+
+    .delegacion {
+        position: absolute;
+        right: 16px;
+        text-align: center;
+    }
+
+    .delegacion h3 {
+        font-weight: bold;
+    }
+
+    @media only screen and (max-width: 600px){
+        .delegacion {
+            position: inherit;
+        }
+    }
+</style>
+
+<div class='container-fluid'>
+    <div class='row'>
+        <div class="submenu">
+            <a href="/logout">Cerrar sesión</a>
+        </div>
+        <div class="col-md-12 page-cut">
+            <div class="menu">
+                <img class='img-responsive menu__image'
+                     src='https://image.shutterstock.com/image-vector/blank-avatar-photo-place-holder-260nw-1095249842.jpg'
+                     alt=""
+                />
+                <div class="menu__content">
+                    <p class="text-bold">{{ usuario.fullname }}</p>
+                    <p>Matricula: {{ usuario.matricula }}</p>
+                </div>
+                <div class="delegacion">
+                    <h3>Fondo del Fomento de Educación</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% for label, messages in app.flashes(['success', 'danger']) %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} text-center alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>

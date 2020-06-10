@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="{{ asset('build/fofoe_pago.css') }}">
+<style>
+    .wrapper-fofoe{
+        margin-top: 80px;
+        margin-bottom: 80px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+{{ render(controller('AppBundle:Fofoe\\Fofoe:menu')) }}
+<div class='container-fluid  wrapper-fofoe'>
+    <div class="container">
+        <div class='row'>
+            <div class='col-md-12'>
+                <h1 style="text-align: center; padding-bottom: 40px">Comprobantes de Pago Recibidos</h1>
+            </div>
+        </div>
+        <div id="fofoe-wrapper-index"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    window.PAGOS = {{ pagos | json_encode | raw }};
+    window.META = {{ meta | json_encode | raw}};
+</script>
+<script src="{{ asset('build/fofoe_pago.js') }}"></script>
+
+{% endblock %}
