@@ -111,7 +111,7 @@ const SolicitudIndex = (props) => {
     }
 
     const showPaginator = () => {
-        return meta.total < (meta.page * meta.perPage) ? 'none' : 'block';
+        return meta.total < meta.perPage ? 'none' : 'block';
     }
 
     return (
@@ -176,20 +176,26 @@ const SolicitudIndex = (props) => {
                             </tbody>
                         </table>
                     </div>
-                    <div style={{textAlign: "center", display: showPaginator()}}>
-                        <ReactPaginate
-                            previousLabel={'Anterior'}
-                            nextLabel={'Siguiente'}
-                            breakLabel={'...'}
-                            breakClassName={'break-me'}
-                            pageCount={meta.total / meta.perPage}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={meta.perPage}
-                            onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
-                            containerClassName={'pagination'}
-                            subContainerClassName={'pages pagination'}
-                            activeClassName={'active'}
-                        />
+                    <div>
+                        <div className={'col-md-6'}>
+                            <br/>
+                            <p>Mostrando {(meta.page * meta.perPage) - meta.perPage + 1} {((meta.perPage * meta.page) < meta.total) ?`al ${meta.perPage * meta.page}`: `al ${meta.total}`} de {meta.total}</p>
+                        </div>
+                        <div style={{display: showPaginator(), textAlign: 'right'}} className={'col-md-6'}>
+                            <ReactPaginate
+                                previousLabel={'Anterior'}
+                                nextLabel={'Siguiente'}
+                                breakLabel={'...'}
+                                breakClassName={'break-me'}
+                                pageCount={meta.total / meta.perPage}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={parseInt(meta.perPage)}
+                                onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
+                                containerClassName={'pagination'}
+                                subContainerClassName={'pages pagination'}
+                                activeClassName={'active'}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
