@@ -10,7 +10,6 @@ use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ExpedienteRepositoryInterface;
-use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
@@ -20,31 +19,30 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/ie")
+ */
 class SolicitudController extends DIEControllerController
 {
     /**
-     * @Route("/instituciones/{id}/solicitudes", methods={"GET"}, name="solicitudes#index")
-     * @param $id
+     * @Route("/inicio", name="ie#inicio", methods={"GET"})
      * @param Request $request
-     * @param InstitucionRepositoryInterface $institucionRepository
      * @param SolicitudRepositoryInterface $solicitudRepository
      * @return Response
      */
-    public function indexAction(
-        $id,
+    public function inicioAction(
         Request $request,
-        InstitucionRepositoryInterface $institucionRepository,
         SolicitudRepositoryInterface $solicitudRepository
     )
     {
         /** @var Institucion $institucion */
-        $institucion = $institucionRepository->find($id);
+        $institucion = $this->getUser()->getInstitucion();
 
         list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
         list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
 
         $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
-            $id,
+            $institucion->getId(),
             $tipoPago,
             $offset,
             $search
@@ -65,21 +63,17 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}", name="solicitudes#show", methods={"GET"})
+     * @Route("/solicitudes/{id}/detalle-solicitud", name="ie#detalle_solicitud", methods={"GET"})
      * @param integer $id
-     * @param $solicitudId
      * @param Request $request
-     * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @param ExpedienteRepositoryInterface $expedienteRepository
      * @param PagoRepositoryInterface $pagoRepository
      * @return Response
      */
-    public function showAction(
+    public function detalleSolicitudAction(
         $id,
-        $solicitudId,
         Request $request,
-        InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         ExpedienteRepositoryInterface $expedienteRepository,
         PagoRepositoryInterface $pagoRepository
@@ -92,17 +86,18 @@ class SolicitudController extends DIEControllerController
         $search = $request->query->get('search', null);
 
         $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
-            $solicitudId,
+            $id,
             $search,
             false
         );
 
-        //$expediente = $expedienteRepository->getAllExpedientesByRequest($solicitudId);
-        $institucion = $institucionRepository->find($id);
-        $pagos = $pagoRepository->getAllPagosByRequest($solicitudId);
+        //$expediente = $expedienteRepository->getAllExpedientesByRequest($id);
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        $pagos = $pagoRepository->getAllPagosByRequest($id);
 
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($solicitudId);
+            ->find($id);
 
         $totalCampos = count($camposClinicos);
 
@@ -138,38 +133,34 @@ class SolicitudController extends DIEControllerController
 
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/registrar", name="solicitudes#record", methods={"POST", "GET"})
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/editar", name="solicitudes#recordEdit", methods={"POST", "GET"})
+     * @Route("/solicitudes/{id}/registrar-montos", name="ie#registrar-montos", methods={"POST", "GET"})
+     * @Route("/solicitudes/{id}/corregir-montos", name="ie#corregir-montos", methods={"POST", "GET"})
      * @param integer $id
-     * @param $solicitudId
      * @param Request $request
-     * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function recordAction(
+    public function registrarMontosAction(
         $id,
-        $solicitudId,
         Request $request,
-        InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         EntityManagerInterface $entityManager
     )
     {
         $routeName = $request->attributes->get('_route');
-        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($solicitudId);
-        $institucion = $institucionRepository->find($id);
-        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($solicitudId);
+        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($solicitudId);
+            ->find($id);
 
         $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
-            'action' => $this->generateUrl("solicitudes#record", [
+            'action' => $this->generateUrl("ie#registrar-montos", [
                 'id' => $id,
-                'solicitudId' => $solicitudId,
             ]),
             'method' => 'POST'
         ]);
@@ -184,11 +175,10 @@ class SolicitudController extends DIEControllerController
 
             $this->addFlash('success', 'Se ha guardado correctamente los montos');
 
-            return $this->redirectToRoute('solicitudes#index', [
+            return $this->redirectToRoute('ie#inicio', [
                 'id' => $id
             ]);
         }
-
 
         return $this->render('institucion_educativa/solicitud/recordAmount.html.twig', [
             'institucion' => $institucion,
@@ -212,37 +202,31 @@ class SolicitudController extends DIEControllerController
         ]);
     }
 
-
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/seleccionar-forma-de-pago", name="solicitudes#seleccionar_forma_de_pago")
+     * @Route("/solicitudes/{id}/seleccionar-forma-de-pago", name="ie#seleccionar_forma_de_pago)
      * @param int $id
-     * @param int $solicitudId
      * @param Request $request
-     * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
     public function seleccionarFormaDePagoAction(
         $id,
-        $solicitudId,
         Request $request,
-        InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         EntityManagerInterface $entityManager
     )
     {
-
-        $institucion = $institucionRepository->find($id);
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($solicitudId);
+            ->find($id);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
             'action' => $this->generateUrl('solicitudes#seleccionar_forma_de_pago', [
                 'id' => $id,
-                'solicitudId' => $solicitudId,
             ]),
             'method' => 'POST'
         ]);
@@ -257,9 +241,7 @@ class SolicitudController extends DIEControllerController
 
             $this->addFlash('success', 'Se ha guardado correctamente los montos');
 
-            return $this->redirectToRoute('solicitudes#index', [
-                'id' => $id
-            ]);
+            return $this->redirectToRoute('ie#inicio');
         }
 
         return $this->render('institucion_educativa/solicitud/payment.html.twig', [
@@ -269,23 +251,18 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/detalle-forma-de-pago", name="solicitudes#detalle_forma_de_pago")
+     * @Route("/solicitudes/{id}/detalle-forma-de-pago", name="ie#detalle_forma_de_pago")
      * @param $id
-     * @param $solicitudId
-     * @param InstitucionRepositoryInterface $institucionRepository
      * @return Response
      */
-    public function detalleFormaDePago(
-        $id,
-        $solicitudId,
-        InstitucionRepositoryInterface $institucionRepository
-    )
+    public function detalleFormaDePago($id)
     {
-        $institucion = $institucionRepository->find($id);
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($solicitudId);
+            ->find($id);
 
         return $this->render('institucion_educativa/solicitud/detalle_forma_pago.html.twig', [
             'institucion' => $institucion,
@@ -294,20 +271,17 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/instituciones/{id}/solicitudes/{solicitudId}/descargar-referencias-bancarias", name="solicitudes#descargar_referencias_bancarias")
+     * @Route("/solicitudes/{id}/descargar-referencias-bancarias", name="ie#descargar_referencias_bancarias")
      * @param $id
-     * @param $solicitudId
      * @param GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
      */
     public function descargarReferenciasBancarias(
         $id,
-        $solicitudId,
         GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
-    )
-    {
+    ) {
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($solicitudId);
+            ->find($id);
 
         return $generadorReferenciaBancariaZIP->generarZipResponse($solicitud);
     }

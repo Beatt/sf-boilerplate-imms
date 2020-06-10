@@ -34,9 +34,8 @@
     {{ parent() }}
     <script>
         window.TIPO_PAGO_SELECTED = {{ solicitud.tipoPago|json_encode|raw }}
-        window.DESCARGAR_REFERENCIAS_BANCARIAS_PATH = {{ path('solicitudes#descargar_referencias_bancarias', {
-            id: institucion.id,
-            solicitudId: solicitud.id
+        window.DESCARGAR_REFERENCIAS_BANCARIAS_PATH = {{ path('ie#descargar_referencias_bancarias', {
+            id: solicitud.id
         })|json_encode|raw }}
     </script>
     <script src="{{ asset('build/detalle_forma_pago.js') }}"></script>

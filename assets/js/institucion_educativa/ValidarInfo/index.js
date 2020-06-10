@@ -2,12 +2,16 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ListConvenios from "../../components/ListConvenios";
 
-const ValidarInfo = ({ institucion, errores }) => {
+const ValidarInfo = (
+  {
+    institucion,
+    errores,
+    action
+  }) => {
 
   return(
-
     <form
-      action={`/instituciones/${institucion.id}/editar`}
+      action={action}
       method="post"
       encType='multipart/form-data'
     >
@@ -129,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <ValidarInfo
       institucion={window.INSTITUCION_PROP}
       errores={window.ERRORS}
+      action={window.ACTION}
     />,
     document.getElementById('validar-info-component')
   )

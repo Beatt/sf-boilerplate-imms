@@ -25,7 +25,7 @@ class DefaultController extends Controller
             case 'ROLE_CAME':
                 return $this->redirectToRoute('solicitud.index');
             case 'ROLE_IE':
-                return $this->redirectToRoute('solicitudes#index', [
+                return $this->redirectToRoute('ei#perfil', [
                     'id' => $this->getUser()->getInstitucion()->getId()
                 ]);
             default:

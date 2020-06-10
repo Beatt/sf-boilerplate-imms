@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\InstitucionEducativa;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\Institucion;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
@@ -14,31 +15,31 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/ie")
+ */
 class InstitucionController extends DIEControllerController
 {
     /**
-     * @Route("/instituciones/{id}/editar", name="instituciones#update", methods={"POST", "GET"})
-     * @param integer $id
+     * @Route("/perfil", name="ie#perfil", methods={"POST", "GET"})
      * @param Request $request
      * @param InstitucionManagerInterface $institucionManager
-     * @param InstitucionRepositoryInterface $institucionRepository
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
      * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
      * @return Response
      */
-    public function updateAction(
-        $id,
+    public function perfilAction(
         Request $request,
         InstitucionManagerInterface $institucionManager,
-        InstitucionRepositoryInterface $institucionRepository,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
     ) {
-        $institucion = $institucionRepository->find($id);
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
 
         $form = $this->createForm(InstitucionType::class, $institucion, [
-            'action' => $this->generateUrl('instituciones#update', [
-                'id' => $id
+            'action' => $this->generateUrl('ie#perfil', [
+                'id' => $institucion->getId()
             ]),
         ]);
 

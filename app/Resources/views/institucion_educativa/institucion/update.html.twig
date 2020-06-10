@@ -43,10 +43,10 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-      window.INSTITUCION_PROP = {{ institucion|json_encode|raw }}
-      window.CONVENIOS_PROP = {{ convenios|json_encode|raw }}
-      window.ERRORS = {{ errores|json_encode|raw }}
+        window.INSTITUCION_PROP = {{ institucion|json_encode|raw }}
+        window.CONVENIOS_PROP = {{ convenios|json_encode|raw }}
+        window.ERRORS = {{ errores|json_encode|raw }}
+        window.ACTION = {{ path('ie#perfil')|json_encode|raw }}
     </script>
     <script src="{{ asset('build/validar-info.js') }}"></script>
-
 {% endblock %}
