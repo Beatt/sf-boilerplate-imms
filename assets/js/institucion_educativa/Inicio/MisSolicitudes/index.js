@@ -1,14 +1,13 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
-import { solicitudesGet } from "../api/solicitud";
-import { TIPO_PAGO, SOLICITUD } from "../../constants";
+import { solicitudesGet } from "../../api/solicitud";
+import { TIPO_PAGO, SOLICITUD } from "../../../constants";
 import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
-} from "../../utils";
+} from "../../../utils";
 
-const Index = (
+const MisSolicitudes = (
   {
     totalInit,
     institucionId,
@@ -186,12 +185,4 @@ const Index = (
   )
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-    <Index
-      totalInit={window.CAMPOS_CLINICOS_TOTAL_PROPS}
-      institucionId={window.INSTITUCION_ID_PROPS}
-    />,
-    document.getElementById('solicitud-index-component')
-  )
-})
+export default MisSolicitudes

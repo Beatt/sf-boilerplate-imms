@@ -16,7 +16,7 @@
                 <h1 class="text-bold text-center mb-20">Mis solicitudes de campo clinico</h1>
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="solicitud-index-component"></div>
+                        <div id="inicio-component"></div>
                     </div>
                 </div>
             </div>
@@ -30,5 +30,5 @@
         window.CAMPOS_CLINICOS_TOTAL_PROPS = {{ total|json_encode|raw }}
         window.INSTITUCION_ID_PROPS = {{ institucion.id|json_encode|raw }}
     </script>
-    <script src="{{ asset('build/mis-solicitudes.js') }}"></script>
+    <script src="{{ asset('build/ie.inicio.js') }}"></script>
 {% endblock %}

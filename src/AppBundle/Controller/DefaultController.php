@@ -25,9 +25,7 @@ class DefaultController extends Controller
             case 'ROLE_CAME':
                 return $this->redirectToRoute('solicitud.index');
             case 'ROLE_IE':
-                return $this->redirectToRoute('ei#perfil', [
-                    'id' => $this->getUser()->getInstitucion()->getId()
-                ]);
+                return $this->redirectToRoute('ie#perfil');
             default:
                 throw new \Exception('El usuario no tiene un rol asignado.');
         }
