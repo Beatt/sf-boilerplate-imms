@@ -56,14 +56,14 @@ class SolicitudController extends DIEControllerController
 
         }
 
-        return $this->render('institucion_educativa/solicitud/index.html.twig', [
+        return $this->render('institucion_educativa/solicitud/inicio.html.twig', [
             'institucion' => $institucion,
             'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
         ]);
     }
 
     /**
-     * @Route("/solicitudes/{id}/detalle-solicitud", name="ie#detalle_solicitud", methods={"GET"})
+     * @Route("/solicitudes/{id}/detalle-de-solicitud", name="ie#detalle_de_solicitud", methods={"GET"})
      * @param integer $id
      * @param Request $request
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
@@ -71,7 +71,7 @@ class SolicitudController extends DIEControllerController
      * @param PagoRepositoryInterface $pagoRepository
      * @return Response
      */
-    public function detalleSolicitudAction(
+    public function detalleDeSolicitudAction(
         $id,
         Request $request,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
@@ -120,7 +120,7 @@ class SolicitudController extends DIEControllerController
 
         }
 
-        return $this->render('institucion_educativa/solicitud/show.html.twig', [
+        return $this->render('institucion_educativa/solicitud/detalle_de_solicitud.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $solicitud,
             'totalCampos' => $totalCampos,
@@ -180,7 +180,7 @@ class SolicitudController extends DIEControllerController
             ]);
         }
 
-        return $this->render('institucion_educativa/solicitud/recordAmount.html.twig', [
+        return $this->render('institucion_educativa/solicitud/registrar_montos.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
             'carreras' => $carreras,
@@ -251,7 +251,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitudes/{id}/detalle-forma-de-pago", name="ie#detalle_forma_de_pago")
+     * @Route("/solicitudes/{id}/detalle-de-forma-de-pago", name="ie#detalle_de_forma_de_pago")
      * @param $id
      * @return Response
      */
@@ -264,7 +264,7 @@ class SolicitudController extends DIEControllerController
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($id);
 
-        return $this->render('institucion_educativa/solicitud/detalle_forma_pago.html.twig', [
+        return $this->render('institucion_educativa/solicitud/detalle_de_forma_de_pago.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $solicitud
         ]);
