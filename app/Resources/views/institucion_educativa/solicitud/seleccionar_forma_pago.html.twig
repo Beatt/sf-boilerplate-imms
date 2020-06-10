@@ -41,7 +41,7 @@
     {{ parent() }}
     <script>
         window.CAMPOS_CLINICOS_PROPS = {{ camposClinicos|json_encode|raw }}
-        window.ACTION = {{ path('solicitudes#seleccionar_forma_de_pago', {
+        window.ACTION = {{ path('ie#seleccionar_forma_de_pago', {
             'id': institucion.id,
             'solicitudId': solicitud.id
         })|json_encode|raw }}
