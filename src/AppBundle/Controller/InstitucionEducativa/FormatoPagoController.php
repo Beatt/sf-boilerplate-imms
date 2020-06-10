@@ -40,7 +40,7 @@ class FormatoPagoController extends DIEControllerController
         $campos = $esPagoUnico
             ? $solicitud->getCamposClinicos() : null;
 
-        return $this->render('institucion_educativa/formatos/ReferenciaPago.html.twig',
+        return $this->render('institucion_educativa/formato/referencia_pago.html.twig',
             ['institucion' => $this->getNormalizeInstitucion($institucion),
                 'solicitud' => $this->getNormalizeSolicitud($solicitud),
                 'campos' => $this->getNormalizeCampos($campos),
@@ -48,7 +48,7 @@ class FormatoPagoController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitudes/{id}/generar-formato-de-pago/{campoId}", name="ie#generar_formato_de_pago_multiple")
+     * @Route("/solicitudes/{id}/camposClinicos/{campoId}/generar-formato-de-pago", name="ie#generar_formato_de_pago_multiple")
      * @param int $id
      * @param int $campoId
      * @param SolicitudRepositoryInterface $solicitudRepository
@@ -70,7 +70,7 @@ class FormatoPagoController extends DIEControllerController
         $campo = $campoClinicoRepository->getAllCamposClinicosByRequest($campoId, 0, true);
         $solicitud = $solicitudRepository->find($id);
 
-        return $this->render('institucion_educativa/formatos/ReferenciaPago.html.twig',
+        return $this->render('institucion_educativa/formato/referencia_pago.html.twig',
             ['institucion' => $this->getNormalizeInstitucion($institucion),
                 'solicitud' => $this->getNormalizeSolicitud($solicitud),
                 'campos' => $this->getNormalizeCampos($campo)]);
