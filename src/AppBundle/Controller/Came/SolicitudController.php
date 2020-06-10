@@ -20,7 +20,6 @@ class SolicitudController extends DIEControllerController
 {
     /**
      * @Route("/came/solicitud", methods={"GET"}, name="came.solicitud.index")
-     * @Security("has_role('ROLE_CONSULTAR_SOLICITUDES')")
      */
     public function indexAction(Request $request)
     {
@@ -57,7 +56,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/api/solicitud", methods={"GET"}, name="solicitud.index.json")
-     * @Security("has_role('ROLE_CONSULTAR_SOLICITUDES')")
      */
     public function indexApiAction(Request $request)
     {
@@ -94,7 +92,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/solicitud/create", methods={"GET"}, name="solicitud.create")
-     * @Security("has_role('ROLE_AGREGAR_SOLICITUD')")
      */
     public function createAction(Request $request)
     {
@@ -122,7 +119,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/api/solicitud", methods={"POST"}, name="solicitud.store")
-     * @Security("has_role('ROLE_AGREGAR_SOLICITUD')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
      */
@@ -135,7 +131,6 @@ class SolicitudController extends DIEControllerController
     /**
      * @Route("/came/solicitud/{id}/edit", methods={"GET"}, name="solicitud.edit", requirements={"id"="\d+"})
      * @param Request $request
-     * @Security("has_role('ROLE_EDITAR_SOLICITUD')")
      */
     public function editAction(Request $request, $id)
     {
@@ -188,7 +183,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/api/solicitud/{id}", methods={"PUT"}, name="solicitud.update", requirements={"id"="\d+"})
-     * @Security("has_role('ROLE_EDITAR_SOLICITUD')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
      */
@@ -217,7 +211,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/solicitud/{id}", methods={"GET"}, name="solicitud.show", requirements={"id"="\d+"})
-     * @Security("has_role('ROLE_DETALLE_SOLICITUD')")
      */
     public function showAction($id)
     {
@@ -287,7 +280,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/api/solicitud/terminar/{id}", methods={"POST"}, name="solicitud.terminar", requirements={"id"="\d+"})
-     * @Security("has_role('ROLE_TERMINAR_SOLICITUDES')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
      * @param $id
@@ -314,7 +306,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/api/solicitud/validar_montos/{id}", methods={"POST"}, name="solicitud.store_validar_montos", requirements={"id"="\d+"})
-     * @Security("has_role('ROLE_VALIDACION_MONTOS')")
      * @param Request $request
      * @param SolicitudManagerInterface $solicitudManager
      * @param $id
@@ -351,7 +342,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/solicitud/{id}/validar_montos", methods={"GET"}, name="solicitud.validar_montos", requirements={"id"="\d+"})
-     * @Security("has_role('ROLE_VALIDACION_MONTOS')")
      * @param Request $request
      * @param $id
      */
@@ -396,7 +386,6 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/came/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="came.solicitud.oficio_montos", requirements={"id"="\d+"})
-     * @Security("has_role('ROLE_DESCARGAR_OFICIO_MONTOS')")
      * @param $solicitud_id
      * @return mixed
      */
