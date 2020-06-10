@@ -34,7 +34,6 @@ const MisSolicitudes = (
     toggleLoading(true)
 
     solicitudesGet(
-      institucionId,
       tipoPago,
       currentPage,
       search
@@ -54,31 +53,16 @@ const MisSolicitudes = (
       solicitud.tipoPago === TIPO_PAGO.MULTIPLE
     ) {
       redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/campos-clinicos`
-    } else {
-      switch(solicitud.estatus) {
-        case SOLICITUD.CONFIRMADA:
-          redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/registrar`
-      }
+    }
+    else if(isSolicitudConfirmada(solicitud)) {
+      redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
     }
 
     window.location.href = redirectRoute
   }
 
-  function handleStatusAction(solicitud) {
-    if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
-
-    let redirectRoute = ''
-    if(
-      solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES  &&
-      solicitud.tipoPago === TIPO_PAGO.MULTIPLE
-    ) {
-      redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/campos-clinicos`
-    }
-    else if(solicitud.estatus === SOLICITUD.CONFIRMADA) {
-      redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/registrar`
-    }
-
-    window.location.href = redirectRoute
+  function isSolicitudConfirmada(solicitud) {
+    return solicitud.estatus === SOLICITUD.CONFIRMADA;
   }
 
   return(
