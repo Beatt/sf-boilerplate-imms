@@ -37,3 +37,6 @@ security:
         - { path: '^/fofoe/detalle-institucion-educativa', roles: [ROLE_SUPER, ROLE_FOFEO_DETALLE_INSTITUCION_EDUCATIVA] }
         - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/formatos', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/factura', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/pago', roles: [IS_AUTHENTICATED_FULLY] }
