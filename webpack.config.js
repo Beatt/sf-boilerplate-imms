@@ -13,7 +13,7 @@ Encore
   .addEntry('ie.registrar.montos', './assets/js/institucion_educativa/RegistrarMontos/index.js')
   .addEntry('ie.inicio', './assets/js/institucion_educativa/Inicio/index.js')
   .addEntry('ie.detalle.forma.pago', './assets/js/institucion_educativa/DetalleFormaPago/index.js')
-  .addEntry('detalle_solicitud_multiple', './assets/js/institucion_educativa/DetalleSolicitudMultiple/index.js')
+  .addEntry('ie.detalle.solicitud.multiple', './assets/js/institucion_educativa/DetalleSolicitudMultiple/index.js')
   .addEntry('registrar-pagos', './assets/js/institucion_educativa/RegistrarPago/index.js')
   .addEntry('seleccionar_forma_pago', './assets/js/institucion_educativa/SeleccionarFormaPago/index.js')
 
