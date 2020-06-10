@@ -55,24 +55,29 @@ class ReporteOportunidadPagoController extends DIEControllerController
     $cvs = [];
 
     $headersCVS = [
-      'Mes/Año', 'CCS Área de la Salud', 'Internado Médico', 'Total Mensual'
+      'Mes/Año', 'CCS/INT Validados', 'CCS/INT Pendientes'
     ];
     $cvs[] = CVSUtil::arrayToCsvLine($headersCVS);
+
+    $totalVal = 0;
+    $totalPend = 0;
 
     foreach($datos as $c) {
       $cvs[] = CVSUtil::arrayToCsvLine(
         [$c['Mes'].'/'.$c['Anio'],
-          $c['ingCCS'],
-          $c['ingINT'],
-          $c['Total'],
+          $c['ingVal'],
+          $c['ingPend'],
         ]
       );
+      $totalVal += intval($c['ingVal']);
+      $totalPend += intval($c['ingPend']);
     }
 
-    return //mb_convert_encoding(
-      implode("\r\n", $cvs)
-      //, 'UTF-16LE', 'UTF-8')
-      ;
+    $cvs[] = CVSUtil::arrayToCsvLine(
+      ['Total Ciclo',  $totalVal, $totalPend,]
+    );
+
+    return implode("\r\n", $cvs);
   }
 
   private function setFilters(Request $request) {
