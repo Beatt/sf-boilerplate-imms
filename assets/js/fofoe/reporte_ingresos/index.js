@@ -14,8 +14,13 @@ const Index = () => {
   }, []);
 
   function getDatosReporte() {
-    getReporteIngresos().then((res) => {
+    toggleLoading(true);
+    getReporteIngresos(anioSel).then((res) => {
+      console.log(res)
       setReporteIngresos(res.reporte)
+    }).finally( () => {
+        toggleLoading(false);
+        console.log(reporteIngresos);
     })
   }
 
@@ -23,58 +28,101 @@ const Index = () => {
     getReporteIngresos(anioSel, 1);
   }
 
+  function handlerAnioSel(e) {
+    setAnioSel(e.value !== '' ? e.value : null);
+    getDatosReporte();
+  }
+
   let urlExport = `/fofoe/reporte_ingresos?anio=${anioSel}&export=1`
-  let totalIngsCCs = 0
-  let totalIngsInt = 0
-  let totalGrl = 0
+  let totalIngsVal = 0
+  let totalIngsPend = 0
+  let anios = ['2020', '2021']
 
   return (
     <div className="panel panel-default">
 
       <div className="panel-heading">
-        Reporte de ingresos por concepto
+        Reporte de ingresos por concepto de Campos Clínicos
+        (Ciclos Clínicos e Internado Médico).
+      </div>
+      <div>
+        <div className="col-md-3">
+          <div className="">
+            <label htmlFor="anio">Año de consulta:</label>
+            <select
+              name="anio"
+              className=''
+              onChange={({target}) => handlerAnioSel(target)}
+            >
+              { anios.map((valor) =>
+                <option  value={valor} key={valor} >
+                  {valor}
+                </option>
+              )}
+            </select>
+          </div>
+        </div>
+        <div className="col-md-2 col-md-offset-7">
+          <a href={urlExport} >Descargar CSV</a>
+        </div>
       </div>
       <div className="panel-body">
-        <a href={urlExport} >Descargar CSV</a>
-
         <table className="table">
           <thead>
           <tr>
-            <td>Mes/Año</td>
-            <td>CC Área de la Salud</td>
-            <td>Int. Méd</td>
-            <td>Total Mensual</td>
+            <th rowSpan={2}>Mes/Año</th>
+            <th colSpan={2}>CC Área de la Salud / Int. Méd</th>
+          </tr>
+          <tr>
+            <th>Total Validado</th>
+            <th>Total pendiente de validar</th>
           </tr>
           </thead>
           <tbody>
-          {
-            reporteIngresos.map( (ingresos, index) => (
-              <tr key={index}>
-                <td> {ingresos.Mes} / { ingresos.Anio}</td>
-                <td> {ingresos.ingCCS}</td>
-                <td> {ingresos.ingINT}</td>
-                <td> {ingresos.Total}</td>
-              </tr>
-            ))
+          { isLoading ?
+            <tr>
+              <td className='text-center' colSpan={3}> Cargando información ... </td>
+            </tr>
+            : reporteIngresos.length > 0 ?
+              reporteIngresos.map( (ingresos, index) => {
+                totalIngsPend += parseInt(ingresos.ingPend);
+                totalIngsVal += parseInt(ingresos.ingVal);
+                  return (
+                    <tr key={index}>
+                      <td> {ingresos.Mes} / { ingresos.Anio}</td>
+                      <td> {ingresos.ingVal}</td>
+                      <td> {ingresos.ingPend}</td>
+                    </tr>
+                  )
+              }
+                )
+            :
+            <tr>
+              <td className='text-center' colSpan={3}>No hay registros disponibles</td>
+            </tr>
           }
           </tbody>
-          <tfoot>
-          <tr>
-            <td>Total por ciclo</td>
-            <td> {totalIngsCCs} </td>
-            <td> {totalIngsInt} </td>
-            <td> {totalGrl} </td>
-          </tr>
-          </tfoot>
+          { isLoading ?
+              null
+            : reporteIngresos.length > 0 ?
+            <tfoot>
+            <tr>
+            <td>Total</td>
+            <td> {totalIngsVal} </td>
+            <td> {totalIngsPend} </td>
+            </tr>
+            </tfoot>
+            : null
+          }
         </table>
       </div>
     </div>
   );
 };
 
-      document.addEventListener('DOMContentLoaded', () => {
-      ReactDOM.render(
-        <Index/>,
-        document.getElementById('reporte-wrapper')
-      )
-    })
+document.addEventListener('DOMContentLoaded', () => {
+  ReactDOM.render(
+  <Index/>,
+  document.getElementById('reporte-wrapper')
+  )
+})

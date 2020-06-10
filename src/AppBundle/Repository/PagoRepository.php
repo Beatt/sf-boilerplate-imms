@@ -51,14 +51,17 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 
      public function getReporteIngresosMes($anio) {
 
+      $selAnio = "to_char(pago.fechaPago, 'YYYY')";
+      $selMes =  "to_char(pago.fechaPago, 'MM')";
+
        $qb = $this->createQueryBuilder('pago')
          ->select(array(
-           "to_char(pago.fechaPago, 'YYYY') as Anio",
-           "to_char(pago.fechaPago, 'MM') as Mes",
-           "sum(case when convenio.cicloAcademico = 1 
-                then campos_clinicos.monto else 0 end) as ingCCS",
-           "sum(case when convenio.cicloAcademico = 2 
-                then campos_clinicos.monto else 0 end) as ingINT",
+           "$selAnio as Anio",
+           "$selMes as Mes",
+           "sum(case when pago.validado = 'TRUE'
+                then campos_clinicos.monto else 0 end) as ingVal",
+           "sum(case when pago.validado IS NULL
+                then campos_clinicos.monto else 0 end) as ingPend",
            "sum(pago.monto) as Total"
          ))
          ->innerJoin('pago.solicitud', 'solicitud')
@@ -71,13 +74,14 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
              'pago.referenciaBancaria = campos_clinicos.referenciaBancaria'
            )
          );
-       $qb->andWhere('pago.validado');
-       $qb->andWhere('Anio = :anio')
+
+       $qb->andWhere("$selAnio  = :anio")
          ->setParameter('anio', $anio);
 
-       $qb->groupBy('Anio, Mes')
+       $qb->groupBy("Anio, Mes")
         ->orderBy('Anio', 'DESC')
        ->addOrderBy('Mes', 'ASC');
+
 
        return $qb->getQuery()->getResult();
 

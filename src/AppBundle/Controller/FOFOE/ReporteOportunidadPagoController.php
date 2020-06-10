@@ -4,24 +4,25 @@ namespace AppBundle\Controller\FOFOE;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Repository\PagoRepositoryInterface;
-use AppBundle\Repository\Reportes\FOFOEIngresosRepositoryInterface;
 use AppBundle\Util\CVSUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ReporteIngresosController extends DIEControllerController
+class ReporteOportunidadPagoController extends DIEControllerController
 {
   /**
-   * @Route("/fofoe/reporte_ingresos", methods={"GET"}, name="fofoe.reporte_ingresos")
+   * @Route("/fofoe/reporte_oportunidad_pago", methods={"GET"}, name="fofoe.reporte_oportunidad")
    * @param Request $request
    * @param PagoRepositoryInterface $reporteRepository
    * @return Response
    */
   public function indexAction(Request $request, PagoRepositoryInterface $reporteRepository) {
 
-    list($filtros, $isSomeValueSet) = $this->setFilters($request);
+    $pagos = $reporteRepository->findByValidado(null);
+
+/*    list($filtros, $isSomeValueSet) = $this->setFilters($request);
 
     if ($isSomeValueSet) {
       $anio = isset($filtros['anio']) ? $filtros['anio'] : date("Y");
@@ -45,9 +46,9 @@ class ReporteIngresosController extends DIEControllerController
       return new JsonResponse([
         'reporte' => $this->getNormalizeReporteIngresos($ingresos)
       ]);
-    }
+    }*/
 
-    return $this->render('fofoe/reporte_ingresos/index.html.twig');
+    return $this->render('fofoe/reporte_oportunidad/index.html.twig');
   }
 
   protected function generarCVS($datos) {
@@ -61,8 +62,9 @@ class ReporteIngresosController extends DIEControllerController
     foreach($datos as $c) {
       $cvs[] = CVSUtil::arrayToCsvLine(
         [$c['Mes'].'/'.$c['Anio'],
-          $c['ingVal'],
-          $c['ingPend']
+          $c['ingCCS'],
+          $c['ingINT'],
+          $c['Total'],
         ]
       );
     }
@@ -88,7 +90,7 @@ class ReporteIngresosController extends DIEControllerController
     return array($filtros, $isSomeValueSet);
   }
 
-  private function getNormalizeReporteIngresos($datos)
+  private function getNormalizePagos($datos)
   {
 
     return $this->get('serializer')->normalize(

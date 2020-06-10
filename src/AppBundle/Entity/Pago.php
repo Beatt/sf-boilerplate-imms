@@ -287,4 +287,19 @@ class Pago
      {
          return $this->fechaPago;
      }
+
+     public function getTiemposPagos() {
+       $campos = $this->solicitud->getCamposClinicos();
+       $tiempos = [];
+       foreach ($campos as $campo) {
+         $fechaInicio = $campo->getFechaInicial();
+         $tiempo = null;
+         if ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
+         || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
+            && $this->referenciaBancaria == $campo->referenciaBancaria) ) {
+           $intervalo = date_diff($fechaInicio, $this->fechaPago);
+         }
+       }
+       return Carbon::create;
+     }
 }

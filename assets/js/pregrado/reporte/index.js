@@ -6,7 +6,7 @@ import {getCamposClinicos, getCamposClinicosCSV} from "./campos"
 import {Fragment} from "react";
 
 const ContenedorFiltro = ({
-                            EtiquetaFiltro, name, valores, setValSel, type
+                            EtiquetaFiltro, name, valores, setValSel, tipo
                           }) => {
 
   function handler(e) {
@@ -17,7 +17,7 @@ const ContenedorFiltro = ({
     <div className="col-md-3">
       <div className="form-group">
         <label htmlFor={name}>{EtiquetaFiltro}</label>
-        {type === "Select" ?
+        {tipo === "Select" ?
           <Fragment>
             <select
               name={name}
@@ -33,7 +33,7 @@ const ContenedorFiltro = ({
               )}
             </select>
           </Fragment>
-         : type === "date" ?
+         : tipo === "date" ?
             <Fragment>
               <input className='form-control' type='date'
                      name={name}
@@ -228,7 +228,7 @@ const TablaCampos = (props) => {
                 <tr>
                   <th className='text-center' colSpan={11}>Cargando información...</th>
                 </tr> :
-                 props.totalItems > 0 ?
+                props.camposClinicos.length > 0 ?
                 props.camposClinicos.map((campoClinico, index) => (
                   <tr key={index}>
                     <td><a href="">{campoClinico.convenio.delegacion ? campoClinico.convenio.delegacion.nombre : ""}</a>
