@@ -407,4 +407,20 @@ class CampoClinico implements ComprobantePagoInterface
     {
         return $this->getFechaFinal()->format('d/m/Y');
     }
+
+    public function getDisplayDelegacion() {
+      return $this->convenio ?
+        $this->convenio
+          ->getDelegacion()
+          ->getNombre()
+        : '';
+    }
+
+    public function getDisplayCicloAcademico() {
+      return $this->convenio ?
+        $this->convenio
+          ->getCicloAcademico()
+          ->getNombre()
+        : '';
+    }
 }

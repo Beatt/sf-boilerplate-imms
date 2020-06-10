@@ -20,11 +20,33 @@ class ReporteOportunidadPagoController extends DIEControllerController
    */
   public function indexAction(Request $request, PagoRepositoryInterface $reporteRepository) {
 
-    $pagos = $reporteRepository->findByValidado(null);
-
-/*    list($filtros, $isSomeValueSet) = $this->setFilters($request);
-
-    if ($isSomeValueSet) {
+    list($filtros, $isSomeValueSet) = $this->setFilters($request);
+    $pagos = $reporteRepository->getReporteOportunidadPago($filtros);
+    $datos = $this->get('serializer')->normalize($pagos,
+      'json',
+      [
+        'attributes' => [
+          'solicitud' => [
+            'camposClinicos' => [
+              'id',
+              'fechaInicialFormatted',
+              'fechaFinalFormatted',
+              'lugaresSolicitados',
+              'lugaresAutorizados',
+              'displayCicloAcademico',
+              'displayDelegacion',
+            ],
+            'institucion' => ['nombre', 'rfc'],
+            'tipoPago'
+          ],
+          'monto',
+          'fechaPagoFormatted',
+          'referenciaBancaria',
+          'tiemposPagos'
+        ]
+      ]);
+    //var_dump($datos);
+/*    if ($isSomeValueSet) {
       $anio = isset($filtros['anio']) ? $filtros['anio'] : date("Y");
       $ingresos = $reporteRepository->getReporteIngresosMes($anio);
 

@@ -40,14 +40,14 @@ const Index = () => {
           <thead>
           <tr>
             <th rowSpan={2} >Consecutivo</th>
-            <th rowSpan={2} >Delegación / UMAE</th>
+            <th rowSpan={2} >Delegación </th>
             <th rowSpan={2}>Campo Clínico</th>
             <th colSpan={2} >Ciclo</th>
-            <th rowSpan={2} >RFC (Alumno / Institución)</th>
-            <th rowSpan={2}>Total de alumnos solicitados</th>
-            <th rowSpan={2}>Total de alumnos autorizados</th>
-            <th colSpan={5}>Datos de la aportación</th>
+            <th rowSpan={2} >Institución </th>
+            <th rowSpan={2}>Alumnos</th>
+            <th colSpan={4}>Datos de la aportación</th>
             <th rowSpan={2} >Indicador</th>
+            <th rowSpan={2} >Dias</th>
           </tr>
           <tr>
             <th>Inicio</th>
@@ -56,7 +56,6 @@ const Index = () => {
             <th>Folio Host o Referencia de Transferencia</th>
             <th>Fecha de depósito</th>
             <th>Fecha de Facturación</th>
-            <th>Cuenta FOFOE</th>
           </tr>
           </thead>
           <tbody>
@@ -71,16 +70,9 @@ const Index = () => {
             ))
           }
           </tbody>
-          <tfoot>
-          <tr>
-            <td>Total por ciclo</td>
-            <td> {totalIngsCCs} </td>
-            <td> {totalIngsInt} </td>
-            <td> {totalGrl} </td>
-          </tr>
-          </tfoot>
         </table>
       </div>
+
     </div>
   );
 };

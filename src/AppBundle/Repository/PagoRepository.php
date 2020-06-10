@@ -82,8 +82,23 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         ->orderBy('Anio', 'DESC')
        ->addOrderBy('Mes', 'ASC');
 
-
        return $qb->getQuery()->getResult();
-
      }
+
+    public function getReporteOportunidadPago($filtros) {
+      $qb = $this->createQueryBuilder('pago')
+        ->innerJoin('pago.solicitud', 'solicitud')
+        ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
+        ->innerJoin('campos_clinicos.convenio', 'convenio');
+
+      $qb->where(
+          $qb->expr()->orX(
+            'pago.referenciaBancaria = solicitud.referenciaBancaria',
+            'pago.referenciaBancaria = campos_clinicos.referenciaBancaria'
+          )
+        );
+      $qb->andWhere('pago.validado = TRUE');
+
+      return $qb->getQuery()->getResult();
+    }
 }

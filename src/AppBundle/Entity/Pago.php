@@ -288,18 +288,28 @@ class Pago
          return $this->fechaPago;
      }
 
+    /**
+     * @return string
+     */
+    public function getFechaPagoFormatted()
+    {
+      return $this->getFechaPago()->format('d/m/Y');
+    }
+
      public function getTiemposPagos() {
        $campos = $this->solicitud->getCamposClinicos();
        $tiempos = [];
        foreach ($campos as $campo) {
          $fechaInicio = $campo->getFechaInicial();
+         $inicial = Carbon::instance($fechaInicio);
          $tiempo = null;
          if ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
          || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
-            && $this->referenciaBancaria == $campo->referenciaBancaria) ) {
-           $intervalo = date_diff($fechaInicio, $this->fechaPago);
+            && $this->referenciaBancaria == $campo->getReferenciaBancaria()) ) {
+           $final = Carbon::instance($this->getFechaPago());
+           $tiempos[$campo->getId()] = $final->diffInDays();
          }
        }
-       return Carbon::create;
+       return $tiempos;
      }
 }
