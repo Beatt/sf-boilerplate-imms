@@ -7,11 +7,7 @@ import {
   isActionDisabledByInstitucionEducativa
 } from "../../../utils";
 
-const MisSolicitudes = (
-  {
-    totalInit,
-    institucionId,
-  }) => {
+const MisSolicitudes = ({ totalInit }) => {
 
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
@@ -48,17 +44,19 @@ const MisSolicitudes = (
     if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
 
     let redirectRoute = ''
-    if(
-      solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES  &&
-      solicitud.tipoPago === TIPO_PAGO.MULTIPLE
-    ) {
-      redirectRoute = `/instituciones/${institucionId}/solicitudes/${solicitud.id}/campos-clinicos`
+    if(isSolicitudTipoPagoMultiple(solicitud)) {
+      redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
     }
     else if(isSolicitudConfirmada(solicitud)) {
       redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
     }
 
     window.location.href = redirectRoute
+  }
+
+  function isSolicitudTipoPagoMultiple(solicitud) {
+    return solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES &&
+      solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
   }
 
   function isSolicitudConfirmada(solicitud) {
