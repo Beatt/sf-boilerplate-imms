@@ -1,4 +1,4 @@
-const solicitudesGet = (institucionId, solicitudId, search) => {
+const solicitudesGet = (solicitudId, search) => {
   return fetch(`/ie/solicitudes/${solicitudId}/detalle-de-solicitud?search=${search}`)
     .then(function (response) {
       return response.json();

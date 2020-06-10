@@ -71,7 +71,6 @@ const ListaCampos = ({
             toggleLoading(true)
 
             solicitudesGet(
-                institucion,
                 solicitud,
                 search
             )
