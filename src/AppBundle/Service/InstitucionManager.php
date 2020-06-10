@@ -39,7 +39,7 @@ class InstitucionManager implements InstitucionManagerInterface
             $this->logger->critical($exception->getMessage());
             return  [
                 'status' => false,
-                'message' => 'Ocurrio un problema al guardar la institución',
+                'message' => 'Ocurrió un problema al guardar la institución',
             ];
         }
 
@@ -51,7 +51,7 @@ class InstitucionManager implements InstitucionManagerInterface
             'object' => $serializer->normalize($institucion, 'json', ['attributes' =>[
                 'id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax', 'representante'
             ]]),
-            'message' => 'Institucion almacenada con éxito',
+            'message' => 'Institución almacenada con éxito',
         ];
     }
 }

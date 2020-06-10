@@ -31,7 +31,7 @@ const SolicitudCreate = (props) => {
         event.preventDefault();
         setIsLoading(true);
 
-        fetch('/api/solicitud/terminar/' + solicitud.id , {
+        fetch('/came/api/solicitud/terminar/' + solicitud.id , {
             method: 'post'
         }).then(response => {
             return response.json()
@@ -39,7 +39,7 @@ const SolicitudCreate = (props) => {
             console.error(error);
         }).then(json => {
             if(json.status){
-                document.location.href = '/solicitud';
+                document.location.href = '/came/solicitud';
             }
         }).finally(() => {
             setIsLoading(false);
@@ -69,8 +69,10 @@ const SolicitudCreate = (props) => {
               disableSelect={!!solicitud}
               conveniosCallback={result => setConvenios(result)}
           />
+          <div style={{display : (selectedInstitution.id ? 'block': 'none')}}>
+          <Convenios convenios={convenios? convenios : []}/>
+          </div>
           <div style={{display : (isInstitucionComplete()? 'block' : 'none')}}>
-              <Convenios convenios={convenios? convenios : []}/>
               <CamposClinicos campos={camposClinicos} />
               <CampoClinicoForm
                   unidades={props.unidades}
@@ -88,9 +90,11 @@ const SolicitudCreate = (props) => {
                   </div>
               </form>
           </div>
-          <div style={{display : (isInstitucionComplete()? 'none' : 'block')}}>
-              <div className={`alert alert-warning `}>
-                  Es necesario capturar la información de la institución para poder crear una nueva solicitud
+          <div className={'col-md-12'}>
+              <div style={{display : (isInstitucionComplete()? 'none' : 'block')}}>
+                  <div className={`alert alert-warning `}>
+                      Es necesario capturar la información de la institución para poder crear una nueva solicitud
+                  </div>
               </div>
           </div>
       </>

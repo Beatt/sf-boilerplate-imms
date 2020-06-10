@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ConvenioController extends \AppBundle\Controller\DIEControllerController
 {
     /**
-     * @Route("/api/came/convenio/{institucion_id}", methods={"GET"}, name="came.convenio.show")
+     * @Route("/came/api/convenio/{institucion_id}", methods={"GET"}, name="came.convenio.show")
      */
     public function showAction(Request $request, $institucion_id)
     {
@@ -26,7 +26,7 @@ class ConvenioController extends \AppBundle\Controller\DIEControllerController
                         'nombre'
                     ],
                     'id',
-                    'vigencia',
+                    'vigencia', 'vigenciaFormatted',
                     'label',
                     'carrera' => [
                         'id',

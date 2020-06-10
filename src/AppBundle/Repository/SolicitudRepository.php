@@ -42,7 +42,8 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
 
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
-            ->join('campos_clinicos.convenio', 'convenio');
+            ->join('campos_clinicos.convenio', 'convenio')
+            ->join('convenio.institucion', 'institucion');
         if(isset($filters['no_solicitud']) && $filters['no_solicitud']){
             $queryBuilder->where('solicitud.noSolicitud like :no_solicitud')
                 ->setParameter('no_solicitud', '%'.strtoupper($filters['no_solicitud']).'%');
@@ -52,9 +53,20 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
                 ->setParameter('delegacion_id', $delegacion_id)
             ;
         }
+
+        if(isset($filters['institucion']) && $filters['institucion']){
+            $queryBuilder->andWhere('upper(unaccent(institucion.nombre)) like UPPER(unaccent(:institucion))')
+                ->setParameter('institucion', '%'.$filters['institucion'].'%');
+        }
+
+        if(isset($filters['fecha']) && $filters['fecha']){
+            $queryBuilder->andWhere('solicitud.fecha = :fecha')
+                ->setParameter('fecha', $filters['fecha']);
+        }
+
         $qb2 = clone $queryBuilder;
 
-        return ['data' => $queryBuilder->setMaxResults($perPage)
+        return ['data' => $queryBuilder->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
             'total' => $qb2->select('COUNT(solicitud.id)')->getQuery()->getSingleScalarResult()

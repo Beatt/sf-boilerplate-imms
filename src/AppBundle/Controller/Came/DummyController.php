@@ -3,10 +3,13 @@
 
 namespace AppBundle\Controller\Came;
 
+use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Service\SolicitudManagerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Vich\UploaderBundle\Handler\DownloadHandler;
@@ -98,7 +101,7 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
             );
         }
 
-        $solicitudManager->finalizar($solicitud);
+        $solicitudManager->finalizar($solicitud, $this->getUser());
         return $this->jsonResponse(['status' => true]);
     }
 
@@ -118,5 +121,13 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
         ]);
     }
 
-
+    /**
+     * @Route("/came/dummy/test", methods={"GET"})
+     */
+    public function testAction(){
+        $sender = $this->getParameter('mailer_sender');
+        return new JsonResponse([
+            'sender' => $sender
+        ]);
+    }
 }

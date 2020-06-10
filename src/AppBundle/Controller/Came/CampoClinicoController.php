@@ -8,6 +8,7 @@ use AppBundle\Form\Type\CampoClinicoType;
 use AppBundle\Service\CampoClinicoManagerInterface;
 use AppBundle\Service\GeneradorCredencialesInterface;
 use AppBundle\Service\GeneradorFormatoFofoeInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CampoClinicoController extends \AppBundle\Controller\DIEControllerController
 {
     /**
-     * @Route("/api/came/campo_clinico", methods={"POST"}, name="came.campo_clinico.store")
+     * @Route("/came/api/campo_clinico", methods={"POST"}, name="came.campo_clinico.store")
      * @param CampoClinicoManagerInterface $campo_clinico_manager
      * @param Request $request
      **/
@@ -26,12 +27,13 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             ->getRepository(Solicitud::class)
             ->find($solicitud_id);
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $solicitud_id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse();
+        }
+        if(!in_array($solicitud->getEstatus(), [Solicitud::CREADA])){
+            return $this->httpErrorResponse('No puedes modificar la solicitud '.$solicitud->getNoSolicitud());
         }
         $form = $this->createForm(CampoClinicoType::class);
         $form->handleRequest($request);
@@ -40,6 +42,34 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             return $this->jsonResponse($result);
         }
         return $this->jsonErrorResponse($form);
+    }
+
+    /**
+     * @Route("/came/api/campo_clinico/{campo_clinico_id}", methods={"DELETE"}, name="came.campo_clinico.delete", requirements={"id"="\d+"})
+     * @param Request $request
+     * @param CampoClinicoManagerInterface $campo_clinico_manager
+     * @param $campo_clinico_id
+     */
+    public function deleteAction(Request $request, CampoClinicoManagerInterface $campo_clinico_manager, $campo_clinico_id)
+    {
+        /* @var CampoClinico $campoClinico */
+        $campoClinico = $this->getDoctrine()->getRepository(CampoClinico::class)->find($campo_clinico_id);
+        if(!$campoClinico){
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
+        }
+        if(!$this->validarSolicitudDelegacion($campoClinico->getSolicitud())){
+            return $this->httpErrorResponse();
+        }
+        if(!in_array($campoClinico->getSolicitud()->getEstatus(), [Solicitud::CREADA])){
+            $this->addFlash('success', 'Se presentó un error al procesar su solicitud');
+            return $this->httpErrorResponse('Campo Clinico only can delete if solicitud.status is "CREADA"');
+        }
+        if($campoClinico->getSolicitud()->getCampoClinicos()->count()<=1){
+            $this->addFlash('success', 'Se presentó un error al procesar su solicitud');
+            return $this->httpErrorResponse('Must exist almost one campoclinico');
+        }
+        $result = $campo_clinico_manager->delete($campoClinico);
+        return $this->jsonResponse($result);
     }
 
     /**
@@ -53,7 +83,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
-     * @Route("/api/came/solicitud/{id}/campos_clinicos", methods={"GET"}, name="solicitud.index.campo_clinico.json")
+     * @Route("/came/api/solicitud/{id}/campos_clinicos", methods={"GET"}, name="solicitud.index.campo_clinico.json")
      * @param $id_solicitud
      */
     public function indexApiAction(Request $request, $id)
@@ -63,12 +93,10 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             ->find($id);
 
         if (!$solicitud) {
-            throw $this->createNotFoundException(
-                'Not found for id ' . $id
-            );
+            return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
         if(!$this->validarSolicitudDelegacion($solicitud)){
-            throw $this->createAccessDeniedException();
+            return $this->httpErrorResponse('No puedes ver una solicitud de otra delegación');
         }
         $perPage = $request->query->get('perPage', 10);
         $page = $request->query->get('page', 1);
@@ -93,7 +121,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
-     * @Route("/campos_clinicos/{campo_clinico_id}/formato_fofoe/show", methods={"GET"}, name="campo_clinico.formato_fofoe.show")
+     * @Route("/formato/campo_clinico/{campo_clinico_id}/formato_fofoe/show", methods={"GET"}, name="campo_clinico.formato_fofoe.show")
      * @param $campo_clinico_id
      */
     public function showFormatoFofoeAction($campo_clinico_id)
@@ -111,7 +139,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
-     * @Route("/campos_clinicos/{campo_clinico_id}/formato_fofoe/download", methods={"GET"}, name="campo_clinico.formato_fofoe.download")
+     * @Route("/formato/campo_clinico/{campo_clinico_id}/formato_fofoe/download", methods={"GET"}, name="campo_clinico.formato_fofoe.download")
      * @param Request $request
      * @param GeneradorFormatoFofoeInterface $generadorFormatoFofoe
      * @param $campo_clinico_id
@@ -134,7 +162,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
-     * @Route("/campos_clinicos/{campo_clinico_id}/credenciales/show", methods={"GET"}, name="campo_clinico.credenciales.show")
+     * @Route("/formato/campo_clinico/{campo_clinico_id}/credenciales/show", methods={"GET"}, name="campo_clinico.credenciales.show")
      * @param $campo_clinico_id
      */
     public function showCredencialesAction($campo_clinico_id)
@@ -155,7 +183,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
-     * @Route("/campos_clinicos/{campo_clinico_id}/credenciales/download", methods={"GET"}, name="campo_clinico.credenciales.download")
+     * @Route("/formato/campo_clinico/{campo_clinico_id}/credenciales/download", methods={"GET"}, name="campo_clinico.credenciales.download")
      * @param Request $request
      * @param GeneradorCredencialesInterface $generadorCredenciales
      * @param $campo_clinico_id

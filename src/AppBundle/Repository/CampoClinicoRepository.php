@@ -204,23 +204,23 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
             ->setParameter('solicitud_id', $solicitud_id);
 
         if(isset($filters['unidad']) && $filters['unidad']){
-            $queryBuilder->andWhere('upper(unidad.nombre) like :unidad')
-                ->setParameter('unidad', '%'.strtoupper($filters['unidad']).'%');
+            $queryBuilder->andWhere('upper(unaccent(unidad.nombre)) like UPPER(unaccent(:unidad))')
+                ->setParameter('unidad', '%'.($filters['unidad']).'%');
         }
 
         if(isset($filters['carrera']) && $filters['carrera']){
-            $queryBuilder->andWhere('upper(carrera.nombre) like :carrera')
-                ->setParameter('carrera', '%'.strtoupper($filters['carrera']).'%');
+            $queryBuilder->andWhere('upper(unaccent(carrera.nombre)) like UPPER(unaccent(:carrera))')
+                ->setParameter('carrera', '%'.($filters['carrera']).'%');
         }
 
         if(isset($filters['cicloAcademico']) && $filters['cicloAcademico']){
-            $queryBuilder->andWhere('upper(cicloAcademico.nombre) like :cicloAcademico')
-                ->setParameter('cicloAcademico', '%'.strtoupper($filters['cicloAcademico']).'%');
+            $queryBuilder->andWhere('upper(unaccent(cicloAcademico.nombre)) like UPPER(unaccent(:cicloAcademico))')
+                ->setParameter('cicloAcademico', '%'.($filters['cicloAcademico']).'%');
         }
 
         if(isset($filters['nivelAcademico']) && $filters['nivelAcademico']){
-            $queryBuilder->andWhere('upper(nivelAcademico.nombre) like :nivelAcademico')
-                ->setParameter('nivelAcademico', '%'.strtoupper($filters['nivelAcademico']).'%');
+            $queryBuilder->andWhere('upper(unaccent(nivelAcademico.nombre)) like UPPER(unaccent(:nivelAcademico))')
+                ->setParameter('nivelAcademico', '%'.($filters['nivelAcademico']).'%');
         }
 
 

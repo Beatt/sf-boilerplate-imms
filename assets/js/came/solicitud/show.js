@@ -5,7 +5,7 @@ import './show.scss';
 const LinkCredenciales = (props) => {
     const status = [4,7];
     if(status.indexOf(props.campoClinico.estatus.id)>-1){
-        return (<a href={`/campos_clinicos/${props.campoClinico.id}/credenciales/download`} target={'_blank'}>Credenciales</a>);
+        return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/credenciales/download`} target={'_blank'}>Credenciales</a>);
     }
     return (<></>);
 }
@@ -13,7 +13,7 @@ const LinkCredenciales = (props) => {
 const LinkFormatoFofoe = (props) => {
     const status = [2, 3, 4, 5, 6, 7];
     if (status.indexOf(props.campoClinico.estatus.id) > -1) {
-        return (<a href={`/campos_clinicos/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
+        return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
             FOFOE</a>);
     }
     return (<></>);
@@ -21,7 +21,7 @@ const LinkFormatoFofoe = (props) => {
 
 const ComprobanteOficio = (props) => {
     if(props.solicitud.fechaComprobante)
-        return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+        return (<a href={`/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
     return (<></>);
 }
 
@@ -52,6 +52,8 @@ const DetalleSolicitudDetallado = (props) => {
 
     const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
 
+    const [query, setQuery] = React.useState({});
+
     const handleSearchEvent = (query) => {
         setIsLoading(true);
         let querystring = '';
@@ -59,7 +61,7 @@ const DetalleSolicitudDetallado = (props) => {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {
@@ -80,17 +82,17 @@ const DetalleSolicitudDetallado = (props) => {
                 <table className="table">
                     <thead>
                     <tr>
-                        <th><input type="text" placeholder={'Sede'}
-                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Campo Clínico'}
-                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Nivel'}
-                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Carrera'}
-                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                        <th>Sede <br/> <input type="text" placeholder={'Sede'}
+                                   onChange={e => {setQuery(Object.assign(query,{unidad: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Campo Clínico <br/> <input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => {setQuery(Object.assign(query,{cicloAcademico: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Nivel <br/> <input type="text" placeholder={'Nivel'}
+                                   onChange={e => {setQuery(Object.assign(query,{nivelAcademico: e.target.value} )); handleSearchEvent()}}/></th>
+                        <th>Carrera <br/> <input type="text" placeholder={'Carrera'}
+                                   onChange={e => {setQuery(Object.assign(query, {carrera: e.target.value})); handleSearchEvent()}}/></th>
                         <th>No. de lugares</th>
                         <th>Fechas</th>
-                        <th>Acciones</th>
+                        <th> </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -181,14 +183,16 @@ const DetalleSolicitudUnico = (props) => {
 
     const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
 
-    const handleSearchEvent = (query) => {
+    const [query, setQuery] = React.useState({});
+
+    const handleSearchEvent = () => {
         setIsLoading(true);
         let querystring = '';
         for (const i in query) {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {
@@ -209,17 +213,17 @@ const DetalleSolicitudUnico = (props) => {
                 <table className="table">
                     <thead>
                     <tr>
-                        <th><input type="text" placeholder={'Sede'}
-                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Campo Clínico'}
-                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Nivel'}
-                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Carrera'}
-                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
+                        <th>Sede <br/> <input type="text" placeholder={'Sede'}
+                                   onChange={e => {setQuery(Object.assign(query,{unidad: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Campo Clínico <br/> <input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => {setQuery(Object.assign(query,{cicloAcademico: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Nivel <br/> <input type="text" placeholder={'Nivel'}
+                                   onChange={e => {setQuery(Object.assign(query,{nivelAcademico: e.target.value} )); handleSearchEvent()}}/></th>
+                        <th>Carrera <br/> <input type="text" placeholder={'Carrera'}
+                                   onChange={e => {setQuery(Object.assign(query, {carrera: e.target.value})); handleSearchEvent()}}/></th>
                         <th>No. de lugares</th>
                         <th>Fechas</th>
-                        <th>Acciones</th>
+                        <th> </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -268,7 +272,7 @@ const SolicitudShow = (props) => {
                 <p><strong>Estado:</strong> {props.solicitud.estatusCameFormatted}</p>
             </div>
             <div className="col-md-12">
-                <p><strong>Insitución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
+                <p><strong>Institución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
             </div>
             <div className="col-md-12">
                 <p>Se <strong>autorizaron</strong> {props.solicitud.camposClinicosAutorizados} de {props.solicitud.camposClinicosSolicitados} Campos
