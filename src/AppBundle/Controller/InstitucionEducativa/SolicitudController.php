@@ -203,7 +203,7 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitudes/{id}/seleccionar-forma-de-pago", name="ie#seleccionar_forma_de_pago)
+     * @Route("/solicitudes/{id}/seleccionar-forma-de-pago", name="ie#seleccionar_forma_de_pago")
      * @param int $id
      * @param Request $request
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
