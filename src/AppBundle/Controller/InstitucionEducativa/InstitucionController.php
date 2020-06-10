@@ -63,7 +63,7 @@ class InstitucionController extends DIEControllerController
             $institucion->getId()
         );
 
-        return $this->render('institucion_educativa/institucion/perfil.html.twig', [
+        return $this->render('ie/institucion/perfil.html.twig', [
             'convenios' => $institucionPerfilNormalizer->normalizeCamposClinicos($camposClinicos),
             'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
             'errores' => $this->getFormErrors($form)
@@ -74,7 +74,7 @@ class InstitucionController extends DIEControllerController
     {
         $institucion = $institucionRepository->find($id);
 
-        return $this->render('institucion_educativa/institucion/_menu.twig', [
+        return $this->render('ie/institucion/_menu.twig', [
             'institucion' => $institucion
         ]);
     }

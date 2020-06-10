@@ -40,7 +40,7 @@ class FormatoPagoController extends DIEControllerController
         $campos = $esPagoUnico
             ? $solicitud->getCamposClinicos() : null;
 
-        return $this->render('institucion_educativa/formato/referencia_pago.html.twig',
+        return $this->render('ie/formato/referencia_pago.html.twig',
             ['institucion' => $this->getNormalizeInstitucion($institucion),
                 'solicitud' => $this->getNormalizeSolicitud($solicitud),
                 'campos' => $this->getNormalizeCampos($campos),
@@ -70,7 +70,7 @@ class FormatoPagoController extends DIEControllerController
         $campo = $campoClinicoRepository->getAllCamposClinicosByRequest($campoId, 0, true);
         $solicitud = $solicitudRepository->find($id);
 
-        return $this->render('institucion_educativa/formato/referencia_pago.html.twig',
+        return $this->render('ie/formato/referencia_pago.html.twig',
             ['institucion' => $this->getNormalizeInstitucion($institucion),
                 'solicitud' => $this->getNormalizeSolicitud($solicitud),
                 'campos' => $this->getNormalizeCampos($campo)]);

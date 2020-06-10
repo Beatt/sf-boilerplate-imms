@@ -55,7 +55,7 @@ class SolicitudController extends DIEControllerController
 
         }
 
-        return $this->render('institucion_educativa/solicitud/inicio.html.twig', [
+        return $this->render('ie/solicitud/inicio.html.twig', [
             'institucion' => $institucion,
             'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
         ]);
@@ -119,7 +119,7 @@ class SolicitudController extends DIEControllerController
 
         }
 
-        return $this->render('institucion_educativa/solicitud/detalle_de_solicitud.html.twig', [
+        return $this->render('ie/solicitud/detalle_de_solicitud.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $solicitud,
             'totalCampos' => $totalCampos,
@@ -179,7 +179,7 @@ class SolicitudController extends DIEControllerController
             ]);
         }
 
-        return $this->render('institucion_educativa/solicitud/registrar_montos.html.twig', [
+        return $this->render('ie/solicitud/registrar_montos.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
             'carreras' => $carreras,
@@ -243,7 +243,7 @@ class SolicitudController extends DIEControllerController
             return $this->redirectToRoute('ie#inicio');
         }
 
-        return $this->render('institucion_educativa/solicitud/payment.html.twig', [
+        return $this->render('ie/solicitud/payment.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud)
         ]);
@@ -263,7 +263,7 @@ class SolicitudController extends DIEControllerController
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($id);
 
-        return $this->render('institucion_educativa/solicitud/detalle_de_forma_de_pago.html.twig', [
+        return $this->render('ie/solicitud/detalle_de_forma_de_pago.html.twig', [
             'institucion' => $institucion,
             'solicitud' => $solicitud
         ]);
