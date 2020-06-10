@@ -30,7 +30,7 @@ class CampoClinicoController extends DIEControllerController
 
         $serializer = $this->get('serializer');
 
-        return $this->render('institucion_educativa/campo_clinico/index.html.twig', [
+        return $this->render('institucion_educativa/campo_clinico/detalle_de_solicitud_multiple.html.twig', [
             'institucionId' => $institucion->getId(),
             'noSolicitud' => $solicitud->getId(),
             'expediente' => $serializer->normalize(
