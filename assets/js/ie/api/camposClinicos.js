@@ -1,5 +1,5 @@
 const solicitudesGet = (institucionId, solicitudId, search) => {
-  return fetch(`/instituciones/${institucionId}/solicitudes/${solicitudId}?search=${search}`)
+  return fetch(`/ie/solicitudes/${solicitudId}/detalle-de-solicitud?search=${search}`)
     .then(function (response) {
       return response.json();
     })
@@ -10,7 +10,7 @@ const uploadComprobantePago = (id, file) => {
   form.append('comprobantePago[campoClinico]', id);
   form.append('comprobantePago[file]', file[0]);
 
-  return fetch('/campos-clinicos:uploadComprobantePago', {
+  return fetch('/ie/cargar-comprobante-de-pago', {
     method: 'POST',
     body: form
   }).then((res) => res.json())
