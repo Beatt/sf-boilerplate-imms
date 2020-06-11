@@ -111,7 +111,7 @@ const SolicitudIndex = (props) => {
     }
 
     const showPaginator = () => {
-        return meta.total < (meta.page * meta.perPage) ? 'none' : 'block';
+        return meta.total < meta.perPage ? 'none' : 'block';
     }
 
     return (
@@ -143,7 +143,7 @@ const SolicitudIndex = (props) => {
                 <div className="panel panel-default">
                     <div style={{textAlign: 'center', display: (props.solicitudes.length <= 0 ? 'block': 'none'), padding:'80px 0px'}}><h3>No hay ninguna solicitud registrada</h3></div>
                     <div className={'table-responsive'} style={{display: (props.solicitudes.length > 0 ? 'block': 'none')}}>
-                        <table className="table">
+                        <table className="table table-striped">
                             <thead>
                             <tr>
                                 <th>No. de solicitud <br/><input type="text" placeholder={'No. de solicitud'}
@@ -176,20 +176,26 @@ const SolicitudIndex = (props) => {
                             </tbody>
                         </table>
                     </div>
-                    <div style={{textAlign: "center", display: showPaginator()}}>
-                        <ReactPaginate
-                            previousLabel={'Anterior'}
-                            nextLabel={'Siguiente'}
-                            breakLabel={'...'}
-                            breakClassName={'break-me'}
-                            pageCount={meta.total / meta.perPage}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={meta.perPage}
-                            onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
-                            containerClassName={'pagination'}
-                            subContainerClassName={'pages pagination'}
-                            activeClassName={'active'}
-                        />
+                    <div>
+                        <div className={'col-md-6'} style={{display: (meta.total>0?'block':'none')}}>
+                            <br/>
+                            <p>Mostrando {(meta.page * meta.perPage) - meta.perPage + 1} {((meta.perPage * meta.page) < meta.total) ?`al ${meta.perPage * meta.page}`: `al ${meta.total}`} de {meta.total}</p>
+                        </div>
+                        <div style={{display: showPaginator(), textAlign: 'right'}} className={'col-md-6'}>
+                            <ReactPaginate
+                                previousLabel={'Anterior'}
+                                nextLabel={'Siguiente'}
+                                breakLabel={'...'}
+                                breakClassName={'break-me'}
+                                pageCount={meta.total / meta.perPage}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={parseInt(meta.perPage)}
+                                onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
+                                containerClassName={'pagination'}
+                                subContainerClassName={'pages pagination'}
+                                activeClassName={'active'}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

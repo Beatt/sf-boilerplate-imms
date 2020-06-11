@@ -10,6 +10,6 @@ use AppBundle\Entity\Usuario;
 interface GeneradorFormatoFofoeInterface
 {
 
-    public function responsePdf($path, CampoClinico $campoClinico, Usuario $came = null, $overwrite = false);
+    public function responsePdf($path, CampoClinico $campoClinico, Usuario $user = null, $overwrite = false);
 
 }

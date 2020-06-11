@@ -12,7 +12,7 @@ const LinkCredenciales = (props) => {
 
 const LinkFormatoFofoe = (props) => {
     const status = [2, 3, 4, 5, 6, 7];
-    if (status.indexOf(props.campoClinico.estatus.id) > -1) {
+    if ((status.indexOf(props.campoClinico.estatus.id) > -1) || props.showFormatoFofoe) {
         return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
             FOFOE</a>);
     }
@@ -79,7 +79,7 @@ const DetalleSolicitudDetallado = (props) => {
     return (
         <>
             <div className="table-responsive">
-                <table className="table">
+                <table className="table table-striped">
                     <thead>
                     <tr>
                         <th>Sede <br/> <input type="text" placeholder={'Sede'}
@@ -108,7 +108,7 @@ const DetalleSolicitudDetallado = (props) => {
                                 <td>
                                     <LinkPago pago={searchPago(props.solicitud.pagos, cc)}/> <br/>
                                     <LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/> <br/>
-                                    <LinkFormatoFofoe campoClinico={cc}/> <br/>
+                                    <LinkFormatoFofoe campoClinico={cc} showFormatoFofoe={props.solicitud.estatus === 'Montos validados CAME'}/> <br/>
                                     <LinkCredenciales campoClinico={cc}/>
                                 </td>
                             </tr>
@@ -210,7 +210,7 @@ const DetalleSolicitudUnico = (props) => {
     return (
         <><Loader show={isLoading}/>
             <div className="table-responsive">
-                <table className="table">
+                <table className="table table-striped">
                     <thead>
                     <tr>
                         <th>Sede <br/> <input type="text" placeholder={'Sede'}
@@ -237,7 +237,7 @@ const DetalleSolicitudUnico = (props) => {
                                 <td>Solicitados {cc.lugaresSolicitados} <br/> Autorizados {cc.lugaresAutorizados}</td>
                                 <td>Inicio {cc.fechaInicialFormatted} <br/> Final {cc.fechaFinalFormatted}</td>
                                 <td>
-                                    <LinkFormatoFofoe campoClinico={cc}/> <br/>
+                                    <LinkFormatoFofoe campoClinico={cc} showFormatoFofoe={props.solicitud.estatus === 'Montos validados CAME'}/> <br/>
                                     <LinkCredenciales campoClinico={cc}/>
                                 </td>
                             </tr>

@@ -18,12 +18,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SolicitudController extends DIEControllerController
 {
+    const DEFAULT_PERPAGE = 10;
     /**
      * @Route("/came/solicitud", methods={"GET"}, name="came.solicitud.index")
      */
     public function indexAction(Request $request)
     {
-        $perPage = $request->query->get('perPage', 10);
+        $perPage = $request->query->get('perPage', self::DEFAULT_PERPAGE);
         $page = $request->query->get('page', 1);
         $delegacion = $this->getUserDelegacionId();
         if (is_null($delegacion)) {
@@ -59,7 +60,7 @@ class SolicitudController extends DIEControllerController
      */
     public function indexApiAction(Request $request)
     {
-        $perPage = $request->query->get('perPage', 10);
+        $perPage = $request->query->get('perPage', self::DEFAULT_PERPAGE);
         $page = $request->query->get('page', 1);
         $delegacion = $this->getUserDelegacionId();
         if (is_null($delegacion)) {
@@ -236,7 +237,7 @@ class SolicitudController extends DIEControllerController
             'solicitud' => $this->get('serializer')->normalize(
                 $solicitud, 'json', ['attributes' => [
                 'id', 'noSolicitud', 'estatusCameFormatted', 'tipoPago', 'fechaComprobanteFormatted',
-                'fechaComprobante',
+                'fechaComprobante', 'estatus',
                 'institucion' => ['id', 'nombre'],
                 'camposClinicosSolicitados', 'camposClinicosAutorizados',
                 'campoClinicos' => ['id', 'asignatura', 'promocion',

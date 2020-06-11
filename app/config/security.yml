@@ -6,8 +6,9 @@ security:
             algorithm: bcrypt
 
     providers:
-        die_user_provider:
-            id: AppBundle\Security\DIEUserProvider
+        users:
+            entity:
+                class: AppBundle\Entity\Usuario
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -20,7 +21,6 @@ security:
             form_login:
                 login_path: login
                 check_path: login
-            provider: die_user_provider
             logout:
                 path:   /logout
                 target: /
@@ -37,3 +37,6 @@ security:
         - { path: '^/fofoe/detalle-institucion-educativa', roles: [ROLE_SUPER, ROLE_FOFEO_DETALLE_INSTITUCION_EDUCATIVA] }
         - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/formatos', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/factura', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/pago', roles: [IS_AUTHENTICATED_FULLY] }

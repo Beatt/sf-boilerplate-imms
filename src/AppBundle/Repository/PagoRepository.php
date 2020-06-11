@@ -40,12 +40,25 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 
     public function getPagosCampoClinicosBySolicitud($solicitud_id)
     {
-       return $this->createQueryBuilder('pago')
-           ->innerJoin('pago.solicitud', 'solicitud')
-           ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
-           ->where('solicitud.id = :solicitud_id')
-           ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
-           ->setParameter('solicitud_id', $solicitud_id)
-           ->getQuery()->getResult();
-     }
+        return $this->createQueryBuilder('pago')
+            ->innerJoin('pago.solicitud', 'solicitud')
+            ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
+            ->where('solicitud.id = :solicitud_id')
+            ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
+            ->setParameter('solicitud_id', $solicitud_id)
+            ->getQuery()->getResult();
+    }
+
+    public function paginate($perPage = 10, $offset = 1, $filters = [])
+    {
+        $queryBuilder = $this->createQueryBuilder('pago')
+            ;
+        $qb2 = clone $queryBuilder;
+
+        return ['data' => $queryBuilder->orderBy('pago.id', 'DESC')->setMaxResults($perPage)
+            ->setFirstResult(($offset-1) * $perPage)->getQuery()
+            ->getResult(),
+            'total' => $qb2->select('COUNT(pago.id)')->getQuery()->getSingleScalarResult()
+        ];
+    }
 }

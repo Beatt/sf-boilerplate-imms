@@ -48,7 +48,7 @@ const SolicitudValidaMontos = (props) => {
                        resolve()
                    }, 250)
                 }).then(() => {
-                    document.location.href = '/solicitud';
+                    document.location.href = '/came/solicitud';
                 });
             }
         }).finally(() => {

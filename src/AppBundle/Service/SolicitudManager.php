@@ -5,6 +5,7 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\Institucion;
+use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Rol;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Usuario;
@@ -202,7 +203,7 @@ class SolicitudManager implements SolicitudManagerInterface
         }
 
         $user->setActivo(true);
-        $user->addRol($this->entityManager->getRepository(Rol::class)->findOneBy(['clave' => 'IE']));
+        $user->addPermiso($this->entityManager->getRepository(Permiso::class)->findOneBy(['clave' => 'IE']));
 
         $this->entityManager->persist($user);
         try {

@@ -110,7 +110,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     private $pagos;
 
     /**
-     * @var string
+     * @var bool
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
@@ -418,6 +418,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         return $result;
     }
 
+    /**
+     * @return string
+     */
+    public function getEstatusFofoeFormatted()
+    {
+        return ''; //TODO
+    }
+
     public function getInstitucion()
     {
         $result = null;
@@ -624,7 +632,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @return string
+     * @return bool
      */
     public function getConfirmacionOficioAdjunto()
     {
@@ -632,7 +640,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
     }
 
     /**
-     * @param string $confirmacionOficioAdjunto
+     * @param bool $confirmacionOficioAdjunto
      */
     public function setConfirmacionOficioAdjunto($confirmacionOficioAdjunto)
     {
@@ -652,6 +660,9 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         return $result;
     }
 
+    /**
+     * @return Delegacion|null
+     */
     public function getDelegacion()
     {
         $result = null;

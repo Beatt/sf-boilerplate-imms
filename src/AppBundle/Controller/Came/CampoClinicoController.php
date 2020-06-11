@@ -135,11 +135,11 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
-        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico, 'came' => null]);
+        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico]);
     }
 
     /**
-     * @Route("/formato/campo_clinico/{campo_clinico_id}/formato_fofoe/download", methods={"GET"}, name="campo_clinico.formato_fofoe.download")
+     * @Route("/formato/campo_clinico/{campo_clinico_id}/formato_fofoe/download", methods={"GET"}, name="campo_clinico.formato_fofoe.download", requirements={"id"="\d+"})
      * @param Request $request
      * @param GeneradorFormatoFofoeInterface $generadorFormatoFofoe
      * @param $campo_clinico_id
@@ -157,7 +157,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         }
 
         $overwrite = $request->query->get('overwrite', false);
-        return $generadorFormatoFofoe->responsePdf($this->container->getParameter('formato_fofoe_dir'), $campo_clinico, null, $overwrite);
+        return $generadorFormatoFofoe->responsePdf($this->container->getParameter('formato_fofoe_dir'), $campo_clinico, $this->getUser(), $overwrite);
 
     }
 
@@ -183,7 +183,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
     }
 
     /**
-     * @Route("/formato/campo_clinico/{campo_clinico_id}/credenciales/download", methods={"GET"}, name="campo_clinico.credenciales.download")
+     * @Route("/formato/campo_clinico/{campo_clinico_id}/credenciales/download", methods={"GET"}, name="campo_clinico.credenciales.download", requirements={"id"="\d+"})
      * @param Request $request
      * @param GeneradorCredencialesInterface $generadorCredenciales
      * @param $campo_clinico_id
