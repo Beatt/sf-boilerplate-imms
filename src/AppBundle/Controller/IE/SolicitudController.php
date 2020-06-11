@@ -7,7 +7,10 @@ use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
+use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
+use AppBundle\Normalizer\CampoClinicoNormalizer;
+use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
@@ -197,12 +200,14 @@ class SolicitudController extends DIEControllerController
      * @param int $id
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param FormaPagoNormalizer $formaPagoNormalizer
      * @return Response
      */
     public function seleccionarFormaDePagoAction(
         $id,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        FormaPagoNormalizer $formaPagoNormalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -211,7 +216,7 @@ class SolicitudController extends DIEControllerController
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($id);
 
-        $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
+        $form = $this->createForm(FormaPagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#seleccionar_forma_de_pago', [
                 'id' => $id,
             ]),
@@ -226,12 +231,15 @@ class SolicitudController extends DIEControllerController
             $entityManager->persist($data);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Se ha guardado correctamente los montos');
+            $this->addFlash('success', 'Se ha guardado correctamente los montos.');
 
-            return $this->redirectToRoute('ie#inicio');
+            return $this->redirectToRoute('ie#detalle_de_forma_de_pago', [
+                'id' => $id
+            ]);
         }
 
         return $this->render('ie/solicitud/seleccionar_forma_pago.html.twig', [
+            'camposClinicos' => $formaPagoNormalizer->normalizeCamposClinicos($solicitud->getCamposClinicos()),
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud)
         ]);
