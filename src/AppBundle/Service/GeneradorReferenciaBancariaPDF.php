@@ -5,10 +5,6 @@ namespace AppBundle\Service;
 use AppBundle\Entity\Solicitud;
 use Knp\Snappy\Pdf;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Twig\Environment;
 
@@ -40,20 +36,6 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
         $esPagoUnico = $solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO;
 
         if ($esPagoUnico) {
-          $output = $output . '.pdf';
-          $this->generarPDFPago($solicitud, $institucion, $campos, $esPagoUnico, $output);
-        } else {
-          $i=1;
-          foreach ($campos as $campo) {
-            $output = $output . '-' . strval($i++) . '.pdf';
-            $this->generarPDFPago($solicitud, $institucion, [$campo], $esPagoUnico, $output);
-          }
-        }
-
-      $finder = new Finder();
-      $finder->files()->in($directoryOutput);
-
-        if ($esPagoUnico) {
             $output = $output . '.pdf';
             $this->generarPDFPago($solicitud, $institucion, $campos, $esPagoUnico, $output);
         } else {
@@ -74,7 +56,7 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
     {
         $this->pdf->generateFromHtml(
             $this->templating->render(
-                'institucion_educativa/formatos/ReferenciaPago.html.twig',
+                'ie/formato/solicitud/referencia_pago.html.twig',
                 ['institucion' => $this->getNormalizeInstitucion($institucion),
                     'solicitud' => $this->getNormalizeSolicitud($solicitud),
                     'campos' => $this->getNormalizeCampos($campos),
