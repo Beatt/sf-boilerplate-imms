@@ -7,18 +7,24 @@ Encore
   .setPublicPath('/build')
   .copyFiles( {from: './assets/images', to: 'images/[path][name].[ext]'})
   .addStyleEntry('layout', './assets/css/layout.scss')
-  .addEntry('validar-info', './assets/js/institucion_educativa/ValidarInfo/index.js')
-  .addEntry('detalle-campos', './assets/js/institucion_educativa/DetalleSolicitud/index.js')
-  .addEntry('detalle_solicitud_multiple', './assets/js/institucion_educativa/DetalleSolicitudMultiple/index.js')
-  .addEntry('registrar-montos', './assets/js/institucion_educativa/RegistrarMontos/index.js')
-  .addEntry('registrar-pagos', './assets/js/institucion_educativa/RegistrarPago/index.js')
-  .addEntry('mis-solicitudes', './assets/js/institucion_educativa/MisSolicitudes/index.js')
+  // IE
+  .addEntry('ie.perfil', './assets/js/ie/Perfil/index.js')
+  .addEntry('ie.detalle.solicitud', './assets/js/ie/DetalleSolicitud/index.js')
+  .addEntry('ie.registrar.montos', './assets/js/ie/RegistrarMontos/index.js')
+  .addEntry('ie.inicio', './assets/js/ie/Inicio/index.js')
+  .addEntry('ie.detalle.forma.pago', './assets/js/ie/DetalleFormaPago/index.js')
+  .addEntry('ie.detalle.solicitud.multiple', './assets/js/ie/DetalleSolicitudMultiple/index.js')
+  .addEntry('ie.cargar.comprobante', './assets/js/ie/RegistrarPago/index.js')
+  .addEntry('ie.seleccionar.forma.pago', './assets/js/ie/SeleccionarFormaPago/index.js')
+  .addEntry('ie.correccion.pago.fofoe', './assets/js/ie/EditarPagoFofoe/index.js')
+
+  // CAME
   .addEntry('came_solicitud_index', './assets/js/came/solicitud/index.js')
   .addEntry('pregrado_reporte', './assets/js/pregrado/reporte/index.js')
-  .addEntry('seleccionar_forma_pago', './assets/js/institucion_educativa/SeleccionarFormaPago/index.js')
-  .addEntry('detalle_forma_pago', './assets/js/institucion_educativa/DetalleFormaPago/index.js')
-  .addEntry('fofoe_pago', './assets/js/fofoe/pago/index.js')
+
+  // FOFOE
   .addStyleEntry('layout-formato-fofoe', './assets/css/formatos/fofoe/layout.scss')
+  .addEntry('fofoe.registrar.factura', './assets/js/fofoe/RegistrarFactura/index.js')
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
   .enableSourceMaps(!Encore.isProduction())

@@ -139,14 +139,17 @@ class Usuario implements UserInterface
      */
     private $permisos;
 
-    /** @var string */
-    private $plainPassword;
-
     /**
      * @var Institucion
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Institucion", mappedBy="usuario")
      */
     private $institucion;
+
+    /** @var string */
+    private $plainPassword;
+
+    /** @var string */
+    private $rol;
 
     public function __construct()
     {
@@ -579,5 +582,21 @@ class Usuario implements UserInterface
         $this->institucion = $institucion;
 
         return $this;
+    }
+
+    /**
+     * @param string $rol
+     */
+    public function setRol($rol)
+    {
+        $this->rol = $rol;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRol()
+    {
+        return $this->rol;
     }
 }

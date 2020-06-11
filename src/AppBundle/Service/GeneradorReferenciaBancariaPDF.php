@@ -56,7 +56,7 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
     {
         $this->pdf->generateFromHtml(
             $this->templating->render(
-                'institucion_educativa/formatos/ReferenciaPago.html.twig',
+                'ie/formato/solicitud/referencia_pago.html.twig',
                 ['institucion' => $this->getNormalizeInstitucion($institucion),
                     'solicitud' => $this->getNormalizeSolicitud($solicitud),
                     'campos' => $this->getNormalizeCampos($campos),
