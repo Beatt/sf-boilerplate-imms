@@ -14,8 +14,9 @@ Encore
   .addEntry('ie.inicio', './assets/js/ie/Inicio/index.js')
   .addEntry('ie.detalle.forma.pago', './assets/js/ie/DetalleFormaPago/index.js')
   .addEntry('ie.detalle.solicitud.multiple', './assets/js/ie/DetalleSolicitudMultiple/index.js')
-  .addEntry('registrar-pagos', './assets/js/ie/RegistrarPago/index.js')
-  .addEntry('seleccionar_forma_pago', './assets/js/ie/SeleccionarFormaPago/index.js')
+  .addEntry('ie.cargar.comprobante', './assets/js/ie/RegistrarPago/index.js')
+  .addEntry('ie.seleccionar.forma.pago', './assets/js/ie/SeleccionarFormaPago/index.js')
+  .addEntry('ie.correccion.pago.fofoe', './assets/js/ie/EditarPagoFofoe/index.js')
 
   // CAME
   .addEntry('came_solicitud_index', './assets/js/came/solicitud/index.js')
@@ -23,6 +24,7 @@ Encore
 
   // FOFOE
   .addStyleEntry('layout-formato-fofoe', './assets/css/formatos/fofoe/layout.scss')
+  .addEntry('fofoe.registrar.factura', './assets/js/fofoe/RegistrarFactura/index.js')
   .enableSingleRuntimeChunk()
   .cleanupOutputBeforeBuild()
   .enableSourceMaps(!Encore.isProduction())

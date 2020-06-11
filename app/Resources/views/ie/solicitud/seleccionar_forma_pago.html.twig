@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('build/seleccionar_forma_pago.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/ie.seleccionar.forma.pago.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -42,9 +42,8 @@
     <script>
         window.CAMPOS_CLINICOS_PROPS = {{ camposClinicos|json_encode|raw }}
         window.ACTION = {{ path('ie#seleccionar_forma_de_pago', {
-            'id': institucion.id,
-            'solicitudId': solicitud.id
+            'id': solicitud.id
         })|json_encode|raw }}
     </script>
-    <script src="{{ asset('build/seleccionar_forma_pago.js') }}"></script>
+    <script src="{{ asset('build/ie.seleccionar.forma.pago.js') }}"></script>
 {% endblock %}

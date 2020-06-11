@@ -6,10 +6,12 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Carbon\Carbon;
 
 /**
  * @ORM\Table(name="factura")
  * @ORM\Entity
+ * @Vich\Uploadable
  */
 class Factura
 {
@@ -52,6 +54,7 @@ class Factura
      *
      * @Vich\UploadableField(mapping="facturas", fileNameProperty="zip")
      */
+
     private $zipFile;
 
 
@@ -150,4 +153,21 @@ class Factura
          }
          return '';
      }
+
+     /**
+     * @return File
+     */
+    public function getZipFile()
+    {
+        return $this->zipFile;
+    }
+
+    /**
+     * @param File $zipFile
+     */
+    public function setZipFile($zipFile = null)
+    {
+        $this->zipFile = $zipFile;
+
+    }
 }

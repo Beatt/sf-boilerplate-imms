@@ -10,15 +10,27 @@ const Registrar = (
     carreras,
     institucionId
   }) => {
+
+    let acceso = false;
+
+    if(autorizados[0].autorizados != 0)
+      acceso = true;
+    
   return (
+    <>
+    {
+       acceso ? 
     <form
-      action={`/instituciones/${institucionId}/solicitudes/${solicitudId}/registrar`}
+      action={`/instituciones/${institucionId}/solicitudes/${solicitudId.id}/registrar`}
       method="post"
       encType='multipart/form-data'
     >
+
+     
+
       <div className='row'>
         <div className="col-md-12 mb-10">
-          <p>Se autorizaron {autorizados} Campos Clínicos para las carreras de&nbsp;
+          <p>Se autorizaron {autorizados[0].autorizados} Campos Clínicos para las carreras de&nbsp;
             <strong>{carreras.map(carrera => carrera.nombre).join(', ')}</strong>
           </p>
         </div>
@@ -32,6 +44,7 @@ const Registrar = (
               <input
                 type="file"
                 name='solicitud_validacion_montos[urlArchivoFile]'
+                required={true}
               />
             </div>
           </div>
@@ -62,30 +75,44 @@ const Registrar = (
                       <td className='hidden'>
                         <input
                           className='form-control'
-                          type="text"
+                          type="number"
+                          min={1}
+                          step={0.01}
                           defaultValue={carrera.id}
                           name={`solicitud_validacion_montos[montosCarreras][${index}][carrera]`}
                         />
                       </td>
-                      <td>
-                        <input
-                          className='form-control'
-                          type="text"
-                          name={`solicitud_validacion_montos[montosCarreras][${index}][montoInscripcion]`}
-                          id="solicitud_validacion_montos_montosCarreras_${index}_montoInscripcion"
-                          defaultValue={carrera.montoInscripcion}
-                          required={true}
-                        />
+                      <td className="form-inline">
+                        <div className="form-group">
+                          <div className="input-group">
+                            <div class="input-group-addon">$</div>
+                            <input
+                              className='form-control'
+                              type="number"
+                              min={1}
+                              step={0.01}
+                              name={`solicitud_validacion_montos[montosCarreras][${index}][montoInscripcion]`}
+                              id="solicitud_validacion_montos_montosCarreras_${index}_montoInscripcion"
+                              defaultValue={carrera.montoInscripcion}
+                              required={true}
+                            />
+                            </div>
+                          </div>
                       </td>
-                      <td>
-                        <input
-                          className='form-control'
-                          type="text"
-                          name={`solicitud_validacion_montos[montosCarreras][${index}][montoColegiatura]`}
-                          id="solicitud_validacion_montos_montosCarreras_${index}_montoColegiatura"
-                          defaultValue={carrera.montoColegiatura}
-                          required={true}
-                        />
+                      <td className="form-inline">
+                      <div className="form-group">
+                          <div className="input-group">
+                            <div class="input-group-addon">$</div>
+                            <input
+                              className='form-control'
+                              type="text"
+                              name={`solicitud_validacion_montos[montosCarreras][${index}][montoColegiatura]`}
+                              id="solicitud_validacion_montos_montosCarreras_${index}_montoColegiatura"
+                              defaultValue={carrera.montoColegiatura}
+                              required={true}
+                            />
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   )
@@ -105,6 +132,7 @@ const Registrar = (
                 type="checkbox"
                 id='solicitud_validacion_montos_confirmacionOficioAdjunto'
                 name='solicitud_validacion_montos[confirmacionOficioAdjunto]'
+                required={true}
               />&nbsp;Confirmo información
             </label>
           </p>
@@ -122,8 +150,12 @@ const Registrar = (
             </button>
           </div>
         </div>
-      </div>
+      </div> 
     </form>
+      :
+    <div className="mt-20"><h1><center>Lo sentimos, no tiene campos clínicos autorizados</center></h1></div>
+    }
+    </>
   )
 }
 

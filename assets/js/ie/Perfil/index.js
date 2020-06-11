@@ -30,6 +30,20 @@ const ValidarInfo = (
             <span className="help-block">{errores.rfc ? errores.rfc[0] : ''}</span>
           </div>
         </div>
+        <div className='col-md-6'>
+          <div className={`form-group ${errores.representante ? 'has-error has-feedback' : ''}`}>
+            <label htmlFor="institucion_representante">Representante</label>
+            <input
+              className='form-control'
+              type="text"
+              name="institucion[representante]"
+              id="institucion_representante"
+              defaultValue={institucion.representante}
+              required={true}
+            />
+            <span className="help-block">{errores.representante ? errores.representante[0] : ''}</span>
+          </div>
+        </div>
       </div>
       <div className='row'>
         <div className="col-md-12">
@@ -105,7 +119,7 @@ const ValidarInfo = (
           </div>
         </div>
         <div className="col-md-8">
-          <label htmlFor="institucion_cedulaFile_file">Cargue Cedula de Identificación Fiscal de la institución educativa</label>
+          <label htmlFor="institucion_cedulaFile_file">Cargue Cedula de Identificación Fiscal de la institución educativa (Opcional)</label>
           <input
             type="file"
             name="institucion[cedulaFile][file]"

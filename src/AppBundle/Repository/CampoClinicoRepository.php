@@ -96,7 +96,7 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
                                   JOIN carrera on convenio.carrera_id = carrera.id
                                   JOIN nivel_academico on carrera.nivel_academico_id = nivel_academico.id
                                   JOIN solicitud on campo_clinico.solicitud_id = solicitud.id
-                         WHERE campo_clinico.solicitud_id = :id
+                         WHERE campo_clinico.lugares_autorizados <> 0 AND campo_clinico.solicitud_id = :id
                      ) as carreras_unicas
                          LEFT JOIN monto_carrera on carreras_unicas.id = monto_carrera.carrera_id
             ');
