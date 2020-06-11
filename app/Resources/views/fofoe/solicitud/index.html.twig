@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<link rel="stylesheet" href="{{ asset('build/fofoe_pago.css') }}">
+<link rel="stylesheet" href="{{ asset('build/fofoe_solicitud.css') }}">
 <style>
     .wrapper-fofoe{
         margin-top: 80px;
@@ -28,9 +28,9 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-    window.PAGOS = {{ pagos | json_encode | raw }};
+    window.SOLICITUDES = {{ solicitudes | json_encode | raw }};
     window.META = {{ meta | json_encode | raw}};
 </script>
-<script src="{{ asset('build/fofoe_pago.js') }}"></script>
+<script src="{{ asset('build/fofoe_solicitud.js') }}"></script>
 
 {% endblock %}

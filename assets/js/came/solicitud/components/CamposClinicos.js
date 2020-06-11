@@ -39,7 +39,7 @@ const CamposClinicos = (props) => {
                     <h3>Información Solicitud Campos Clínicos</h3>
                     <h4>Campos Clínicos registrados en la Solicitud</h4>
                     <div className="table-responsive">
-                        <table className="table">
+                        <table className="table table-striped">
                             <thead>
                             <tr>
                                 <th>Ciclo Académico</th>

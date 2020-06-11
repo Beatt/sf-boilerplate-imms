@@ -381,7 +381,7 @@ class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterf
     {
         $inicial = Carbon::instance($this->fechaInicial);
         $final = Carbon::instance($this->fechaFinal);
-        return $final->diffInWeeks($inicial);
+        return $final->diffInWeeks($inicial) > 0 ? $final->diffInWeeks($inicial) : 1;
     }
 
 
@@ -488,7 +488,7 @@ class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterf
      */
     public function getFactorSemanalAutorizado()
     {
-        return $this->getImporteColegiaturaAnualIntegrada() * .005;
+        return .005;
     }
 
     /**

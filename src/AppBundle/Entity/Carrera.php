@@ -44,6 +44,11 @@ class Carrera
      */
     private $montosCarreras;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Convenio", mappedBy="carrera")
+     */
+    private $convenios;
+
     public function __construct()
     {
         $this->montosCarreras = new \Doctrine\Common\Collections\ArrayCollection();
@@ -152,5 +157,13 @@ class Carrera
     public function getMontosCarreras()
     {
         return $this->montosCarreras;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConvenios()
+    {
+        return $this->convenios;
     }
 }

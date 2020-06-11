@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route('/fofoe')
+ * @Route("/fofoe")
  */
 class SolicitudController extends DIEControllerController
 {
@@ -107,5 +107,64 @@ class SolicitudController extends DIEControllerController
                 ]
             ]
         );
+    }
+
+
+    /**
+     * @Route("/inicio", methods={"GET"}, name="fofoe/inicio")
+     *
+     */
+    public function indexAction(Request $request)
+    {
+        $perPage = $request->query->get('perPage', 10);
+        $page = $request->query->get('page', 1);
+        $solicitudes = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->getSolicitudesPagadas($perPage, $page, $request->query->all());
+        return $this->render('fofoe/solicitud/index.html.twig', [
+            'solicitudes' => $this->get('serializer')->normalize(
+                $solicitudes['data'],
+                'json',
+                [
+                    'attributes' => [
+                        'id', 'noSolicitud', 'estatus', 'tipoPago',
+                        'delegacion' => ['id', 'nombre'],
+                        'institucion' => ['id', 'nombre'],
+                        'pagos' => ['id', 'referenciaBancaria', 'validado', 'requiereFactura', 'fechaPagoFormatted',
+                            'factura' => ['id', 'folio']]
+                    ]
+                ]
+            ),
+            'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
+        ]);
+
+    }
+
+    /**
+     * @Route("/api/solicitud", methods={"GET"}, name="fofoe.solicitud.index.api")
+     */
+    public function indexApiAction(Request $request)
+    {
+        $perPage = $request->query->get('perPage', 10);
+        $page = $request->query->get('page', 1);
+        $solicitudes = $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->getSolicitudesPagadas($perPage, $page, $request->query->all());
+        return $this->jsonResponse([
+            'object' => $this->get('serializer')->normalize(
+                $solicitudes['data'],
+                'json',
+                [
+                    'attributes' => [
+                        'id', 'noSolicitud', 'estatus', 'tipoPago',
+                        'delegacion' => ['id', 'nombre'],
+                        'institucion' => ['id', 'nombre'],
+                        'pagos' => ['id', 'referenciaBancaria', 'validado', 'requiereFactura', 'fechaPagoFormatted',
+                            'factura' => ['id', 'folio']]
+                    ]
+                ]
+            ),
+            'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
+        ]);
     }
 }

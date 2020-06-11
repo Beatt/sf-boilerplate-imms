@@ -237,7 +237,7 @@ class SolicitudController extends DIEControllerController
             'solicitud' => $this->get('serializer')->normalize(
                 $solicitud, 'json', ['attributes' => [
                 'id', 'noSolicitud', 'estatusCameFormatted', 'tipoPago', 'fechaComprobanteFormatted',
-                'fechaComprobante',
+                'fechaComprobante', 'estatus',
                 'institucion' => ['id', 'nombre'],
                 'camposClinicosSolicitados', 'camposClinicosAutorizados',
                 'campoClinicos' => ['id', 'asignatura', 'promocion',

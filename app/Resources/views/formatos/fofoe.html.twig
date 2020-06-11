@@ -44,7 +44,7 @@
         {% if campo_clinico.convenio.cicloAcademico.id == 1 %}
         <div class="monto">
             <div class="monto_name"><p>FACTOR SEMANAL AUTORIZADO</p></div>
-            <div class="monto_value"><p>$ {{ campo_clinico.factorSemanalAutorizado | number_format(2) }}</p></div>
+            <div class="monto_value"><p>{{ campo_clinico.factorSemanalAutorizado }}</p></div>
         </div>
         {% else %}
         <div class="monto">
@@ -79,19 +79,15 @@
     <div id="firmas">
         <div>
             <p>ELABORÓ</p>
-            {% if came %}
-                <p> </p>
-            {% else %}
-                <p> </p>
-            {% endif %}
+            <p> {{ came.fullname | upper }}</p>
+            <p> {{ campo_clinico.convenio.delegacion.nombre | upper }}</p>
             <hr>
-            <p>NOMBRE Y CARGO IMSS</p>
         </div>
         <div>
             <p>ACEPTÓ</p>
-            <p> </p>
+            <p> {{ campo_clinico.convenio.institucion.representante | upper }}</p>
+            <p>REPRESENTANTE LEGAL</p>
             <hr>
-            <p>NOMBRE Y CARGO INSTITUCIÓN EDUCATIVA</p>
         </div>
     </div>
 {%endblock%}

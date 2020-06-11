@@ -143,7 +143,7 @@ const SolicitudIndex = (props) => {
                 <div className="panel panel-default">
                     <div style={{textAlign: 'center', display: (props.solicitudes.length <= 0 ? 'block': 'none'), padding:'80px 0px'}}><h3>No hay ninguna solicitud registrada</h3></div>
                     <div className={'table-responsive'} style={{display: (props.solicitudes.length > 0 ? 'block': 'none')}}>
-                        <table className="table">
+                        <table className="table table-striped">
                             <thead>
                             <tr>
                                 <th>No. de solicitud <br/><input type="text" placeholder={'No. de solicitud'}

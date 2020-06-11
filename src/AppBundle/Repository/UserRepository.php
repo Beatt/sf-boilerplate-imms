@@ -21,4 +21,18 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
         } catch (\Exception $e) {
         }
     }
+
+    public function getCameByDelegacion($delegacion_id)
+    {
+        return $this->createQueryBuilder('usuario')
+            ->innerJoin('usuario.delegaciones', 'delegaciones')
+            ->innerJoin('usuario.permisos', 'permiso')
+            ->where('delegaciones.id = :delegacion')
+            ->andWhere('usuario.activo = true')
+            ->andWhere('permiso.clave = :clave')
+            ->setParameter('delegacion', $delegacion_id)
+            ->setParameter('clave', 'CAME')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

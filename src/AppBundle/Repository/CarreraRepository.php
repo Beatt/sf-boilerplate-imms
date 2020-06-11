@@ -18,9 +18,8 @@ class CarreraRepository extends EntityRepository implements CarreraRepositoryInt
 
         try {
             return $this->createQueryBuilder('carrera')
-                ->select('carrera')
-                ->join('carrera.id', 'convenio')
-                ->join('convenio.id', 'campo_clinico')
+                ->join('carrera.convenios', 'convenios')
+                ->join('convenios.camposClinicos', 'campo_clinico')
                 ->where('campo_clinico.solicitud = :id')
                 ->setParameter('id', $id)
                 ->distinct()

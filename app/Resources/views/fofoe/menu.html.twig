@@ -46,6 +46,11 @@
             position: inherit;
         }
     }
+
+    .delegacion img {
+        height: 56px;
+        margin-bottom: 16px
+    }
 </style>
 
 <div class='container-fluid'>
@@ -64,6 +69,7 @@
                     <p>Matricula: {{ usuario.matricula }}</p>
                 </div>
                 <div class="delegacion">
+                    <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('build/images/fofoe.png') }}" alt="">
                     <h3>Fondo del Fomento de Educación</h3>
                 </div>
             </div>
