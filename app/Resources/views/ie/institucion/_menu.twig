@@ -1,0 +1,64 @@
+<style>
+    .institucion-educativa-menu {
+        padding: 20px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .institucion-educativa-menu__image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .institucion-educativa-menu__content {
+        margin-left: 20px;
+        height: 60px;
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+    }
+
+    .institucion-educativa__submenu {
+        background-color: whitesmoke;
+        text-align: right;
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .institucion-educativa__submenu > * {
+        margin-right: 15px;
+    }
+</style>
+
+<div class='container-fluid'>
+    <div class='row'>
+        <div class="institucion-educativa__submenu">
+            <a href="{{ path('ie#inicio') }}">Mis solicitudes</a>
+            <a href="{{ path('ie#perfil') }}">Perfil</a>
+            <a href="{{ path('logout') }}">Cerrar sesión</a>
+        </div>
+        <div class="col-md-12 page-cut">
+            <div class="institucion-educativa-menu">
+                <img class='img-responsive institucion-educativa-menu__image'
+                     src='https://image.shutterstock.com/image-vector/blank-avatar-photo-place-holder-260nw-1095249842.jpg'
+                     alt=""
+                />
+                <div class="institucion-educativa-menu__content">
+                    <p class="text-bold">Institución educativa</p>
+                    <p>{{ institucion.nombre }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% for label, messages in app.flashes(['success', 'failed']) %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>

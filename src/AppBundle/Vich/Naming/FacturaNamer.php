@@ -11,7 +11,7 @@ class FacturaNamer implements NamerInterface
 {
     /**
      * @inheritDoc
-     * @var Solicitud $object
+     * @var Factura $object
      */
     public function name($object, PropertyMapping $mapping)
     {

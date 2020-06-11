@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\InstitucionEducativa;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Repository\CampoClinicoRepository;
 use AppBundle\Repository\InstitucionRepositoryInterface;
@@ -10,18 +11,22 @@ use AppBundle\Repository\SolicitudRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/ie")
+ */
 class FormatoPagoController extends DIEControllerController
 {
     /**
-     * @Route("/instituciones/{institucionId}/solicitudes/{solicitudId}/formato-pago",
-     *   name="formato-pago#index")
-     * @param int $institucionId
+     * @Route("/solicitudes/{id}/generar-formato-de-pago", name="ie#generar_formato_de_pago_unico")
      * @param int $solicitudId
+     * @param SolicitudRepositoryInterface $solicitudRepository
      * @return Response
      */
-    public function indexPagoUnicoAction($institucionId, $solicitudId,
-                                         SolicitudRepositoryInterface $solicitudRepository)
-    {
+    public function generarFormatoDePagoUnicoAction(
+        $solicitudId,
+        SolicitudRepositoryInterface $solicitudRepository
+    ) {
+        $institucionId = $this->getUser()->getInstitucion()->getId();
 
         $solicitud = $solicitudRepository->find($solicitudId);
 
@@ -35,7 +40,7 @@ class FormatoPagoController extends DIEControllerController
         $campos = $esPagoUnico
             ? $solicitud->getCamposClinicos() : null;
 
-        return $this->render('institucion_educativa/formatos/ReferenciaPago.html.twig',
+        return $this->render('ie/formato/referencia_pago.html.twig',
             ['institucion' => $this->getNormalizeInstitucion($institucion),
                 'solicitud' => $this->getNormalizeSolicitud($solicitud),
                 'campos' => $this->getNormalizeCampos($campos),
@@ -43,24 +48,29 @@ class FormatoPagoController extends DIEControllerController
     }
 
     /**
-     * @Route("/instituciones/{institucionId}/solicitudes/{solicitudId}/formato-pago/{campoId}",
-     *   name="formato-pago#multiple")
-     * @param int $institucionId
-     * @param int $solicitudId
+     * @Route("/solicitudes/{id}/camposClinicos/{campoId}/generar-formato-de-pago", name="ie#generar_formato_de_pago_multiple")
+     * @param int $id
      * @param int $campoId
+     * @param SolicitudRepositoryInterface $solicitudRepository
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param CampoClinicoRepository $campoClinicoRepository
      * @return Response
      */
-    public function indexPagoMultipleAction($institucionId, $solicitudId, $campoId,
-                                            InstitucionRepositoryInterface $institucionRepository,
-                                            SolicitudRepositoryInterface $solicitudRepository,
-                                            CampoClinicoRepository $campoClinicoRepository)
-    {
-        $institucion = $institucionRepository->find($institucionId);
+    public function generarFormatoDePagoMultipleAction(
+        $id,
+        $campoId,
+        SolicitudRepositoryInterface $solicitudRepository,
+        InstitucionRepositoryInterface $institucionRepository,
+        CampoClinicoRepository $campoClinicoRepository
+    ) {
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        $institucion = $institucionRepository->find($institucion->getId());
 
         $campo = $campoClinicoRepository->getAllCamposClinicosByRequest($campoId, 0, true);
-        $solicitud = $solicitudRepository->find($solicitudId);
+        $solicitud = $solicitudRepository->find($id);
 
-        return $this->render('institucion_educativa/formatos/ReferenciaPago.html.twig',
+        return $this->render('ie/formato/referencia_pago.html.twig',
             ['institucion' => $this->getNormalizeInstitucion($institucion),
                 'solicitud' => $this->getNormalizeSolicitud($solicitud),
                 'campos' => $this->getNormalizeCampos($campo)]);

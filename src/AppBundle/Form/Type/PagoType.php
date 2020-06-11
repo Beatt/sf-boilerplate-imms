@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Form\Type\ComprobantePagoType;
+namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Factura;
@@ -13,19 +13,12 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class PagoComprobanteType extends AbstractType
+class PagoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('monto')
-            ->add('fechaPago', DateType::class, [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-            ])
-            ->add('referenciaBancaria')
-            ->add('solicitud')
-            ->add('comprobantePagoFile', FileType::class)
+            ->add('factura', FacturaType::class)
             ->add('requiereFactura')
         ;
     }
