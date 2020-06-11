@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller\InstitucionEducativa;
+namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;

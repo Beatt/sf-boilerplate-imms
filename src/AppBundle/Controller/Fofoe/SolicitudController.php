@@ -52,7 +52,7 @@ class SolicitudController extends DIEControllerController
 
             $this->addFlash('success', 'Se ha guardado correctamente la factura');
 
-            return $this->redirectToRoute('solicitudes#index', [
+            return $this->redirectToRoute('ie#inicio', [
                 'id' => $id
             ]);
         }
