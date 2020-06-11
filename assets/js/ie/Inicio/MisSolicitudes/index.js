@@ -44,23 +44,19 @@ const MisSolicitudes = ({ totalInit }) => {
     if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
 
     let redirectRoute = ''
-    if(isSolicitudTipoPagoMultiple(solicitud)) {
-      redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
-    }
-    else if(isSolicitudConfirmada(solicitud)) {
-      redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
+
+    switch(solicitud.estatus) {
+      case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        break;
+      case SOLICITUD.CONFIRMADA:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
+        break
+      case SOLICITUD.CARGANDO_COMPROBANTES:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
     }
 
     window.location.href = redirectRoute
-  }
-
-  function isSolicitudTipoPagoMultiple(solicitud) {
-    return solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES &&
-      solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
-  }
-
-  function isSolicitudConfirmada(solicitud) {
-    return solicitud.estatus === SOLICITUD.CONFIRMADA;
   }
 
   return(

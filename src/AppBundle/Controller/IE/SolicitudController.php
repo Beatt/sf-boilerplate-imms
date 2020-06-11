@@ -15,6 +15,8 @@ use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
+use AppBundle\Service\ProcesadorFormaPago;
+use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -199,15 +201,15 @@ class SolicitudController extends DIEControllerController
      * @Route("/solicitudes/{id}/seleccionar-forma-de-pago", name="ie#seleccionar_forma_de_pago")
      * @param int $id
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param FormaPagoNormalizer $formaPagoNormalizer
+     * @param ProcesadorFormaPagoInterface $procesadorFormaPago
      * @return Response
      */
     public function seleccionarFormaDePagoAction(
         $id,
         Request $request,
-        EntityManagerInterface $entityManager,
-        FormaPagoNormalizer $formaPagoNormalizer
+        FormaPagoNormalizer $formaPagoNormalizer,
+        ProcesadorFormaPagoInterface $procesadorFormaPago
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -226,10 +228,7 @@ class SolicitudController extends DIEControllerController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $data = $form->getData();
-            $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_FOFOE);
-            $entityManager->persist($data);
-            $entityManager->flush();
+            $procesadorFormaPago->procesar($form->getData());
 
             $this->addFlash('success', 'Se ha guardado correctamente los montos.');
 

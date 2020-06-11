@@ -3,6 +3,8 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampo;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\ReferenciaBancariaInterface;
 use AppBundle\Entity\Solicitud;
@@ -40,6 +42,8 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
         } else {
             /** @var CampoClinico $camposClinico */
             foreach($solicitud->getCamposClinicos() as $camposClinico) {
+                $this->setEstatusDeCampoClinicoAPendienteDePago($camposClinico);
+
                 $pago = $this->createPago(
                     $solicitud,
                     $camposClinico->getMonto()
@@ -106,5 +110,18 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
         $referenciaBancariaResult = $this->generadorReferenciaBancaria->getReferenciaBancaria();
         $pago->setReferenciaBancaria($referenciaBancariaResult);
         $referenciaBancaria->setReferenciaBancaria($referenciaBancariaResult);
+    }
+
+    /**
+     * @param CampoClinico $camposClinico
+     */
+    protected function setEstatusDeCampoClinicoAPendienteDePago(CampoClinico $camposClinico)
+    {
+        $pendienteDePagoEstatus = $this
+            ->entityManager
+            ->getRepository(EstatusCampo::class)
+            ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
+
+        $camposClinico->setEstatus($pendienteDePagoEstatus);
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\AppBundle\Service;
 
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
@@ -103,6 +104,11 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
 
         /** @var CampoClinico $camposClinico */
         foreach($camposClinicos as $camposClinico) {
+            $this->assertEquals(
+                EstatusCampoInterface::PENDIENTE_DE_PAGO,
+                $camposClinico->getEstatus()->getNombre()
+            );
+
             $pago = $this->pagoRepository->findOneBy([
                 'referenciaBancaria' => $camposClinico->getReferenciaBancaria()
             ]);
