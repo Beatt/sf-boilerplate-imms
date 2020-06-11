@@ -92,7 +92,7 @@ class Pago
     /**
      * @var Factura
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="factura")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="factura", cascade={"persist"})
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */
      private $factura;
@@ -228,6 +228,16 @@ class Pago
     }
 
     /**
+     * @param Factura $factura
+     */
+    public function setFactura(Factura $factura)
+    {
+        $this->factura = $factura;
+
+         return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isRequiereFactura()
@@ -257,8 +267,6 @@ class Pago
     public function setComprobantePagoFile($comprobantePagoFile = null)
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
-
-        $this->setFechaPago(Carbon::now());
     }
 
     /**

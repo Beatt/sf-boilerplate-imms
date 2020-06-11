@@ -13,7 +13,7 @@
     <div class="section-md">
         <div class='container-fluid'>
             <div class='container'>
-                <h1 class="text-bold text-center">Registrar comprobante de pago</h1>
+                <h1 class="text-bold text-center">Correción de pago</h1>
                 <div style="display: flex;">
                     <p class="text-bold mt-10">Solicitud {{ solicitud.noSolicitud }}</p>
                 </div>
@@ -34,5 +34,5 @@
       window.RFC_PROP = {{ institucion|json_encode|raw }}
       window.SOLICITUD_PROP = {{ solicitud|json_encode|raw }}
     </script>
-    <script src="{{ asset('build/registrar-pagos.js') }}"></script>
+    <script src="{{ asset('build/editar-pagos.js') }}"></script>
 {% endblock %}

@@ -46,6 +46,9 @@ services:
 
     AppBundle\Vich\Naming\ComprobanteInscripcionNamer:
         public: true
+    
+    AppBundle\Vich\Naming\FacturaNamer:
+        public: true
 
     AppBundle\DataFixtures\:
         resource: '../../src/AppBundle/DataFixtures'

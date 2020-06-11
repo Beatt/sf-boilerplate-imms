@@ -5,21 +5,52 @@ import { SOLICITUD } from "../../constants";
 
 const Registrar = (
   {
-    rfc,
+    institucion,
     solicitud
   }) => {
 
-    {console.log(solicitud)}
+  const [errores, setErrores] = React.useState({});
+  const [userAmount, setUserAmount] = React.useState(0);
+
+  function validate(amount) {
+    
+    const errors = [];
+
+    if (amount > solicitud.monto) {
+      errors.push("El monto ingresado no puede ser mayor al de la solicitud");
+    }
+  
+    return errors;
+  }
+    
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setErrores([]);
+
+    let amount = userAmount;
+    let errors = validate(amount);
+    if (errors.length > 0) {
+      setErrores(errors);
+      {console.log("Errores")}
+      return;
+    }
+    {"Console.log"}
+    // send the form...
+  };
+
+
   return (
     <form
-      action={`/instituciones/${1}/solicitudes/${solicitud.id}/registrarPago`}
+      action={`/instituciones/${institucion.id}/solicitudes/${solicitud.id}/registrarPago`}
       method="post"
       encType='multipart/form-data'
     >
     <div>
+      
         <div className="row mt-10">
             <div className="col-md-6">
-                <p>RFC:&nbsp; {rfc}</p>
+                <p>RFC:&nbsp; {institucion.rfc}</p>
                 <p className="mt-10">No de referencia:&nbsp; {solicitud.referenciaBancaria }</p>
             </div>
             <div className="col-md-6">
@@ -45,7 +76,6 @@ const Registrar = (
                               <input
                               className='form-control'
                               defaultValue={solicitud.id}
-                              required={true}
                               name={`solicitud_comprobante_pago[pagos][0][solicitud]`}
                               />
                               </div>
@@ -55,7 +85,6 @@ const Registrar = (
                               <input
                               className='form-control'
                               defaultValue={solicitud.referenciaBancaria}
-                              required={true}
                               name={`solicitud_comprobante_pago[pagos][0][referenciaBancaria]`}
                               />
                               </div>
@@ -65,19 +94,27 @@ const Registrar = (
                               <input
                               className='form-control'
                               type="number"
-                              defaultValue={'0'}
                               required={true}
                               name={`solicitud_comprobante_pago[pagos][0][monto]`}
+                              />
+                              <span className="errors">{errores[0] ? errores[0] : ''}</span>
+                              </div>
+                          </td>
+                          <td>
+                              <div className="form-group">
+                              <input
+                              className='form-control'
+                              type="date"
+                              required={true}
+                              name={`solicitud_comprobante_pago[pagos][0][fechaPago]`}
                               />
                               </div>
                           </td>
                           <td>
-                              
-                          </td>
-                          <td>
                           <input
                             type="file"
-                            name='solicitud_comprobante_pago[pagos][0][comprobantePagoFile]'
+                            name={`solicitud_comprobante_pago[pagos][0][comprobantePagoFile]`}
+                            required={true}
                           />
                           </td>
                         </tr>
@@ -85,10 +122,20 @@ const Registrar = (
                 </table>
                 </div>
             </div>
+            <p>
+            ¿Requiere factura? &nbsp;
+            <label htmlFor="solicitud_comprobante_pago">
+              <input
+                type="checkbox"
+                id='solicitud_comprobante_pago'
+                name='solicitud_comprobante_pago[pagos][0][requiereFactura]'
+              />
+            </label>
+          </p>
             </div>
 
             <div className="col-md-12 mb-10 mt-10 observaciones">
-                <p className="observaciones"><strong>Nota:</strong> El monto a registrar debe coincidor con el comprobante registrado</p>
+                <p className="observaciones"><strong>Nota:</strong> El monto a registrar debe coincidir con el comprobante registrado</p>
                 <p className="observaciones">La suma total de los montos registrados debe ser igual al monto total.</p>
                 
             </div>
@@ -114,7 +161,7 @@ const Registrar = (
 
 ReactDOM.render(
   <Registrar
-    rfc={window.RFC_PROP}
+    institucion={window.RFC_PROP}
     solicitud={window.SOLICITUD_PROP}
   />,
   document.getElementById('registrar-component')

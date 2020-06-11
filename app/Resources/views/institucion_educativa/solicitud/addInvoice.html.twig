@@ -13,10 +13,7 @@
     <div class="section-md">
         <div class='container-fluid'>
             <div class='container'>
-                <h1 class="text-bold text-center">Registrar comprobante de pago</h1>
-                <div style="display: flex;">
-                    <p class="text-bold mt-10">Solicitud {{ solicitud.noSolicitud }}</p>
-                </div>
+                <h1 class="text-bold text-center">Registrar factura(s) de la solicitud.</h1>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="registrar-component"></div>
@@ -31,8 +28,9 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-      window.RFC_PROP = {{ institucion|json_encode|raw }}
+      window.INSTITUCION_PROP = {{ institucion |json_encode|raw }}
       window.SOLICITUD_PROP = {{ solicitud|json_encode|raw }}
     </script>
-    <script src="{{ asset('build/registrar-pagos.js') }}"></script>
+    <script src="{{ asset('build/registrar-factura.js') }}"></script>
+
 {% endblock %}
