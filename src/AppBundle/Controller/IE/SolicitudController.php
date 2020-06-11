@@ -188,6 +188,7 @@ class SolicitudController extends DIEControllerController
                         ]
                     ]
                 ]),
+            'errors' => $this->getFormErrors($form)
         ]);
     }
 
