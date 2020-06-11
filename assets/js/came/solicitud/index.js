@@ -177,7 +177,7 @@ const SolicitudIndex = (props) => {
                         </table>
                     </div>
                     <div>
-                        <div className={'col-md-6'}>
+                        <div className={'col-md-6'} style={{display: (meta.total>0?'block':'none')}}>
                             <br/>
                             <p>Mostrando {(meta.page * meta.perPage) - meta.perPage + 1} {((meta.perPage * meta.page) < meta.total) ?`al ${meta.perPage * meta.page}`: `al ${meta.total}`} de {meta.total}</p>
                         </div>

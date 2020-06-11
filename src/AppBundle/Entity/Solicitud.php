@@ -418,6 +418,14 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         return $result;
     }
 
+    /**
+     * @return string
+     */
+    public function getEstatusFofoeFormatted()
+    {
+        return ''; //TODO
+    }
+
     public function getInstitucion()
     {
         $result = null;

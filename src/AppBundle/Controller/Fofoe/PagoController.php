@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PagoController extends \AppBundle\Controller\DIEControllerController
 {
     /**
-     * @Route("/fofoe/pago", methods={"GET"}, name="fofoe.pago.index")
+     * @Route("/fofoe/inicio", methods={"GET"}, name="fofoe/inicio")
      *
      */
     public function indexAction(Request $request)

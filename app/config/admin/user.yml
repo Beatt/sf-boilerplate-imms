@@ -28,6 +28,5 @@ easy_admin:
           - { property: sexo, label: 'Sexo', type: choice, type_options: { choices: { 'Masculino': 'Masculino', 'Femenino': 'Femenino' } } }
           - { property: activo, type: checkbox }
           - { property: plainPassword, type: text, label: 'Contraseña' }
-          - { property: rols, label: 'Roles', type: entity, type_options: { class: AppBundle\Entity\Rol, choice_label: nombre, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllRoles, expanded: true, multiple: true } }
           - { property: departamento, label: 'Departamento', type: entity, type_options: { choice_label: nombre } }
           - { property: delegaciones, label: 'Delegaciones', type: entity, type_options: { class: AppBundle\Entity\Delegacion, choice_label: nombre, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllDelegations, expanded: true, multiple: true } }

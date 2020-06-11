@@ -79,8 +79,7 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
             throw $this->createNotFoundException(
                 'Not found for id ' . $id
             );
-        }
-        $downloadHandler = $this->get('vich_uploader.download_handler');
+        }        $downloadHandler = $this->get('vich_uploader.download_handler');
         return $downloadHandler->downloadObject($solicitud, 'urlArchivoFile');
     }
 
