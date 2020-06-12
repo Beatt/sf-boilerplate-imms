@@ -22,7 +22,6 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
         EntityManagerInterface $entityManager,
         GeneradorReferenciaBancariaInterface $generadorReferenciaBancaria
     ) {
-
         $this->entityManager = $entityManager;
         $this->generadorReferenciaBancaria = $generadorReferenciaBancaria;
     }
