@@ -22,30 +22,8 @@ class ReporteOportunidadPagoController extends DIEControllerController
 
     list($filtros, $isSomeValueSet) = $this->setFilters($request);
     $pagos = $reporteRepository->getReporteOportunidadPago($filtros);
-    $datos = $this->get('serializer')->normalize($pagos,
-      'json',
-      [
-        'attributes' => [
-          'solicitud' => [
-            'camposClinicos' => [
-              'id',
-              'fechaInicialFormatted',
-              'fechaFinalFormatted',
-              'lugaresSolicitados',
-              'lugaresAutorizados',
-              'displayCicloAcademico',
-              'displayDelegacion',
-            ],
-            'institucion' => ['nombre', 'rfc'],
-            'tipoPago'
-          ],
-          'monto',
-          'fechaPagoFormatted',
-          'referenciaBancaria',
-          'tiemposPagos'
-        ]
-      ]);
-    //var_dump($datos);
+    $datos = $this->getNormalizePagos($pagos);
+
 /*    if ($isSomeValueSet) {
       $anio = isset($filtros['anio']) ? $filtros['anio'] : date("Y");
       $ingresos = $reporteRepository->getReporteIngresosMes($anio);
@@ -120,19 +98,29 @@ class ReporteOportunidadPagoController extends DIEControllerController
   private function getNormalizePagos($datos)
   {
 
-    return $this->get('serializer')->normalize(
-      $datos,
+    return $this->get('serializer')->normalize($datos,
       'json',
       [
         'attributes' => [
-          'Mes',
-          'Anio',
-          'ingCCS',
-          'ingInt',
-          'Total'
+          'solicitud' => [
+            'camposClinicos' => [
+              'id',
+              'fechaInicialFormatted',
+              'fechaFinalFormatted',
+              'lugaresSolicitados',
+              'lugaresAutorizados',
+              'displayCicloAcademico',
+              'displayDelegacion',
+            ],
+            'institucion' => ['nombre', 'rfc'],
+            'tipoPago'
+          ],
+          'monto',
+          'fechaPagoFormatted',
+          'referenciaBancaria',
+          'tiemposPagos'
         ]
-      ]
-    );
+      ]);
   }
 
 }
