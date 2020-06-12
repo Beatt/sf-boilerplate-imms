@@ -9,7 +9,6 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
   const [feedbackMessage, setFeedbackMessage] = useState('')
   const [camposClinicos, setCamposClinicos] = useState(initCamposClinicos)
 
-
   function getComprobanteAction(campoClinico) {
     const estatus = campoClinico.estatus.nombre
     switch(estatus) {
@@ -88,12 +87,10 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
           <tr>
             <th>Sede</th>
             <th>Campo clínico</th>
-            <th>Nivel</th>
             <th>Carrera</th>
             <th>No. de lugares <br/>solicitados</th>
             <th>No. de lugares <br/>autorizados</th>
-            <th>Fecha inicio</th>
-            <th>Fecha término</th>
+            <th>Periodo</th>
             <th>Estado</th>
             <th>Comprobante</th>
             <th>Factura</th>
@@ -105,12 +102,10 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
               <tr key={index}>
                 <td>{campoClinico.unidad.nombre}</td>
                 <td>{campoClinico.convenio.cicloAcademico.nombre}</td>
-                <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}</td>
-                <td>{campoClinico.convenio.carrera.nombre}</td>
+                <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
                 <td>{campoClinico.lugaresSolicitados}</td>
                 <td>{campoClinico.lugaresAutorizados}</td>
-                <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()}</td>
-                <td>{new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
+                <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
                 <td>{campoClinico.estatus.nombre}</td>
                 <td>
                   {getComprobanteAction(campoClinico)}
