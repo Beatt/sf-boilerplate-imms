@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UnidadController extends \AppBundle\Controller\DIEControllerController
 {
     /**
-     * @Route("/api/came/unidad", methods={"GET"}, name="came.unidad.index")
+     * @Route("/came/api/unidad", methods={"GET"}, name="came.unidad.index")
      */
     public function indexAction(Request $request)
     {
