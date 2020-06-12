@@ -21,7 +21,7 @@ const Index = (props) => {
     //getReporteIngresos(anioSel, 1);
   }
 
-  let urlExport = `/fofoe/reporte_ingresos?anio=${anioSel}&export=1`
+  let urlExport = `/fofoe/reporte_oportunidad_pago?export=1`
   let totalIngsCCs = 0
   let totalIngsInt = 0
   let totalGrl = 0
@@ -33,8 +33,31 @@ const Index = (props) => {
       <div className="panel-heading">
         Pago oportuno de cuotas de recuperación al Fondo de Fomento a la Educación (FOFOE)
       </div>
+      <div>
+        <div className="col-md-2">Período de Consulta de pagos recibidos</div>
+        <div className="col-md-3">
+          <div className="">
+            <label htmlFor="anio">Desde:</label>
+            <input className='form-control' type='date'
+                   name={name}
+                   id={"id" + name}
+                   onChange={({target}) => handler(target)} />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="">
+            <label htmlFor="anio">Hasta:</label>
+            <input className='form-control' type='date'
+                   name={name}
+                   id={"id" + name}
+                   onChange={({target}) => handler(target)} />
+          </div>
+        </div>
+        <div className="col-md-2 col-md-offset-2">
+          <a href={urlExport} >Descargar CSV</a>
+        </div>
+      </div>
       <div className="panel-body">
-        <a href={urlExport} >Descargar CSV</a>
 
         <table className="table">
           <thead>
@@ -42,6 +65,7 @@ const Index = (props) => {
             <th rowSpan={2} >Consecutivo</th>
             <th rowSpan={2} >Delegación </th>
             <th rowSpan={2}>Campo Clínico</th>
+            <th rowSpan={2}>Carrera</th>
             <th colSpan={2} >Ciclo</th>
             <th rowSpan={2} >Institución </th>
             <th rowSpan={2}>Alumnos</th>

@@ -24,7 +24,7 @@ class ReporteOportunidadPagoController extends DIEControllerController
     $pagos = $reporteRepository->getReporteOportunidadPago($filtros);
     $datos = $this->getNormalizePagos($pagos);
 
-/*    if ($isSomeValueSet) {
+    if ($isSomeValueSet) {
       $anio = isset($filtros['anio']) ? $filtros['anio'] : date("Y");
       $ingresos = $reporteRepository->getReporteIngresosMes($anio);
 
@@ -32,10 +32,10 @@ class ReporteOportunidadPagoController extends DIEControllerController
         $responseCVS = new Response(
           "\xEF\xBB\xBF".
           $this->generarCVS(
-            $this->getNormalizeReporteIngresos($ingresos)
+            $this->getNormalizePagos($datos)
           ) );
         $today = date('Y-m-d');
-        $filename = "exportReporteIngresosMes$anio\_$today.csv";
+        $filename = "exportReporteOportunidadPago\_$today.csv";
 
         $responseCVS->headers->set('Content-Type', 'text/csv; charset=UTF-8');
         $responseCVS->headers->set("Content-Disposition", "attachment; filename=\"$filename\"");
@@ -46,7 +46,7 @@ class ReporteOportunidadPagoController extends DIEControllerController
       return new JsonResponse([
         'reporte' => $this->getNormalizeReporteIngresos($ingresos)
       ]);
-    }*/
+    }
 
     return $this->render('fofoe/reporte_oportunidad/index.html.twig',
       array('pagos' => $datos));
@@ -56,33 +56,43 @@ class ReporteOportunidadPagoController extends DIEControllerController
     $cvs = [];
 
     $headersCVS = [
-      'Mes/Año', 'CCS/INT Validados', 'CCS/INT Pendientes'
+      'Consecutivo', 'Delegación', 'Campo Clínico', 'Carrera',
+      'Inicio', 'Fin', 'Institución', 'Alumnos', 'Importe',
+      'Referencia', 'Fecha depósito', 'Fecha facturación',
+      'Indicador', 'Días'
     ];
     $cvs[] = CVSUtil::arrayToCsvLine($headersCVS);
 
     $totalVal = 0;
     $totalPend = 0;
+    $indexRow = 0;
 
-    foreach($datos as $c) {
+    foreach($datos as $pago) {
+      foreach ($pago['camposPagados']['campos'] as $campo)
       $cvs[] = CVSUtil::arrayToCsvLine(
-        [$c['Mes'].'/'.$c['Anio'],
-          $c['ingVal'],
-          $c['ingPend'],
+        [ ++$indexRow, $campo['displayDelegacion'],
+          $campo['displayCicloAcademico'],
+          $campo['displayCarrera'],
+          $campo['fechaInicialFormatted'],
+          $campo['fechaFinalFormatted'],
+          $pago['solicitud']['institucion']['nombre'],
+          $campo['lugaresAutorizados'],
+          $campo['monto'],
+          $pago['referenciaBancaria'],
+          $pago['fechaPagoFormatted'],
+          "",
+          $pago['camposPagados']['tiempos'][$campo['id']] >= 14 ?
+            'CUMPLE' : 'NO CUMPLE',
+          $pago['camposPagados']['tiempos'][$campo['id']],
         ]
       );
-      $totalVal += intval($c['ingVal']);
-      $totalPend += intval($c['ingPend']);
     }
-
-    $cvs[] = CVSUtil::arrayToCsvLine(
-      ['Total Ciclo',  $totalVal, $totalPend,]
-    );
 
     return implode("\r\n", $cvs);
   }
 
   private function setFilters(Request $request) {
-    $campos_filtros = ["export", "anio"];
+    $campos_filtros = ["export", "desde", "hasta"];
     $isSomeValueSet = false;
     $filtros = [];
 
