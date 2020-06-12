@@ -177,7 +177,8 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             );
         }
         if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
-            throw $this->createAccessDeniedException();
+            $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
+            return $this->redirectToRoute('came.solicitud.index');
         }
         return  $this->render('formatos/credenciales.html.twig', ['campo_clinico' => $campo_clinico, 'total' => $campo_clinico->getLugaresAutorizados()]);
     }
@@ -200,7 +201,8 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             );
         }
         if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
-            throw $this->createAccessDeniedException();
+            $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
+            return $this->redirectToRoute('came.solicitud.index');
         }
         $overwrite = $request->query->get('overwrite', false);
         return $generadorCredenciales->responsePdf($this->container->getParameter('credenciales_dir'), $campo_clinico, $overwrite);

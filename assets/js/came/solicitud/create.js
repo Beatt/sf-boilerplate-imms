@@ -39,7 +39,13 @@ const SolicitudCreate = (props) => {
             console.error(error);
         }).then(json => {
             if(json.status){
-                document.location.href = '/came/solicitud';
+                new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve()
+                    }, 250)
+                }).then(() => {
+                    document.location.href = '/came/solicitud';
+                });
             }
         }).finally(() => {
             setIsLoading(false);

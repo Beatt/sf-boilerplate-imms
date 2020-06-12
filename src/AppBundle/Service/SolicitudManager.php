@@ -185,6 +185,8 @@ class SolicitudManager implements SolicitudManagerInterface
         $institucion = $solicitud->getInstitucion();
         $nueva_password = substr(md5(mt_rand()), 0, 8);
 
+        $ie_permiso = $this->entityManager->getRepository(Permiso::class)->findOneBy(['clave' => 'IE']);
+
         $user_db = $this->entityManager->getRepository(Usuario::class)->findOneBy(['correo' => $institucion->getCorreo()]);
         if(!$user_db){
             $user = new Usuario();
@@ -203,7 +205,9 @@ class SolicitudManager implements SolicitudManagerInterface
         }
 
         $user->setActivo(true);
-        $user->addPermiso($this->entityManager->getRepository(Permiso::class)->findOneBy(['clave' => 'IE']));
+        if(!$user->getPermisos()->contains($ie_permiso)){
+            $user->addPermiso($ie_permiso);
+        }
 
         $this->entityManager->persist($user);
         try {
