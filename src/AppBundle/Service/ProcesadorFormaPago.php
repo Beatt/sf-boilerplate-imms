@@ -38,7 +38,8 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
                 $this->getMontoTotal($solicitud->getCamposClinicos())
             );
             $this->setReferenciaPago($pago, $solicitud);
-        } else {
+        }
+        elseif($this->isPagoMultiple($solicitud)) {
             /** @var CampoClinico $camposClinico */
             foreach($solicitud->getCamposClinicos() as $camposClinico) {
                 $this->setEstatusDeCampoClinicoAPendienteDePago($camposClinico);
@@ -122,5 +123,14 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
             ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
 
         $camposClinico->setEstatus($pendienteDePagoEstatus);
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return bool
+     */
+    protected function isPagoMultiple(Solicitud $solicitud)
+    {
+        return $solicitud->getTipoPago() === Solicitud::TIPO_PAGO_MULTIPLE;
     }
 }
