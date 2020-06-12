@@ -6,8 +6,8 @@ import {getReporteIngresos} from './reporteIngresos'
 const Index = () => {
 
   const {useState, useEffect} = React
-  const [reporteIngresos, setReporteIngresos] = useState([])
-  const [isLoading, toggleLoading] = useState(false)
+  const [reporteIngresos, setReporteIngresos] = useState([]);
+  const [isLoading, toggleLoading] = useState(false);
   const [anioSel, setAnioSel] = useState(new Date().getFullYear());
 
   useEffect(() => {
@@ -123,7 +123,7 @@ const Index = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-  <Index/>,
+  <Index />,
   document.getElementById('reporte-wrapper')
   )
 })

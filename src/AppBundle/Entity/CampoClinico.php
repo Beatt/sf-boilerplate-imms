@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -423,4 +424,13 @@ class CampoClinico implements ComprobantePagoInterface
           ->getNombre()
         : '';
     }
+
+    public function getDisplayCarrera() {
+      $carrera = $this->convenio ?
+        $this->convenio
+          ->getCarrera() : null;
+      return  $carrera ?
+        $carrera->getDisplayName() : '';
+    }
+
 }

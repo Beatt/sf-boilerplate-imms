@@ -48,7 +48,8 @@ class ReporteOportunidadPagoController extends DIEControllerController
       ]);
     }*/
 
-    return $this->render('fofoe/reporte_oportunidad/index.html.twig');
+    return $this->render('fofoe/reporte_oportunidad/index.html.twig',
+      array('pagos' => $datos));
   }
 
   protected function generarCVS($datos) {
@@ -103,22 +104,23 @@ class ReporteOportunidadPagoController extends DIEControllerController
       [
         'attributes' => [
           'solicitud' => [
-            'camposClinicos' => [
-              'id',
-              'fechaInicialFormatted',
-              'fechaFinalFormatted',
-              'lugaresSolicitados',
-              'lugaresAutorizados',
-              'displayCicloAcademico',
-              'displayDelegacion',
-            ],
             'institucion' => ['nombre', 'rfc'],
             'tipoPago'
           ],
           'monto',
           'fechaPagoFormatted',
           'referenciaBancaria',
-          'tiemposPagos'
+          'camposPagados' => [
+            'id',
+            'fechaInicialFormatted',
+            'fechaFinalFormatted',
+            'lugaresSolicitados',
+            'lugaresAutorizados',
+            'displayCicloAcademico',
+            'displayDelegacion',
+            'monto',
+            'displayCarrera'
+          ]
         ]
       ]);
   }

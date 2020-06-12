@@ -296,9 +296,10 @@ class Pago
       return $this->getFechaPago()->format('d/m/Y');
     }
 
-     public function getTiemposPagos() {
+     public function getCamposPagados() {
        $campos = $this->solicitud->getCamposClinicos();
        $tiempos = [];
+       $camposPagados = [];
        foreach ($campos as $campo) {
          $fechaInicio = $campo->getFechaInicial();
          $inicial = Carbon::instance($fechaInicio);
@@ -307,9 +308,10 @@ class Pago
          || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
             && $this->referenciaBancaria == $campo->getReferenciaBancaria()) ) {
            $final = Carbon::instance($this->getFechaPago());
-           $tiempos[$campo->getId()] = $final->diffInDays();
+           $tiempos[$campo->getId()] = $final->diffInDays($inicial);
+           $camposPagados[] = $campo;
          }
        }
-       return $tiempos;
+       return array('campos' => $camposPagados, 'tiempos' => $tiempos);
      }
 }

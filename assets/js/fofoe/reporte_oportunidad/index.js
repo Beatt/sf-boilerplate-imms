@@ -1,16 +1,15 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 
-const Index = () => {
+const Index = (props) => {
 
   const {useState, useEffect} = React
-  const [reporteIngresos, setReporteIngresos] = useState([])
+  const [reporteIngresos, setReporteIngresos] = useState(props.pagos)
   const [isLoading, toggleLoading] = useState(false)
   const [anioSel, setAnioSel] = useState(new Date().getFullYear());
 
-  useEffect(() => {
-    getDatosReporte();
-  }, []);
+
+  console.log(reporteIngresos.pagos);
 
   function getDatosReporte() {
     /*getReporteIngresos().then((res) => {
@@ -26,6 +25,7 @@ const Index = () => {
   let totalIngsCCs = 0
   let totalIngsInt = 0
   let totalGrl = 0
+  let indexRow = 0;
 
   return (
     <div className="panel panel-default">
@@ -60,13 +60,26 @@ const Index = () => {
           </thead>
           <tbody>
           {
-            reporteIngresos.map( (ingresos, index) => (
-              <tr key={index}>
-                <td> {ingresos.Mes} / { ingresos.Anio}</td>
-                <td> {ingresos.ingCCS}</td>
-                <td> {ingresos.ingINT}</td>
-                <td> {ingresos.Total}</td>
-              </tr>
+
+            props.pagos.map( (pago) => (
+              pago.camposPagados.campos.map( ( campo ) => (
+                <tr key={++indexRow}>
+                  <td> {indexRow} </td>
+                  <td> {campo.displayDelegacion} </td>
+                  <td> {campo.displayCicloAcademico} </td>
+                  <td> {campo.displayCarrera} </td>
+                  <td> {campo.fechaInicialFormatted} </td>
+                  <td> {campo.fechaFinalFormatted} </td>
+                  <td> {pago.solicitud.institucion.nombre} </td>
+                  <td> {campo.lugaresAutorizados} </td>
+                  <td> {campo.monto} </td>
+                  <td> {pago.referenciaBancaria} </td>
+                  <td> {pago.fechaPagoFormatted} </td>
+                  <td></td>
+                  <td> {pago.camposPagados.tiempos[campo.id] >= 14 ? 'CUMPLE' : 'NO CUMPLE'} </td>
+                  <td> {pago.camposPagados.tiempos[campo.id]}</td>
+                </tr>
+              ) )
             ))
           }
           </tbody>
@@ -79,7 +92,7 @@ const Index = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <Index/>,
+    <Index pagos={window.PAGOS} />,
     document.getElementById('reporte-wrapper')
   )
 })
