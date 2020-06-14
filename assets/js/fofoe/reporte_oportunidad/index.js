@@ -1,15 +1,15 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 
+
 const Index = (props) => {
 
   const {useState, useEffect} = React
   const [reporteIngresos, setReporteIngresos] = useState(props.pagos)
   const [isLoading, toggleLoading] = useState(false)
   const [anioSel, setAnioSel] = useState(new Date().getFullYear());
-
-
-  console.log(reporteIngresos.pagos);
+  const [desdeSel, setDesede] = useState(null)
+  const [hastaSel, setHasta] = useState(null)
 
   function getDatosReporte() {
     /*getReporteIngresos().then((res) => {
@@ -19,6 +19,18 @@ const Index = (props) => {
 
   function exportar() {
     //getReporteIngresos(anioSel, 1);
+  }
+  
+  function handleDesde(e) {
+    setDesde(e.value);
+  }
+
+  function handleHasta(e) {
+    setHasta(e.value)
+  }
+
+  function setFilters() {
+    
   }
 
   let urlExport = `/fofoe/reporte_oportunidad_pago?export=1`
@@ -54,6 +66,13 @@ const Index = (props) => {
           </div>
         </div>
         <div className="col-md-2 col-md-offset-2">
+          <button
+            type="button"
+            className="btn btn-default"
+            onClick={setFilters}
+          >
+            Aplicar Filtro
+          </button>
           <a href={urlExport} >Descargar CSV</a>
         </div>
       </div>

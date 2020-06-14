@@ -1,51 +1,11 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
+import {Fragment} from "react";
 import {getCarreras, getCiclosAcademicos, getDelegaciones, getEstatusCampoClinico} from "../api/catalogos";
 import {getCamposClinicos, getCamposClinicosCSV} from "./campos"
-import {Fragment} from "react";
-
-const ContenedorFiltro = ({
-                            EtiquetaFiltro, name, valores, setValSel, tipo
-                          }) => {
-
-  function handler(e) {
-    setValSel(e.value !== '' ? e.value : null)
-  }
-
-  return (
-    <div className="col-md-3">
-      <div className="form-group">
-        <label htmlFor={name}>{EtiquetaFiltro}</label>
-        {tipo === "Select" ?
-          <Fragment>
-            <select
-              name={name}
-              id={"id" + name}
-              className='form-control'
-              onChange={({target}) => handler(target)}
-            >
-              <option value="">Elige una opción</option>
-              { valores.map((valor) =>
-                  <option  value={valor.id}  key={valor.id}>
-                    {valor.nombre}
-                  </option>
-              )}
-            </select>
-          </Fragment>
-         : tipo === "date" ?
-            <Fragment>
-              <input className='form-control' type='date'
-                     name={name}
-                     id={"id" + name}
-                     onChange={({target}) => handler(target)} />
-            </Fragment>
-            : ''
-        }
-      </div>
-    </div>
-  );
-}
+import ContenedorFiltro from "../components/ContenedorFiltro"
+import Buscador from "../components/Buscador";
 
 const Filtros = (
   props
@@ -68,10 +28,6 @@ const Filtros = (
       .then((res) => setEstadosSol(res))
   }, []);
 
-  function handlerFiltro() {
-
-  }
-
   return (
     <Fragment>
     <div className="row">
@@ -80,42 +36,42 @@ const Filtros = (
         name="CicloAcademico"
         valores={tiposCA}
         setValSel={props.setCASel}
-        type="Select"
+        tipo="Select"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Delegación"
         name="Delegacion"
         valores={delegaciones}
         setValSel={props.setDelegacionSel}
-        type="Select"
+        tipo="Select"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Carrera"
         name="Carrera"
         valores={carreras}
         setValSel={props.setCarreraSel}
-        type="Select"
+        tipo="Select"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Estado de la Solicitud"
         name="EstadoSol"
         valores={estadosSol}
         setValSel={props.setEstadoSolSel}
-        type="Select"
+        tipo="Select"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Fecha incio a partir de:"
         name="FechaInicio"
         valores={[]}
         setValSel={props.setFechaIniSel}
-        type="date"
+        tipo="date"
       />
       <ContenedorFiltro
         EtiquetaFiltro="Fecha de fin antes de:"
         name="FechaInicio"
         valores={[]}
         setValSel={props.setFechaFinSel}
-        type="date"
+        tipo="date"
       />
 
     </div>
@@ -127,43 +83,6 @@ const Filtros = (
       pageSize={props.pageSize}
     />
     </Fragment>
-  );
-}
-
-const Buscador = (
-props
-) => {
-  return (
-    <div className='row'>
-      <div className='col-md-3'>
-        <button
-          type='button'
-          className='btn btn-success'
-          onClick={props.handleExport}
-        >
-          Exportar CSV
-        </button>
-      </div>
-      <div className='col-md-9 mb-15'>
-      <div className='navbar-form navbar-right '>
-        <div className="form-group">
-          <input
-            type="text"
-            placeholder='Buscar por...'
-            className='input-sm form-control'
-            onChange={({target}) => props.setSearch(target.value)}
-          />
-        </div>
-        <button
-          type="button"
-          className="btn btn-default"
-          onClick={props.handleSearch}
-        >
-          Buscar
-        </button>
-      </div>
-      </div>
-    </div>
   );
 }
 
@@ -324,7 +243,6 @@ const Index = () => {
 
   function getCampos(pag=1, limit=pageSize) {
     toggleLoading(true);
-    console.log(limit)
     getCamposClinicos(
       cicloAcademicoSel, delegacionSel, carreraSel,
       estadoSolSel, fechaIniSel, fechaFinSel,
