@@ -6,6 +6,7 @@ import {getCarreras, getCiclosAcademicos, getDelegaciones, getEstatusCampoClinic
 import {getCamposClinicos, getCamposClinicosCSV} from "./campos"
 import ContenedorFiltro from "../components/ContenedorFiltro"
 import Buscador from "../components/Buscador";
+import OpcionesPageSize from "../components/OpcionesPageSize";
 
 const Filtros = (
   props
@@ -73,7 +74,6 @@ const Filtros = (
         setValSel={props.setFechaFinSel}
         tipo="date"
       />
-
     </div>
     <Buscador
       setSearch={props.setSearch}
@@ -86,30 +86,9 @@ const Filtros = (
   );
 }
 
-const OpcionesPageSize = (props) => {
-
-  function handlerPageSize(e) {
-    props.setPageSize(parseInt(e.value));
-    props.handleSearch(1, e.value);
-  }
-
-  return (
-      <label> Mostrar
-        <select
-                onChange={({target}) => handlerPageSize(target)}>
-          <option value='5' key='5'>5</option>
-          <option value='10'>10</option>
-          <option value='30'>30</option>
-          <option value='50'>50</option>
-        </select>
-        registros
-      </label>
-  );
-}
-
 const TablaCampos = (props) => {
 
-  var offset = props.totalItems > 0 ?
+  let offset = props.totalItems > 0 ?
     (props.pageSize*(props.currentPage-1)) + 1
     : 0;
 
@@ -213,7 +192,7 @@ const Index = () => {
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(5)
+  const [pageSize, setPageSize] = useState(10)
 
   const [camposClinicos, setCamposClinicos] = useState([])
   const [carreraSel, setCarreraSel] = useState(null)

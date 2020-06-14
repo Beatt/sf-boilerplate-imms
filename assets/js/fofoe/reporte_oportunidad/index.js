@@ -1,24 +1,41 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
-
+import ReactPaginate from "react-paginate";
+import ContenedorFiltro from "../../pregrado/components/ContenedorFiltro";
+import Buscador from "../../pregrado/components/Buscador";
+import OpcionesPageSize from "../../pregrado/components/OpcionesPageSize";
+import {getReportePagos, getReportePagosCSV} from "./reportePagos";
 
 const Index = (props) => {
 
   const {useState, useEffect} = React
-  const [reporteIngresos, setReporteIngresos] = useState(props.pagos)
-  const [isLoading, toggleLoading] = useState(false)
-  const [anioSel, setAnioSel] = useState(new Date().getFullYear());
-  const [desdeSel, setDesede] = useState(null)
+  const [reportePagos, setReportePagos] = useState(props.pagos)
+  const [desdeSel, setDesde] = useState(null)
   const [hastaSel, setHasta] = useState(null)
 
-  function getDatosReporte() {
+  const [search, setSearch] = useState('')
+  const [isLoading, toggleLoading] = useState(false)
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+
+  let offset = totalItems > 0 ?
+    (pageSize*(currentPage-1)) + 1
+    : 0;
+
+  function getDatosReporte(pag=1, limit=pageSize, exportar=false) {
     /*getReporteIngresos().then((res) => {
       setReporteIngresos(res.reporte)
     })*/
   }
 
+  function handleSearch(pag=1, limit=pageSize) {
+    getCampos(pag, limit)
+  }
+
   function exportar() {
-    //getReporteIngresos(anioSel, 1);
+    getReportePagosCSV(desdeSel, hastaSel, search);
   }
   
   function handleDesde(e) {
@@ -29,15 +46,15 @@ const Index = (props) => {
     setHasta(e.value)
   }
 
-  function setFilters() {
-    
-  }
-
   let urlExport = `/fofoe/reporte_oportunidad_pago?export=1`
   let totalIngsCCs = 0
   let totalIngsInt = 0
   let totalGrl = 0
   let indexRow = 0;
+
+  function handlePageClick(e) {
+
+  }
 
   return (
     <div className="panel panel-default">
@@ -45,39 +62,35 @@ const Index = (props) => {
       <div className="panel-heading">
         Pago oportuno de cuotas de recuperación al Fondo de Fomento a la Educación (FOFOE)
       </div>
-      <div>
-        <div className="col-md-2">Período de Consulta de pagos recibidos</div>
-        <div className="col-md-3">
-          <div className="">
-            <label htmlFor="anio">Desde:</label>
-            <input className='form-control' type='date'
-                   name={name}
-                   id={"id" + name}
-                   onChange={({target}) => handler(target)} />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="">
-            <label htmlFor="anio">Hasta:</label>
-            <input className='form-control' type='date'
-                   name={name}
-                   id={"id" + name}
-                   onChange={({target}) => handler(target)} />
-          </div>
-        </div>
-        <div className="col-md-2 col-md-offset-2">
-          <button
-            type="button"
-            className="btn btn-default"
-            onClick={setFilters}
-          >
-            Aplicar Filtro
-          </button>
-          <a href={urlExport} >Descargar CSV</a>
-        </div>
-      </div>
       <div className="panel-body">
 
+        <div className="row">
+          <div className="col-md-2">Período de Consulta de pagos recibidos</div>
+          <ContenedorFiltro
+            EtiquetaFiltro={"Desde: "}
+            setValSel={setDesde}
+            valores={[]}
+            name="desde"
+            tipo="date"
+          />
+          <ContenedorFiltro
+            EtiquetaFiltro={"Hasta: "}
+            setValSel={setHasta}
+            valores={[]}
+            name="desde"
+            tipo="date"
+          />
+        </div>
+        <Buscador
+          handleSearch={ handleSearch }
+          handleExport={ exportar }
+          setSearch={setSearch}
+        />
+
+        <OpcionesPageSize
+          setPageSize={setPageSize}
+          handleSearch={handleSearch}
+        />
         <table className="table">
           <thead>
           <tr>
@@ -127,8 +140,31 @@ const Index = (props) => {
           }
           </tbody>
         </table>
+        { !isLoading ?
+          <div className="col-md-12">
+            <div className="col-md-3">
+              {offset} - {offset } de {totalItems}
+            </div>
+            <div className="col-md-9 text-center">
+              <ReactPaginate
+                pageCount={totalPages}
+                marginPagesDisplayed={5}
+                pageRangeDisplayed={3}
+                previousLabel={'Anterior'}
+                nextLabel={'Siguiente'}
+                breakLabel={'...'}
+                breakClassName={'break-me'}
+                onPageChange={(e) => { handlePageClick(e) }}
+                containerClassName={'pagination'}
+                subContainerClassName={'pages pagination'}
+                activeClassName={'active'}
+                forcePage={currentPage - 1}
+              />
+            </div>
+          </div>
+          : ''
+        }
       </div>
-
     </div>
   );
 };

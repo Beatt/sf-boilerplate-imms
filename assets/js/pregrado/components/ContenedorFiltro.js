@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Fragment} from "react";
 
 const ContenedorFiltro = ({
   EtiquetaFiltro, name, valores, setValSel, tipo
