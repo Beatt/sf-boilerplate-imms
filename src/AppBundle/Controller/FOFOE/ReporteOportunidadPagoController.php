@@ -21,17 +21,18 @@ class ReporteOportunidadPagoController extends DIEControllerController
   public function indexAction(Request $request, PagoRepositoryInterface $reporteRepository) {
 
     list($filtros, $isSomeValueSet) = $this->setFilters($request);
-    $pagos = $reporteRepository->getReporteOportunidadPago($filtros);
-    $datos = $this->getNormalizePagos($pagos);
 
     if ($isSomeValueSet) {
+
+      list($pagos, $totalItems,$pagesCount, $pageSize) =
+        $reporteRepository->getReporteOportunidadPago($filtros);
+      $datos = $this->getNormalizePagos($pagos);
 
       if (isset($filtros['export']) && $filtros['export']) {
         $responseCVS = new Response(
           "\xEF\xBB\xBF".
-          $this->generarCVS(
-            $this->getNormalizePagos($datos)
-          ) );
+          $this->generarCVS($datos)
+        );
         $today = date('Y-m-d');
         $filename = "exportReporteOportunidadPago\_$today.csv";
 
@@ -42,12 +43,14 @@ class ReporteOportunidadPagoController extends DIEControllerController
       }
 
       return new JsonResponse([
-        'reporte' => $datos
+        'reporte' => $datos,
+        'totalItems' => $totalItems,
+        'numPags' => $pagesCount,
+        'pageSize' => $pageSize
       ]);
     }
 
-    return $this->render('fofoe/reporte_oportunidad/index.html.twig',
-      array('pagos' => $datos));
+    return $this->render('fofoe/reporte_oportunidad/index.html.twig');
   }
 
   protected function generarCVS($datos) {

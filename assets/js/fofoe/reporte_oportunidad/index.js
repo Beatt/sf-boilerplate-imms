@@ -30,8 +30,8 @@ const Index = (props) => {
       .then( (res) => {
         console.log(res);
           setReportePagos(res.reporte)
-          //setTotalItems( res.totalItems )
-          //setTotalPages( res.numPags)
+          setTotalItems( res.totalItems )
+          setTotalPages( res.numPags)
           setCurrentPage(pag)
       }
       ).finally(() => {
@@ -151,7 +151,7 @@ const Index = (props) => {
         { !isLoading ?
           <div className="col-md-12">
             <div className="col-md-3">
-              {offset} - {offset } de {totalItems}
+              {offset} - {offset + (reportePagos.length - 1)} de {totalItems}
             </div>
             <div className="col-md-9 text-center">
               <ReactPaginate

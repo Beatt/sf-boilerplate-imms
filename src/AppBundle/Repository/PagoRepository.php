@@ -5,6 +5,7 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\Pago;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 {
@@ -122,6 +123,39 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
           ->setParameter('search', '%' . $filtros['search'] . '%');
       }
 
-      return $qb->getQuery()->getResult();
+      $qb = $qb->getQuery();
+
+      // load doctrine Paginator
+      $paginator = new Paginator($qb);
+
+      // get total items
+      $totalItems = count($paginator);
+
+      $pageSize = array_key_exists('limit', $filtros)
+      && $filtros['limit'] > 0 ?
+        $filtros['limit'] : 10;
+      $page = array_key_exists('limit', $filtros)
+      && $filtros['page'] > 0 ? $filtros['page'] : 1;
+
+      // get total pages
+      $pagesCount = ceil($totalItems / $pageSize);
+
+      $pagos = [];
+      if(array_key_exists('export', $filtros) && $filtros['export']) {
+        $pagos = $paginator
+          ->getQuery()
+          ->getResult();
+      } else {
+        $offset = $pageSize * ($page-1);
+        // now get one page's items:
+        $pagos = $paginator
+          ->getQuery()
+          ->setFirstResult($offset) // set the offset
+          ->setMaxResults($pageSize) // set the limit}
+          ->getResult();
+      }
+
+      return [$pagos, $totalItems, $pagesCount, $pageSize];
+
     }
 }
