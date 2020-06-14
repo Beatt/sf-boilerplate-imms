@@ -25,8 +25,6 @@ class ReporteOportunidadPagoController extends DIEControllerController
     $datos = $this->getNormalizePagos($pagos);
 
     if ($isSomeValueSet) {
-      $anio = isset($filtros['anio']) ? $filtros['anio'] : date("Y");
-      $ingresos = $reporteRepository->getReporteIngresosMes($anio);
 
       if (isset($filtros['export']) && $filtros['export']) {
         $responseCVS = new Response(
@@ -44,7 +42,7 @@ class ReporteOportunidadPagoController extends DIEControllerController
       }
 
       return new JsonResponse([
-        'reporte' => $this->getNormalizeReporteIngresos($ingresos)
+        'reporte' => $datos
       ]);
     }
 
@@ -92,7 +90,8 @@ class ReporteOportunidadPagoController extends DIEControllerController
   }
 
   private function setFilters(Request $request) {
-    $campos_filtros = ["export", "desde", "hasta"];
+    $campos_filtros = ["desde", "hasta", "export",
+      "page", "limit", "search"];
     $isSomeValueSet = false;
     $filtros = [];
 

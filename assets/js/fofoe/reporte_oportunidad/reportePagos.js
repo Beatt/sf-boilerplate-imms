@@ -2,7 +2,7 @@ import {clickAction} from "../../pregrado/utils";
 
 const getReportePagos = (desde, hasta,
   search, page, limit) => {
-  let urlQuery = `/fofoe/reporte_oportunidad?desde=${desde}`
+  let urlQuery = `/fofoe/reporte_oportunidad_pago?desde=${desde}`
     + `&hasta=${hasta}&search=${search}`
     + `&page=${page}&limit=${limit}`;
 

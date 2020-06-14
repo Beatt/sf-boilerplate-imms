@@ -9,7 +9,7 @@ import {getReportePagos, getReportePagosCSV} from "./reportePagos";
 const Index = (props) => {
 
   const {useState, useEffect} = React
-  const [reportePagos, setReportePagos] = useState(props.pagos)
+  const [reportePagos, setReportePagos] = useState([])
   const [desdeSel, setDesde] = useState(null)
   const [hastaSel, setHasta] = useState(null)
 
@@ -20,40 +20,41 @@ const Index = (props) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
-  let offset = totalItems > 0 ?
-    (pageSize*(currentPage-1)) + 1
-    : 0;
+  useEffect(()=>{
+      getDatosReporte();
+    }, [])
 
-  function getDatosReporte(pag=1, limit=pageSize, exportar=false) {
-    /*getReporteIngresos().then((res) => {
-      setReporteIngresos(res.reporte)
-    })*/
-  }
-
-  function handleSearch(pag=1, limit=pageSize) {
-    getCampos(pag, limit)
+  function getDatosReporte(pag=1, limit=pageSize) {
+    toggleLoading(true);
+    getReportePagos( desdeSel, hastaSel, search, pag, limit)
+      .then( (res) => {
+        console.log(res);
+          setReportePagos(res.reporte)
+          //setTotalItems( res.totalItems )
+          //setTotalPages( res.numPags)
+          setCurrentPage(pag)
+      }
+      ).finally(() => {
+      toggleLoading(false)
+    })
   }
 
   function exportar() {
     getReportePagosCSV(desdeSel, hastaSel, search);
   }
-  
-  function handleDesde(e) {
-    setDesde(e.value);
-  }
 
-  function handleHasta(e) {
-    setHasta(e.value)
-  }
+  let offset = totalItems > 0 ?
+    (pageSize*(currentPage-1)) + 1
+    : 0;
 
-  let urlExport = `/fofoe/reporte_oportunidad_pago?export=1`
-  let totalIngsCCs = 0
-  let totalIngsInt = 0
-  let totalGrl = 0
   let indexRow = 0;
 
   function handlePageClick(e) {
+    getDatosReporte( e.selected + 1 )
+  }
 
+  function handleSearch() {
+    getDatosReporte();
   }
 
   return (
@@ -116,8 +117,12 @@ const Index = (props) => {
           </thead>
           <tbody>
           {
-
-            props.pagos.map( (pago) => (
+            isLoading ?
+              <tr>
+                <th className='text-center' colSpan={14}>Cargando información...</th>
+              </tr>
+              :  reportePagos.length > 0 ?
+            reportePagos.map( (pago) => (
               pago.camposPagados.campos.map( ( campo ) => (
                 <tr key={++indexRow}>
                   <td> {indexRow} </td>
@@ -136,7 +141,10 @@ const Index = (props) => {
                   <td> {pago.camposPagados.tiempos[campo.id]}</td>
                 </tr>
               ) )
-            ))
+            )) :
+              <tr>
+                <td colSpan={10} className="text-center"> No hay registros disponibles </td>
+              </tr>
           }
           </tbody>
         </table>

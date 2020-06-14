@@ -91,6 +91,7 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
         ->innerJoin('campos_clinicos.convenio', 'convenio');
 
+
       $qb->where(
           $qb->expr()->orX(
             'pago.referenciaBancaria = solicitud.referenciaBancaria',
@@ -98,6 +99,28 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
           )
         );
       $qb->andWhere('pago.validado = TRUE');
+
+      if ( array_key_exists('desde', $filtros)  && $filtros['desde']) {
+        $qb = $qb->andWhere('pago.fechaPago >= :desde')
+          ->setParameter('desde', new \DateTime($filtros['desde']));
+      }
+
+      if ( array_key_exists('hasta', $filtros)  && $filtros['hasta']) {
+        $qb = $qb->andWhere('pago.fechaPago <= :hasta')
+          ->setParameter('hasta', new \DateTime($filtros['hasta']));
+      }
+
+      if ( array_key_exists('search', $filtros) && $filtros['search']) {
+        $qb = $qb->join('convenio.institucion', 'institucion');
+        $qb = $qb
+          ->andWhere(
+            $qb->expr()->orX()->addMultiple(array(
+              "UNACCENT(LOWER(institucion.nombre)) LIKE UNACCENT(LOWER(:search))",
+              "LOWER(solicitud.referenciaBancaria) LIKE LOWER(:search)",
+                ))
+            )
+          ->setParameter('search', '%' . $filtros['search'] . '%');
+      }
 
       return $qb->getQuery()->getResult();
     }
