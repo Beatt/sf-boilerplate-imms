@@ -108,7 +108,7 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                 <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
                 <td>{campoClinico.estatus.nombre}</td>
                 <td>
-                  {getComprobanteAction(campoClinico)}
+                  <button className="btn btn-success">Cargar comprobante</button>
                 </td>
                 <td>{getFactura(campoClinico.factura)}</td>
               </tr>
