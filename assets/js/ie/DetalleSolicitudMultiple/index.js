@@ -1,5 +1,6 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
+import './styles.scss'
 import DetalleSolicitudMultiple from "./Detalle";
 import Expediente from "./Expediente";
 
