@@ -199,12 +199,21 @@ class SolicitudManager implements SolicitudManagerInterface
             $user->setFechaIngreso(Carbon::now());
             $user->setRegims(0);
             $user->setContrasena($this->encoderFactory->getEncoder($user)->encodePassword($nueva_password, $user->getSalt()));
+            $user->setActivo(true);
+            $this->entityManager->persist($user);
+            try {
+                $this->entityManager->flush();
+            } catch(OptimisticLockException $exception) {
+                $this->logger->critical($exception->getMessage());
+            }
         }else{
             $user = $user_db;
+            $user->setActivo(true);
             $nueva_password = '';
         }
 
-        $user->setActivo(true);
+        $this->entityManager->refresh($user);
+
         if(!$user->getPermisos()->contains($ie_permiso)){
             $user->addPermiso($ie_permiso);
         }
