@@ -47,7 +47,7 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
     {
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->findOneBy([
-            'estatus' => SolicitudInterface::CONFIRMADA
+            'estatus' => SolicitudInterface::MONTOS_VALIDADOS_CAME
         ]);
         $solicitud->setTipoPago(Solicitud::TIPO_PAGO_UNICO);
 
@@ -82,7 +82,7 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
     {
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->findOneBy([
-            'estatus' => SolicitudInterface::CONFIRMADA
+            'estatus' => SolicitudInterface::MONTOS_VALIDADOS_CAME
         ]);
         $solicitud->setTipoPago(SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE);
 
@@ -126,7 +126,7 @@ class ProcesadorFormaPagoTest extends AbstractWebTestCase
         $solicitud = $this->solicitudRepository->findOneBy([
             'estatus' => SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS
         ]);
-        $solicitud->setEstatus(SolicitudInterface::CONFIRMADA);
+        $solicitud->setEstatus(SolicitudInterface::MONTOS_VALIDADOS_CAME);
         $solicitud->setTipoPago(null);
         $solicitud->setReferenciaBancaria(null);
         $camposClinicos = $solicitud->getCamposClinicos();

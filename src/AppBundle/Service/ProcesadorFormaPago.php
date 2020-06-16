@@ -28,7 +28,7 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
 
     public function procesar(Solicitud $solicitud)
     {
-        if($solicitud->getEstatus() !== SolicitudInterface::CONFIRMADA) {
+        if($solicitud->getEstatus() !== SolicitudInterface::MONTOS_VALIDADOS_CAME) {
             throw new \Exception('Asignación de forma de pago no permitida');
         }
 
