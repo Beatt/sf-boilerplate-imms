@@ -15,7 +15,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PagoRepository")
  * @Vich\Uploadable
  */
-class Pago
+class Pago implements ComprobantePagoInterface
 {
     /**
      * @var int
@@ -267,6 +267,8 @@ class Pago
     public function setComprobantePagoFile($comprobantePagoFile = null)
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
+
+        $this->setFechaPago(Carbon::now());
     }
 
     /**

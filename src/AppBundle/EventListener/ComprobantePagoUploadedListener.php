@@ -63,6 +63,8 @@ class ComprobantePagoUploadedListener
 
         $estatusPagado = $this->estatusCampoRepository->getEstatusPagado();
 
+        dump($pago->getSolicitud()->getTipoPago());
+
         if($pago->getSolicitud()->isPagoUnico()) {
             /** @var CampoClinico $camposClinico */
             foreach($pago->getSolicitud()->getCamposClinicos() as $camposClinico) {

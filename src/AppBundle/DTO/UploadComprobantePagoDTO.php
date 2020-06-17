@@ -2,7 +2,7 @@
 
 namespace AppBundle\DTO;
 
-use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Pago;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,9 +18,9 @@ class UploadComprobantePagoDTO
     private $file;
 
     /**
-     * @var CampoClinico
+     * @var Pago
      */
-    private $campoClinico;
+    private $pago;
 
     /**
      * @return UploadedFile
@@ -39,18 +39,18 @@ class UploadComprobantePagoDTO
     }
 
     /**
-     * @return CampoClinico
+     * @return Pago
      */
-    public function getCampoClinico()
+    public function getPago()
     {
-        return $this->campoClinico;
+        return $this->pago;
     }
 
     /**
-     * @param CampoClinico $campoClinico
+     * @param Pago $pago
      */
-    public function setCampoClinico(CampoClinico $campoClinico)
+    public function setPago(Pago $pago)
     {
-        $this->campoClinico = $campoClinico;
+        $this->pago = $pago;
     }
 }

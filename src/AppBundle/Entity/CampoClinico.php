@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterface
+class CampoClinico implements ReferenciaBancariaInterface
 {
     /**
      * @var int

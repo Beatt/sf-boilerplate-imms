@@ -98,6 +98,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             null,
             true
         );
+        $solicitud->getPago()->setComprobantePagoFile($uploadedFile);
 
         $service = new UploaderComprobantePago(
             $this->entityManager,
@@ -105,10 +106,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             $this->logger
         );
 
-        $service->update(
-            $solicitud,
-            $uploadedFile
-        );
+        $service->update($solicitud->getPago());
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
@@ -322,6 +320,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $pago->setReferenciaBancaria($referenciaBancaria);
         $pago->setRequiereFactura(false);
         $pago->setSolicitud($solicitud);
+        $solicitud->addPago($pago);
         $this->entityManager->persist($pago);
         return $pago;
     }

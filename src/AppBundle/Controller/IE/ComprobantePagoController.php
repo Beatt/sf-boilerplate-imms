@@ -4,7 +4,8 @@ namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\DTO\UploadComprobantePagoDTO;
-use AppBundle\Form\Type\ComprobantePagoType;
+use AppBundle\Entity\Pago;
+use AppBundle\Form\Type\ComprobantePagoType\ComprobantePagoType;
 use AppBundle\Service\UploaderComprobantePagoInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,13 +31,11 @@ class ComprobantePagoController extends DIEControllerController
 
         $form->handleRequest($request);
 
-        /** @var UploadComprobantePagoDTO $data */
-        $data = $form->getData();
         if($form->isSubmitted() && $form->isValid()) {
-            $isComprobantePagoUploaded = $uploaderComprobantePago->update(
-                $data->getCampoClinico(),
-                $data->getFile()
-            );
+
+            /** @var Pago $pago */
+            $pago = $form->getData();
+            $isComprobantePagoUploaded = $uploaderComprobantePago->update($pago);
 
             return $isComprobantePagoUploaded ?
                 $this->successResponse('Se ha cargado correctamente el comprobante de pago') :
