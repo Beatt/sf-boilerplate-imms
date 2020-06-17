@@ -76,7 +76,7 @@ services:
 
     AppBundle\EventListener\ComprobantePagoUploadedListener:
         tags:
-            - { name: kernel.event_listener, event: vich_uploader.post_upload, method: postUpload }
+            - { name: kernel.event_listener, event: vich_uploader.post_upload, method: comprobantePagoUploaded }
 
     app.directory_namer.institucion:
         class: AppBundle\Vich\Naming\InstitucionDirectoryNamer

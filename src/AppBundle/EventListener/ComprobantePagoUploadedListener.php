@@ -54,7 +54,7 @@ class ComprobantePagoUploadedListener
         $this->pagoRepository = $pagoRepository;
     }
 
-    public function postUpload(Event $event)
+    public function comprobantePagoUploaded(Event $event)
     {
         /** @var Pago $pago */
         $pago = $event->getObject();
