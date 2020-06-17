@@ -4,6 +4,7 @@ import { uploadComprobantePago } from "../../api/camposClinicos"
 import { CAMPO_CLINICO } from "../../../constants"
 import Modal from 'react-modal'
 Modal.setAppElement('body')
+import InputMask from "react-input-mask";
 
 const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
   const { useState } = React
@@ -161,20 +162,30 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
               <p className='mb-20'>Monto total del campo clínico por pagar: <strong>200,000</strong></p>
               <form action="" className='form-horizontal'>
                 <div className="form-group">
-                  <label htmlFor="" className='control-label col-md-3'>Fecha en que se realizó el nuevo pago:</label>
-                  <div className="col-md-2">
-                    <input type="text" className='form-control'/>
+                  <label htmlFor="" className='control-label col-md-4'>Fecha en que se realizó el nuevo pago:</label>
+                  <div className="col-md-3">
+                    <InputMask
+                      mask="99/99/9999"
+                      className='form-control'
+                      onChange={(value) => {}}
+                    />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="" className='control-label col-md-3'>Monto del comprobante de nuevo pago:</label>
-                  <div className="col-md-2">
-                    <input type="text" className='form-control'/>
+                  <label htmlFor="" className='control-label col-md-4'>
+                    Monto del comprobante de nuevo pago:<br/>
+                    <span className='text-danger text-sm'>NOTA: El monto debe coincidir con el comprobante registrado</span>
+                  </label>
+                  <div className="col-md-3">
+                    <div className="input-group">
+                      <input type="number" className='form-control'/>
+                      <div className="input-group-addon">$</div>
+                    </div>
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="" className='control-label col-md-3'>Cargar comprobante del nuevo pago</label>
-                  <div className="col-md-2">
+                  <label htmlFor="" className='control-label col-md-4'>Cargar comprobante del nuevo pago</label>
+                  <div className="col-md-3">
                     <input type="file" id='comprobante-file' className='form-control'/>
                   </div>
                 </div>
