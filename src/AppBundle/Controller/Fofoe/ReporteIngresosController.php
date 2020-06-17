@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller\FOFOE;
+namespace AppBundle\Controller\Fofoe;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Repository\PagoRepositoryInterface;
