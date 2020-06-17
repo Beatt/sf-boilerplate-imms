@@ -119,10 +119,14 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                 <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
                 <td>{campoClinico.estatus.nombre}</td>
                 <td>
-                  <button className="btn btn-success" onClick={() => {
-                    setCampoClinicoSelected(campoClinico)
-                    setModalIsOpen(true)
-                  }}>Cargar comprobante</button>
+                  {
+                    campoClinico.estatus.nombre === 'Pago' ?
+                      <button className='btn btn-default' disabled={true}>En validación por FOFOE</button> :
+                      <button className="btn btn-success" onClick={() => {
+                        setCampoClinicoSelected(campoClinico)
+                        setModalIsOpen(true)
+                      }}>Cargar comprobante</button>
+                  }
                 </td>
                 <td>{getFactura(campoClinico.factura)}</td>
               </tr>
