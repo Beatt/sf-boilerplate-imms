@@ -3,9 +3,13 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampo;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Event\ReferenciaBancariaZipUnloadedEvent;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
@@ -18,6 +22,7 @@ use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPago;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -266,17 +271,25 @@ class SolicitudController extends DIEControllerController
      * @Route("/solicitudes/{id}/descargar-referencias-bancarias", name="ie#descargar_referencias_bancarias")
      * @param $id
      * @param GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+     * @param EventDispatcherInterface $dispatcher
      */
     public function descargarReferenciasBancarias(
         $id,
-        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP,
+        EventDispatcherInterface $dispatcher
     ) {
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($id);
 
+        $dispatcher->dispatch(
+            ReferenciaBancariaZipUnloadedEvent::NAME,
+            new ReferenciaBancariaZipUnloadedEvent($solicitud)
+        );
+
         return $generadorReferenciaBancariaZIP->generarZipResponse($solicitud);
     }
+
 
     /**
      * @Route("/solicitudes/{id}/cargar-comprobante", name="ie#cargar_comprobante")

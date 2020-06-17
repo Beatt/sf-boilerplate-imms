@@ -46,7 +46,7 @@ services:
 
     AppBundle\Vich\Naming\ComprobanteInscripcionNamer:
         public: true
-    
+
     AppBundle\Vich\Naming\FacturaNamer:
         public: true
 
@@ -119,3 +119,8 @@ services:
         class: AppBundle\EventListener\BankReferencesCreatedListener
         tags:
             - { name: kernel.event_listener, event: bank_references.created, method: handleBankReferencesCreated }
+
+    app.bank_references_unloaded.event:
+        class: AppBundle\EventListener\ReferenciaBancariaZipUnloadedListener
+        tags:
+            - { name: kernel.event_listener, event: referencia_bancaria_zip.unloaded, method: referenciaBancariaZipUnloaded }
