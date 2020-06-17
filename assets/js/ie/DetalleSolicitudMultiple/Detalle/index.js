@@ -131,6 +131,15 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
           contentLabel="Modal"
           style={{ content: { marginRight: 'auto', marginLeft: 'auto' } }}
         >
+          <button
+            type="button"
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+            onClick={closeModal}
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
           <div className='row'>
             <div className="col-md-12">
               <h2 className='mb-5'>Corrección de pagos</h2>
