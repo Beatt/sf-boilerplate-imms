@@ -232,9 +232,7 @@ class SolicitudController extends DIEControllerController
 
             $this->addFlash('success', 'Se ha guardado correctamente los montos.');
 
-            return $this->redirectToRoute('ie#detalle_de_forma_de_pago', [
-                'id' => $id
-            ]);
+            return $this->redirectToRoute('ie#inicio');
         }
 
         return $this->render('ie/solicitud/seleccionar_forma_pago.html.twig', [

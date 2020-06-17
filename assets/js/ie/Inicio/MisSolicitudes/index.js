@@ -46,14 +46,18 @@ const MisSolicitudes = ({ totalInit }) => {
     let redirectRoute = ''
 
     switch(solicitud.estatus) {
-      case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
-        break;
       case SOLICITUD.CONFIRMADA:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
         break
+      case SOLICITUD.MONTOS_VALIDADOS_CAME:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        break
+      case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
+        break
       case SOLICITUD.CARGANDO_COMPROBANTES:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
+        break
     }
 
     window.location.href = redirectRoute
