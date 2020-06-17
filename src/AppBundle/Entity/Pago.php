@@ -98,6 +98,12 @@ class Pago implements ComprobantePagoInterface
      private $factura;
 
     /**
+     *
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $fechaCreacion;
+
+    /**
      * @return int
      */
     public function getId()
@@ -268,7 +274,7 @@ class Pago implements ComprobantePagoInterface
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
 
-        $this->setFechaPago(Carbon::now());
+        $this->setFechaCreacion(Carbon::now());
     }
 
     /**
@@ -300,4 +306,20 @@ class Pago implements ComprobantePagoInterface
          }
          return '';
      }
+
+    /**
+     * @return DateTime
+     */
+    public function getFechaCreacion()
+    {
+        return $this->fechaCreacion;
+    }
+
+    /**
+     * @param DateTime $fechaCreacion
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+    }
 }
