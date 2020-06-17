@@ -12,6 +12,9 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
   const [feedbackMessage, setFeedbackMessage] = useState('')
   const [camposClinicos, setCamposClinicos] = useState(initCamposClinicos)
   const [modalIsOpen, setModalIsOpen] = React.useState(false);
+  const [campoClinicoSelected, setCampoClinicoSelected] = useState({
+    pago: { id: null }
+  })
 
   function getComprobanteAction(campoClinico) {
     const estatus = campoClinico.estatus.nombre
@@ -117,6 +120,7 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                 <td>{campoClinico.estatus.nombre}</td>
                 <td>
                   <button className="btn btn-success" onClick={() => {
+                    setCampoClinicoSelected(campoClinico)
                     setModalIsOpen(true)
                   }}>Cargar comprobante</button>
                 </td>
@@ -169,33 +173,62 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
             <div className="col-md-12">
               <h3 className='mb-5'>Registrar nuevo comprobante de pago</h3>
               <p className='mb-20'>Monto total del campo clínico por pagar: <strong>200,000</strong></p>
-              <form action="" className='form-horizontal'>
+              <form
+                action={`/ie/cargar-comprobante-de-pago/${campoClinicoSelected.pago.id}`}
+                method='post'
+                className='form-horizontal'
+                encType='multipart/form-data'
+              >
                 <div className="form-group">
-                  <label htmlFor="" className='control-label col-md-4'>Fecha en que se realizó el nuevo pago:</label>
+                  <label
+                    htmlFor="comprobante_pago_fechaPago"
+                    className='control-label col-md-4'
+                  >
+                    Fecha en que se realizó el nuevo pago:
+                  </label>
                   <div className="col-md-3">
                     <InputMask
                       mask="99/99/9999"
+                      id='comprobante_pago_fechaPago'
                       className='form-control'
-                      onChange={(value) => {}}
+                      name='comprobante_pago[fechaPago]'
                     />
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="" className='control-label col-md-4'>
+                  <label
+                    htmlFor="comprobante_pago_monto"
+                    className='control-label col-md-4'
+                  >
                     Monto del comprobante de nuevo pago:<br/>
                     <span className='text-danger text-sm'>NOTA: El monto debe coincidir con el comprobante registrado</span>
                   </label>
                   <div className="col-md-3">
                     <div className="input-group">
-                      <input type="number" className='form-control'/>
+                      <input
+                        type="number"
+                        id='comprobante_pago_monto'
+                        name='comprobante_pago[monto]'
+                        className='form-control'
+                      />
                       <div className="input-group-addon">$</div>
                     </div>
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="" className='control-label col-md-4'>Cargar comprobante del nuevo pago</label>
+                  <label
+                    htmlFor="comprobante_pago_comprobantePagoFile"
+                    className='control-label col-md-4'
+                  >
+                    Cargar comprobante del nuevo pago
+                  </label>
                   <div className="col-md-3">
-                    <input type="file" id='comprobante-file' className='form-control'/>
+                    <input
+                      type="file"
+                      id='comprobante_pago_comprobantePagoFile'
+                      name='comprobante_pago[comprobantePagoFile]'
+                      className='form-control'
+                    />
                   </div>
                 </div>
                 <div className="row mt-30">
@@ -211,7 +244,7 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                   </div>
                   <div className="col-md-2">
                     <button
-                      type='button'
+                      type='submit'
                       className='btn btn-success btn-block'>
                       Guardar
                     </button>

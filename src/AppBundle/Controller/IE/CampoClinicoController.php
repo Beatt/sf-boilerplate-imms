@@ -74,6 +74,9 @@ class CampoClinicoController extends DIEControllerController
                         ],
                         'comprobante',
                         'factura',
+                        'pago' => [
+                            'id'
+                        ]
                     ]
                 ]
             )

@@ -509,4 +509,10 @@ class CampoClinico implements ReferenciaBancariaInterface
     {
         return $this->getImporteAlumno() * $this->getLugaresAutorizados();
     }
+
+    public function getPago()
+    {
+        $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
+        return $this->getSolicitud()->getPagos()->matching($criteria)->first();
+    }
 }
