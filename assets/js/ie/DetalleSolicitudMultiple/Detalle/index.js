@@ -150,8 +150,9 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
           </button>
           <div className='row'>
             <div className="col-md-12">
-              <h2 className='mb-5'>Corrección de pagos</h2>
-              <p className='mb-30'>No. de Solicitud <strong>NS_0006</strong></p>
+              <h2 className='mb-5'>Gestión de pagos</h2>
+              <p className='mb-5'>No. de Solicitud <strong>NS_0006</strong></p>
+              <p className='mb-20'>Monto total del campo clínico: <strong>$37,000.00</strong></p>
             </div>
             <div className="col-md-12 mb-20">
               <table className='table table-condensed'>
@@ -165,9 +166,6 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                 </thead>
               </table>
             </div>
-            <div className="col-md-12 mb-20">
-              <p>Monto total del campo clínico: <strong>$37,000.00</strong></p>
-            </div>
             <div className="col-md-12">
               <h3 className='mb-5'>Observaciones</h3>
               <div className="alert alert-info">
@@ -175,7 +173,7 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
               </div>
             </div>
             <div className="col-md-12">
-              <h3 className='mb-5'>Registrar nuevo comprobante de pago</h3>
+              <h3 className='mb-5'>Registrar comprobante de pago</h3>
               <p className='mb-20'>Monto total del campo clínico por pagar: <strong>200,000</strong></p>
               <form
                 action={`/ie/cargar-comprobante-de-pago/${campoClinicoSelected.pago.id}`}

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded',  () => {
   ReactDOM.render(
     <DetalleSolicitudMultiple
       initCamposClinicos={window.CAMPOS_CLINICOS_PROPS}
+      solicitud={window.SOLICITUD_PROPS}
     />,
     document.getElementById('detalle-solicitud-multiple-component')
   )
