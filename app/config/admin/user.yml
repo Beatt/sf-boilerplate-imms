@@ -29,5 +29,5 @@ easy_admin:
           - { property: activo, type: checkbox }
           - { property: plainPassword, type: text, label: 'Contraseña' }
           - { property: rol, label: 'Rol', type: entity, type_options: { class: AppBundle\Entity\Rol, choice_label: nombre, expanded: true, multiple: false } }
-          - { property: departamento, label: 'Departamento', type: entity, type_options: { choice_label: nombre } }
+          - { property: departamento, label: 'Departamento', type: easyadmin_autocomplete, type_options: { class:AppBundle\Entity\Departamento } }
           - { property: delegaciones, label: 'Delegaciones', type: entity, type_options: { class: AppBundle\Entity\Delegacion, choice_label: nombre, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllDelegations, expanded: true, multiple: true } }
