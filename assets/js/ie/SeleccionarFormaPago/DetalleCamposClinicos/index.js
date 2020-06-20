@@ -1,15 +1,7 @@
 import * as React from 'react'
+import {moneyFormat} from "../../../utils";
 
 const DetalleCamposClinicos = ({ camposClinicos }) => {
-
-  function moneyFormat(monto) {
-    const formatter = new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
-    });
-
-    return formatter.format(monto)
-  }
 
   function getTotalBySolicitud() {
     let total = 0;

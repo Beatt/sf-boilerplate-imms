@@ -3,8 +3,8 @@ import { getActionNameByCampoClinico } from "../../../utils"
 import { uploadComprobantePago } from "../../api/camposClinicos"
 import { CAMPO_CLINICO } from "../../../constants"
 import Modal from 'react-modal'
+import GestionPagoModal from "./GestionPagoModal";
 Modal.setAppElement('body')
-import GestionPago from "./GestionPago";
 
 const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
   const { useState } = React
@@ -134,11 +134,14 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
           }
           </tbody>
         </table>
-        <GestionPago
-          modalIsOpen={modalIsOpen}
-          closeModal={closeModal}
-          pagoId={campoClinicoSelected.pago.id}
-        />
+        {
+          modalIsOpen &&
+          <GestionPagoModal
+            modalIsOpen={modalIsOpen}
+            closeModal={closeModal}
+            pagoId={campoClinicoSelected.pago.id}
+          />
+        }
       </div>
     </div>
   )

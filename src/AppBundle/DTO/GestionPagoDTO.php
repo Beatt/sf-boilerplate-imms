@@ -7,7 +7,6 @@ use AppBundle\DTO\GestionPago\UltimoPagoDTO;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
-use AppBundle\Repository\CampoClinicoRepository;
 use AppBundle\Repository\PagoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -74,5 +73,10 @@ class GestionPagoDTO implements GestionPagoDTOInterface
         });
 
         return $campoClinico->getMonto() - $amountCarry;
+    }
+
+    public function getNoSolicitud()
+    {
+        return $this->solicitud->getNoSolicitud();
     }
 }

@@ -72,3 +72,12 @@ export const getActionNameByCampoClinico = (estatus) => {
       return 'Pago validado'
   }
 }
+
+export const moneyFormat = (monto) => {
+  const formatter = new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+  });
+
+  return formatter.format(monto)
+}
