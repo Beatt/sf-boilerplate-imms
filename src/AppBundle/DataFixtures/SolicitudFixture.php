@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DataFixtures\IE;
+namespace AppBundle\DataFixtures;
 
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;

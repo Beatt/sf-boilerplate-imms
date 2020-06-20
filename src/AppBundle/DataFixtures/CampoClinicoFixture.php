@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DataFixtures\IE;
+namespace AppBundle\DataFixtures;
 
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Convenio;
