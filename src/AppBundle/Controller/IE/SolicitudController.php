@@ -3,9 +3,6 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
-use AppBundle\Entity\CampoClinico;
-use AppBundle\Entity\EstatusCampo;
-use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
@@ -13,13 +10,11 @@ use AppBundle\Event\ReferenciaBancariaZipUnloadedEvent;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
-use AppBundle\Normalizer\CampoClinicoNormalizer;
 use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
-use AppBundle\Service\ProcesadorFormaPago;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
