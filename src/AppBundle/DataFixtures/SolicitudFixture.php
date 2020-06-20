@@ -17,26 +17,18 @@ class SolicitudFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $solicitudConfirmada = $this->createSolicitudConfirmada($manager);
-        $solicitudFormatoPago = $this->createSolicitudFormatosDePagoGenerados($manager);
-        $solicitudCargandoComprobantes = $this->createSolicitudCargandoComprobantes($manager);
+        $this->createSolicitudConfirmada($manager);
+        //$solicitudFormatoPago = $this->createSolicitudFormatosDePagoGenerados($manager);
+        $this->createSolicitudCargandoComprobantes($manager);
 
         $manager->flush();
+    }
 
-        $this->addReference(
-            SolicitudInterface::CONFIRMADA,
-            $solicitudConfirmada
-        );
-
-        $this->addReference(
-            SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS,
-            $solicitudFormatoPago
-        );
-
-        $this->addReference(
-          SolicitudInterface::CARGANDO_COMPROBANTES,
-          $solicitudCargandoComprobantes
-        );
+    function getDependencies()
+    {
+        return[
+            CampoClinicoFixture::class
+        ];
     }
 
     private function create(
@@ -65,8 +57,12 @@ class SolicitudFixture extends Fixture implements DependentFixtureInterface
             SolicitudInterface::CONFIRMADA,
             Carbon::now()->addMonths(3)
         );
+
+        /** @var CampoClinico $campoClinicoNuevo */
+        $campoClinicoNuevo = $this->getReference(EstatusCampoInterface::NUEVO);
+        $solicitud->addCamposClinico($campoClinicoNuevo);
+
         $manager->persist($solicitud);
-        return $solicitud;
     }
 
     /**
@@ -85,7 +81,6 @@ class SolicitudFixture extends Fixture implements DependentFixtureInterface
         $solicitud->addCamposClinico($campoClinicoNuevo);
 
         $manager->persist($solicitud);
-        return $solicitud;
     }
 
     /**
@@ -134,15 +129,6 @@ class SolicitudFixture extends Fixture implements DependentFixtureInterface
         $manager->persist($solicitud);
 
         $manager->flush();
-
-        return $solicitud;
-    }
-
-    function getDependencies()
-    {
-        return[
-            CampoClinicoFixture::class
-        ];
     }
 
     /**
