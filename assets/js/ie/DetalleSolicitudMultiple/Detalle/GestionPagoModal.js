@@ -60,24 +60,36 @@ const GestionPagoModal = (
                 </thead>
                 <tbody>
                 {
-                  gestionPago.pagos.map((pago, index) =>
-                    <tr key={index}>
-                      <td>{pago.referenciaBancaria}</td>
-                      <td><a href={pago.comprobanteConEnlace}>Descargar</a></td>
-                      <td>{pago.fechaPago}</td>
-                      <td>{moneyFormat(pago.monto)}</td>
+                  gestionPago.pagos.length !== 0 ?
+                    gestionPago.pagos.map((pago, index) =>
+                      <tr key={index}>
+                        <td>{pago.referenciaBancaria}</td>
+                        <td><a href={pago.comprobanteConEnlace}>Descargar</a></td>
+                        <td>{pago.fechaPago}</td>
+                        <td>{moneyFormat(pago.monto)}</td>
+                      </tr>
+                    ) :
+                    <tr>
+                      <td
+                        className='text-center text-info'
+                        colSpan={4}
+                      >
+                        Aún no se ha cargado ningún comprobante de pago
+                      </td>
                     </tr>
-                  )
                 }
                 </tbody>
               </table>
             </div>
-            <div className="col-md-12">
-              <h3 className='mb-5'>Observaciones</h3>
-              <div className="alert alert-info">
-                <p>La cantidad depositada no corresponde, faltan $2000.00 MN por cubrir, favor de cubrir el faltante</p>
+            {
+              gestionPago.ultimoPago.observaciones &&
+              <div className="col-md-12">
+                <h3 className='mb-5'>Observaciones</h3>
+                <div className="alert alert-info">
+                  <p>{gestionPago.ultimoPago.observaciones}</p>
+                </div>
               </div>
-            </div>
+            }
             <div className="col-md-12">
               <h3 className='mb-5'>Registrar comprobante de pago</h3>
               <p className='mb-20'>Monto total del campo clínico por pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
