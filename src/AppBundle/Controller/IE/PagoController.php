@@ -30,7 +30,7 @@ class PagoController extends AbstractController
         $pago = $pagoRepository->find($id);
 
         return new JsonResponse($normalizer->normalize(
-            $pago->getSolicitud()->getGestionPago(),
+            $pago->getGestionPago(),
             'json', [
                 'attributes' => [
                     'noSolicitud',

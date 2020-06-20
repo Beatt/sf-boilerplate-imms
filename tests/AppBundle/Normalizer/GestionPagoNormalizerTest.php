@@ -49,7 +49,7 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
 
         $this->entityManager->flush();
 
-        $result = $this->normalizer->normalize($solicitud->getGestionPago(), 'json', [
+        $result = $this->normalizer->normalize($pago2->getGestionPago(), 'json', [
             'attributes' => [
                 'noSolicitud',
                 'montoTotal',
@@ -105,7 +105,7 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
 
         $this->entityManager->flush();
 
-        $result = $this->normalizer->normalize($solicitud->getGestionPago(), 'json', [
+        $result = $this->normalizer->normalize($pago2->getGestionPago(), 'json', [
             'attributes' => [
                 'noSolicitud',
                 'montoTotal',

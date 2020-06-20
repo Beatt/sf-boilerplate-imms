@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use AppBundle\DTO\GestionPagoDTO;
+use AppBundle\Repository\CampoClinicoRepository;
+use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -674,8 +676,15 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         return $result;
     }
 
-    public function getGestionPago()
+    public function getCampoClinicoByReferenciaBancaria($referenciaBancaria)
     {
-        return GestionPagoDTO::fromSolicitud($this);
+        $criteria = CampoClinicoRepository::getCampoClinicoByReferenciaBancaria($referenciaBancaria);
+        return $this->getCamposClinicos()->matching($criteria)->first();
+    }
+
+    public function getPagosByReferenciaBancaria($referenciaBancaria)
+    {
+        $criteria = PagoRepository::getPagosByReferenciaBancaria($referenciaBancaria);
+        return $this->getPagos()->matching($criteria);
     }
 }

@@ -5,9 +5,7 @@ namespace AppBundle\DTO;
 use AppBundle\DTO\GestionPago\CampoClinicoDTO;
 use AppBundle\DTO\GestionPago\PagoDTO;
 use AppBundle\DTO\GestionPago\UltimoPagoDTO;
-use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
-use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Repository\PagoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,21 +16,27 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 {
     private $solicitud;
 
-    private function __construct(Solicitud $solicitud)
+    private $campoClinico;
+
+    private $pago;
+
+    private function __construct(Pago $pago)
     {
-        $this->solicitud = $solicitud;
+        $this->pago = $pago;
+        $this->solicitud = $pago->getSolicitud();
+        $this->campoClinico = $this->solicitud->getCampoClinicoByReferenciaBancaria($this->pago->getReferenciaBancaria());
     }
 
-    public static function fromSolicitud(Solicitud $solicitud)
+    public static function create(Pago $pago)
     {
-        return new GestionPagoDTO($solicitud);
+        return new GestionPagoDTO($pago);
     }
 
     public function getPagos()
     {
         $pagos = new ArrayCollection();
 
-        foreach($this->solicitud->getPagos() as $pago) {
+        foreach($this->solicitud->getPagosByReferenciaBancaria($this->pago->getReferenciaBancaria()) as $pago) {
             $pagos->add(new PagoDTO($pago));
         }
 
@@ -41,10 +45,8 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 
     public function getUltimoPago()
     {
-        /** @var CampoClinico $campoClinico */
-        $campoClinico = $this->solicitud->getCamposClinicos()->first();
         /** @var Criteria $criteria */
-        $criteria = PagoRepository::getUltimoPagoByCriteria($campoClinico->getReferenciaBancaria());
+        $criteria = PagoRepository::getUltimoPagoByCriteria($this->campoClinico->getReferenciaBancaria());
 
         /** @var Collection $result */
         $result = $this->solicitud->getPagos()->matching($criteria);
@@ -54,7 +56,7 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 
     public function getMontoTotal()
     {
-        return $this->solicitud->getCamposClinicos()->first()->getMonto();
+        return $this->campoClinico->getMonto();
     }
 
     public function getNombreInstitucion()
@@ -64,17 +66,14 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 
     public function getMontoTotalPorPagar()
     {
-        /** @var CampoClinico $campoClinico */
-        $campoClinico = $this->solicitud->getCamposClinicos()->first();
-
         $amountCarry = array_reduce(
-            $campoClinico->getPagos()->toArray(),
+            $this->campoClinico->getPagos()->toArray(),
             function ($carry, Pago $pago) {
                 if($pago->isValidado()) $carry += intval($pago->getMonto());
             return $carry;
         });
 
-        return $campoClinico->getMonto() - $amountCarry;
+        return $this->campoClinico->getMonto() - $amountCarry;
     }
 
     public function getNoSolicitud()
@@ -91,9 +90,7 @@ class GestionPagoDTO implements GestionPagoDTOInterface
     {
         if($this->solicitud->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO) return null;
 
-        /** @var CampoClinico $campoClinico */
-        $campoClinico = $this->solicitud->getCamposClinicos()->first();
 
-        return new CampoClinicoDTO($campoClinico);
+        return new CampoClinicoDTO($this->campoClinico);
     }
 }

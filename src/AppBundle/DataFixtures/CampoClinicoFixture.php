@@ -6,19 +6,17 @@ use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Convenio;
 use AppBundle\Entity\EstatusCampo;
 use AppBundle\Entity\EstatusCampoInterface;
-use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Unidad;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
+class CampoClinicoFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        /** @var Convenio $convenio1 */
-        $convenio1 = $manager->getRepository(Convenio::class)
+        /** @var Convenio $convenio */
+        $convenio = $manager->getRepository(Convenio::class)
             ->find(3);
 
         /** @var EstatusCampo $estatusCampoNuevo */
@@ -29,88 +27,44 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $unidad = $manager->getRepository(Unidad::class)
             ->find(1);
 
-        /** @var Solicitud $solicitud */
-        $solicitud = $this->getReference(Solicitud::CONFIRMADA);
-
-        $campo1 = $this->create(
-            $convenio1,
+        $campoClinicoNuevo = $this->create(
+            $convenio,
             $estatusCampoNuevo,
-            $unidad,
-            $solicitud
+            $unidad
         );
-        $campo1->setReferenciaBancaria(null);
-        $manager->persist($campo1);
 
-        /** @var Convenio $convenio2 */
-        $convenio2 = $manager->getRepository(Convenio::class)
-            ->find(79);
-
-        /** @var EstatusCampo $estatusCampoNuevo */
-        $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
-            ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
-
-        /** @var Unidad $unidad2 */
-        $unidad2 = $manager->getRepository(Unidad::class)
-            ->find(4);
-
-        /** @var Solicitud $solicitudFormatos */
-        $solicitudFormatos = $this->getReference(Solicitud::FORMATOS_DE_PAGO_GENERADOS);
-
-        $campo2 = $this->create(
-            $convenio2,
+        $campoClinicoPendientePago = $this->create(
+            $convenio,
             $estatusCampoNuevo,
-            $unidad2,
-            $solicitudFormatos
+            $unidad
         );
-        $manager->persist($campo2);
 
-        /** @var Convenio $convenio3 */
-        $convenio3 = $manager->getRepository(Convenio::class)
-            ->find(93);
-
-        /** @var EstatusCampo $estatusCampoNuevo */
-        $estatusCampoNuevo = $manager->getRepository(EstatusCampo::class)
-            ->findOneBy(['nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO]);
-
-        /** @var Unidad $unidad3 */
-        $unidad3 = $manager->getRepository(Unidad::class)
-            ->find(16);
-
-        /** @var Solicitud $solicitudFormatos */
-        $solicitudFormatos = $this->getReference(Solicitud::CARGANDO_COMPROBANTES);
-
-        $campo3 = $this->create(
-            $convenio3,
+        $campoClinicoPagado = $this->create(
+            $convenio,
             $estatusCampoNuevo,
-            $unidad3,
-            $solicitudFormatos,
-            '101011'
+            $unidad
         );
-        $manager->persist($campo3);
+
+        $manager->persist($campoClinicoNuevo);
+        $manager->persist($campoClinicoPendientePago);
+        $manager->persist($campoClinicoPagado);
         $manager->flush();
-    }
 
-    function getDependencies()
-    {
-        return[
-            SolicitudFixture::class
-        ];
+        $this->addReference(EstatusCampoInterface::NUEVO, $campoClinicoNuevo);
+        $this->addReference(EstatusCampoInterface::PENDIENTE_DE_PAGO, $campoClinicoPendientePago);
+        $this->addReference(EstatusCampoInterface::PAGO, $campoClinicoPagado);
     }
 
     /**
      * @param Convenio $convenio
      * @param EstatusCampo $estatusCampo
      * @param Unidad $unidad
-     * @param Solicitud $solicitud
-     * @param string|null $referenciaBancaria
      * @return CampoClinico
      */
     private function create(
         Convenio $convenio,
         EstatusCampo $estatusCampo,
-        Unidad $unidad,
-        $solicitud,
-        $referenciaBancaria = null
+        Unidad $unidad
     ) {
         $campoClinico = new CampoClinico();
         $campoClinico->setFechaInicial(Carbon::now());
@@ -119,12 +73,10 @@ class CampoClinicoFixture extends Fixture implements DependentFixtureInterface
         $campoClinico->setPromocion('Promoción');
         $campoClinico->setLugaresSolicitados(40);
         $campoClinico->setLugaresAutorizados(20);
-        $campoClinico->setMonto(10000);
-        $campoClinico->setReferenciaBancaria($referenciaBancaria);
+        $campoClinico->setMonto(0);
         $campoClinico->setConvenio($convenio);
         $campoClinico->setEstatus($estatusCampo);
         $campoClinico->setUnidad($unidad);
-        $campoClinico->setSolicitud($solicitud);
 
         return $campoClinico;
     }

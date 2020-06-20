@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\DTO\GestionPagoDTO;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -326,5 +327,10 @@ class Pago implements ComprobantePagoInterface
     public function isValidado()
     {
         return $this->getValidado();
+    }
+
+    public function getGestionPago()
+    {
+        return GestionPagoDTO::create($this);
     }
 }
