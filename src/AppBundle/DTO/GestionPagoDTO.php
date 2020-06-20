@@ -54,11 +54,13 @@ class GestionPagoDTO implements GestionPagoDTOInterface
         /** @var CampoClinico $campoClinico */
         $campoClinico = $this->solicitud->getCamposClinicos()->first();
 
-        return array_reduce(
+        $amountCarry = array_reduce(
             $campoClinico->getPagos()->toArray(),
             function ($carry, Pago $pago) {
                 $carry .= $pago->getMonto();
             return $carry;
         });
+
+        return $campoClinico->getMonto() - $amountCarry;
     }
 }
