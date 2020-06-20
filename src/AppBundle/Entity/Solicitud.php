@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\DTO\GestionPagoDTO;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -671,5 +672,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
             $result = $cc->getConvenio()->getDelegacion();
         }
         return $result;
+    }
+
+    public function getGestionPago()
+    {
+        return GestionPagoDTO::fromSolicitud($this);
     }
 }

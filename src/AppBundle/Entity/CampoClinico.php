@@ -512,7 +512,12 @@ class CampoClinico implements ReferenciaBancariaInterface
 
     public function getPago()
     {
+        return $this->getPagos()->first();
+    }
+
+    public function getPagos()
+    {
         $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
-        return $this->getSolicitud()->getPagos()->matching($criteria)->first();
+        return $this->getSolicitud()->getPagos()->matching($criteria);
     }
 }

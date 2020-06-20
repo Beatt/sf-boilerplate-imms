@@ -61,4 +61,20 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
             'total' => $qb2->select('COUNT(pago.id)')->getQuery()->getSingleScalarResult()
         ];
     }
+
+    public function getComprobantesPagoByReferenciaBancaria($referenciaBancaria)
+    {
+        return $this->createQueryBuilder('pago')
+            ->select('NEW AppBundle\DTO\GestionPago\PagoDTO(
+                pago.comprobantePago, 
+                pago.referenciaBancaria, 
+                pago.fechaPago, 
+                pago.monto
+            )')
+            ->where('pago.referenciaBancaria = :referenciaBancaria')
+            ->setParameter('referenciaBancaria', $referenciaBancaria)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

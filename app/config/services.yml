@@ -4,6 +4,7 @@ parameters:
     referencias_bancarias_dir: '%kernel.root_dir%/../var/referencias_bancarias'
     formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
     credenciales_dir: '%kernel.root_dir%/../var/credenciales'
+    comprobantes_pago_dir: '/uploads/files/instituciones'
 
 imports:
     - { resource: './services/repositories.yml' }
@@ -18,6 +19,9 @@ services:
         # this means you cannot fetch services directly from the container via $container->get()
         # if you need to do this, you can override this setting on individual services
         public: false
+
+        bind:
+            $comprobantesPagoDir: '%comprobantes_pago_dir%'
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -124,3 +128,8 @@ services:
         class: AppBundle\EventListener\ReferenciaBancariaZipUnloadedListener
         tags:
             - { name: kernel.event_listener, event: referencia_bancaria_zip.unloaded, method: referenciaBancariaZipUnloaded }
+
+    app.topic_normalizer:
+        class: AppBundle\Normalizer\GestionPagoNormalizer
+        public: true
+        tags: ['serializer.normalizer']
