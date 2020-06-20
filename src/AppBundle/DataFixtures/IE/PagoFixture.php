@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DataFixtures\InstitucionEducativa;
+namespace AppBundle\DataFixtures\IE;
 
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\SolicitudInterface;
