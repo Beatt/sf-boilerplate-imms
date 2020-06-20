@@ -563,7 +563,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         $items = [];
 
         /** @var MontoCarrera $monto */
-        foreach($this->montosCarrera as $monto) {
+        foreach($this->montosCarreras as $monto) {
             $carrera = $monto->getCarrera();
             $items[] = sprintf(
                 "%s %s: Inscripción $%s, Colegiatura: $%s",
