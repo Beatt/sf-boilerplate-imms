@@ -322,4 +322,9 @@ class Pago implements ComprobantePagoInterface
     {
         $this->fechaCreacion = $fechaCreacion;
     }
+
+    public function isValidado()
+    {
+        return $this->getValidado();
+    }
 }

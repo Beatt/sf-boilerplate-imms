@@ -77,4 +77,14 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
             ->getResult()
         ;
     }
+
+    public static function getUltimoPagoByCriteria($referenciaBancaria)
+    {
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria))
+            ->orderBy(['id' => Criteria::DESC])
+            ->setFirstResult(0)
+            ->setMaxResults(1)
+        ;
+    }
 }
