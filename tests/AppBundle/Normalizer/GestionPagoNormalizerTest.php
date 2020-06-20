@@ -141,7 +141,7 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
             $pago->setObservaciones('dummydata');
         }
         $pago->setValidado($isPagoValidado);
-        $this->entityManager->persist($pago);
+        $this->pagoRepository->save($pago);
         return $pago;
     }
 }
