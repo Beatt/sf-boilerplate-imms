@@ -36,6 +36,11 @@ class PagoController extends AbstractController
                     'noSolicitud',
                     'montoTotal',
                     'montoTotalPorPagar',
+                    'tipoPago',
+                    'campoClinico' => [
+                        'sede',
+                        'carrera'
+                    ],
                     'pagos' => [
                         'comprobanteConEnlace',
                         'referenciaBancaria',

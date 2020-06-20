@@ -13,4 +13,8 @@ interface GestionPagoDTOInterface
     public function getMontoTotal();
 
     public function getMontoTotalPorPagar();
+
+    public function getTipoPago();
+
+    public function getCampoClinico();
 }

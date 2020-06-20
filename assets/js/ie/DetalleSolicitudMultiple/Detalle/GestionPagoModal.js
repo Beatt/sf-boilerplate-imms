@@ -3,6 +3,7 @@ import InputMask from "react-input-mask";
 import Modal from "react-modal";
 import {getGestionPagoAsync} from "../../api/pago";
 import {moneyFormat} from "../../../utils";
+import {TIPO_PAGO} from "../../../constants";
 
 const GestionPagoModal = (
   {
@@ -44,9 +45,22 @@ const GestionPagoModal = (
           <h3>Cargando información...</h3> :
           <div className='row'>
             <div className="col-md-12">
-              <h2 className='mb-5'>Gestión de pagos</h2>
-              <p className='mb-5'>No. de Solicitud <strong>{gestionPago.noSolicitud}</strong></p>
-              <p className='mb-20'>Monto total del campo clínico: <strong>{moneyFormat(gestionPago.montoTotal)}</strong></p>
+              <h2 className='mb-20'>Gestión de pagos</h2>
+              <div className="row">
+                <div className="col-md-6">
+                  <p className='mb-5'>No. de Solicitud <strong>{gestionPago.noSolicitud}</strong></p>
+                  <p className='mb-5'>Tipo de pago <strong>{gestionPago.tipoPago}</strong></p>
+                  <p className='mb-20'>Monto total: <strong>{moneyFormat(gestionPago.montoTotal)}</strong></p>
+                </div>
+                {
+                  gestionPago.tipoPago === TIPO_PAGO.MULTIPLE &&
+                  <div className="col-md-6">
+                    <p className='mb-5'><strong>Campo clínico</strong></p>
+                    <p className='mb-5'>Sede: <strong>{gestionPago.campoClinico.sede}</strong></p>
+                    <p className='mb-5'>Carrera <strong>{gestionPago.campoClinico.carrera}</strong></p>
+                  </div>
+                }
+              </div>
             </div>
             <div className="col-md-12 mb-20">
               <table className='table table-condensed'>
@@ -92,7 +106,7 @@ const GestionPagoModal = (
             }
             <div className="col-md-12">
               <h3 className='mb-5'>Registrar comprobante de pago</h3>
-              <p className='mb-20'>Monto total del campo clínico por pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
+              <p className='mb-20'>Monto total por pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
               <form
                 action={`/ie/cargar-comprobante-de-pago/${pagoId}`}
                 method='post'

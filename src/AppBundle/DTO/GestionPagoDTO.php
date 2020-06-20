@@ -2,11 +2,13 @@
 
 namespace AppBundle\DTO;
 
+use AppBundle\DTO\GestionPago\CampoClinicoDTO;
 use AppBundle\DTO\GestionPago\PagoDTO;
 use AppBundle\DTO\GestionPago\UltimoPagoDTO;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Repository\PagoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -78,5 +80,20 @@ class GestionPagoDTO implements GestionPagoDTOInterface
     public function getNoSolicitud()
     {
         return $this->solicitud->getNoSolicitud();
+    }
+
+    public function getTipoPago()
+    {
+        return $this->solicitud->getTipoPago();
+    }
+
+    public function getCampoClinico()
+    {
+        if($this->solicitud->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO) return null;
+
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $this->solicitud->getCamposClinicos()->first();
+
+        return new CampoClinicoDTO($campoClinico);
     }
 }

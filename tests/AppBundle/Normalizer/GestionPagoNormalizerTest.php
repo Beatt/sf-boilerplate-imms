@@ -51,6 +51,14 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
 
         $result = $this->normalizer->normalize($solicitud->getGestionPago(), 'json', [
             'attributes' => [
+                'noSolicitud',
+                'montoTotal',
+                'montoTotalPorPagar',
+                'tipoPago',
+                'campoClinico' => [
+                    'sede',
+                    'carrera'
+                ],
                 'pagos' => [
                     'comprobanteConEnlace',
                     'referenciaBancaria',
@@ -59,15 +67,17 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
                 ],
                 'ultimoPago' => [
                     'observaciones'
-                ],
-                'montoTotal',
-                'montoTotalPorPagar'
+                ]
             ]
         ]);
 
 
         $this->assertEquals('20000', $result['montoTotal']);
         $this->assertEquals('0', $result['montoTotalPorPagar']);
+        $this->assertNotEmpty($result['noSolicitud']);
+        $this->assertNotEmpty($result['tipoPago']);
+        $this->assertNotEmpty($result['campoClinico']['sede']);
+        $this->assertNotEmpty($result['campoClinico']['carrera']);
         $this->assertNull($result['ultimoPago']['observaciones']);
         $this->assertCount(2, $result['pagos']);
     }
@@ -97,6 +107,14 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
 
         $result = $this->normalizer->normalize($solicitud->getGestionPago(), 'json', [
             'attributes' => [
+                'noSolicitud',
+                'montoTotal',
+                'montoTotalPorPagar',
+                'tipoPago',
+                'campoClinico' => [
+                    'sede',
+                    'carrera'
+                ],
                 'pagos' => [
                     'comprobanteConEnlace',
                     'referenciaBancaria',
@@ -105,13 +123,15 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
                 ],
                 'ultimoPago' => [
                     'observaciones'
-                ],
-                'montoTotal',
-                'montoTotalPorPagar'
+                ]
             ]
         ]);
 
 
+        $this->assertNotEmpty($result['noSolicitud']);
+        $this->assertNotEmpty($result['tipoPago']);
+        $this->assertNotEmpty($result['campoClinico']['sede']);
+        $this->assertNotEmpty($result['campoClinico']['carrera']);
         $this->assertEquals('20000', $result['montoTotal']);
         $this->assertEquals('10000', $result['montoTotalPorPagar']);
         $this->assertNotNull($result['ultimoPago']['observaciones']);
