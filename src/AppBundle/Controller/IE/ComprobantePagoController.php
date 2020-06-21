@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ComprobantePagoController extends DIEControllerController
 {
     /**
-     * @Route("/cargar-comprobante-de-pago/{id}", name="ie#cargar_comprobante_de_pago", methods={"POST"})
+     * @Route("/pagos/{id}/cargar-comprobante-de-pago", name="ie#cargar_comprobante_de_pago", methods={"POST"})
      * @param int $id
      * @param Request $request
      * @param UploaderComprobantePagoInterface $uploaderComprobantePago

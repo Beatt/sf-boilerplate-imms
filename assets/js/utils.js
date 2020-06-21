@@ -20,7 +20,7 @@ export const getActionNameByInstitucionEducativa = (estatus, tipoPago) => {
       return 'Cargar comprobante de pago'
     case SOLICITUD.EN_VALIDACION_FOFOE:
       if(isMultipleTipoPago(tipoPago)) return 'Ver detalle'
-      return 'Pago correcto'
+      return 'En validación FOFOE'
     case SOLICITUD.CREDENCIALES_GENERADAS:
       return 'Descargar credenciales'
     default:
