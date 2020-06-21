@@ -91,7 +91,6 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
         $this->assertCount(2, $result['pagos']);
     }
 
-
     /**
      * @param $amount
      * @param Solicitud $solicitud
@@ -110,11 +109,11 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
         $pago->setSolicitud($solicitud);
         $pago->setReferenciaBancaria($campoClinico->getReferenciaBancaria());
         $pago->setRequiereFactura(false);
-        if(!$isPagoValidado) {
-            $pago->setObservaciones('dummydata');
-        }
+        if(!$isPagoValidado) $pago->setObservaciones('dummydata');
         $pago->setValidado($isPagoValidado);
+
         $this->pagoRepository->save($pago);
+
         return $pago;
     }
 
