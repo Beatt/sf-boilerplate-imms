@@ -34,8 +34,8 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
         $campoClinico = $this->getCampoClinico($solicitud);
         $campoClinico->setMonto($amount);
 
-        $pago1 = $this->createPago($amount / 2, $solicitud, $campoClinico);
-        $pago2 = $this->createPago($amount / 2, $solicitud, $campoClinico);
+        $pago1 = $this->createPago($amount / 2, $solicitud, $campoClinico, true);
+        $pago2 = $this->createPago($amount / 2, $solicitud, $campoClinico, true);
 
         $solicitud->addPago($pago1);
         $solicitud->addPago($pago2);
@@ -102,7 +102,7 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
         $amount,
         Solicitud $solicitud,
         CampoClinico $campoClinico,
-        $isPagoValidado = true
+        $isPagoValidado
     ) {
         $pago = new Pago();
         $pago->setMonto($amount);
