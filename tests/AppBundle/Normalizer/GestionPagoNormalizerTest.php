@@ -29,48 +29,24 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
     public function testCampoClinicoPagado()
     {
         $amount = 20000;
+        $solicitud = $this->getSolicitudByEstatusCargandoComprobantes();
 
-        /** @var Solicitud $solicitud */
-        $solicitud = $this
-            ->entityManager
-            ->getRepository(Solicitud::class)
-            ->findOneBy(['estatus' => SolicitudInterface::CARGANDO_COMPROBANTES])
-        ;
-
-        /** @var CampoClinico $campoClinico */
-        $campoClinico = $solicitud->getCamposClinicos()->first();
+        $campoClinico = $this->getCampoClinico($solicitud);
         $campoClinico->setMonto($amount);
 
-        $pago1 = $this->createPago($amount, $solicitud, $campoClinico);
-        $pago2 = $this->createPago($amount, $solicitud, $campoClinico);
+        $pago1 = $this->createPago($amount / 2, $solicitud, $campoClinico);
+        $pago2 = $this->createPago($amount / 2, $solicitud, $campoClinico);
 
         $solicitud->addPago($pago1);
         $solicitud->addPago($pago2);
 
         $this->entityManager->flush();
 
-        $result = $this->normalizer->normalize($pago2->getGestionPago(), 'json', [
-            'attributes' => [
-                'noSolicitud',
-                'montoTotal',
-                'montoTotalPorPagar',
-                'tipoPago',
-                'campoClinico' => [
-                    'sede',
-                    'carrera'
-                ],
-                'pagos' => [
-                    'comprobanteConEnlace',
-                    'referenciaBancaria',
-                    'fechaPago',
-                    'monto'
-                ],
-                'ultimoPago' => [
-                    'observaciones'
-                ]
-            ]
-        ]);
-
+        $result = $this->normalizer->normalize(
+            $pago2->getGestionPago(),
+            'json',
+            $this->getAttributesToNormalize()
+        );
 
         $this->assertEquals('20000', $result['montoTotal']);
         $this->assertEquals('0', $result['montoTotalPorPagar']);
@@ -86,47 +62,24 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
     {
         $amount = 20000;
 
-        /** @var Solicitud $solicitud */
-        $solicitud = $this
-            ->entityManager
-            ->getRepository(Solicitud::class)
-            ->findOneBy(['estatus' => SolicitudInterface::CARGANDO_COMPROBANTES])
-        ;
+        $solicitud = $this->getSolicitudByEstatusCargandoComprobantes();
 
-        /** @var CampoClinico $campoClinico */
-        $campoClinico = $solicitud->getCamposClinicos()->first();
+        $campoClinico = $this->getCampoClinico($solicitud);
         $campoClinico->setMonto($amount);
 
-        $pago1 = $this->createPago($amount, $solicitud, $campoClinico, true);
-        $pago2 = $this->createPago($amount, $solicitud, $campoClinico, false);
+        $pago1 = $this->createPago($amount / 2, $solicitud, $campoClinico, true);
+        $pago2 = $this->createPago($amount / 2, $solicitud, $campoClinico, false);
 
         $solicitud->addPago($pago1);
         $solicitud->addPago($pago2);
 
         $this->entityManager->flush();
 
-        $result = $this->normalizer->normalize($pago2->getGestionPago(), 'json', [
-            'attributes' => [
-                'noSolicitud',
-                'montoTotal',
-                'montoTotalPorPagar',
-                'tipoPago',
-                'campoClinico' => [
-                    'sede',
-                    'carrera'
-                ],
-                'pagos' => [
-                    'comprobanteConEnlace',
-                    'referenciaBancaria',
-                    'fechaPago',
-                    'monto'
-                ],
-                'ultimoPago' => [
-                    'observaciones'
-                ]
-            ]
-        ]);
-
+        $result = $this->normalizer->normalize(
+            $pago2->getGestionPago(),
+            'json',
+            $this->getAttributesToNormalize()
+        );;
 
         $this->assertNotEmpty($result['noSolicitud']);
         $this->assertNotEmpty($result['tipoPago']);
@@ -153,7 +106,7 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
         $isPagoValidado = true
     ) {
         $pago = new Pago();
-        $pago->setMonto($amount / 2);
+        $pago->setMonto($amount);
         $pago->setSolicitud($solicitud);
         $pago->setReferenciaBancaria($campoClinico->getReferenciaBancaria());
         $pago->setRequiereFactura(false);
@@ -163,5 +116,56 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
         $pago->setValidado($isPagoValidado);
         $this->pagoRepository->save($pago);
         return $pago;
+    }
+
+    /**
+     * @return Solicitud
+     */
+    protected function getSolicitudByEstatusCargandoComprobantes()
+    {
+        /** @var Solicitud $solicitud */
+        $solicitud = $this
+            ->entityManager
+            ->getRepository(Solicitud::class)
+            ->findOneBy(['estatus' => SolicitudInterface::CARGANDO_COMPROBANTES]);
+
+        return $solicitud;
+    }
+
+    /**
+     * @return array[]
+     */
+    protected function getAttributesToNormalize()
+    {
+        return [
+            'attributes' => [
+                'noSolicitud',
+                'montoTotal',
+                'montoTotalPorPagar',
+                'tipoPago',
+                'campoClinico' => [
+                    'sede',
+                    'carrera'
+                ],
+                'pagos' => [
+                    'comprobanteConEnlace',
+                    'referenciaBancaria',
+                    'fechaPago',
+                    'monto'
+                ],
+                'ultimoPago' => [
+                    'observaciones'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return CampoClinico
+     */
+    protected function getCampoClinico(Solicitud $solicitud)
+    {
+        return $solicitud->getCamposClinicos()->first();
     }
 }
