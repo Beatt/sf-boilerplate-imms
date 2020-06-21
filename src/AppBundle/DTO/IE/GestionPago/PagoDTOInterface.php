@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\DTO\GestionPago;
+namespace AppBundle\DTO\IE\GestionPago;
 
 interface PagoDTOInterface
 {

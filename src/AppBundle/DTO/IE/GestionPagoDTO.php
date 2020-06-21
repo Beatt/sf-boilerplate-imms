@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\DTO;
+namespace AppBundle\DTO\IE;
 
-use AppBundle\DTO\GestionPago\CampoClinicoDTO;
-use AppBundle\DTO\GestionPago\PagoDTO;
-use AppBundle\DTO\GestionPago\UltimoPagoDTO;
+use AppBundle\DTO\IE\GestionPago\CampoClinicoDTO;
+use AppBundle\DTO\IE\GestionPago\PagoDTO;
+use AppBundle\DTO\IE\GestionPago\UltimoPagoDTO;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\SolicitudTipoPagoInterface;

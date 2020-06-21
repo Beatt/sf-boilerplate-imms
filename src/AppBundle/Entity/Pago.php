@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\DTO\GestionPagoDTO;
+use AppBundle\DTO\IE\GestionPagoDTO;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
