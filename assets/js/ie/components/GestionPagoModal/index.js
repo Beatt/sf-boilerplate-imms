@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import {getGestionPagoAsync} from "../../api/pago";
 import {moneyFormat} from "../../../utils";
 import {TIPO_PAGO} from "../../../constants";
+Modal.setAppElement('body')
 
 const GestionPagoModal = (
   {

@@ -74,6 +74,10 @@ const MisSolicitudes = ({ totalInit }) => {
     window.location.href = redirectRoute
   }
 
+  function closeModal() {
+    setModalIsOpen(false)
+  }
+
   return(
     <div className='row'>
       <div className="col-md-3">
@@ -176,7 +180,7 @@ const MisSolicitudes = ({ totalInit }) => {
             modalIsOpen &&
             <GestionPagoModal
               modalIsOpen={modalIsOpen}
-              closeModal={() => setModalIsOpen(false)}
+              closeModal={closeModal}
               pagoId={campoClinicoSelected.pago.id}
             />
           }

@@ -1,7 +1,5 @@
 import * as React from 'react'
-import Modal from 'react-modal'
 import GestionPagoModal from "../../components/GestionPagoModal";
-Modal.setAppElement('body')
 
 const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
   const { useState } = React
