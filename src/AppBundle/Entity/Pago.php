@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\DTO\IE\GestionPagoDTO;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,7 +16,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PagoRepository")
  * @Vich\Uploadable
  */
-class Pago
+class Pago implements ComprobantePagoInterface
 {
     /**
      * @var int
@@ -42,7 +43,7 @@ class Pago
     /**
      * @var Solicitud
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pago")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pagos")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;
@@ -96,6 +97,12 @@ class Pago
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */
      private $factura;
+
+    /**
+     *
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $fechaCreacion;
 
     /**
      * @return int
@@ -267,6 +274,8 @@ class Pago
     public function setComprobantePagoFile($comprobantePagoFile = null)
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
+
+        $this->setFechaCreacion(Carbon::now());
     }
 
     /**
@@ -298,4 +307,30 @@ class Pago
          }
          return '';
      }
+
+    /**
+     * @return DateTime
+     */
+    public function getFechaCreacion()
+    {
+        return $this->fechaCreacion;
+    }
+
+    /**
+     * @param DateTime $fechaCreacion
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+    }
+
+    public function isValidado()
+    {
+        return $this->getValidado();
+    }
+
+    public function getGestionPago()
+    {
+        return GestionPagoDTO::create($this);
+    }
 }

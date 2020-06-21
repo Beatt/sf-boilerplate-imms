@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -247,5 +248,11 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         }
 
         return 0;
+    }
+
+    public static function getCampoClinicoByReferenciaBancaria($referenciaBancaria)
+    {
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria));
     }
 }

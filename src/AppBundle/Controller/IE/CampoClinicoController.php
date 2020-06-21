@@ -40,7 +40,7 @@ class CampoClinicoController extends DIEControllerController
                     'attributes' => [
                         'documento',
                         'urlArchivo',
-                        'descripcion',
+                        'expedienteDescripcion',
                         'fechaComprobante'
                     ]
                 ]
@@ -74,6 +74,9 @@ class CampoClinicoController extends DIEControllerController
                         ],
                         'comprobante',
                         'factura',
+                        'pago' => [
+                            'id'
+                        ]
                     ]
                 ]
             )

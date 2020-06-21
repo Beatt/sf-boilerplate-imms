@@ -3,25 +3,28 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\DTO\IE\InicioDTO;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Event\ReferenciaBancariaZipUnloadedEvent;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
-use AppBundle\Normalizer\CampoClinicoNormalizer;
 use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
-use AppBundle\Service\ProcesadorFormaPago;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/ie")
@@ -32,11 +35,13 @@ class SolicitudController extends DIEControllerController
      * @Route("/inicio", name="ie#inicio", methods={"GET"})
      * @param Request $request
      * @param SolicitudRepositoryInterface $solicitudRepository
+     * @param NormalizerInterface $normalizer
      * @return Response
      */
     public function inicioAction(
         Request $request,
-        SolicitudRepositoryInterface $solicitudRepository
+        SolicitudRepositoryInterface $solicitudRepository,
+        NormalizerInterface $normalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -44,24 +49,41 @@ class SolicitudController extends DIEControllerController
         list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
         list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
 
-        $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
+        $solicitudes = $solicitudRepository->getAllSolicitudesByInstitucion(
             $institucion->getId(),
             $tipoPago,
             $offset,
             $search
         );
 
+        $collection = new ArrayCollection();
+        /** @var Solicitud $solicitud */
+        foreach($solicitudes as $solicitud) {
+            $collection->add(new InicioDTO($solicitud));
+        }
+
         if ($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)) {
             return new JsonResponse([
-                'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
-                'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
+                'camposClinicos' => $normalizer->normalize($collection, 'json', [
+                    'attributes' => [
+                        'id',
+                        'estatus',
+                        'fecha',
+                        'noCamposAutorizados',
+                        'noCamposSolicitados',
+                        'noSolicitud',
+                        'tipoPago',
+                        'ultimoPago'
+                    ]
+                ]),
+                'total' => round(count($solicitudes) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
             ]);
 
         }
 
         return $this->render('ie/solicitud/inicio.html.twig', [
             'institucion' => $institucion,
-            'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
+            'total' => round(count($solicitudes) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
         ]);
     }
 
@@ -232,9 +254,7 @@ class SolicitudController extends DIEControllerController
 
             $this->addFlash('success', 'Se ha guardado correctamente los montos.');
 
-            return $this->redirectToRoute('ie#detalle_de_forma_de_pago', [
-                'id' => $id
-            ]);
+            return $this->redirectToRoute('ie#inicio');
         }
 
         return $this->render('ie/solicitud/seleccionar_forma_pago.html.twig', [
@@ -268,17 +288,25 @@ class SolicitudController extends DIEControllerController
      * @Route("/solicitudes/{id}/descargar-referencias-bancarias", name="ie#descargar_referencias_bancarias")
      * @param $id
      * @param GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+     * @param EventDispatcherInterface $dispatcher
      */
     public function descargarReferenciasBancarias(
         $id,
-        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP,
+        EventDispatcherInterface $dispatcher
     ) {
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($id);
 
+        $dispatcher->dispatch(
+            ReferenciaBancariaZipUnloadedEvent::NAME,
+            new ReferenciaBancariaZipUnloadedEvent($solicitud)
+        );
+
         return $generadorReferenciaBancariaZIP->generarZipResponse($solicitud);
     }
+
 
     /**
      * @Route("/solicitudes/{id}/cargar-comprobante", name="ie#cargar_comprobante")

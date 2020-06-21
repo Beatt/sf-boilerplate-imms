@@ -1,57 +1,13 @@
 import * as React from 'react'
-import { getActionNameByCampoClinico } from "../../../utils";
-import { uploadComprobantePago } from "../../api/camposClinicos";
-import { CAMPO_CLINICO } from "../../../constants";
+import GestionPagoModal from "../../components/GestionPagoModal";
 
 const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
   const { useState } = React
-  const [isLoading, setIsLoading] = useState(false)
-  const [feedbackMessage, setFeedbackMessage] = useState('')
-  const [camposClinicos, setCamposClinicos] = useState(initCamposClinicos)
-
-  function getComprobanteAction(campoClinico) {
-    const estatus = campoClinico.estatus.nombre
-    switch(estatus) {
-      case CAMPO_CLINICO.PENDIENTE_DE_PAGO:
-      case CAMPO_CLINICO.PAGO_NO_VALIDO:
-        return(
-          <div style={{ position: 'relative' }}>
-            <label htmlFor="">{!isLoading ?
-              getActionNameByCampoClinico(estatus) :
-              'Cargando....'
-            }</label>
-            <input
-              type="file"
-              onChange={({ target }) => handleUploadComprobantePago(campoClinico, target)}
-            />
-            {feedbackMessage && <span className='error-message'>{feedbackMessage}</span>}
-          </div>
-        )
-      case CAMPO_CLINICO.PAGO:
-        return(
-          <button
-            className='btn btn-default'
-            disabled={true}
-          >
-            {getActionNameByCampoClinico(estatus)}
-          </button>
-        )
-      case CAMPO_CLINICO.PAGO_VALIDADO_FOFOE:
-      case CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE:
-      case CAMPO_CLINICO.CREDENCIALES_GENERADAS:
-        return(
-          <div>
-            <a
-              href={campoClinico.comprobante}
-              target='_blank'
-            >
-              Comprobante de pago
-            </a><br/>
-            [{getActionNameByCampoClinico(estatus)}]
-          </div>
-        )
-    }
-  }
+  const [camposClinicos] = useState(initCamposClinicos)
+  const [modalIsOpen, setModalIsOpen] = React.useState(false);
+  const [campoClinicoSelected, setCampoClinicoSelected] = useState({
+    pago: { id: null }
+  })
 
   function getFactura(factura) {
     if(factura === 'Pendiente' || factura === 'No solicitada') return factura;
@@ -61,22 +17,8 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
     )
   }
 
-  function handleUploadComprobantePago(campoClinico, target) {
-    setIsLoading(true)
-    setTimeout(() => {
-      uploadComprobantePago(campoClinico.id, target.files)
-        .then(res => {
-          if(res.status) {
-            campoClinico.estatus.nombre = CAMPO_CLINICO.PAGO
-            setCamposClinicos([...camposClinicos])
-            setFeedbackMessage(res.message)
-          } else {
-            setFeedbackMessage(res.errors.file[0])
-          }
-        })
-        .catch(() => setFeedbackMessage('Lo sentimos, ha ocurrido un problema. Vuelte a intentar más tarde'))
-        .finally(() => setIsLoading(false))
-    }, 1000)
+  function closeModal() {
+    setModalIsOpen(false)
   }
 
   return(
@@ -108,7 +50,14 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                 <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
                 <td>{campoClinico.estatus.nombre}</td>
                 <td>
-                  {getComprobanteAction(campoClinico)}
+                  {
+                    campoClinico.estatus.nombre === 'Pago' ?
+                      <button className='btn btn-default' disabled={true}>En validación por FOFOE</button> :
+                      <button className="btn btn-success" onClick={() => {
+                        setCampoClinicoSelected(campoClinico)
+                        setModalIsOpen(true)
+                      }}>Cargar comprobante</button>
+                  }
                 </td>
                 <td>{getFactura(campoClinico.factura)}</td>
               </tr>
@@ -116,6 +65,14 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
           }
           </tbody>
         </table>
+        {
+          modalIsOpen &&
+          <GestionPagoModal
+            modalIsOpen={modalIsOpen}
+            closeModal={closeModal}
+            pagoId={campoClinicoSelected.pago.id}
+          />
+        }
       </div>
     </div>
   )
