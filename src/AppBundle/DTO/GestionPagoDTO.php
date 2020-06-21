@@ -5,6 +5,7 @@ namespace AppBundle\DTO;
 use AppBundle\DTO\GestionPago\CampoClinicoDTO;
 use AppBundle\DTO\GestionPago\PagoDTO;
 use AppBundle\DTO\GestionPago\UltimoPagoDTO;
+use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Repository\PagoRepository;
@@ -16,6 +17,7 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 {
     private $solicitud;
 
+    /** @var CampoClinico campoClinico */
     private $campoClinico;
 
     private $pago;
@@ -45,8 +47,15 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 
     public function getUltimoPago()
     {
+        $referenciaBancaria = null;
+        if($this->solicitud->isPagoUnico()) {
+            $referenciaBancaria = $this->solicitud->getReferenciaBancaria();
+        } else {
+            $referenciaBancaria = $this->campoClinico->getReferenciaBancaria();
+        }
+
         /** @var Criteria $criteria */
-        $criteria = PagoRepository::getUltimoPagoByCriteria($this->campoClinico->getReferenciaBancaria());
+        $criteria = PagoRepository::getUltimoPagoByCriteria($referenciaBancaria);
 
         /** @var Collection $result */
         $result = $this->solicitud->getPagos()->matching($criteria);
@@ -56,7 +65,9 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 
     public function getMontoTotal()
     {
-        return $this->campoClinico->getMonto();
+        return $this->solicitud->isPagoUnico() ?
+            $this->solicitud->getMonto() :
+            $this->campoClinico->getMonto();
     }
 
     public function getNombreInstitucion()
@@ -66,14 +77,21 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 
     public function getMontoTotalPorPagar()
     {
+        $pagos = null;
+        if($this->solicitud->isPagoUnico()) {
+            $pagos = $this->solicitud->getPagos();
+        } else {
+            $pagos = $this->campoClinico->getPagos();
+        }
+
         $amountCarry = array_reduce(
-            $this->campoClinico->getPagos()->toArray(),
+            $pagos->toArray(),
             function ($carry, Pago $pago) {
                 if($pago->isValidado()) $carry += intval($pago->getMonto());
             return $carry;
         });
 
-        return $this->campoClinico->getMonto() - $amountCarry;
+        return $this->getMonto() - $amountCarry;
     }
 
     public function getNoSolicitud()
@@ -92,5 +110,15 @@ class GestionPagoDTO implements GestionPagoDTOInterface
 
 
         return new CampoClinicoDTO($this->campoClinico);
+    }
+
+    /**
+     * @return float
+     */
+    protected function getMonto()
+    {
+        return $this->solicitud->isPagoUnico() ?
+            $this->solicitud->getMonto() :
+            $this->campoClinico->getMonto();
     }
 }

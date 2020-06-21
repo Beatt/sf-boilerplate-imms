@@ -1,5 +1,4 @@
 import {
-  CAMPO_CLINICO,
   SOLICITUD,
   TIPO_PAGO
 } from "./constants";
@@ -55,21 +54,6 @@ export const isActionDisabledByInstitucionEducativa = (estatus) => {
     default:
       console.error(`Is action disabled del estatus ${estatus} no existe.`)
       return true
-  }
-}
-
-export const getActionNameByCampoClinico = (estatus) => {
-  switch(estatus) {
-    case CAMPO_CLINICO.PENDIENTE_DE_PAGO:
-      return 'Cargar comprobante de pago'
-    case CAMPO_CLINICO.PAGO:
-      return 'En validación por FOFOE'
-    case CAMPO_CLINICO.PAGO_NO_VALIDO:
-      return 'Corregir pago'
-    case CAMPO_CLINICO.PAGO_VALIDADO_FOFOE:
-    case CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE:
-    case CAMPO_CLINICO.CREDENCIALES_GENERADAS:
-      return 'Pago validado'
   }
 }
 

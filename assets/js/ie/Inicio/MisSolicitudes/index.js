@@ -6,6 +6,7 @@ import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
 } from "../../../utils";
+import GestionPagoModal from "../../components/GestionPagoModal";
 
 const MisSolicitudes = ({ totalInit }) => {
 
@@ -16,6 +17,10 @@ const MisSolicitudes = ({ totalInit }) => {
   const [ total, setTotal ] = useState(totalInit)
   const [ currentPage, setCurrentPage ] = useState(1)
   const [ isLoading, toggleLoading ] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = React.useState(false);
+  const [campoClinicoSelected, setCampoClinicoSelected] = useState({
+    pago: { id: null }
+  })
 
   useEffect(() => {
     if(currentPage !== null || tipoPago !== null) getCamposClinicos()
@@ -56,8 +61,14 @@ const MisSolicitudes = ({ totalInit }) => {
         redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
         break
       case SOLICITUD.CARGANDO_COMPROBANTES:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
-        break
+        if(TIPO_PAGO.MULTIPLE === solicitud.tipoPago) redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
+        else {
+          setModalIsOpen(true)
+          setCampoClinicoSelected({
+            pago: { id: solicitud.ultimoPago }
+          })
+          return
+        }
     }
 
     window.location.href = redirectRoute
@@ -161,6 +172,14 @@ const MisSolicitudes = ({ totalInit }) => {
               />
             </div>
           </div>
+          {
+            modalIsOpen &&
+            <GestionPagoModal
+              modalIsOpen={modalIsOpen}
+              closeModal={() => setModalIsOpen(false)}
+              pagoId={campoClinicoSelected.pago.id}
+            />
+          }
         </div>
       </div>
     </div>
