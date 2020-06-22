@@ -127,12 +127,6 @@ class SolicitudManager implements SolicitudManagerInterface
     {
         $solicitud->setValidado($is_valid);
 
-        if($is_valid){
-            $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
-        }else{
-            $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
-            $this->sendEmailMontosInvalidos($solicitud);
-        }
         try {
             if ($is_valid) {
                 $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
