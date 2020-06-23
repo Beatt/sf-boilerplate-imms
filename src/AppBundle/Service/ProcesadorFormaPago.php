@@ -104,7 +104,7 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
      */
     private function setReferenciaPago(Pago $pago, ReferenciaBancariaInterface $referenciaBancaria)
     {
-        $referenciaBancariaResult = $this->generadorReferenciaBancaria->getReferenciaBancaria();
+        $referenciaBancariaResult = $this->generadorReferenciaBancaria->makeReferenciaBancaria($pago, $referenciaBancaria->getId());
         $pago->setReferenciaBancaria($referenciaBancariaResult);
         $referenciaBancaria->setReferenciaBancaria($referenciaBancariaResult);
     }
