@@ -4,8 +4,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600,700">
 <script src="http://educacionensalud.imss.gob.mx/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js?v=1.10.2"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.js"></script>
-<link rel="stylesheet" href="{{ asset('build/layout-formato-fofoe.css') }}">
-<link rel="stylesheet" href="{{ asset('build/layout.css') }}">
+<link rel="stylesheet" href="{{app.request.getSchemeAndHttpHost() ~ asset('build/layout-formato-fofoe.css') }}">
+<link rel="stylesheet" href="{{app.request.getSchemeAndHttpHost() ~ asset('build/layout.css') }}">
 <style>
 .center{
   text-align: center;
@@ -49,12 +49,9 @@
             <td>{{ campo.nombreCicloAcademico| default("") }}</td>
             <td>{{ campo.displayCarrera| default("") }}</td>
             <td>{{ campo.lugaresAutorizados| default("") }}</td>
-            <td>{{ campo.fechaInicial|date("d/m/Y")| default("") }}
-              - {{ campo.fechaFinal|date("d/m/Y")| default("") }} </td>
-            <td>{{ max(  ( ( date(campo.fechaInicial|default(""))
-                        .diff(date(campo.fechaFina|default()))
-                          .days + 1 ) / 7.0 )|round(0, 'ceil')
-              , 1)  }} </td>
+            <td>{{ campo.fechaInicialFormatted| default("") }}
+              - {{ campo.fechaFinalFormatted| default("") }} </td>
+            <td>{{ campo.weeks|default("")  }} </td>
           </tr>
       {% endfor %}
       </tbody>
@@ -70,11 +67,18 @@
     <p class="mb-10">Nombre de la Cuenta:
     R19 GYR IMSS DMF Fondo de Fomento a la Educación Ing. 2</p>
 
-    <p class="mb-10" style="font-weight: bold;">No. de Referecia:{{ solicitud.referenciaBancaria|default("") }} </p>
+    <p class="mb-10" style="font-weight: bold;">No. de Referencia: {{ referencia|default("") }} </p>
 
-    <p class="mb-10" style="font-weight: bold;">Importe: $ {{ campos| map(c => c.monto) |reduce(
-        (elem, acc) => elem + acc, 0)
-      | number_format(2, '.', ',') }}
+    <p class="mb-10" style="font-weight: bold;">Importe: $
+      {% if campos is iterable %}
+        {{ campos| map(c =>
+          attribute(c, 'monto') is defined ?
+          attribute(c, 'monto') : 0) |reduce(
+          (elem, acc) => elem + acc, 0)
+        | number_format(2, '.', ',') }}
+      {% else %}
+        {{ solicitud.monto }}
+      {% endif %}
 
     </p>
   </div>

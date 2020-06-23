@@ -414,7 +414,7 @@ class CampoClinico implements ReferenciaBancariaInterface
     public function getEnlaceCalculoCuotas()
     {
         return $this->lugaresAutorizados !== 0 ?
-            sprintf('/campos_clinicos/%s/formato_fofoe/show', $this->id) :
+            sprintf('/formato/campo_clinico/%s/formato_fofoe/download', $this->id) :
             '';
     }
 
