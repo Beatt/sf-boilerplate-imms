@@ -79,7 +79,7 @@ const ValidarInfo = (
 
         <div className="col-md-4">
           <div className={`form-group ${errores.telefono ? 'has-error has-feedback' : ''}`}>
-            <label htmlFor="institucion_telefono">Telefono</label>
+            <label htmlFor="institucion_telefono">Teléfono</label>
             <input
               className='form-control'
               type="text"
