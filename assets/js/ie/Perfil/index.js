@@ -119,7 +119,10 @@ const ValidarInfo = (
           </div>
         </div>
         <div className="col-md-8">
-          <label htmlFor="institucion_cedulaFile_file">Cargue Cedula de Identificación Fiscal de la institución educativa (Opcional)</label>
+          <label htmlFor="institucion_cedulaFile_file">
+            Cargue Cedula de Identificación Fiscal de la institución educativa (Opcional)<br/>
+            <span className='text-danger text-sm'>Los datos en ese archivo se utilizarán para emitir la factura correspondiente a los pagos realizados</span>
+          </label>
           <input
             type="file"
             name="institucion[cedulaFile][file]"
