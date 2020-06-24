@@ -2,6 +2,7 @@
 
 namespace AppBundle\Normalizer;
 
+use AppBundle\DTO\IE\PerfilInstitucionDTO;
 use AppBundle\Entity\Institucion;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -41,7 +42,7 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
     public function normalizeInstitucion(Institucion $institucion)
     {
         return $this->normalizer->normalize(
-            $institucion,
+            new PerfilInstitucionDTO($institucion),
             'json',
             [
                 'attributes' => [

@@ -5,6 +5,7 @@ parameters:
     formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
     credenciales_dir: '%kernel.root_dir%/../var/credenciales'
     comprobantes_pago_dir: '/uploads/files/instituciones'
+    cedula_identificacion_pago_dir: '/uploads/files/instituciones'
 
 imports:
     - { resource: './services/repositories.yml' }
@@ -22,6 +23,7 @@ services:
 
         bind:
             $comprobantesPagoDir: '%comprobantes_pago_dir%'
+            $cedulaIdentificacionDir: '%cedula_identificacion_pago_dir%'
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -129,7 +131,12 @@ services:
         tags:
             - { name: kernel.event_listener, event: referencia_bancaria_zip.unloaded, method: referenciaBancariaZipUnloaded }
 
-    app.topic_normalizer:
+    app.gestion_pago_normalizer:
         class: AppBundle\Normalizer\GestionPagoNormalizer
+        public: true
+        tags: ['serializer.normalizer']
+
+    app.cedula_identificacion_normalizer:
+        class: AppBundle\Normalizer\CedulaIdentificacionNormalizer
         public: true
         tags: ['serializer.normalizer']

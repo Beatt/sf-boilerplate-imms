@@ -44,18 +44,11 @@ class InstitucionController extends DIEControllerController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
-            $result = $institucionManager->Create($form->getData());
+            $institucionManager->create($form->getData());
 
             $this->addFlash('success', 'Se ha guardado correctamente los datos de la instituciòn');
 
-            /*return new JsonResponse([
-                'message' => $result ?
-                    "¡La información se actualizado correctamente!" :
-                    '¡Ha ocurrido un problema, intenta más tarde!',
-                'status' => $result['status'] ?
-                    Response::HTTP_OK :
-                    Response::HTTP_UNPROCESSABLE_ENTITY
-            ]);*/
+            return $this->redirectToRoute('ie#perfil');
         }
 
 

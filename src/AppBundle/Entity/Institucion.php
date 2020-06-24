@@ -2,12 +2,14 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\AclBundle\Entity\Car;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -26,7 +28,7 @@ class Institucion
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -39,7 +41,7 @@ class Institucion
      *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
      * )
      */
-    private $nombre;
+    protected $nombre;
 
     /**
      * @var string
@@ -55,31 +57,31 @@ class Institucion
      *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres."
      * )
      */
-    private $telefono;
+    protected $telefono;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=254, nullable=true)
     */
-    private $correo;
+    protected $correo;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=254, nullable=true)
      */
-    private $fax;
+    protected $fax;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $sitioWeb;
+    protected $sitioWeb;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $cedulaIdentificacion;
+    protected $cedulaIdentificacion;
 
     /**
      * @Vich\UploadableField(mapping="institucion_cedulas", fileNameProperty="cedulaIdentificacion")
@@ -90,7 +92,7 @@ class Institucion
      * )
      * @var File
      */
-    private $cedulaFile;
+    protected $cedulaFile;
 
     /**
      * @var string
@@ -102,7 +104,7 @@ class Institucion
      *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
      * )
      */
-    private $rfc;
+    protected $rfc;
 
     /**
      * @var string
@@ -111,27 +113,32 @@ class Institucion
      *  message="Este campo no puede estar vacio"
      * )
      */
-    private $direccion;
+    protected $direccion;
 
     /**
      * @var string
      * @Assert\NotNull
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $representante;
+    protected $representante;
 
     /**
      * @var Convenio
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Convenio", mappedBy="institucion")
      */
-    private $convenios;
+    protected $convenios;
 
     /**
      * @var Usuario
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Usuario", inversedBy="institucion")
      * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id")
      */
-    private $usuario;
+    protected $usuario;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $fechaCedulaIdentificacion;
 
     public function __construct()
     {
@@ -326,11 +333,13 @@ class Institucion
     }
 
     /**
-     * @param UploadedFile $cedulaFile
+     * @param File $cedulaFile
      */
     public function setCedulaFile($cedulaFile)
     {
         $this->cedulaFile = $cedulaFile;
+
+        $this->setFechaCedulaIdentificacion(Carbon::now());
     }
 
     /**
@@ -378,5 +387,19 @@ class Institucion
         return $this;
     }
 
+    /**
+     * @return DateTime
+     */
+    public function getFechaCedulaIdentificacion()
+    {
+        return $this->fechaCedulaIdentificacion;
+    }
 
+    /**
+     * @param DateTime $fechaCedulaIdentificacion
+     */
+    public function setFechaCedulaIdentificacion($fechaCedulaIdentificacion)
+    {
+        $this->fechaCedulaIdentificacion = $fechaCedulaIdentificacion;
+    }
 }

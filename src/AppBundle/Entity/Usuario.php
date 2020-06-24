@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="usuario")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class Usuario implements UserInterface
+class Usuario implements UserInterface, \Serializable
 {
 
     /**
@@ -598,5 +598,27 @@ class Usuario implements UserInterface
     public function getRol()
     {
         return $this->rol;
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->correo,
+            $this->contrasena,
+        ]);
+    }
+
+    /** @param $serialized
+     * @see \Serializable::unserialize()
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->correo,
+            $this->contrasena
+        ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 }

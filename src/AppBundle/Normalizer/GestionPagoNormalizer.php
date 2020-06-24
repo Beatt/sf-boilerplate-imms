@@ -2,7 +2,7 @@
 
 namespace AppBundle\Normalizer;
 
-use AppBundle\DTO\GestionPagoDTO;
+use AppBundle\DTO\IE\GestionPagoDTO;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
