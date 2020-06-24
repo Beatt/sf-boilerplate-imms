@@ -6,7 +6,9 @@ use Doctrine\Common\Persistence\ObjectRepository;
 
 interface ConvenioRepositoryInterface extends ObjectRepository
 {
-    function getAllNivelesByConvenio($id);
+    public function getAllNivelesByConvenio($id);
 
-  public function getConvenioGeneral($institucion_id, $vigencia );
+    public function getConvenioGeneral($institucion_id, $vigencia );
+
+    public function getConveniosUnicosByInstitucionId($id);
 }

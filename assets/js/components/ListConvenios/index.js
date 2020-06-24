@@ -22,12 +22,12 @@ const ListConvenios = ({ convenios }) => {
             <tbody>
             {
               convenios.map((item) => (
-                <tr key={item.id} className={`label-${item.convenio.label}`}>
+                <tr key={item.id} className={`label-${item.label}`}>
                   <td></td>
-                  <td>{item.convenio.cicloAcademico ? item.convenio.cicloAcademico.nombre : 'No asignado'}</td>
-                  <td>{item.convenio.carrera ? item.convenio.carrera.nivelAcademico.nombre : 'No asignado'}</td>
-                  <td>{item.convenio.carrera ? item.convenio.carrera.nombre : 'No asingado'}</td>
-                  <td>{dateFormat(item.convenio.vigencia)}</td>
+                  <td>{item.cicloAcademico ? item.cicloAcademico.nombre : 'No asignado'}</td>
+                  <td>{item.carrera ? item.carrera.nivelAcademico.nombre : 'No asignado'}</td>
+                  <td>{item.carrera ? item.carrera.nombre : 'No asingado'}</td>
+                  <td>{dateFormat(item.vigencia)}</td>
                 </tr>
               ))}
             </tbody>

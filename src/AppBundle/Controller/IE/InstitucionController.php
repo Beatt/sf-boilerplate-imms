@@ -7,11 +7,13 @@ use AppBundle\Entity\Institucion;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
+use AppBundle\Repository\ConvenioRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/ie")
@@ -22,15 +24,16 @@ class InstitucionController extends DIEControllerController
      * @Route("/perfil", name="ie#perfil", methods={"POST", "GET"})
      * @param Request $request
      * @param InstitucionManagerInterface $institucionManager
-     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+     * @param InstitucionRepositoryInterface $institucionRepository
      * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
      * @return Response
      */
     public function perfilAction(
         Request $request,
         InstitucionManagerInterface $institucionManager,
-        CampoClinicoRepositoryInterface $campoClinicoRepository,
-        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
+        ConvenioRepositoryInterface $convenioRepository,
+        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer,
+        NormalizerInterface $normalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -59,12 +62,31 @@ class InstitucionController extends DIEControllerController
         }
 
 
-        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByInstitucion(
+        $convenios = $convenioRepository->getConveniosUnicosByInstitucionId(
             $institucion->getId()
         );
 
+        $jsonResult = $normalizer->normalize($convenios, 'json', [
+            'attributes' => [
+                'id',
+                'vigencia',
+                'label',
+                'carrera' => [
+                    'nombre',
+                    'nivelAcademico' => [
+                        'nombre'
+                    ]
+                ],
+                'cicloAcademico' => [
+                    'nombre'
+                ]
+            ]
+        ]);
+
+        dump($jsonResult);
+
         return $this->render('ie/institucion/perfil.html.twig', [
-            'convenios' => $institucionPerfilNormalizer->normalizeCamposClinicos($camposClinicos),
+            'convenios' => $jsonResult,
             'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
             'errores' => $this->getFormErrors($form)
         ]);
