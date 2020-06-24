@@ -136,25 +136,29 @@ const MisSolicitudes = ({ totalInit }) => {
                   <tr>
                     <th className='text-center' colSpan={7}>Cargando información...</th>
                   </tr> :
-                  camposClinicos.map((solicitud, index) => (
-                    <tr key={index}>
-                      <th><a href="">{solicitud.noSolicitud}</a></th>
-                      <th>{solicitud.noCamposSolicitados}</th>
-                      <th>{solicitud.noCamposAutorizados}</th>
-                      <th>{solicitud.fecha}</th>
-                      <th>{solicitud.tipoPago}</th>
-                      <th>{solicitud.estatus}</th>
-                      <th>
-                        <button
-                          className='btn btn-default'
-                          disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
-                          onClick={() => handleStatusAction(solicitud)}
-                        >
-                          {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
-                        </button>
-                      </th>
+                  camposClinicos.length !== 0 ?
+                    camposClinicos.map((solicitud, index) => (
+                      <tr key={index}>
+                        <th><a href="">{solicitud.noSolicitud}</a></th>
+                        <th>{solicitud.noCamposSolicitados}</th>
+                        <th>{solicitud.noCamposAutorizados}</th>
+                        <th>{solicitud.fecha}</th>
+                        <th>{solicitud.tipoPago}</th>
+                        <th>{solicitud.estatus}</th>
+                        <th>
+                          <button
+                            className='btn btn-default'
+                            disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
+                            onClick={() => handleStatusAction(solicitud)}
+                          >
+                            {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
+                          </button>
+                        </th>
+                      </tr>
+                    )) :
+                    <tr>
+                      <th className='text-center' colSpan={7}>No hay registros disponibles</th>
                     </tr>
-                  ))
               }
               </tbody>
             </table>
