@@ -6,7 +6,6 @@ use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
-use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\ConvenioRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
@@ -24,8 +23,9 @@ class InstitucionController extends DIEControllerController
      * @Route("/perfil", name="ie#perfil", methods={"POST", "GET"})
      * @param Request $request
      * @param InstitucionManagerInterface $institucionManager
-     * @param InstitucionRepositoryInterface $institucionRepository
+     * @param ConvenioRepositoryInterface $convenioRepository
      * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
+     * @param NormalizerInterface $normalizer
      * @return Response
      */
     public function perfilAction(
@@ -66,27 +66,23 @@ class InstitucionController extends DIEControllerController
             $institucion->getId()
         );
 
-        $jsonResult = $normalizer->normalize($convenios, 'json', [
-            'attributes' => [
-                'id',
-                'vigencia',
-                'label',
-                'carrera' => [
-                    'nombre',
-                    'nivelAcademico' => [
+        return $this->render('ie/institucion/perfil.html.twig', [
+            'convenios' => $normalizer->normalize($convenios, 'json', [
+                'attributes' => [
+                    'id',
+                    'vigencia',
+                    'label',
+                    'carrera' => [
+                        'nombre',
+                        'nivelAcademico' => [
+                            'nombre'
+                        ]
+                    ],
+                    'cicloAcademico' => [
                         'nombre'
                     ]
-                ],
-                'cicloAcademico' => [
-                    'nombre'
                 ]
-            ]
-        ]);
-
-        dump($jsonResult);
-
-        return $this->render('ie/institucion/perfil.html.twig', [
-            'convenios' => $jsonResult,
+            ]),
             'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
             'errores' => $this->getFormErrors($form)
         ]);
