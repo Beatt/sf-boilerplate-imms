@@ -14,7 +14,7 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
         $this->normalizer = $normalizer;
     }
 
-    public function normalizeCamposClinicos(array $camposClinicos)
+    public function normalizeConvenios(array $camposClinicos)
     {
         return $this->normalizer->normalize(
             $camposClinicos,
@@ -22,22 +22,16 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
             [
                 'attributes' => [
                     'id',
-                    'cicloAcademico' => [
-                        'nombre'
-                    ],
-                    'convenio' => [
-                        'id',
-                        'vigencia',
-                        'label',
-                        'carrera' => [
-                            'nombre',
-                            'nivelAcademico' => [
-                                'nombre'
-                            ]
-                        ],
-                        'cicloAcademico' => [
+                    'vigencia',
+                    'label',
+                    'carrera' => [
+                        'nombre',
+                        'nivelAcademico' => [
                             'nombre'
                         ]
+                    ],
+                    'cicloAcademico' => [
+                        'nombre'
                     ]
                 ]
             ]

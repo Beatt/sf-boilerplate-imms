@@ -12,7 +12,6 @@ use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/ie")
@@ -25,15 +24,13 @@ class InstitucionController extends DIEControllerController
      * @param InstitucionManagerInterface $institucionManager
      * @param ConvenioRepositoryInterface $convenioRepository
      * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
-     * @param NormalizerInterface $normalizer
      * @return Response
      */
     public function perfilAction(
         Request $request,
         InstitucionManagerInterface $institucionManager,
         ConvenioRepositoryInterface $convenioRepository,
-        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer,
-        NormalizerInterface $normalizer
+        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -67,22 +64,7 @@ class InstitucionController extends DIEControllerController
         );
 
         return $this->render('ie/institucion/perfil.html.twig', [
-            'convenios' => $normalizer->normalize($convenios, 'json', [
-                'attributes' => [
-                    'id',
-                    'vigencia',
-                    'label',
-                    'carrera' => [
-                        'nombre',
-                        'nivelAcademico' => [
-                            'nombre'
-                        ]
-                    ],
-                    'cicloAcademico' => [
-                        'nombre'
-                    ]
-                ]
-            ]),
+            'convenios' => $institucionPerfilNormalizer->normalizeConvenios($convenios),
             'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
             'errores' => $this->getFormErrors($form)
         ]);
