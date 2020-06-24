@@ -46,7 +46,10 @@ class InstitucionController extends DIEControllerController
 
             $institucionManager->create($form->getData());
 
-            $this->addFlash('success', 'Se ha guardado correctamente los datos de la instituciòn');
+            $this->addFlash(
+                'success',
+                'Se han actualizado correctamente los datos de contacto de la institución'
+            );
 
             return $this->redirectToRoute('ie#perfil');
         }
