@@ -683,7 +683,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
 
     public function getPagosByReferenciaBancaria($referenciaBancaria)
     {
-        $criteria = PagoRepository::getPagosByReferenciaBancaria($referenciaBancaria);
+        $criteria = PagoRepository::getPagosCargadosByReferenciaBancaria($referenciaBancaria);
         return $this->getPagos()->matching($criteria);
     }
 }
