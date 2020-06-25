@@ -54,6 +54,9 @@ const MisSolicitudes = ({ totalInit }) => {
       case SOLICITUD.CONFIRMADA:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
         break
+      case SOLICITUD.MONTOS_INCORRECTOS_CAME:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
+        break
       case SOLICITUD.MONTOS_VALIDADOS_CAME:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
         break
