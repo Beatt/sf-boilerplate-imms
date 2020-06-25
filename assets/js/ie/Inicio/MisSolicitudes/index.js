@@ -162,23 +162,26 @@ const MisSolicitudes = ({ totalInit }) => {
               }
               </tbody>
             </table>
-            <div className="text-center">
-              <ReactPaginate
-                previousLabel={'Anterior'}
-                nextLabel={'Siguiente'}
-                breakLabel={'...'}
-                breakClassName={'break-me'}
-                pageCount={total}
-                marginPagesDisplayed={5}
-                pageRangeDisplayed={2}
-                onPageChange={(currentPage) => {
-                  setCurrentPage(currentPage.selected + 1)
-                }}
-                containerClassName={'pagination'}
-                subContainerClassName={'pages pagination'}
-                activeClassName={'active'}
-              />
-            </div>
+            {
+              camposClinicos.length !== 0 &&
+              <div className="text-center">
+                <ReactPaginate
+                  previousLabel={'Anterior'}
+                  nextLabel={'Siguiente'}
+                  breakLabel={'...'}
+                  breakClassName={'break-me'}
+                  pageCount={total}
+                  marginPagesDisplayed={5}
+                  pageRangeDisplayed={2}
+                  onPageChange={(currentPage) => {
+                    setCurrentPage(currentPage.selected + 1)
+                  }}
+                  containerClassName={'pagination'}
+                  subContainerClassName={'pages pagination'}
+                  activeClassName={'active'}
+                />
+              </div>
+            }
           </div>
           {
             modalIsOpen &&

@@ -62,6 +62,10 @@ class SolicitudController extends DIEControllerController
             $collection->add(new InicioDTO($solicitud));
         }
 
+        $totalSolicitudes = round(
+            count($solicitudes) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE
+        );
+
         if ($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)) {
             return new JsonResponse([
                 'camposClinicos' => $normalizer->normalize($collection, 'json', [
@@ -76,14 +80,14 @@ class SolicitudController extends DIEControllerController
                         'ultimoPago'
                     ]
                 ]),
-                'total' => round(count($solicitudes) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
+                'total' => $totalSolicitudes
             ]);
 
         }
 
         return $this->render('ie/solicitud/inicio.html.twig', [
             'institucion' => $institucion,
-            'total' => round(count($solicitudes) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
+            'total' => $totalSolicitudes
         ]);
     }
 
