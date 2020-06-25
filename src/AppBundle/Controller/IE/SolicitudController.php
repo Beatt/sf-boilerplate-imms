@@ -410,29 +410,6 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @param $camposClinicos
-     * @return array
-     */
-    private function getNormalizeSolicitudes($camposClinicos)
-    {
-        return $this->get('serializer')->normalize(
-            $camposClinicos,
-            'json',
-            [
-                'attributes' => [
-                    'id',
-                    'noSolicitud',
-                    'fecha',
-                    'estatus',
-                    'noCamposSolicitados',
-                    'noCamposAutorizados',
-                    'tipoPago'
-                ]
-            ]);
-    }
-
-
-    /**
      * @param $pagos
      * @return array
      */
