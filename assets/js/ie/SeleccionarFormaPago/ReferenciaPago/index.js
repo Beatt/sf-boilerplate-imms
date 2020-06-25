@@ -3,7 +3,11 @@ import { TIPO_PAGO } from "../../../constants";
 import Swal from 'sweetalert2'
 import 'sweetalert2/src/sweetalert2.scss'
 
-const ReferenciaPago = ({ action }) => {
+const ReferenciaPago = (
+  {
+    action,
+    camposClinicos
+  }) => {
 
   const { useRef } = React
   const formRef = useRef(null)
@@ -11,8 +15,15 @@ const ReferenciaPago = ({ action }) => {
   function handleSubmit(event) {
     event.preventDefault()
 
+    const tipoPago = formRef.current.elements['forma_pago[tipoPago]'].value;
+    if(!tipoPago) return;
+
+    const title = tipoPago === TIPO_PAGO.UNICO ?
+      `Se generará una única referencia por el monto total de los ${camposClinicos.length} campos clínicos registrados.` :
+      `Deberá pagar el monto de cada campo clínico de manera independiente, en total se le generarán ${camposClinicos.length} referencias de pago diferente.`
+
     Swal.fire({
-      title: '¿Estás seguro que deseas pagar por campos clinicos?',
+      title: title,
       text: "Recuerda que esta opción es inamovible durante el resto del proceso",
       icon: 'warning',
       showCancelButton: true,
@@ -44,7 +55,7 @@ const ReferenciaPago = ({ action }) => {
                 type="radio"
                 name='forma_pago[tipoPago]'
                 value={TIPO_PAGO.UNICO}
-              />Generar un único Formato para pagar todos los Campos Clínicos Autorizados en esta solicitud.
+              />Generar un único formato para pagar todos los campos clínicos autorizados en esta solicitud.
             </label>
           </div>
           <p className='text-danger'>Considere que el pago se realizará de manera individual por cada uno de los campos clínicos solicitados.</p>
@@ -58,7 +69,7 @@ const ReferenciaPago = ({ action }) => {
                 type="radio"
                 name='forma_pago[tipoPago]'
                 value={TIPO_PAGO.MULTIPLE}
-              />Generar un único Formato para pagar todos los Campos Clínicos Autorizados en esta solicitud.
+              />Generar un formato para pagar de manera individual cada uno de los campos clínicos autorizados en esta solicitud.
             </label>
           </div>
           <p className='text-danger'>Considere que el pago deberá realizarce en una sola exibición y por el monto total de la solicitud.</p>
