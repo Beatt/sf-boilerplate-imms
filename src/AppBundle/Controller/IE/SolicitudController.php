@@ -256,9 +256,15 @@ class SolicitudController extends DIEControllerController
 
             $procesadorFormaPago->procesar($form->getData());
 
-            $this->addFlash('success', 'Se ha guardado correctamente los montos.');
+            $this->addFlash(
+                'success',
+                sprintf('Se ha guardado correctamente la opción por pago %s para la solicitud %s',
+                    $solicitud->getTipoPago(),
+                    $solicitud->getNoSolicitud()
+                )
+            );
 
-            return $this->redirectToRoute('ie#inicio');
+            return $this->redirectToRoute('ie#detalle_de_forma_de_pago');
         }
 
         return $this->render('ie/solicitud/seleccionar_forma_pago.html.twig', [
