@@ -109,6 +109,7 @@ class GestionPagoNormalizerTest extends AbstractWebTestCase
         $pago->setSolicitud($solicitud);
         $pago->setReferenciaBancaria($campoClinico->getReferenciaBancaria());
         $pago->setRequiereFactura(false);
+        $pago->setComprobantePago('comprobantepago.pdf');
         if(!$isPagoValidado) $pago->setObservaciones('dummydata');
         $pago->setValidado($isPagoValidado);
 
