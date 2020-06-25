@@ -140,6 +140,11 @@ class Institucion
      */
     private $fechaCedulaIdentificacion;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $confirmacionInformacion;
+
     public function __construct()
     {
         $this->convenios = new ArrayCollection();
@@ -401,5 +406,21 @@ class Institucion
     public function setFechaCedulaIdentificacion($fechaCedulaIdentificacion)
     {
         $this->fechaCedulaIdentificacion = $fechaCedulaIdentificacion;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getConfirmacionInformacion()
+    {
+        return $this->confirmacionInformacion;
+    }
+
+    /**
+     * @param DateTime $confirmacionInformacion
+     */
+    public function setConfirmacionInformacion($confirmacionInformacion)
+    {
+        $this->confirmacionInformacion = $confirmacionInformacion;
     }
 }
