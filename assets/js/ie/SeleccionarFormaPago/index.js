@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <ReferenciaPago
       action={window.ACTION}
+      camposClinicos={window.CAMPOS_CLINICOS_PROPS}
     />,
     document.getElementById('referencia_pago-component')
   )
