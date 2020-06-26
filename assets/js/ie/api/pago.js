@@ -1,5 +1,5 @@
 const getGestionPagoAsync = (id) => {
-  return fetch(`/ie/pagos/gestion-de-pago/${id}`)
+  return fetch(`/ie/pagos/${id}/gestion-de-pago`)
     .then(function(response) {
       return response.json();
     })
