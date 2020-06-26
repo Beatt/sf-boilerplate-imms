@@ -155,6 +155,8 @@ class Usuario implements UserInterface, \Serializable
     {
         $this->delegaciones = new ArrayCollection();
         $this->fechaIngreso = new \DateTime();
+        $this->curp = '';
+        $this->rfc = '';
     }
 
     /**

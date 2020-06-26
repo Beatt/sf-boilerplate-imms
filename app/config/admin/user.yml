@@ -13,8 +13,8 @@ easy_admin:
           - { property: fullName, label: 'Nombre', type: text }
           - { property: correo, label: 'Correo electrónico' }
           - { property: activo, label: 'Activo', type: toggle }
-          - { property: assignRoles, label: 'Roles', type: text }
-          - { property: assignDepartments, label: 'Departamento' }
+          - { property: permisos, label: 'Permisos', type: array }
+          - { property: delegaciones, label: 'Delegaciones', type: array }
       form:
         fields:
           - { property: matricula, label: 'Matrícula' }
