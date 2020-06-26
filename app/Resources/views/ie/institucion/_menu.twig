@@ -35,7 +35,9 @@
 <div class='container-fluid'>
     <div class='row'>
         <div class="institucion-educativa__submenu">
-            <a href="{{ path('ie#inicio') }}">Mis solicitudes</a>
+            {% if institucion.isConfirmacionInformacion %}
+                <a href="{{ path('ie#inicio') }}">Mis solicitudes</a>
+            {% endif %}
             <a href="{{ path('ie#perfil') }}">Perfil</a>
             <a href="{{ path('logout') }}">Cerrar sesión</a>
         </div>

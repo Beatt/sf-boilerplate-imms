@@ -51,7 +51,9 @@ class InstitucionController extends DIEControllerController
                 'Se han actualizado correctamente los datos de contacto de la institución'
             );
 
-            return $this->redirectToRoute('ie#perfil');
+            return $institucion->isConfirmacionInformacion() ?
+                $this->redirectToRoute('ie#inicio') :
+                $this->redirectToRoute('ie#perfil');
         }
 
 
