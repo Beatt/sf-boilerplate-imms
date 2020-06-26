@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class PagoController extends AbstractController
 {
     /**
-     * @Route("/pagos/gestion-de-pago/{id}", name="ie#obtener_gestion_de_pagos")
+     * @Route("/pagos/{id}/gestion-de-pago", name="ie#obtener_gestion_de_pagos")
      * @param int $id
      * @param PagoRepositoryInterface $pagoRepository
      * @param NormalizerInterface $normalizer

@@ -23,4 +23,6 @@ interface PerfilInstitucionDTOInterface
     public function getCedulaIdentificacion();
 
     public function getRepresentante();
+
+    public function getConfirmacionInformacion();
 }
