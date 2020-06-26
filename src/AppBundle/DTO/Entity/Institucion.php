@@ -20,5 +20,6 @@ class Institucion extends InstitucionBase
         $this->sitioWeb = $institucion->sitioWeb;
         $this->cedulaIdentificacion = $institucion->cedulaIdentificacion;
         $this->representante = $institucion->representante;
+        $this->confirmacionInformacion = $institucion->confirmacionInformacion;
     }
 }

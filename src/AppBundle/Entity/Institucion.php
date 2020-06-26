@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Bundle\SecurityBundle\Tests\Functional\Bundle\AclBundle\Entity\Car;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -138,7 +137,12 @@ class Institucion
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private $fechaCedulaIdentificacion;
+    protected $fechaCedulaIdentificacion;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $confirmacionInformacion;
 
     public function __construct()
     {
@@ -401,5 +405,29 @@ class Institucion
     public function setFechaCedulaIdentificacion($fechaCedulaIdentificacion)
     {
         $this->fechaCedulaIdentificacion = $fechaCedulaIdentificacion;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getConfirmacionInformacion()
+    {
+        return $this->confirmacionInformacion;
+    }
+
+    /**
+     * @param DateTime $confirmacionInformacion
+     */
+    public function setConfirmacionInformacion($confirmacionInformacion)
+    {
+        $this->confirmacionInformacion = $confirmacionInformacion;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConfirmacionInformacion()
+    {
+        return $this->confirmacionInformacion !== null;
     }
 }

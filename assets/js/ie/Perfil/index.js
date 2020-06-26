@@ -141,6 +141,20 @@ const ValidarInfo = (
             </a>
           }
         </div>
+        <div className="col-md-12 mt-15">
+          <div className='form-group'>
+            <label htmlFor='institucion_isConfirmacionInformacion'>
+              Declaro que la información aquí descrita esta correcta y actualizada
+            </label>&nbsp;
+            <input
+              type="checkbox"
+              name='institucion[isConfirmacionInformacion]'
+              id='institucion_isConfirmacionInformacion'
+              value='checked'
+              defaultChecked={institucion.confirmacionInformacion !== null}
+            />
+          </div>
+        </div>
       </div>
 
       <div className='row'>
