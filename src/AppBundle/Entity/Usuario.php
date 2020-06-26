@@ -107,7 +107,7 @@ class Usuario implements UserInterface, \Serializable
      * @var string
      * @ORM\Column(type="string", length=13)
      * @Assert\Length(
-     *     min="13",
+     *     min="12",
      *     max="13",
      *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
      *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
@@ -380,7 +380,7 @@ class Usuario implements UserInterface, \Serializable
      */
     public function setCurp($curp)
     {
-        $this->curp = $curp;
+        $this->curp = $curp ? $curp : '';
 
         return $this;
     }
@@ -399,7 +399,7 @@ class Usuario implements UserInterface, \Serializable
      */
     public function setRfc($rfc)
     {
-        $this->rfc = $rfc;
+        $this->rfc = $rfc ? $rfc : '';
 
         return $this;
     }
@@ -619,6 +619,6 @@ class Usuario implements UserInterface, \Serializable
             $this->id,
             $this->correo,
             $this->contrasena
-        ) = unserialize($serialized, ['allowed_classes' => false]);
+        ) = unserialize($serialized);
     }
 }

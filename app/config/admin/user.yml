@@ -23,8 +23,8 @@ easy_admin:
           - { property: apellidoMaterno, label: 'Apellido materno' }
           - { property: regims, label: 'Regims' }
           - { property: correo, label: 'Correo electrónico' }
-          - { property: curp, label: 'CURP' }
-          - { property: rfc, label: 'RFC' }
+          - { property: curp, label: 'CURP', type_options: {required: false} }
+          - { property: rfc, label: 'RFC', type_options: {required: false} }
           - { property: sexo, label: 'Sexo', type: choice, type_options: { choices: { 'Masculino': 'Masculino', 'Femenino': 'Femenino' } } }
           - { property: activo, type: checkbox }
           - { property: plainPassword, type: text, label: 'Contraseña' }
