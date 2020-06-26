@@ -25,7 +25,7 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
             <th>No. de lugares autorizados</th>
             <th>Periodo</th>
             <th>No. de semanas</th>
-            <th>Formato de calculo de cuotas</th>
+            <th>Formato de cálculo de cuotas</th>
             <th>Monto a pagar por campo clínico</th>
           </tr>
           </thead>
