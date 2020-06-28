@@ -142,6 +142,5 @@ services:
         tags: ['serializer.normalizer']
 
     app.institucion_voter:
-        class: AppBundle\Security\Voter\InstitucionVoter
-        public: true
+        class: AppBundle\Security\Voter\SolicitudVoter
         tags: ['security.voter']

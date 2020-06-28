@@ -15,6 +15,7 @@ use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -25,35 +26,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/ie")
  */
 class SolicitudController extends DIEControllerController
 {
+    private $solicitudRepository;
+
+    public function __construct(SolicitudRepositoryInterface $solicitudRepository)
+    {
+        $this->solicitudRepository = $solicitudRepository;
+    }
+
     /**
      * @Route("/inicio", name="ie#inicio", methods={"GET"})
      * @param Request $request
-     * @param SolicitudRepositoryInterface $solicitudRepository
      * @param NormalizerInterface $normalizer
      * @return Response
      */
     public function inicioAction(
         Request $request,
-        SolicitudRepositoryInterface $solicitudRepository,
         NormalizerInterface $normalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) {
-            throw $this->createNotFoundInstitucionException();
-        }
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
 
         list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
         list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
 
-        $solicitudes = $solicitudRepository->getAllSolicitudesByInstitucion(
+        $solicitudes = $this->solicitudRepository->getAllSolicitudesByInstitucion(
             $institucion->getId(),
             $tipoPago,
             $offset,
@@ -109,6 +112,16 @@ class SolicitudController extends DIEControllerController
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         PagoRepositoryInterface $pagoRepository
     ) {
+
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
+
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
+
         $isSearchSet = $request->query->get('search');
 
         $search = $request->query->get('search', null);
@@ -119,12 +132,7 @@ class SolicitudController extends DIEControllerController
             false
         );
 
-        /** @var Institucion $institucion */
-        $institucion = $this->getUser()->getInstitucion();
         $pagos = $pagoRepository->getAllPagosByRequest($id);
-
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
 
         $totalCampos = count($camposClinicos);
 
@@ -177,8 +185,7 @@ class SolicitudController extends DIEControllerController
         $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
 
         $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
             'action' => $this->generateUrl("ie#registrar-montos", [
@@ -245,8 +252,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
 
         $form = $this->createForm(FormaPagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#seleccionar_forma_de_pago', [
@@ -291,8 +297,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
 
         return $this->render('ie/solicitud/detalle_de_forma_de_pago.html.twig', [
             'institucion' => $institucion,
@@ -312,8 +317,7 @@ class SolicitudController extends DIEControllerController
         EventDispatcherInterface $dispatcher
     ) {
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
 
         $dispatcher->dispatch(
             ReferenciaBancariaZipUnloadedEvent::NAME,
@@ -339,8 +343,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#cargar_comprobante', [
@@ -384,8 +387,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#correccion_de_pago_fofoe', [

@@ -19,4 +19,5 @@ Permission: 'Permiso'
 User: 'Usuario'
 
 security:
-  institucion_not_found: 'El usuario %id% no tiene una institución asociada'
+  institucion_not_found: 'El usuario con id: %id% no tiene una institución asociada.'
+  solicitud_not_found: 'La solicitud con id: %id% no se encuentra.'

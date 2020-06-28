@@ -145,4 +145,11 @@ abstract class DIEControllerController extends Controller
     {
         return $this->get('translator');
     }
+
+    protected function createNotFoundSolicitudException()
+    {
+        throw new NotFoundInstitucionException($this->getTranslator()->trans('security.solicitud_not_found', [
+            '%id%' => $this->getUser()->getId()
+        ]));
+    }
 }
