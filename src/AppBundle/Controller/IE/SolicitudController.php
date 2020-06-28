@@ -175,7 +175,6 @@ class SolicitudController extends DIEControllerController
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         EntityManagerInterface $entityManager
     ) {
-
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFoundInstitucionException();
@@ -257,9 +256,12 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
 
-        /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::SELECCIONAR_FORMA_DE_PAGO, $solicitud);
 
         $form = $this->createForm(FormaPagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#seleccionar_forma_de_pago', [

@@ -16,6 +16,7 @@ final class SolicitudVoter extends Voter
     const DETALLE_DE_SOLICITUD = 'detalle_de_solicitud';
     const REGISTRAR_MONTOS = 'registrar_montos';
     const CORREGIR_MONTOS = 'corregir_montos';
+    const SELECCIONAR_FORMA_DE_PAGO = 'seleccionar_forma_de_pago';
 
     private $getExistSolicitud;
 
@@ -63,6 +64,7 @@ final class SolicitudVoter extends Voter
             self::DETALLE_DE_SOLICITUD,
             self::REGISTRAR_MONTOS,
             self::CORREGIR_MONTOS,
+            self::SELECCIONAR_FORMA_DE_PAGO
         ];
     }
 }
