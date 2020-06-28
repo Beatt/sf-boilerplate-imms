@@ -4,6 +4,7 @@ namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
+use AppBundle\Exception\NotFoundInstitucionException;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\ConvenioRepositoryInterface;
@@ -32,15 +33,12 @@ class InstitucionController extends DIEControllerController
         Request $request,
         InstitucionManagerInterface $institucionManager,
         ConvenioRepositoryInterface $convenioRepository,
-        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer,
-        TranslatorInterface $translator
+        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) {
-            throw $this->createNotFoundException($translator->trans('security.institucion_not_found', [
-                '%id%' => $this->getUser()->getId()
-            ]));
+            throw $this->createNotFoundInstitucionException();
         }
 
         $form = $this->createForm(InstitucionType::class, $institucion, [

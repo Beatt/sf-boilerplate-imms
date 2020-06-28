@@ -3,11 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Solicitud;
+use AppBundle\Exception\NotFoundInstitucionException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class DIEControllerController extends Controller
 {
@@ -130,5 +132,17 @@ abstract class DIEControllerController extends Controller
             }
         }
         return $result;
+    }
+
+    protected function createNotFoundInstitucionException()
+    {
+        throw new NotFoundInstitucionException($this->getTranslator()->trans('security.institucion_not_found', [
+            '%id%' => $this->getUser()->getId()
+        ]));
+    }
+
+    private function getTranslator()
+    {
+        return $this->get('translator');
     }
 }

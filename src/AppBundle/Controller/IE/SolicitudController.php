@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/ie")
@@ -45,6 +46,9 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) {
+            throw $this->createNotFoundInstitucionException();
+        }
 
         list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
         list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
