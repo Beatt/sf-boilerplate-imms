@@ -112,15 +112,12 @@ class SolicitudController extends DIEControllerController
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         PagoRepositoryInterface $pagoRepository
     ) {
-
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFoundInstitucionException();
 
         $solicitud = $this->solicitudRepository->find($id);
         if(!$solicitud) throw $this->createNotFoundSolicitudException();
-
-        $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
 
         $isSearchSet = $request->query->get('search');
 
@@ -164,8 +161,8 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitudes/{id}/registrar-montos", name="ie#registrar-montos", methods={"POST", "GET"})
-     * @Route("/solicitudes/{id}/corregir-montos", name="ie#corregir-montos", methods={"POST", "GET"})
+     * @Route("/solicitudes/{id}/registrar-montos", name="ie#registrar_montos", methods={"POST", "GET"})
+     * @Route("/solicitudes/{id}/corregir-montos", name="ie#corregir_montos", methods={"POST", "GET"})
      * @param integer $id
      * @param Request $request
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
@@ -178,17 +175,27 @@ class SolicitudController extends DIEControllerController
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         EntityManagerInterface $entityManager
     ) {
-        $routeName = $request->attributes->get('_route');
-        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
+
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
 
-        /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $routeName = $request->attributes->get('_route');
+        $this->denyAccessUnlessGranted(
+            $routeName === 'ie#registrar_montos' ?
+                SolicitudVoter::REGISTRAR_MONTOS :
+                SolicitudVoter::CORREGIR_MONTOS,
+            $solicitud
+        );
+
+        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
+        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
 
         $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
-            'action' => $this->generateUrl("ie#registrar-montos", [
+            'action' => $this->generateUrl("ie#registrar_montos", [
                 'id' => $id,
             ]),
             'method' => 'POST'
