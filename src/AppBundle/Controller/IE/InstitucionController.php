@@ -35,6 +35,10 @@ class InstitucionController extends DIEControllerController
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
 
+        if(!$institucion) {
+            throw $this->createNotFoundException('El usuario actual no tiene una institución asociada.');
+        }
+
         $form = $this->createForm(InstitucionType::class, $institucion, [
             'action' => $this->generateUrl('ie#perfil', [
                 'id' => $institucion->getId()
