@@ -9,6 +9,7 @@ use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\ConvenioRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,6 +17,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/ie")
+ * @IsGranted("ROLE_IE")
  */
 class InstitucionController extends DIEControllerController
 {
