@@ -6,6 +6,7 @@ use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Repository\SolicitudRepositoryInterface;
+use AppBundle\Security\Voter\SolicitudVoter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -24,9 +25,13 @@ class CampoClinicoController extends DIEControllerController
     {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD_MULTIPLE, $solicitud);
 
         $serializer = $this->get('serializer');
 

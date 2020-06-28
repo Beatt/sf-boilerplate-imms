@@ -22,6 +22,7 @@ final class SolicitudVoter extends Voter
     const DESCARGAR_REFERENCIAS_BANCARIAS = 'descargar_referencias_bancarias';
     const CARGAR_COMPROBANTE = 'cargar_comprobante';
     const CORRECCION_DE_PAGO_FOFOE = 'correccion_de_pago_fofoe';
+    const DETALLE_DE_SOLICITUD_MULTIPLE = 'detalle_de_solicitud_multiple';
 
     private $getExistSolicitud;
 
@@ -80,6 +81,7 @@ final class SolicitudVoter extends Voter
             self::DESCARGAR_REFERENCIAS_BANCARIAS,
             self::CARGAR_COMPROBANTE,
             self::CORRECCION_DE_PAGO_FOFOE,
+            self::DETALLE_DE_SOLICITUD_MULTIPLE,
         ];
     }
 }
