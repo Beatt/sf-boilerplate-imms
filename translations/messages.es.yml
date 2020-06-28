@@ -17,3 +17,6 @@ UnitType: 'Tipo de unidad'
 Role: 'Rol'
 Permission: 'Permiso'
 User: 'Usuario'
+
+security:
+  institucion_not_found: 'El usuario %id% no tiene una institución asociada'

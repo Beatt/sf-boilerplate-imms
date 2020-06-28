@@ -12,6 +12,7 @@ use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @Route("/ie")
@@ -24,19 +25,22 @@ class InstitucionController extends DIEControllerController
      * @param InstitucionManagerInterface $institucionManager
      * @param ConvenioRepositoryInterface $convenioRepository
      * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
+     * @param TranslatorInterface $translator
      * @return Response
      */
     public function perfilAction(
         Request $request,
         InstitucionManagerInterface $institucionManager,
         ConvenioRepositoryInterface $convenioRepository,
-        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
+        InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer,
+        TranslatorInterface $translator
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-
         if(!$institucion) {
-            throw $this->createNotFoundException('El usuario actual no tiene una institución asociada.');
+            throw $this->createNotFoundException($translator->trans('security.institucion_not_found', [
+                '%id%' => $this->getUser()->getId()
+            ]));
         }
 
         $form = $this->createForm(InstitucionType::class, $institucion, [
