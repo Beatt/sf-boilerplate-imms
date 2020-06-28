@@ -19,6 +19,9 @@ final class SolicitudVoter extends Voter
     const CORREGIR_MONTOS = 'corregir_montos';
     const SELECCIONAR_FORMA_DE_PAGO = 'seleccionar_forma_de_pago';
     const DETALLE_DE_FORMA_DE_PAGO = 'detalle_de_forma_de_pago';
+    const DESCARGAR_REFERENCIAS_BANCARIAS = 'descargar_referencias_bancarias';
+    const CARGAR_COMPROBANTE = 'cargar_comprobante';
+    const CORRECCION_DE_PAGO_FOFOE = 'correccion_de_pago_fofoe';
 
     private $getExistSolicitud;
 
@@ -73,7 +76,10 @@ final class SolicitudVoter extends Voter
             self::REGISTRAR_MONTOS,
             self::CORREGIR_MONTOS,
             self::SELECCIONAR_FORMA_DE_PAGO,
-            self::DETALLE_DE_FORMA_DE_PAGO
+            self::DETALLE_DE_FORMA_DE_PAGO,
+            self::DESCARGAR_REFERENCIAS_BANCARIAS,
+            self::CARGAR_COMPROBANTE,
+            self::CORRECCION_DE_PAGO_FOFOE,
         ];
     }
 }

@@ -116,6 +116,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFoundInstitucionException();
 
+        /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
         if(!$solicitud) throw $this->createNotFoundSolicitudException();
 
@@ -179,6 +180,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFoundInstitucionException();
 
+        /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
         if(!$solicitud) throw $this->createNotFoundSolicitudException();
 
@@ -258,6 +260,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFoundInstitucionException();
 
+        /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
         if(!$solicitud) throw $this->createNotFoundSolicitudException();
 
@@ -306,6 +309,7 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFoundInstitucionException();
 
+        /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
         if(!$solicitud) throw $this->createNotFoundSolicitudException();
 
@@ -328,8 +332,15 @@ class SolicitudController extends DIEControllerController
         GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP,
         EventDispatcherInterface $dispatcher
     ) {
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
+
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_REFERENCIAS_BANCARIAS, $solicitud);
 
         $dispatcher->dispatch(
             ReferenciaBancariaZipUnloadedEvent::NAME,
@@ -352,10 +363,15 @@ class SolicitudController extends DIEControllerController
         Request $request,
         EntityManagerInterface $entityManager
     ) {
+        /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::CARGAR_COMPROBANTE, $solicitud);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#cargar_comprobante', [
@@ -395,11 +411,15 @@ class SolicitudController extends DIEControllerController
         Request $request,
         EntityManagerInterface $entityManager
     ) {
-
+        /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::CORRECCION_DE_PAGO_FOFOE, $solicitud);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#correccion_de_pago_fofoe', [
