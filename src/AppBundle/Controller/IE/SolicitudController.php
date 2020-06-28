@@ -304,9 +304,12 @@ class SolicitudController extends DIEControllerController
     {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
 
-        /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_FORMA_DE_PAGO, $solicitud);
 
         return $this->render('ie/solicitud/detalle_de_forma_de_pago.html.twig', [
             'institucion' => $institucion,

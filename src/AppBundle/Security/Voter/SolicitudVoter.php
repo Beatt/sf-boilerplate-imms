@@ -10,6 +10,7 @@ use AppBundle\Repository\GetExistSolicitud\GetExistSolicitud;
 use AppBundle\Repository\GetExistSolicitud\Solicitud as GetExistSolicitudResult;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 
 final class SolicitudVoter extends Voter
 {
@@ -17,12 +18,18 @@ final class SolicitudVoter extends Voter
     const REGISTRAR_MONTOS = 'registrar_montos';
     const CORREGIR_MONTOS = 'corregir_montos';
     const SELECCIONAR_FORMA_DE_PAGO = 'seleccionar_forma_de_pago';
+    const DETALLE_DE_FORMA_DE_PAGO = 'detalle_de_forma_de_pago';
 
     private $getExistSolicitud;
 
-    public function __construct(GetExistSolicitud $getExistSolicitud)
-    {
+    private $security;
+
+    public function __construct(
+        GetExistSolicitud $getExistSolicitud,
+        Security $security
+    ) {
         $this->getExistSolicitud = $getExistSolicitud;
+        $this->security = $security;
     }
 
     protected function supports($attribute, $subject)
@@ -44,12 +51,13 @@ final class SolicitudVoter extends Voter
         /** @var Usuario $user */
         $user = $token->getUser();
 
+        if(!$this->security->isGranted('ROLE_IE')) return false;
+
         /** @var GetExistSolicitudResult $solicitud */
         $solicitud = $this->getExistSolicitud->ofUsuario(
             SolicitudId::fromString($subject->getId()),
             UsuarioId::fromString($user->getId())
         );
-
         if(!$solicitud->isSolicitudOfCurrentUser()) return false;
 
         return true;
@@ -64,7 +72,8 @@ final class SolicitudVoter extends Voter
             self::DETALLE_DE_SOLICITUD,
             self::REGISTRAR_MONTOS,
             self::CORREGIR_MONTOS,
-            self::SELECCIONAR_FORMA_DE_PAGO
+            self::SELECCIONAR_FORMA_DE_PAGO,
+            self::DETALLE_DE_FORMA_DE_PAGO
         ];
     }
 }
