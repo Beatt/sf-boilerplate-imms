@@ -441,4 +441,20 @@ class Institucion
     {
         return $this->confirmacionInformacion !== null;
     }
+
+    /**
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param string $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
+    }
 }

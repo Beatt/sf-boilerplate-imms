@@ -77,7 +77,7 @@ const ValidarInfo = (
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className={`form-group ${errores.telefono ? 'has-error has-feedback' : ''}`}>
             <label htmlFor="institucion_telefono">Teléfono</label>
             <input
@@ -92,7 +92,21 @@ const ValidarInfo = (
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-2">
+          <div className={`form-group ${errores.extension ? 'has-error has-feedback' : ''}`}>
+            <label htmlFor="institucion_extension">Extensión</label>
+            <input
+              className='form-control'
+              type="text"
+              name="institucion[extension]"
+              id="institucion_extension"
+              defaultValue={institucion.extension}
+            />
+            <span className="help-block">{errores.extension ? errores.extension[0] : ''}</span>
+          </div>
+        </div>
+
+        <div className="col-md-3">
           <div className='form-group'>
             <label htmlFor="institucion_fax">Fax (opcional)</label>
             <input
