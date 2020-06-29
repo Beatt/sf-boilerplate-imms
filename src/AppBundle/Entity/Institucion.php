@@ -97,7 +97,7 @@ class Institucion
      * @var string
      * @ORM\Column(type="string", length=13, nullable=true)
      * @Assert\Length(
-     *     min="13",
+     *     min="12",
      *     max="13",
      *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
      *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
