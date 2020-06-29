@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\CampoClinicoRepository;
+use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,7 +19,7 @@ use Symfony\Component\HttpFoundation\File\File;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SolicitudRepository")
  * @Vich\Uploadable
  */
-class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ComprobantePagoInterface, ReferenciaBancariaInterface
+class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, ReferenciaBancariaInterface
 {
 
     /**
@@ -25,57 +27,57 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(name="no_solicitud", type="string", length=9, unique=true, nullable=true)
      */
-    private $noSolicitud;
+    protected $noSolicitud;
 
     /**
      * @ORM\Column(type="date")
      */
-    private $fecha;
+    protected $fecha;
 
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $estatus;
+    protected $estatus;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $referenciaBancaria;
+    protected $referenciaBancaria;
 
     /**
      * @ORM\Column(type="float", precision=24, scale=4, nullable=true)
      */
-    private $monto;
+    protected $monto;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
      */
-    private $camposClinicos;
+    protected $camposClinicos;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud", cascade={"persist"})
      */
-    private $montosCarreras;
+    protected $montosCarreras;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
      */
-    private $tipoPago;
+    protected $tipoPago;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $documento;
+    protected $documento;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $urlArchivo;
+    protected $urlArchivo;
 
     /**
      * @var File
@@ -86,35 +88,35 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
      *  mimeTypes = {"application/pdf", "application/x-pdf"},
      * )
      */
-    private $urlArchivoFile;
+    protected $urlArchivoFile;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $validado;
+    protected $validado;
 
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private $fechaComprobante;
+    protected $fechaComprobante;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $observaciones;
+    protected $observaciones;
 
     /**
      * @var Pago
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud", cascade={"persist"})
     */
-    private $pagos;
+    protected $pagos;
 
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $confirmacionOficioAdjunto;
+    protected $confirmacionOficioAdjunto;
 
     public function __construct()
     {
@@ -562,7 +564,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
         $items = [];
 
         /** @var MontoCarrera $monto */
-        foreach($this->montosCarrera as $monto) {
+        foreach($this->montosCarreras as $monto) {
             $carrera = $monto->getCarrera();
             $items[] = sprintf(
                 "%s %s: Inscripción $%s, Colegiatura: $%s",
@@ -671,5 +673,17 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Compr
             $result = $cc->getConvenio()->getDelegacion();
         }
         return $result;
+    }
+
+    public function getCampoClinicoByReferenciaBancaria($referenciaBancaria)
+    {
+        $criteria = CampoClinicoRepository::getCampoClinicoByReferenciaBancaria($referenciaBancaria);
+        return $this->getCamposClinicos()->matching($criteria)->first();
+    }
+
+    public function getPagosByReferenciaBancaria($referenciaBancaria)
+    {
+        $criteria = PagoRepository::getPagosCargadosByReferenciaBancaria($referenciaBancaria);
+        return $this->getPagos()->matching($criteria);
     }
 }

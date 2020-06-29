@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterface
+class CampoClinico implements ReferenciaBancariaInterface
 {
     /**
      * @var int
@@ -414,7 +414,7 @@ class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterf
     public function getEnlaceCalculoCuotas()
     {
         return $this->lugaresAutorizados !== 0 ?
-            sprintf('/campos_clinicos/%s/formato_fofoe/show', $this->id) :
+            sprintf('/formato/campo_clinico/%s/formato_fofoe/download', $this->id) :
             '';
     }
 
@@ -508,5 +508,16 @@ class CampoClinico implements ComprobantePagoInterface, ReferenciaBancariaInterf
     public function getSubTotal()
     {
         return $this->getImporteAlumno() * $this->getLugaresAutorizados();
+    }
+
+    public function getPago()
+    {
+        return $this->getPagos()->first();
+    }
+
+    public function getPagos()
+    {
+        $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
+        return $this->getSolicitud()->getPagos()->matching($criteria);
     }
 }

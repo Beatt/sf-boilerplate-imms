@@ -1,5 +1,4 @@
 import {
-  CAMPO_CLINICO,
   SOLICITUD,
   TIPO_PAGO
 } from "./constants";
@@ -21,7 +20,7 @@ export const getActionNameByInstitucionEducativa = (estatus, tipoPago) => {
       return 'Cargar comprobante de pago'
     case SOLICITUD.EN_VALIDACION_FOFOE:
       if(isMultipleTipoPago(tipoPago)) return 'Ver detalle'
-      return 'Pago correcto'
+      return 'En validación FOFOE'
     case SOLICITUD.CREDENCIALES_GENERADAS:
       return 'Descargar credenciales'
     default:
@@ -58,17 +57,16 @@ export const isActionDisabledByInstitucionEducativa = (estatus) => {
   }
 }
 
-export const getActionNameByCampoClinico = (estatus) => {
-  switch(estatus) {
-    case CAMPO_CLINICO.PENDIENTE_DE_PAGO:
-      return 'Cargar comprobante de pago'
-    case CAMPO_CLINICO.PAGO:
-      return 'En validación por FOFOE'
-    case CAMPO_CLINICO.PAGO_NO_VALIDO:
-      return 'Corregir pago'
-    case CAMPO_CLINICO.PAGO_VALIDADO_FOFOE:
-    case CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE:
-    case CAMPO_CLINICO.CREDENCIALES_GENERADAS:
-      return 'Pago validado'
-  }
+export const moneyFormat = (monto) => {
+  const formatter = new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+  });
+
+  return formatter.format(monto)
+}
+
+export const dateFormat = (date) => {
+  const options = {year: 'numeric', month: '2-digit', day: 'numeric'};
+  return new Date(date).toLocaleDateString('es-MX', options)
 }

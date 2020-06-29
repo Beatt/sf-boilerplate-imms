@@ -3,65 +3,100 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\DTO\IE\InicioDTO;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Event\ReferenciaBancariaZipUnloadedEvent;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
-use AppBundle\Normalizer\CampoClinicoNormalizer;
 use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
-use AppBundle\Service\ProcesadorFormaPago;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/ie")
  */
 class SolicitudController extends DIEControllerController
 {
+    private $solicitudRepository;
+
+    public function __construct(SolicitudRepositoryInterface $solicitudRepository)
+    {
+        $this->solicitudRepository = $solicitudRepository;
+    }
+
     /**
      * @Route("/inicio", name="ie#inicio", methods={"GET"})
+     * @IsGranted("ROLE_IE")
      * @param Request $request
-     * @param SolicitudRepositoryInterface $solicitudRepository
+     * @param NormalizerInterface $normalizer
      * @return Response
      */
     public function inicioAction(
         Request $request,
-        SolicitudRepositoryInterface $solicitudRepository
+        NormalizerInterface $normalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
         list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
 
-        $camposClinicos = $solicitudRepository->getAllSolicitudesByInstitucion(
+        $solicitudes = $this->solicitudRepository->getAllSolicitudesByInstitucion(
             $institucion->getId(),
             $tipoPago,
             $offset,
             $search
         );
 
+        $collection = new ArrayCollection();
+        /** @var Solicitud $solicitud */
+        foreach($solicitudes as $solicitud) {
+            $collection->add(new InicioDTO($solicitud));
+        }
+
+        $totalSolicitudes = round(
+            count($solicitudes) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE
+        );
+
         if ($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)) {
             return new JsonResponse([
-                'camposClinicos' => $this->getNormalizeSolicitudes($camposClinicos),
-                'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
+                'camposClinicos' => $normalizer->normalize($collection, 'json', [
+                    'attributes' => [
+                        'id',
+                        'estatus',
+                        'fecha',
+                        'noCamposAutorizados',
+                        'noCamposSolicitados',
+                        'noSolicitud',
+                        'tipoPago',
+                        'ultimoPago'
+                    ]
+                ]),
+                'total' => $totalSolicitudes
             ]);
 
         }
 
         return $this->render('ie/solicitud/inicio.html.twig', [
             'institucion' => $institucion,
-            'total' => round(count($camposClinicos) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE)
+            'total' => $totalSolicitudes
         ]);
     }
 
@@ -79,6 +114,16 @@ class SolicitudController extends DIEControllerController
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         PagoRepositoryInterface $pagoRepository
     ) {
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
+
         $isSearchSet = $request->query->get('search');
 
         $search = $request->query->get('search', null);
@@ -89,12 +134,7 @@ class SolicitudController extends DIEControllerController
             false
         );
 
-        /** @var Institucion $institucion */
-        $institucion = $this->getUser()->getInstitucion();
         $pagos = $pagoRepository->getAllPagosByRequest($id);
-
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
 
         $totalCampos = count($camposClinicos);
 
@@ -126,8 +166,8 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitudes/{id}/registrar-montos", name="ie#registrar-montos", methods={"POST", "GET"})
-     * @Route("/solicitudes/{id}/corregir-montos", name="ie#corregir-montos", methods={"POST", "GET"})
+     * @Route("/solicitudes/{id}/registrar-montos", name="ie#registrar_montos", methods={"POST", "GET"})
+     * @Route("/solicitudes/{id}/corregir-montos", name="ie#corregir_montos", methods={"POST", "GET"})
      * @param integer $id
      * @param Request $request
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
@@ -140,18 +180,27 @@ class SolicitudController extends DIEControllerController
         CampoClinicoRepositoryInterface $campoClinicoRepository,
         EntityManagerInterface $entityManager
     ) {
-        $routeName = $request->attributes->get('_route');
-        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+        $routeName = $request->attributes->get('_route');
+        $this->denyAccessUnlessGranted(
+            $routeName === 'ie#registrar_montos' ?
+                SolicitudVoter::REGISTRAR_MONTOS :
+                SolicitudVoter::CORREGIR_MONTOS,
+            $solicitud
+        );
+
+        $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
+        $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
 
         $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
-            'action' => $this->generateUrl("ie#registrar-montos", [
+            'action' => $this->generateUrl("ie#registrar_montos", [
                 'id' => $id,
             ]),
             'method' => 'POST'
@@ -213,10 +262,13 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::SELECCIONAR_FORMA_DE_PAGO, $solicitud);
 
         $form = $this->createForm(FormaPagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#seleccionar_forma_de_pago', [
@@ -230,10 +282,16 @@ class SolicitudController extends DIEControllerController
 
             $procesadorFormaPago->procesar($form->getData());
 
-            $this->addFlash('success', 'Se ha guardado correctamente los montos.');
+            $this->addFlash(
+                'success',
+                sprintf('Se ha guardado correctamente la opción por Pago %s para la solicitud %s',
+                    $solicitud->getTipoPago(),
+                    $solicitud->getNoSolicitud()
+                )
+            );
 
             return $this->redirectToRoute('ie#detalle_de_forma_de_pago', [
-                'id' => $id
+                'id' => $solicitud->getId()
             ]);
         }
 
@@ -253,10 +311,13 @@ class SolicitudController extends DIEControllerController
     {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_FORMA_DE_PAGO, $solicitud);
 
         return $this->render('ie/solicitud/detalle_de_forma_de_pago.html.twig', [
             'institucion' => $institucion,
@@ -268,17 +329,31 @@ class SolicitudController extends DIEControllerController
      * @Route("/solicitudes/{id}/descargar-referencias-bancarias", name="ie#descargar_referencias_bancarias")
      * @param $id
      * @param GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+     * @param EventDispatcherInterface $dispatcher
      */
     public function descargarReferenciasBancarias(
         $id,
-        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
+        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP,
+        EventDispatcherInterface $dispatcher
     ) {
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_REFERENCIAS_BANCARIAS, $solicitud);
+
+        $dispatcher->dispatch(
+            ReferenciaBancariaZipUnloadedEvent::NAME,
+            new ReferenciaBancariaZipUnloadedEvent($solicitud)
+        );
 
         return $generadorReferenciaBancariaZIP->generarZipResponse($solicitud);
     }
+
 
     /**
      * @Route("/solicitudes/{id}/cargar-comprobante", name="ie#cargar_comprobante")
@@ -292,11 +367,15 @@ class SolicitudController extends DIEControllerController
         Request $request,
         EntityManagerInterface $entityManager
     ) {
+        /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::CARGAR_COMPROBANTE, $solicitud);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#cargar_comprobante', [
@@ -336,12 +415,15 @@ class SolicitudController extends DIEControllerController
         Request $request,
         EntityManagerInterface $entityManager
     ) {
-
+        /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
-        $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+        $solicitud = $this->solicitudRepository->find($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::CORRECCION_DE_PAGO_FOFOE, $solicitud);
 
         $form = $this->createForm(SolicitudComprobantePagoType::class, $solicitud, [
             'action' => $this->generateUrl('ie#correccion_de_pago_fofoe', [
@@ -368,29 +450,6 @@ class SolicitudController extends DIEControllerController
             'solicitud' => $this->getNormalizeSolicitud($solicitud)
         ]);
     }
-
-    /**
-     * @param $camposClinicos
-     * @return array
-     */
-    private function getNormalizeSolicitudes($camposClinicos)
-    {
-        return $this->get('serializer')->normalize(
-            $camposClinicos,
-            'json',
-            [
-                'attributes' => [
-                    'id',
-                    'noSolicitud',
-                    'fecha',
-                    'estatus',
-                    'noCamposSolicitados',
-                    'noCamposAutorizados',
-                    'tipoPago'
-                ]
-            ]);
-    }
-
 
     /**
      * @param $pagos

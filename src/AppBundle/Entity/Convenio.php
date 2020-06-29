@@ -50,13 +50,13 @@ class Convenio implements GroupSequenceProviderInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=false)
      */
-    private $nombre;
+    protected $nombre;
 
     /**
      * @var string
@@ -64,7 +64,7 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank
      * @Assert\Choice(choices=Convenio::SECTORES, message="Sector debe ser Público o Privado")
      */
-    private $sector;
+    protected $sector;
 
     /**
      * @var string
@@ -72,14 +72,14 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank
      * @Assert\Choice(choices=Convenio::TIPOS, message="Tipo debe ser General o Específico")
      */
-    private $tipo;
+    protected $tipo;
 
     /**
      * @var DateTime
      * @ORM\Column(type="date")
      * @Assert\NotBlank(message="Vigencia no debe estar vacío o debe ser una fecha válida con formato: AAAA-MM-DD")
      */
-    private $vigencia;
+    protected $vigencia;
 
     /**
      * @var CicloAcademico
@@ -88,7 +88,7 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
      *   message="Debe especificar un valor del catálogo de Tipos de ciclos académicos.")
      */
-    private $cicloAcademico;
+    protected $cicloAcademico;
 
     /**
      * @var Carrera
@@ -97,7 +97,7 @@ class Convenio implements GroupSequenceProviderInterface
      * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
         message="Debe especificar el grado y el nombre de la carrera,
         de acuerdo al catálogo de Carreras.") */
-    private $carrera;
+    protected $carrera;
 
     /**
      * @var Institucion
@@ -105,7 +105,7 @@ class Convenio implements GroupSequenceProviderInterface
      * @ORM\JoinColumn(name="institucion_id", referencedColumnName="id", nullable=false)
      * @Assert\NotBlank
      */
-    private $institucion;
+    protected $institucion;
 
     /**
      * @var Delegacion
@@ -113,19 +113,19 @@ class Convenio implements GroupSequenceProviderInterface
      * @ORM\JoinColumn(name="delegacion_id", referencedColumnName="id")
      * @Assert\NotBlank(message="Debe especificar un valor del catálogo de Delegaciones.")
      */
-    private $delegacion;
+    protected $delegacion;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $numero;
+    protected $numero;
 
     /**
      * @var CampoClinico
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="convenio")
      */
-    private $camposClinicos;
+    protected $camposClinicos;
 
   /**
    * @var Convenio
@@ -134,7 +134,7 @@ class Convenio implements GroupSequenceProviderInterface
         Verifique que existe un convenio general para la institución."
    *  )
    */
-    private $general;
+    protected $general;
 
     public function __construct()
     {

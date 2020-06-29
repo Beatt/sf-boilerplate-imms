@@ -6,6 +6,7 @@ import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
 } from "../../../utils";
+import GestionPagoModal from "../../components/GestionPagoModal";
 
 const MisSolicitudes = ({ totalInit }) => {
 
@@ -16,6 +17,10 @@ const MisSolicitudes = ({ totalInit }) => {
   const [ total, setTotal ] = useState(totalInit)
   const [ currentPage, setCurrentPage ] = useState(1)
   const [ isLoading, toggleLoading ] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = React.useState(false);
+  const [campoClinicoSelected, setCampoClinicoSelected] = useState({
+    pago: { id: null }
+  })
 
   useEffect(() => {
     if(currentPage !== null || tipoPago !== null) getCamposClinicos()
@@ -46,17 +51,34 @@ const MisSolicitudes = ({ totalInit }) => {
     let redirectRoute = ''
 
     switch(solicitud.estatus) {
-      case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
-        break;
       case SOLICITUD.CONFIRMADA:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
         break
+      case SOLICITUD.MONTOS_INCORRECTOS_CAME:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
+        break
+      case SOLICITUD.MONTOS_VALIDADOS_CAME:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        break
+      case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
+        break
       case SOLICITUD.CARGANDO_COMPROBANTES:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
+        if(TIPO_PAGO.MULTIPLE === solicitud.tipoPago) redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
+        else {
+          setModalIsOpen(true)
+          setCampoClinicoSelected({
+            pago: { id: solicitud.ultimoPago }
+          })
+          return
+        }
     }
 
     window.location.href = redirectRoute
+  }
+
+  function closeModal() {
+    setModalIsOpen(false)
   }
 
   return(
@@ -117,46 +139,61 @@ const MisSolicitudes = ({ totalInit }) => {
                   <tr>
                     <th className='text-center' colSpan={7}>Cargando información...</th>
                   </tr> :
-                  camposClinicos.map((solicitud, index) => (
-                    <tr key={index}>
-                      <th><a href="">{solicitud.noSolicitud}</a></th>
-                      <th>{solicitud.noCamposSolicitados}</th>
-                      <th>{solicitud.noCamposAutorizados}</th>
-                      <th>{solicitud.fecha}</th>
-                      <th>{solicitud.tipoPago}</th>
-                      <th>{solicitud.estatus}</th>
-                      <th>
-                        <button
-                          className='btn btn-default'
-                          disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
-                          onClick={() => handleStatusAction(solicitud)}
-                        >
-                          {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
-                        </button>
-                      </th>
+                  camposClinicos.length !== 0 ?
+                    camposClinicos.map((solicitud, index) => (
+                      <tr key={index}>
+                        <th><a href="">{solicitud.noSolicitud}</a></th>
+                        <th>{solicitud.noCamposSolicitados}</th>
+                        <th>{solicitud.noCamposAutorizados}</th>
+                        <th>{solicitud.fecha}</th>
+                        <th>{solicitud.tipoPago}</th>
+                        <th>{solicitud.estatus}</th>
+                        <th>
+                          <button
+                            className='btn btn-default'
+                            disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
+                            onClick={() => handleStatusAction(solicitud)}
+                          >
+                            {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
+                          </button>
+                        </th>
+                      </tr>
+                    )) :
+                    <tr>
+                      <th className='text-center' colSpan={7}>No hay registros disponibles</th>
                     </tr>
-                  ))
               }
               </tbody>
             </table>
-            <div className="text-center">
-              <ReactPaginate
-                previousLabel={'Anterior'}
-                nextLabel={'Siguiente'}
-                breakLabel={'...'}
-                breakClassName={'break-me'}
-                pageCount={total}
-                marginPagesDisplayed={5}
-                pageRangeDisplayed={2}
-                onPageChange={(currentPage) => {
-                  setCurrentPage(currentPage.selected + 1)
-                }}
-                containerClassName={'pagination'}
-                subContainerClassName={'pages pagination'}
-                activeClassName={'active'}
-              />
-            </div>
+            {
+              camposClinicos.length !== 0 &&
+              <div className="text-center">
+                <ReactPaginate
+                  previousLabel={'Anterior'}
+                  nextLabel={'Siguiente'}
+                  breakLabel={'...'}
+                  breakClassName={'break-me'}
+                  pageCount={total}
+                  marginPagesDisplayed={5}
+                  pageRangeDisplayed={2}
+                  onPageChange={(currentPage) => {
+                    setCurrentPage(currentPage.selected + 1)
+                  }}
+                  containerClassName={'pagination'}
+                  subContainerClassName={'pages pagination'}
+                  activeClassName={'active'}
+                />
+              </div>
+            }
           </div>
+          {
+            modalIsOpen &&
+            <GestionPagoModal
+              modalIsOpen={modalIsOpen}
+              closeModal={closeModal}
+              pagoId={campoClinicoSelected.pago.id}
+            />
+          }
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Normalizer;
 
+use AppBundle\DTO\IE\PerfilInstitucionDTO;
 use AppBundle\Entity\Institucion;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -14,7 +15,7 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
         $this->normalizer = $normalizer;
     }
 
-    public function normalizeCamposClinicos(array $camposClinicos)
+    public function normalizeConvenios(array $camposClinicos)
     {
         return $this->normalizer->normalize(
             $camposClinicos,
@@ -22,22 +23,16 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
             [
                 'attributes' => [
                     'id',
-                    'cicloAcademico' => [
-                        'nombre'
-                    ],
-                    'convenio' => [
-                        'id',
-                        'vigencia',
-                        'label',
-                        'carrera' => [
-                            'nombre',
-                            'nivelAcademico' => [
-                                'nombre'
-                            ]
-                        ],
-                        'cicloAcademico' => [
+                    'vigencia',
+                    'label',
+                    'carrera' => [
+                        'nombre',
+                        'nivelAcademico' => [
                             'nombre'
                         ]
+                    ],
+                    'cicloAcademico' => [
+                        'nombre'
                     ]
                 ]
             ]
@@ -47,7 +42,7 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
     public function normalizeInstitucion(Institucion $institucion)
     {
         return $this->normalizer->normalize(
-            $institucion,
+            new PerfilInstitucionDTO($institucion),
             'json',
             [
                 'attributes' => [
@@ -60,7 +55,8 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
                     'fax',
                     'sitioWeb',
                     'cedulaIdentificacion',
-                    'representante'
+                    'representante',
+                    'confirmacionInformacion'
                 ]
             ]
         );

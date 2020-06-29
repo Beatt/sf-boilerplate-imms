@@ -2,7 +2,10 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Pago;
+
 interface GeneradorReferenciaBancariaInterface
 {
-    public function getReferenciaBancaria();
+    public function makeReferenciaBancaria(Pago $pago, $id);
+
 }

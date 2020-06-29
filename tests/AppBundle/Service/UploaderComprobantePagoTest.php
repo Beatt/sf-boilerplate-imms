@@ -98,6 +98,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             null,
             true
         );
+        $solicitud->getPago()->setComprobantePagoFile($uploadedFile);
 
         $service = new UploaderComprobantePago(
             $this->entityManager,
@@ -105,10 +106,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             $this->logger
         );
 
-        $service->update(
-            $solicitud,
-            $uploadedFile
-        );
+        $service->update($solicitud->getPagos()->first());
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
@@ -157,6 +155,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             null,
             true
         );
+        $campoClinico->getSolicitud()->getPago()->setComprobantePagoFile($uploadedFile);
 
         $service = new UploaderComprobantePago(
             $this->entityManager,
@@ -164,10 +163,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             $this->logger
         );
 
-        $service->update(
-            $campoClinico,
-            $uploadedFile
-        );
+        $service->update($solicitud->getPagos()->first());
 
         /** @var CampoClinico $campoClinico */
         $campoClinico = $this->campoClinicoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
@@ -225,6 +221,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             null,
             true
         );
+        $campoClinico1->getSolicitud()->getPago()->setComprobantePagoFile($uploadedFile);
 
         $service = new UploaderComprobantePago(
             $this->entityManager,
@@ -232,10 +229,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
             $this->logger
         );
 
-        $service->update(
-            $campoClinico1,
-            $uploadedFile
-        );
+        $service->update($campoClinico1->getSolicitud()->getPagos()->first());
 
         /** @var CampoClinico $campoClinico */
         $campoClinico = $this->campoClinicoRepository->findOneBy(['referenciaBancaria' => $referenciaBancaria]);
@@ -322,6 +316,7 @@ class UploaderComprobantePagoTest extends AbstractWebTestCase
         $pago->setReferenciaBancaria($referenciaBancaria);
         $pago->setRequiereFactura(false);
         $pago->setSolicitud($solicitud);
+        $solicitud->addPago($pago);
         $this->entityManager->persist($pago);
         return $pago;
     }

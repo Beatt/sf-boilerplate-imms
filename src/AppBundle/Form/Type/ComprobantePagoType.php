@@ -3,7 +3,7 @@
 namespace AppBundle\Form\Type;
 
 use AppBundle\DTO\UploadComprobantePagoDTO;
-use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\Pago;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -16,8 +16,8 @@ class ComprobantePagoType extends AbstractType
     {
         $builder
             ->add('file', FileType::class)
-            ->add('campoClinico', EntityType::class, [
-                'class' => CampoClinico::class,
+            ->add('pago', EntityType::class, [
+                'class' => Pago::class,
                 'choice_label' => 'id'
             ])
         ;

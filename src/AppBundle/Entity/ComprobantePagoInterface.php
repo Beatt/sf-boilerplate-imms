@@ -4,7 +4,11 @@ namespace AppBundle\Entity;
 
 interface ComprobantePagoInterface
 {
-    function getId();
+    public function getId();
 
-    function getReferenciaBancaria();
+    public function getReferenciaBancaria();
+
+    public function getMonto();
+
+    public function getFechaPago();
 }

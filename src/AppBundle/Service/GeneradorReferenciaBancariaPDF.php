@@ -30,19 +30,21 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
 
     public function generarPDF(Solicitud $solicitud, $directoryOutput)
     {
-        $output = $directoryOutput . '/' . $solicitud->getNoSolicitud();
+        $baseName = $directoryOutput . '/' . $solicitud->getNoSolicitud();
         $institucion = $solicitud->getInstitucion();
         $campos = $solicitud->getCamposClinicos();
         $esPagoUnico = $solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO;
 
         if ($esPagoUnico) {
-            $output = $output . '.pdf';
-            $this->generarPDFPago($solicitud, $institucion, $campos, $esPagoUnico, $output);
+            $output = $baseName . '.pdf';
+            $this->generarPDFPago($solicitud, $institucion, $campos, $esPagoUnico,
+              $solicitud->getReferenciaBancaria(), $output);
         } else {
             $i = 1;
             foreach ($campos as $campo) {
-                $output = $output . '-' . strval($i++) . '.pdf';
-                $this->generarPDFPago($solicitud, $institucion, [$campo], $esPagoUnico, $output);
+                $output = $baseName . '-' . strval($i++) . '.pdf';
+                $this->generarPDFPago($solicitud, $institucion, [$campo], $esPagoUnico,
+                  $campo->getReferenciaBancaria(), $output);
             }
         }
 
@@ -52,7 +54,8 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
         return $finder;
     }
 
-    private function generarPDFPago($solicitud, $institucion, $campos, $esPagoUnico, $output)
+    private function generarPDFPago($solicitud, $institucion, $campos,
+                                    $esPagoUnico, $referencia, $output)
     {
         $this->pdf->generateFromHtml(
             $this->templating->render(
@@ -60,11 +63,12 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
                 ['institucion' => $this->getNormalizeInstitucion($institucion),
                     'solicitud' => $this->getNormalizeSolicitud($solicitud),
                     'campos' => $this->getNormalizeCampos($campos),
-                    'esPagoUnico' => $esPagoUnico]
+                    'esPagoUnico' => $esPagoUnico,
+                   'referencia' => $referencia]
             ),
             $output,
-            [],
-            true
+          ['page-size' => 'Letter','encoding' => 'utf-8'],
+          false
         );
     }
 
@@ -99,10 +103,11 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
             $campos,
             self::JSON_FORMAT,
             ['attributes' => [
-                'fechaInicial',
-                'fechaFinal',
+                'fechaInicialFormatted',
+                'fechaFinalFormatted',
                 'lugaresAutorizados',
                 'referenciaBancaria',
+                'weeks',
                 'monto',
                 'estatus' => ['id', 'nombre'],
                 'unidad' => ['nombre'],
