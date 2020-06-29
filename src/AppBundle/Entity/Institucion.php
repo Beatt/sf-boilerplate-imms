@@ -144,6 +144,17 @@ class Institucion
      */
     protected $confirmacionInformacion;
 
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=5, nullable=true)
+     * @Assert\Length(
+     *     max="5",
+     *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
+     */
+    protected $extension;
+
     public function __construct()
     {
         $this->convenios = new ArrayCollection();
