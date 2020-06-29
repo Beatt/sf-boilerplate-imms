@@ -140,3 +140,11 @@ services:
         class: AppBundle\Normalizer\CedulaIdentificacionNormalizer
         public: true
         tags: ['serializer.normalizer']
+
+    app.institucion_voter:
+        class: AppBundle\Security\Voter\SolicitudVoter
+        tags: ['security.voter']
+
+    AppBundle\Repository\GetExistSolicitud\GetExistSolicitud:
+        class: AppBundle\Repository\GetExistSolicitud\GetExistSolicitudUsingSql
+        public: true

@@ -9,12 +9,14 @@ use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\ConvenioRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/ie")
+ * @IsGranted("ROLE_IE")
  */
 class InstitucionController extends DIEControllerController
 {
@@ -34,6 +36,7 @@ class InstitucionController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         $form = $this->createForm(InstitucionType::class, $institucion, [
             'action' => $this->generateUrl('ie#perfil', [

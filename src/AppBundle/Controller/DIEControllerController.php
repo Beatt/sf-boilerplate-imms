@@ -3,6 +3,10 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Usuario;
+use AppBundle\Exception\CouldFindUserRelationWithInstitucion;
+use AppBundle\Exception\CouldNotFindPago;
+use AppBundle\Exception\CouldNotFindSolicitud;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
@@ -130,5 +134,22 @@ abstract class DIEControllerController extends Controller
             }
         }
         return $result;
+    }
+
+    protected function createNotFindUserRelationWithInstitucionException()
+    {
+        /** @var Usuario $usuario */
+        $usuario = $this->getUser();
+        throw CouldFindUserRelationWithInstitucion::withId($usuario->getId());
+    }
+
+    protected function createNotFindSolicitudException($id)
+    {
+        throw CouldNotFindSolicitud::withId($id);
+    }
+
+    protected function createNotFindPagoException($id)
+    {
+        throw CouldNotFindPago::withId($id);
     }
 }

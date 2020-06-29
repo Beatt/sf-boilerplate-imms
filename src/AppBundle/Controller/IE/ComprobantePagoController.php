@@ -3,10 +3,11 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
-use AppBundle\DTO\UploadComprobantePagoDTO;
+use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
 use AppBundle\Form\Type\ComprobantePagoType\ComprobantePagoType;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\UploaderComprobantePagoInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,8 +32,15 @@ class ComprobantePagoController extends DIEControllerController
         UploaderComprobantePagoInterface $uploaderComprobantePago,
         PagoRepositoryInterface $pagoRepository
     ) {
+        /** @var Pago $pago */
         $pago = $pagoRepository->find($id);
-        if($pago === null) throw new \InvalidArgumentException('El pago no existe');
+        if(!$pago) throw $this->createNotFindPagoException($id);
+
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::CARGAR_COMPROBANTE_DE_PAGO, $pago->getSolicitud());
 
         $form = $this->createForm(ComprobantePagoType::class, $pago, [
             'action' => $this->generateUrl('ie#cargar_comprobante_de_pago', [
