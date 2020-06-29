@@ -20,6 +20,7 @@ use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +42,7 @@ class SolicitudController extends DIEControllerController
 
     /**
      * @Route("/inicio", name="ie#inicio", methods={"GET"})
+     * @IsGranted("ROLE_IE")
      * @param Request $request
      * @param NormalizerInterface $normalizer
      * @return Response
@@ -119,6 +121,8 @@ class SolicitudController extends DIEControllerController
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
         if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
 
         $isSearchSet = $request->query->get('search');
 

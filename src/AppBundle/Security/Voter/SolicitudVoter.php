@@ -2,6 +2,7 @@
 
 namespace AppBundle\Security\Voter;
 
+use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Usuario;
 use AppBundle\ObjectValues\SolicitudId;
@@ -23,6 +24,7 @@ final class SolicitudVoter extends Voter
     const CARGAR_COMPROBANTE = 'cargar_comprobante';
     const CORRECCION_DE_PAGO_FOFOE = 'correccion_de_pago_fofoe';
     const DETALLE_DE_SOLICITUD_MULTIPLE = 'detalle_de_solicitud_multiple';
+    const OBTENER_GESTION_DE_PAGOS = 'obtener_gestion_de_pagos';
 
     private $getExistSolicitud;
 
@@ -39,17 +41,11 @@ final class SolicitudVoter extends Voter
     protected function supports($attribute, $subject)
     {
         if(!in_array($attribute, $this->getViewsAllowed())) return false;
-        if(!$subject instanceof Solicitud) return false;
+        if(!$subject instanceof Solicitud && !$subject instanceof Pago) return false;
 
         return true;
     }
 
-    /**
-     * @param $attribute
-     * @param Solicitud $subject
-     * @param TokenInterface $token
-     * @return bool
-     */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         /** @var Usuario $user */
@@ -57,9 +53,13 @@ final class SolicitudVoter extends Voter
 
         if(!$this->security->isGranted('ROLE_IE')) return false;
 
+        $solicitudId = null;
+        if($subject instanceof Solicitud) $solicitudId = $subject->getId();
+        elseif($subject instanceof Pago) $solicitudId = $subject->getSolicitud()->getId();
+
         /** @var GetExistSolicitudResult $solicitud */
         $solicitud = $this->getExistSolicitud->ofUsuario(
-            SolicitudId::fromString($subject->getId()),
+            SolicitudId::fromString($solicitudId),
             UsuarioId::fromString($user->getId())
         );
         if(!$solicitud->isSolicitudOfCurrentUser()) return false;
@@ -82,6 +82,7 @@ final class SolicitudVoter extends Voter
             self::CARGAR_COMPROBANTE,
             self::CORRECCION_DE_PAGO_FOFOE,
             self::DETALLE_DE_SOLICITUD_MULTIPLE,
+            self::OBTENER_GESTION_DE_PAGOS,
         ];
     }
 }
