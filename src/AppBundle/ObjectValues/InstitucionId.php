@@ -19,7 +19,7 @@ final class InstitucionId
     /**
      * @return string
      */
-    public function getId()
+    public function asInt()
     {
         return $this->id;
     }

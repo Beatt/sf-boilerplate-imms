@@ -120,7 +120,7 @@ class SolicitudController extends DIEControllerController
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
 
@@ -186,7 +186,7 @@ class SolicitudController extends DIEControllerController
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
 
         $routeName = $request->attributes->get('_route');
         $this->denyAccessUnlessGranted(
@@ -266,7 +266,7 @@ class SolicitudController extends DIEControllerController
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::SELECCIONAR_FORMA_DE_PAGO, $solicitud);
 
@@ -315,7 +315,7 @@ class SolicitudController extends DIEControllerController
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_FORMA_DE_PAGO, $solicitud);
 
@@ -342,7 +342,7 @@ class SolicitudController extends DIEControllerController
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_REFERENCIAS_BANCARIAS, $solicitud);
 
@@ -373,7 +373,7 @@ class SolicitudController extends DIEControllerController
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::CARGAR_COMPROBANTE, $solicitud);
 
@@ -421,7 +421,7 @@ class SolicitudController extends DIEControllerController
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::CORRECCION_DE_PAGO_FOFOE, $solicitud);
 

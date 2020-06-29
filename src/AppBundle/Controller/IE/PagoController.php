@@ -5,9 +5,7 @@ namespace AppBundle\Controller\IE;
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
-use AppBundle\Entity\Solicitud;
 use AppBundle\Repository\PagoRepositoryInterface;
-use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,14 +21,12 @@ class PagoController extends DIEControllerController
      * @param int $id
      * @param PagoRepositoryInterface $pagoRepository
      * @param NormalizerInterface $normalizer
-     * @param SolicitudRepositoryInterface $solicitudRepository
      * @return JsonResponse
      */
     public function obtenerGestionPago(
         $id,
         PagoRepositoryInterface $pagoRepository,
-        NormalizerInterface $normalizer,
-        SolicitudRepositoryInterface $solicitudRepository
+        NormalizerInterface $normalizer
     ) {
         /** @var Pago $pago */
         $pago = $pagoRepository->find($id);
@@ -40,11 +36,7 @@ class PagoController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFoundInstitucionException();
 
-        /** @var Solicitud $solicitud */
-        $solicitud = $solicitudRepository->find($pago->getSolicitud()->getId());
-        if(!$solicitud) throw $this->createNotFoundSolicitudException();
-
-        $this->denyAccessUnlessGranted(SolicitudVoter::OBTENER_GESTION_DE_PAGOS, $solicitud);
+        $this->denyAccessUnlessGranted(SolicitudVoter::OBTENER_GESTION_DE_PAGOS, $pago->getSolicitud());
 
         return new JsonResponse($normalizer->normalize(
             $pago->getGestionPago(),

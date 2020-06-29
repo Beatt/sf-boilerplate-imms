@@ -3,7 +3,12 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Usuario;
+use AppBundle\Exception\CouldNotFindInstitucion;
+use AppBundle\Exception\CouldNotFindSolicitud;
 use AppBundle\Exception\NotFoundInstitucionException;
+use AppBundle\ObjectValues\InstitucionId;
+use AppBundle\ObjectValues\SolicitudId;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
@@ -136,9 +141,9 @@ abstract class DIEControllerController extends Controller
 
     protected function createNotFoundInstitucionException()
     {
-        throw new NotFoundInstitucionException($this->getTranslator()->trans('security.institucion_not_found', [
-            '%id%' => $this->getUser()->getId()
-        ]));
+        /** @var Usuario $usuario */
+        $usuario = $this->getUser();
+        throw CouldNotFindInstitucion::withId($usuario->getInstitucion()->getId());
     }
 
     private function getTranslator()
@@ -146,10 +151,8 @@ abstract class DIEControllerController extends Controller
         return $this->get('translator');
     }
 
-    protected function createNotFoundSolicitudException()
+    protected function createNotFoundSolicitudException($id)
     {
-        throw new NotFoundInstitucionException($this->getTranslator()->trans('security.solicitud_not_found', [
-            '%id%' => $this->getUser()->getId()
-        ]));
+        throw CouldNotFindSolicitud::withId($id);
     }
 }
