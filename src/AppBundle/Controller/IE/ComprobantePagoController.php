@@ -34,11 +34,11 @@ class ComprobantePagoController extends DIEControllerController
     ) {
         /** @var Pago $pago */
         $pago = $pagoRepository->find($id);
-        if(!$pago) throw new \InvalidArgumentException('El pago no existe');
+        if(!$pago) throw $this->createNotFindPagoException($id);
 
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         $this->denyAccessUnlessGranted(SolicitudVoter::CARGAR_COMPROBANTE_DE_PAGO, $pago->getSolicitud());
 

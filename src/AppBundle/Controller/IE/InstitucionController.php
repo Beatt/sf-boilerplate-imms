@@ -36,7 +36,7 @@ class InstitucionController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         $form = $this->createForm(InstitucionType::class, $institucion, [
             'action' => $this->generateUrl('ie#perfil', [

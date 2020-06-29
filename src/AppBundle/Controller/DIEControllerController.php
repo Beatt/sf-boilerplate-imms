@@ -4,17 +4,14 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Usuario;
-use AppBundle\Exception\CouldNotFindInstitucion;
+use AppBundle\Exception\CouldFindUserRelationWithInstitucion;
+use AppBundle\Exception\CouldNotFindPago;
 use AppBundle\Exception\CouldNotFindSolicitud;
-use AppBundle\Exception\NotFoundInstitucionException;
-use AppBundle\ObjectValues\InstitucionId;
-use AppBundle\ObjectValues\SolicitudId;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class DIEControllerController extends Controller
 {
@@ -139,20 +136,20 @@ abstract class DIEControllerController extends Controller
         return $result;
     }
 
-    protected function createNotFoundInstitucionException()
+    protected function createNotFindUserRelationWithInstitucionException()
     {
         /** @var Usuario $usuario */
         $usuario = $this->getUser();
-        throw CouldNotFindInstitucion::withId($usuario->getInstitucion()->getId());
+        throw CouldFindUserRelationWithInstitucion::withId($usuario->getId());
     }
 
-    private function getTranslator()
-    {
-        return $this->get('translator');
-    }
-
-    protected function createNotFoundSolicitudException($id)
+    protected function createNotFindSolicitudException($id)
     {
         throw CouldNotFindSolicitud::withId($id);
+    }
+
+    protected function createNotFindPagoException($id)
+    {
+        throw CouldNotFindPago::withId($id);
     }
 }

@@ -25,11 +25,11 @@ class CampoClinicoController extends DIEControllerController
     {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD_MULTIPLE, $solicitud);
 

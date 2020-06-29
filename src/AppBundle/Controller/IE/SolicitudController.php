@@ -53,7 +53,7 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
         list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
@@ -116,11 +116,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
 
@@ -182,11 +182,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $routeName = $request->attributes->get('_route');
         $this->denyAccessUnlessGranted(
@@ -262,11 +262,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::SELECCIONAR_FORMA_DE_PAGO, $solicitud);
 
@@ -311,11 +311,11 @@ class SolicitudController extends DIEControllerController
     {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_FORMA_DE_PAGO, $solicitud);
 
@@ -338,11 +338,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_REFERENCIAS_BANCARIAS, $solicitud);
 
@@ -369,11 +369,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::CARGAR_COMPROBANTE, $solicitud);
 
@@ -417,11 +417,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFoundInstitucionException();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFoundSolicitudException($id);
+        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::CORRECCION_DE_PAGO_FOFOE, $solicitud);
 
