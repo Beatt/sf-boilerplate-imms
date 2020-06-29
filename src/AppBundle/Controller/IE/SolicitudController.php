@@ -89,14 +89,14 @@ class SolicitudController extends DIEControllerController
                         'ultimoPago'
                     ]
                 ]),
-                'total' => $totalSolicitudes
+                'total' => $totalSolicitudes,
+                'paginatorTotalPerPage' => SolicitudRepositoryInterface::PAGINATOR_PER_PAGE
             ]);
-
         }
 
         return $this->render('ie/solicitud/inicio.html.twig', [
-            'institucion' => $institucion,
-            'total' => $totalSolicitudes
+            'total' => $totalSolicitudes,
+            'paginatorTotalPerPage' => SolicitudRepositoryInterface::PAGINATOR_PER_PAGE
         ]);
     }
 

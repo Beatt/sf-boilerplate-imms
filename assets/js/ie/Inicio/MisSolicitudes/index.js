@@ -8,7 +8,7 @@ import {
 } from "../../../utils";
 import GestionPagoModal from "../../components/GestionPagoModal";
 
-const MisSolicitudes = ({ totalInit }) => {
+const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
 
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
@@ -79,6 +79,10 @@ const MisSolicitudes = ({ totalInit }) => {
 
   function closeModal() {
     setModalIsOpen(false)
+  }
+
+  function isPaginateEnabledToShow() {
+    return total > paginatorTotalPerPage;
   }
 
   return(
@@ -166,7 +170,7 @@ const MisSolicitudes = ({ totalInit }) => {
               </tbody>
             </table>
             {
-              camposClinicos.length !== 0 &&
+              isPaginateEnabledToShow() &&
               <div className="text-center">
                 <ReactPaginate
                   previousLabel={'Anterior'}
