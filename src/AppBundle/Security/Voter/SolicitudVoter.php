@@ -25,6 +25,7 @@ final class SolicitudVoter extends Voter
     const CORRECCION_DE_PAGO_FOFOE = 'correccion_de_pago_fofoe';
     const DETALLE_DE_SOLICITUD_MULTIPLE = 'detalle_de_solicitud_multiple';
     const OBTENER_GESTION_DE_PAGOS = 'obtener_gestion_de_pagos';
+    const CARGAR_COMPROBANTE_DE_PAGO = 'cargar_comprobante_de_pago';
 
     private $getExistSolicitud;
 
@@ -83,6 +84,7 @@ final class SolicitudVoter extends Voter
             self::CORRECCION_DE_PAGO_FOFOE,
             self::DETALLE_DE_SOLICITUD_MULTIPLE,
             self::OBTENER_GESTION_DE_PAGOS,
+            self::CARGAR_COMPROBANTE_DE_PAGO
         ];
     }
 }

@@ -34,6 +34,7 @@ class PagoController extends DIEControllerController
     ) {
         /** @var Pago $pago */
         $pago = $pagoRepository->find($id);
+        if(!$pago) throw new \InvalidArgumentException('El pago no existe');
 
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();

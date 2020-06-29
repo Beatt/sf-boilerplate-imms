@@ -3,10 +3,13 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
-use AppBundle\DTO\UploadComprobantePagoDTO;
+use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
+use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\ComprobantePagoType\ComprobantePagoType;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Repository\SolicitudRepositoryInterface;
+use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\UploaderComprobantePagoInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,16 +26,29 @@ class ComprobantePagoController extends DIEControllerController
      * @param Request $request
      * @param UploaderComprobantePagoInterface $uploaderComprobantePago
      * @param PagoRepositoryInterface $pagoRepository
+     * @param SolicitudRepositoryInterface $solicitudRepository
      * @return RedirectResponse
      */
     public function cargarComprobanteDePagoAction(
         $id,
         Request $request,
         UploaderComprobantePagoInterface $uploaderComprobantePago,
-        PagoRepositoryInterface $pagoRepository
+        PagoRepositoryInterface $pagoRepository,
+        SolicitudRepositoryInterface $solicitudRepository
     ) {
+        /** @var Pago $pago */
         $pago = $pagoRepository->find($id);
-        if($pago === null) throw new \InvalidArgumentException('El pago no existe');
+        if(!$pago) throw new \InvalidArgumentException('El pago no existe');
+
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFoundInstitucionException();
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $solicitudRepository->find($pago->getSolicitud()->getId());
+        if(!$solicitud) throw $this->createNotFoundSolicitudException();
+
+        $this->denyAccessUnlessGranted(SolicitudVoter::CARGAR_COMPROBANTE_DE_PAGO, $solicitud);
 
         $form = $this->createForm(ComprobantePagoType::class, $pago, [
             'action' => $this->generateUrl('ie#cargar_comprobante_de_pago', [
