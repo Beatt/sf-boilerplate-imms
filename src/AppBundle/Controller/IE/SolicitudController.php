@@ -196,7 +196,7 @@ class SolicitudController extends DIEControllerController
         );
 
         if(
-            $solicitud->getEstatus() != SolicitudInterface::CONFIRMADA ||
+            $solicitud->getEstatus() != SolicitudInterface::CONFIRMADA &&
             $solicitud->getEstatus() != SolicitudInterface::MONTOS_INCORRECTOS_CAME
         ) {
             $this->addFlash('danger', 'No puede realizar esta acción en este momento');
