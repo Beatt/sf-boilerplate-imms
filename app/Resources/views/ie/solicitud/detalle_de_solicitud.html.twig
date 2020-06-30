@@ -28,7 +28,6 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-      window.INSTITUCION_PROP = {{ institucion.Id | json_encode | raw }}
       window.TOTAL_PROP = {{ totalCampos|json_encode|raw }}
       window.AUTORIZADO_PROP = {{ autorizado|json_encode|raw }}
       window.SOLICITUD_PROP = {{ solicitud.Id |json_encode|raw }}

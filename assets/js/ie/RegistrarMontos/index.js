@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import camelcaseKeys from 'camelcase-keys'
+import { SOLICITUD } from "../../constants";
 
 const Registrar = (
   {
@@ -12,8 +13,10 @@ const Registrar = (
   }) => {
 
   let acceso = false;
+  let estatus = false;
 
   if (autorizados[0].autorizados !== 0) acceso = true;
+  if (solicitudId.estatus === SOLICITUD.MONTOS_INCORRECTOS_CAME) estatus = true;
 
   return (
     <>
@@ -30,6 +33,19 @@ const Registrar = (
                   <strong>{carreras.map(carrera => carrera.nombre).join(', ')}</strong>
                 </p>
               </div>
+              {
+                estatus ? 
+
+                <div className="col-md-12 mb-10">
+                  <span className="error-message"><strong>Por favor, ingrese la información correcta correspondiente a los montos de inscripción y de colegiaturas</strong></span>
+
+                  <p className="mt-10 mb-10">Observaciones:</p>
+                  <p>{solicitudId.observaciones}</p>
+
+                </div>
+                :
+                <div/>
+              }
 
               <div className="col-md-12 mb-10">
                 <div className="row">
@@ -123,10 +139,10 @@ const Registrar = (
 
               <div className='col-md-12 mb-20'>
                 <p>
-                  La institución educativa
-                  <span className='text-bold'>{institucion}</span>, confirma que el oficion adjunto, contiene el monto
+                  La institución educativa &nbsp;
+                  <span className='text-bold'>{institucion}</span>, confirma que el oficio adjunto, contiene el monto
                   correspondiente a los montos de la colegiatura e inscripción por cada una de las carreras mencionadas
-                  anteriormente&nbsp;
+                  anteriormente.&nbsp;&nbsp;
                   <label htmlFor="solicitud_validacion_montos_confirmacionOficioAdjunto">
                     <input
                       type="checkbox"
