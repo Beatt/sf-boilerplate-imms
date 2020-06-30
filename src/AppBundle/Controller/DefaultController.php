@@ -2,59 +2,41 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Traductor;
-use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/", name="homepage")
+     * @throws \Exception
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        if($request->get('changeLocale') !== null) {
-            $request->setLocale($request->get('changeLocale'));
+        $roles = $this->getUser()->getRoles();
+
+        if($this->isUserWithFOFOERol($roles)) {
+            return $this->redirectToRoute('fofoe/inicio');
         }
 
-        /** @var Traductor $translate */
-        $translate = $this->getDoctrine()
-            ->getRepository(Traductor::class)
-            ->getTextsByLocale($request->getLocale());
-
-        return $this->render('default/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-            'translate' => $translate !== null ? $translate->getTraductorDTO() : null
-        ]);
+        switch($roles[0]) {
+            case 'ROLE_SUPER':
+                return $this->redirectToRoute('admin');
+            case 'ROLE_CAME':
+                return $this->redirectToRoute('came.solicitud.index');
+            case 'ROLE_IE':
+                return $this->redirectToRoute('ie#perfil');
+            default:
+                throw new \Exception('El usuario no tiene un rol asignado.');
+        }
     }
 
-    /**
-     * @Route("/enviar-email", name="default#enviar-email")
-     * @param Swift_Mailer $mailer
-     * @return JsonResponse
-     */
-    public function enviarEmail(Swift_Mailer $mailer)
+    private function isUserWithFOFOERol(array $roles)
     {
-        $message = (new \Swift_Message('Hello Email'))
-            ->setFrom('send@example.com')
-            ->setTo('recipient@example.com')
-            ->setBody(
-                $this->renderView(
-                    'envio_email_prueba.html.twig',
-                    [
-                        'name' => 'Gabriel'
-                    ]
-                ),
-                'text/html'
-            )
-        ;
-
-        $result = $mailer->send($message);
-
-        return new JsonResponse(['status' => Response::HTTP_OK]);
+        return in_array('ROLE_FOFOE_INICIO', $roles) ||
+            in_array('ROLE_FOFEO_VALIDAR_PAGO', $roles) ||
+            in_array('ROLE_FOFEO_VALIDAR_PAGO_MULTIPLE', $roles) ||
+            in_array('ROLE_FOFEO_REGISTRAR_FACTURA', $roles) ||
+            in_array('ROLE_FOFEO_DETALLE_INSTITUCION_EDUCATIVA', $roles);
     }
 }

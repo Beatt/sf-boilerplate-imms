@@ -41,15 +41,66 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 
     public function getPagosCampoClinicosBySolicitud($solicitud_id)
     {
-       return $this->createQueryBuilder('pago')
-           ->innerJoin('pago.solicitud', 'solicitud')
-           ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
-           ->where('solicitud.id = :solicitud_id')
-           ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
-           ->setParameter('solicitud_id', $solicitud_id)
-           ->getQuery()->getResult();
-     }
+        return $this->createQueryBuilder('pago')
+            ->innerJoin('pago.solicitud', 'solicitud')
+            ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
+            ->where('solicitud.id = :solicitud_id')
+            ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
+            ->setParameter('solicitud_id', $solicitud_id)
+            ->getQuery()->getResult();
+    }
 
+    public function paginate($perPage = 10, $offset = 1, $filters = [])
+    {
+        $queryBuilder = $this->createQueryBuilder('pago')
+            ;
+        $qb2 = clone $queryBuilder;
+
+        return ['data' => $queryBuilder->orderBy('pago.id', 'DESC')->setMaxResults($perPage)
+            ->setFirstResult(($offset-1) * $perPage)->getQuery()
+            ->getResult(),
+            'total' => $qb2->select('COUNT(distinct pago.id)')->getQuery()->getSingleScalarResult()
+        ];
+    }
+
+    public function getComprobantesPagoByReferenciaBancaria($referenciaBancaria)
+    {
+        return $this->createQueryBuilder('pago')
+            ->select('NEW AppBundle\DTO\GestionPago\PagoDTO(
+                pago.comprobantePago, 
+                pago.referenciaBancaria, 
+                pago.fechaPago, 
+                pago.monto
+            )')
+            ->where('pago.referenciaBancaria = :referenciaBancaria')
+            ->setParameter('referenciaBancaria', $referenciaBancaria)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public static function getUltimoPagoByCriteria($referenciaBancaria)
+    {
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria))
+            ->orderBy(['id' => Criteria::DESC])
+            ->setFirstResult(0)
+            ->setMaxResults(1)
+        ;
+    }
+
+    public static function getPagosByReferenciaBancaria($referenciaBancaria)
+    {
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria));
+    }
+
+    public static function getPagosCargadosByReferenciaBancaria($referenciaBancaria)
+    {
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria))
+            ->andWhere(Criteria::expr()->neq('comprobantePago', null));
+    }
      public function getReporteIngresosMes($anio) {
 
       $selAnio = "to_char(pago.fechaPago, 'YYYY')";
@@ -92,8 +143,8 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
         ->innerJoin('campos_clinicos.convenio', 'convenio');
 
-
       $qb->where(
+
           $qb->expr()->orX(
             'pago.referenciaBancaria = solicitud.referenciaBancaria',
             'pago.referenciaBancaria = campos_clinicos.referenciaBancaria'

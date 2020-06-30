@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\DTO\IE\GestionPagoDTO;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,7 +16,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PagoRepository")
  * @Vich\Uploadable
  */
-class Pago
+class Pago implements ComprobantePagoInterface
 {
     /**
      * @var int
@@ -33,19 +34,19 @@ class Pago
      */
     private $monto;
 
-     /**
-      *
-      * @ORM\Column(type="date", nullable=true)
+    /**
+     *
+     * @ORM\Column(type="date", nullable=true)
      */
-     private $fechaPago;
+    private $fechaPago;
 
     /**
      * @var Solicitud
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pago")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="pagos")
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
-     private $solicitud;
+    private $solicitud;
 
     /**
      * @var string
@@ -92,10 +93,16 @@ class Pago
     /**
      * @var Factura
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="factura")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="factura", cascade={"persist"})
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */
      private $factura;
+
+    /**
+     *
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $fechaCreacion;
 
     /**
      * @return int
@@ -233,6 +240,8 @@ class Pago
     public function setFactura(Factura $factura)
     {
         $this->factura = $factura;
+
+         return $this;
     }
 
     /**
@@ -266,7 +275,7 @@ class Pago
     {
         $this->comprobantePagoFile = $comprobantePagoFile;
 
-        $this->setFechaPago(Carbon::now());
+        $this->setFechaCreacion(Carbon::now());
     }
 
     /**
@@ -291,11 +300,39 @@ class Pago
     /**
      * @return string
      */
-    public function getFechaPagoFormatted()
+     public function getFechaPagoFormatted()
+     {
+         if($this->getFechaPago()){
+             return $this->getFechaPago()->format('d-m-Y');
+         }
+         return '';
+     }
+
+    /**
+     * @return DateTime
+     */
+    public function getFechaCreacion()
     {
-      return $this->getFechaPago()->format('d/m/Y');
+        return $this->fechaCreacion;
     }
 
+    /**
+     * @param DateTime $fechaCreacion
+     */
+    public function setFechaCreacion($fechaCreacion)
+    {
+        $this->fechaCreacion = $fechaCreacion;
+    }
+
+    public function isValidado()
+    {
+        return $this->getValidado();
+    }
+
+    public function getGestionPago()
+    {
+        return GestionPagoDTO::create($this);
+    }
      public function getCamposPagados() {
        $campos = $this->solicitud->getCamposClinicos();
        $tiempos = [];
@@ -303,8 +340,8 @@ class Pago
        foreach ($campos as $campo) {
          $fechaInicio = $campo->getFechaInicial();
          $inicial = Carbon::instance($fechaInicio);
-         $tiempo = null;
          if ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
+         $tiempo = null;
          || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
             && $this->referenciaBancaria == $campo->getReferenciaBancaria()) ) {
            $final = Carbon::instance($this->getFechaPago());

@@ -1,7 +1,11 @@
 # Learn more about services, parameters and containers at
 # https://symfony.com/doc/current/service_container.html
 parameters:
-    #parameter_name: value
+    referencias_bancarias_dir: '%kernel.root_dir%/../var/referencias_bancarias'
+    formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
+    credenciales_dir: '%kernel.root_dir%/../var/credenciales'
+    comprobantes_pago_dir: '/uploads/files/instituciones'
+    cedula_identificacion_pago_dir: '/uploads/files/instituciones'
 
 imports:
     - { resource: './services/repositories.yml' }
@@ -16,6 +20,10 @@ services:
         # this means you cannot fetch services directly from the container via $container->get()
         # if you need to do this, you can override this setting on individual services
         public: false
+
+        bind:
+            $comprobantesPagoDir: '%comprobantes_pago_dir%'
+            $cedulaIdentificacionDir: '%cedula_identificacion_pago_dir%'
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -45,7 +53,7 @@ services:
     AppBundle\Vich\Naming\ComprobanteInscripcionNamer:
         public: true
 
-    AppBundle\Service\PagoVichNamer:
+    AppBundle\Vich\Naming\FacturaNamer:
         public: true
 
     AppBundle\DataFixtures\:
@@ -74,8 +82,69 @@ services:
 
     AppBundle\EventListener\ComprobantePagoUploadedListener:
         tags:
-            - { name: kernel.event_listener, event: vich_uploader.post_upload, method: postUpload }
+            - { name: kernel.event_listener, event: vich_uploader.post_upload, method: comprobantePagoUploaded }
 
     app.directory_namer.institucion:
         class: AppBundle\Vich\Naming\InstitucionDirectoryNamer
+        public: true
+
+    AppBundle\Service\ProcesadorFormaPagoInterface:
+        class: AppBundle\Service\ProcesadorFormaPago
+        public: true
+
+    Knp\Snappy\Pdf:
+        public: true
+        arguments:
+            - '%wkhtmltopdf_path%'
+
+    AppBundle\Service\GeneradorReferenciaBancariaPDFInterface:
+        class: AppBundle\Service\GeneradorReferenciaBancariaPDF
+        public: true
+
+    AppBundle\Service\GeneradorReferenciaBancariaZIPInterface:
+        class: AppBundle\Service\GeneradorReferenciaBancariaZIP
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@AppBundle\Service\GeneradorReferenciaBancariaPDF'
+            - '@event_dispatcher'
+            - '%referencias_bancarias_dir%'
+
+    AppBundle\Service\SolicitudManagerInterface:
+        class: AppBundle\Service\SolicitudManager
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@Psr\Log\LoggerInterface'
+            - '@Swift_Mailer'
+            - '@Twig_Environment'
+            - '@Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface'
+            - '%mailer_sender%'
+
+    app.bank_references_created.event:
+        class: AppBundle\EventListener\BankReferencesCreatedListener
+        tags:
+            - { name: kernel.event_listener, event: bank_references.created, method: handleBankReferencesCreated }
+
+    app.bank_references_unloaded.event:
+        class: AppBundle\EventListener\ReferenciaBancariaZipUnloadedListener
+        tags:
+            - { name: kernel.event_listener, event: referencia_bancaria_zip.unloaded, method: referenciaBancariaZipUnloaded }
+
+    app.gestion_pago_normalizer:
+        class: AppBundle\Normalizer\GestionPagoNormalizer
+        public: true
+        tags: ['serializer.normalizer']
+
+    app.cedula_identificacion_normalizer:
+        class: AppBundle\Normalizer\CedulaIdentificacionNormalizer
+        public: true
+        tags: ['serializer.normalizer']
+
+    app.institucion_voter:
+        class: AppBundle\Security\Voter\SolicitudVoter
+        tags: ['security.voter']
+
+    AppBundle\Repository\GetExistSolicitud\GetExistSolicitud:
+        class: AppBundle\Repository\GetExistSolicitud\GetExistSolicitudUsingSql
         public: true

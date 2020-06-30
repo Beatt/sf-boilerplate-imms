@@ -5,7 +5,6 @@ namespace AppBundle\Entity;
 use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="campo_clinico")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CampoClinicoRepository")
  */
-class CampoClinico implements ComprobantePagoInterface
+class CampoClinico implements ReferenciaBancariaInterface
 {
     /**
      * @var int
@@ -36,12 +35,12 @@ class CampoClinico implements ComprobantePagoInterface
     private $fechaFinal;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $horario;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $promocion;
 
@@ -288,6 +287,19 @@ class CampoClinico implements ComprobantePagoInterface
         return $this->convenio;
     }
 
+    public function getNombreCicloAcademico() {
+      return $this->convenio ?
+        $this->convenio->getCicloAcademico()->getNombre() : "";
+    }
+
+    public function getDisplayCarrera() {
+      $carrera = $this->convenio ?
+        $this->convenio->getCarrera() : null;
+
+      return $carrera ?
+        $carrera->getDisplayName() : "";
+    }
+
     /**
      * @param Solicitud $solicitud
      * @return CampoClinico
@@ -370,7 +382,7 @@ class CampoClinico implements ComprobantePagoInterface
     {
         $inicial = Carbon::instance($this->fechaInicial);
         $final = Carbon::instance($this->fechaFinal);
-        return $final->diffInWeeks($inicial);
+        return $final->diffInWeeks($inicial) > 0 ? $final->diffInWeeks($inicial) : 1;
     }
 
 
@@ -393,6 +405,27 @@ class CampoClinico implements ComprobantePagoInterface
         return $this->asignatura;
     }
 
+    public function getNumeroSemanas()
+    {
+        return Carbon::instance($this->fechaInicial)->diffInWeeks(
+            Carbon::instance($this->fechaFinal)
+        );
+    }
+
+    public function getEnlaceCalculoCuotas()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            sprintf('/formato/campo_clinico/%s/formato_fofoe/download', $this->id) :
+            '';
+    }
+
+    public function getMontoPagar()
+    {
+        return $this->lugaresAutorizados !== 0 ?
+            $this->monto :
+            'No aplica';
+    }
+
     /**
      * @return string
      */
@@ -407,6 +440,86 @@ class CampoClinico implements ComprobantePagoInterface
     public function getFechaFinalFormatted()
     {
         return $this->getFechaFinal()->format('d/m/Y');
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getMontoInscripcion()
+    {
+        $result = null;
+        $montos = $this->getSolicitud()->getMontosCarreras();
+        if($montos){
+            foreach ($montos as $monto){
+                if($monto->getCarrera()->getId() === $this->getConvenio()->getCarrera()->getId()){
+                    $result = $monto->getMontoInscripcion();
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getMontoColegiatura()
+    {
+        $result = null;
+        $montos = $this->getSolicitud()->getMontosCarreras();
+        if($montos){
+            foreach ($montos as $monto){
+                if($monto->getCarrera()->getId() === $this->getConvenio()->getCarrera()->getId()){
+                    $result = $monto->getMontoColegiatura();
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getImporteColegiaturaAnualIntegrada()
+    {
+        return $this->getMontoColegiatura() + $this->getMontoInscripcion();
+    }
+
+    /**
+     * @return float
+     */
+    public function getFactorSemanalAutorizado()
+    {
+        return .005;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getImporteAlumno()
+    {
+        if($this->getConvenio()->getCicloAcademico()->getId() === 1){
+            return $this->getImporteColegiaturaAnualIntegrada() * $this->getFactorSemanalAutorizado();
+        }
+        return $this->getImporteColegiaturaAnualIntegrada() * .50;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getSubTotal()
+    {
+        return $this->getImporteAlumno() * $this->getLugaresAutorizados();
+    }
+
+    public function getPago()
+    {
+        return $this->getPagos()->first();
+    }
+
+    public function getPagos()
+    {
+        $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
+        return $this->getSolicitud()->getPagos()->matching($criteria);
     }
 
     public function getDisplayDelegacion() {

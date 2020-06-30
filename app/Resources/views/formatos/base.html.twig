@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Formato FOFOE{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    {% block stylesheets %}
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.css" media="all">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600,700">
+        <script src="http://educacionensalud.imss.gob.mx/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js?v=1.10.2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="{{app.request.getSchemeAndHttpHost() ~ asset('build/layout-formato-fofoe.css') }}">
+    {% endblock %}
+</head>
+<body>
+<header>
+    <img width="350px" src="{{ app.request.getSchemeAndHttpHost() ~ asset('build/images/imss-cabecera.jpg') }}" alt="IMSS">
+</header>
+
+<main>
+    {% block body %}{% endblock %}
+</main>
+</body>
+</html>

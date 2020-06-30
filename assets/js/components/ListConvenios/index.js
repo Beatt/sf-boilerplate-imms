@@ -1,7 +1,9 @@
 import * as React from "react";
 import './styles.scss'
+import {dateFormat} from "../../utils";
 
 const ListConvenios = ({ convenios }) => {
+
   return (
     <div className='list-convenios'>
       <div className='row flex align-items-center'>
@@ -11,8 +13,8 @@ const ListConvenios = ({ convenios }) => {
             <thead className='headers'>
             <tr>
               <th>Número</th>
-              <th>Grado</th>
               <th>Ciclo</th>
+              <th>Grado</th>
               <th>Carrera</th>
               <th>Vigencia</th>
             </tr>
@@ -20,12 +22,12 @@ const ListConvenios = ({ convenios }) => {
             <tbody>
             {
               convenios.map((item) => (
-                <tr className={`label-${item.convenio.label}`}>
-                  <td>{item.id}</td>
-                  <td>{item.convenio.carrera.nivelAcademico.nombre}</td>
-                  <td>{item.convenio.cicloAcademico.nombre}</td>
-                  <td>{item.convenio.carrera.nombre}</td>
-                  <td>{item.convenio.vigencia}</td>
+                <tr key={item.id} className={`label-${item.label}`}>
+                  <td></td>
+                  <td>{item.cicloAcademico ? item.cicloAcademico.nombre : 'No asignado'}</td>
+                  <td>{item.carrera ? item.carrera.nivelAcademico.nombre : 'No asignado'}</td>
+                  <td>{item.carrera ? item.carrera.nombre : 'No asingado'}</td>
+                  <td>{dateFormat(item.vigencia)}</td>
                 </tr>
               ))}
             </tbody>

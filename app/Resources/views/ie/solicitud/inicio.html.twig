@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ render(controller('AppBundle:IE\\Institucion:menu')) }}
+
+    <div class="section-md">
+        <div class='container-fluid'>
+            <div class='container'>
+                <h1 class="text-bold text-center mb-20">Mis solicitudes</h1>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="inicio-component"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.CAMPOS_CLINICOS_TOTAL_PROPS = {{ total|json_encode|raw }}
+        window.PAGINATOR_TOTAL_PER_PAGE_PROPS = {{ paginatorTotalPerPage|json_encode|raw }}
+    </script>
+    <script src="{{ asset('build/ie.inicio.js') }}"></script>
+{% endblock %}

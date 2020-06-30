@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="usuario")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class Usuario implements UserInterface
+class Usuario implements UserInterface, \Serializable
 {
 
     /**
@@ -26,7 +26,7 @@ class Usuario implements UserInterface
 
     /**
      * @var integer
-     * @ORM\Column(type="integer", unique=true)
+     * @ORM\Column(type="integer", unique=true, nullable=true)
      * @Assert\Length(
      *     min="6",
      *     max="15",
@@ -107,7 +107,7 @@ class Usuario implements UserInterface
      * @var string
      * @ORM\Column(type="string", length=13)
      * @Assert\Length(
-     *     min="13",
+     *     min="12",
      *     max="13",
      *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
      *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
@@ -134,19 +134,29 @@ class Usuario implements UserInterface
     private $categoria;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Rol", inversedBy="usuarios")
-     * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permiso", inversedBy="usuarios")
+     * @ORM\JoinColumn(name="permiso_id", referencedColumnName="id")
      */
-    private $rols;
+    private $permisos;
+
+    /**
+     * @var Institucion
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Institucion", mappedBy="usuario")
+     */
+    private $institucion;
 
     /** @var string */
     private $plainPassword;
 
+    /** @var string */
+    private $rol;
+
     public function __construct()
     {
-        $this->rols = new ArrayCollection();
         $this->delegaciones = new ArrayCollection();
         $this->fechaIngreso = new \DateTime();
+        $this->curp = '';
+        $this->rfc = '';
     }
 
     /**
@@ -210,18 +220,14 @@ class Usuario implements UserInterface
      */
     public function getRoles()
     {
-        $securityRoles = [];
+        $roles = [];
 
-        /** @var Rol $role */
-        foreach($this->rols as $role) {
-
-            /** @var Permiso $permiso */
-            foreach($role->getPermisos() as $permiso) {
-                $securityRoles[] = $permiso->getRolSeguridad();
-            }
+        /** @var Permiso $permiso */
+        foreach($this->getPermisos() as $permiso) {
+            $roles[] = sprintf('ROLE_%s', $permiso->getClave());
         }
 
-        return $securityRoles;
+        return $roles;
     }
 
     /**
@@ -254,35 +260,6 @@ class Usuario implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
-    }
-
-    /**
-     * @param Rol $role
-     * @return Usuario
-     */
-    public function addRol(Rol $role)
-    {
-        if(!$this->rols->contains($role)) {
-            $this->rols[] = $role;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Rol $role
-     */
-    public function removeRol(Rol $role)
-    {
-        $this->rols->removeElement($role);
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getRols()
-    {
-        return $this->rols;
     }
 
     /**
@@ -405,7 +382,7 @@ class Usuario implements UserInterface
      */
     public function setCurp($curp)
     {
-        $this->curp = $curp;
+        $this->curp = $curp ? $curp : '';
 
         return $this;
     }
@@ -424,7 +401,7 @@ class Usuario implements UserInterface
      */
     public function setRfc($rfc)
     {
-        $this->rfc = $rfc;
+        $this->rfc = $rfc ? $rfc : '';
 
         return $this;
     }
@@ -531,33 +508,6 @@ class Usuario implements UserInterface
     }
 
     /**
-     * @return string
-     */
-    public function getAssignRoles()
-    {
-        $roles = [];
-
-        /** @var Rol $rol */
-        foreach($this->rols as $rol) {
-            array_push($roles, $rol->getNombre());
-        }
-
-        return implode($roles);
-    }
-
-   /* public function getAssignDepartments()
-    {
-        $departments = [];
-
-        foreach($this->departamentos as $departamento) {
-            array_push($departments, $departamento->getNombre());
-        }
-
-        return implode($departments);
-    }*/
-
-
-    /**
      * @param Delegacion $delegacione
      * @return Usuario
      */
@@ -588,5 +538,89 @@ class Usuario implements UserInterface
     public function getDelegaciones()
     {
         return $this->delegaciones;
+    }
+
+    /**
+     * @return Institucion
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @param Permiso $permiso
+     * @return Usuario
+     */
+    public function addPermiso(Permiso $permiso)
+    {
+        $this->permisos[] = $permiso;
+
+        return $this;
+    }
+
+    /**
+     * @param Permiso $permiso
+     */
+    public function removePermiso(Permiso $permiso)
+    {
+        $this->permisos->removeElement($permiso);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPermisos()
+    {
+        return $this->permisos;
+    }
+
+    /**
+     * @param Institucion $institucion
+     * @return Usuario
+     */
+    public function setInstitucion(Institucion $institucion = null)
+    {
+        $this->institucion = $institucion;
+
+        return $this;
+    }
+
+    /**
+     * @param string $rol
+     */
+    public function setRol($rol)
+    {
+        $this->rol = $rol;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRol()
+    {
+        return $this->rol;
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->correo,
+            $this->contrasena,
+        ]);
+    }
+
+    /** @param $serialized
+     * @see \Serializable::unserialize()
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->correo,
+            $this->contrasena
+        ) = unserialize($serialized);
     }
 }

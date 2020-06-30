@@ -20,13 +20,15 @@ class InstitucionRepository extends EntityRepository implements InstitucionRepos
             ->innerJoin('convenio.cicloAcademico', 'ciclo')
             ->innerJoin('carrera.nivelAcademico', 'nivelAcademico')
             ->where('convenio.sector = :private')
+            ->andWhere('ciclo.activo = true')
             ->setParameter('private', 'Privado');
+
         if ($delegacion_id) {
             $querybuilder->andWhere('convenio.delegacion = :delegacion_id')
                 ->setParameter('delegacion_id', $delegacion_id);
         }
 
-        return $querybuilder->getQuery()
+        return $querybuilder->orderBy('institucion.nombre')->getQuery()
             ->getResult();
     }
 

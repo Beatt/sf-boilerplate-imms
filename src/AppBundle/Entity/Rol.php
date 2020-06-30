@@ -29,18 +29,18 @@ class Rol
     private $nombre;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="roles")
-     */
-    private $usuarios;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Permiso", mappedBy="roles")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Permiso", mappedBy="rol")
      */
     private $permisos;
 
+    /**
+     * @var String
+     * @ORM\Column(type="string", length=10)
+     */
+    private $clave;
+
     public function __construct()
     {
-        $this->usuarios = new ArrayCollection();
         $this->permisos = new ArrayCollection();
     }
 
@@ -69,35 +69,6 @@ class Rol
     }
 
     /**
-     * @param Usuario $usuario
-     * @return Rol
-     */
-    public function addUsuario(Usuario $usuario)
-    {
-        if(!$this->usuarios->contains($usuario)) {
-            $this->usuarios[] = $usuario;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Usuario $usuario
-     */
-    public function removeUsuario(Usuario $usuario)
-    {
-        $this->usuarios->removeElement($usuario);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getUsuarios()
-    {
-        return $this->usuarios;
-    }
-
-    /**
      * @param Permiso $permiso
      * @return Rol
      */
@@ -105,7 +76,6 @@ class Rol
     {
         if(!$this->permisos->contains($permiso)) {
             $this->permisos[] = $permiso;
-            $permiso->addRole($this);
         }
 
         return $this;
@@ -119,7 +89,6 @@ class Rol
     {
         if($this->permisos->contains($permiso)) {
             $this->permisos->removeElement($permiso);
-            $permiso->removeRole($this);
         }
 
         return $this;
@@ -132,4 +101,28 @@ class Rol
     {
         return $this->permisos;
     }
+
+    /**
+     * @return String
+     */
+    public function getClave()
+    {
+        return $this->clave;
+    }
+
+    /**
+     * @param String $clave
+     * @return Rol
+     */
+    public function setClave($clave)
+    {
+        $this->clave = $clave;
+        return $this;
+    }
+
+    public function __toString()
+    {
+      return $this->nombre;
+    }
+
 }

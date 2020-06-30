@@ -10,14 +10,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class UnidadController extends \AppBundle\Controller\DIEControllerController
 {
     /**
-     * @Route("/api/came/unidad", methods={"GET"}, name="came.unidad.index")
+     * @Route("/came/api/unidad", methods={"GET"}, name="came.unidad.index")
      */
     public function indexAction(Request $request)
     {
-        $user_delegacion = null;
+        $delegacion = $this->getUserDelegacionId();
+        if(is_null($delegacion)){
+            throw $this->createAccessDeniedException();
+        }
         $unidades =  $this->getDoctrine()
             ->getRepository(Unidad::class)
-            ->getAllUnidadesByDelegacion($user_delegacion);
+            ->getAllUnidadesByDelegacion($delegacion);
         return $this->jsonResponse([
             'object' => $this->get('serializer')->normalize($unidades, 'json',
                 ['attributes' => [ 'id', 'nombre']

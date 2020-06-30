@@ -262,4 +262,9 @@ class Delegacion
     {
         return $this->usuarios;
     }
+
+    public function __toString()
+    {
+      return $this->nombre;
+    }
 }

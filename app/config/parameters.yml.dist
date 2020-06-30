@@ -15,6 +15,11 @@ parameters:
     mailer_port: 32769
     mailer_user: ~
     mailer_password: ~
+    mailer_sender: send@example.com
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    #### < WKHTMLTOPDF ###
+    wkhtmltopdf_path: /usr/local/bin/wkhtmltopdf
+    #### > WKHTMLTOPDF ###

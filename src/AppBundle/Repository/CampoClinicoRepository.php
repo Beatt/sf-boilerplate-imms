@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -96,7 +97,7 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
                                   JOIN carrera on convenio.carrera_id = carrera.id
                                   JOIN nivel_academico on carrera.nivel_academico_id = nivel_academico.id
                                   JOIN solicitud on campo_clinico.solicitud_id = solicitud.id
-                         WHERE campo_clinico.solicitud_id = :id
+                         WHERE campo_clinico.lugares_autorizados <> 0 AND campo_clinico.solicitud_id = :id
                      ) as carreras_unicas
                          LEFT JOIN monto_carrera on carreras_unicas.id = monto_carrera.carrera_id
             ');
@@ -204,27 +205,50 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
             ->setParameter('solicitud_id', $solicitud_id);
 
         if(isset($filters['unidad']) && $filters['unidad']){
-            $queryBuilder->andWhere('upper(unidad.nombre) like :unidad')
-                ->setParameter('unidad', '%'.strtoupper($filters['unidad']).'%');
+            $queryBuilder->andWhere('upper(unaccent(unidad.nombre)) like UPPER(unaccent(:unidad))')
+                ->setParameter('unidad', '%'.($filters['unidad']).'%');
         }
 
         if(isset($filters['carrera']) && $filters['carrera']){
-            $queryBuilder->andWhere('upper(unidad.nombre) like :unidad')
-                ->setParameter('unidad', '%'.strtoupper($filters['unidad']).'%');
+            $queryBuilder->andWhere('upper(unaccent(carrera.nombre)) like UPPER(unaccent(:carrera))')
+                ->setParameter('carrera', '%'.($filters['carrera']).'%');
         }
 
         if(isset($filters['cicloAcademico']) && $filters['cicloAcademico']){
-            $queryBuilder->andWhere('upper(cicloAcademico.nombre) like :cicloAcademico')
-                ->setParameter('cicloAcademico', '%'.strtoupper($filters['cicloAcademico']).'%');
+            $queryBuilder->andWhere('upper(unaccent(cicloAcademico.nombre)) like UPPER(unaccent(:cicloAcademico))')
+                ->setParameter('cicloAcademico', '%'.($filters['cicloAcademico']).'%');
         }
 
         if(isset($filters['nivelAcademico']) && $filters['nivelAcademico']){
-            $queryBuilder->andWhere('upper(nivelAcademico.nombre) like :nivelAcademico')
-                ->setParameter('nivelAcademico', '%'.strtoupper($filters['nivelAcademico']).'%');
+            $queryBuilder->andWhere('upper(unaccent(nivelAcademico.nombre)) like UPPER(unaccent(:nivelAcademico))')
+                ->setParameter('nivelAcademico', '%'.($filters['nivelAcademico']).'%');
         }
 
         return $queryBuilder->getQuery()->getResult();
     }
 
+    public function getAutorizadosBySolicitud($id)
+    {
+        try {
+            $stmt = $this->_em->getConnection()->prepare('
+                SELECT COUNT(*) as Autorizados
+                FROM campo_clinico
+                WHERE (lugares_autorizados <> 0 AND lugares_autorizados IS NOT NULL)
+                AND solicitud_id = :id
+            ');
 
+            $stmt->bindParam('id', $id);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (DBALException $e) {
+        }
+
+        return 0;
+    }
+
+    public static function getCampoClinicoByReferenciaBancaria($referenciaBancaria)
+    {
+        return Criteria::create()
+            ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria));
+    }
 }

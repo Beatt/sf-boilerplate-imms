@@ -2,17 +2,20 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Table(name="institucion")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\InstitucionRepository")
+ * @UniqueEntity("correo")
  * @Vich\Uploadable
  */
 class Institucion
@@ -24,84 +27,133 @@ class Institucion
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *  min="10",
+     *  max="255",
+     *  minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
      */
-    private $nombre;
+    protected $nombre;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=16, nullable=true)
+     * @Assert\Regex(
+     *  pattern="/^(0|[1-9][0-9]*)$/",
+     *  message="Solo se pueden ingresar números"
+     * )
+     * @Assert\Length(
+     *  min="8",
+     *  max="10",
+     *  minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres.",
+     *  maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres."
+     * )
      */
-    private $telefono;
+    protected $telefono;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=254, nullable=true)
-     * @Assert\Email()
-     */
-    private $correo;
+    */
+    protected $correo;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=254, nullable=true)
      */
-    private $fax;
+    protected $fax;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $sitioWeb;
+    protected $sitioWeb;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $cedulaIdentificacion;
+    protected $cedulaIdentificacion;
 
     /**
      * @Vich\UploadableField(mapping="institucion_cedulas", fileNameProperty="cedulaIdentificacion")
      * @Assert\File(
-     *     maxSize="1000000",
-     *     mimeTypes = {"application/pdf", "application/x-pdf"},
+     *  maxSize="1000000",
+     *  mimeTypes = {"application/pdf", "application/x-pdf"},
+     *  mimeTypesMessage = "Solo se admiten archivos PDF"
      * )
      * @var File
      */
-    private $cedulaFile;
+    protected $cedulaFile;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=13, nullable=true)
      * @Assert\Length(
-     *     min="13",
+     *     min="12",
      *     max="13",
      *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
      *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
      * )
      */
-    private $rfc;
+    protected $rfc;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(
+     *  message="Este campo no puede estar vacio"
+     * )
      */
-    private $direccion;
+    protected $direccion;
 
     /**
      * @var string
+     * @Assert\NotNull
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $representante;
+    protected $representante;
 
     /**
      * @var Convenio
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Convenio", mappedBy="institucion")
      */
-    private $convenios;
+    protected $convenios;
+
+    /**
+     * @var Usuario
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Usuario", inversedBy="institucion")
+     * @ORM\JoinColumn(name="usuario_id", referencedColumnName="id")
+     */
+    protected $usuario;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    protected $fechaCedulaIdentificacion;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $confirmacionInformacion;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=5, nullable=true)
+     * @Assert\Length(
+     *     max="5",
+     *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
+     */
+    protected $extension;
 
     public function __construct()
     {
@@ -274,7 +326,7 @@ class Institucion
      */
     public function setRepresentante($representante)
     {
-        $this->direccion = $representante;
+        $this->representante = $representante;
 
         return $this;
     }
@@ -296,11 +348,13 @@ class Institucion
     }
 
     /**
-     * @param UploadedFile $cedulaFile
+     * @param File $cedulaFile
      */
     public function setCedulaFile($cedulaFile)
     {
         $this->cedulaFile = $cedulaFile;
+
+        $this->setFechaCedulaIdentificacion(Carbon::now());
     }
 
     /**
@@ -328,5 +382,79 @@ class Institucion
     public function getConvenios()
     {
         return $this->convenios;
+    }
+
+    /**
+     * @return Usuario
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
+
+    /**
+     * @param Usuario $usuario
+     * @return Institucion
+     */
+    public function setUsuario(Usuario $usuario = null)
+    {
+        $this->usuario = $usuario;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getFechaCedulaIdentificacion()
+    {
+        return $this->fechaCedulaIdentificacion;
+    }
+
+    /**
+     * @param DateTime $fechaCedulaIdentificacion
+     */
+    public function setFechaCedulaIdentificacion($fechaCedulaIdentificacion)
+    {
+        $this->fechaCedulaIdentificacion = $fechaCedulaIdentificacion;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getConfirmacionInformacion()
+    {
+        return $this->confirmacionInformacion;
+    }
+
+    /**
+     * @param DateTime $confirmacionInformacion
+     */
+    public function setConfirmacionInformacion($confirmacionInformacion)
+    {
+        $this->confirmacionInformacion = $confirmacionInformacion;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConfirmacionInformacion()
+    {
+        return $this->confirmacionInformacion !== null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param string $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
     }
 }

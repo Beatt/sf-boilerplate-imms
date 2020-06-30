@@ -6,10 +6,9 @@ security:
             algorithm: bcrypt
 
     providers:
-        user_provider:
+        users:
             entity:
-                class: AppBundle:Usuario
-                property: correo
+                class: AppBundle\Entity\Usuario
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -17,15 +16,31 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        qr:
+            pattern: ^/qrcode
+            security: false
+
         main:
             anonymous: ~
             form_login:
                 login_path: login
                 check_path: login
-            provider: user_provider
             logout:
                 path:   /logout
                 target: /
 
     access_control:
-        - { path: '^/admin', roles: ROLE_SUPER_ADMIN }
+        - { path: '^/admin', roles: ROLE_SUPER }
+        - { path: '^/ie', roles: [ROLE_SUPER, ROLE_IE] }
+        - { path: '^/came', roles: [ROLE_SUPER, ROLE_CAME] }
+        - { path: '^/fofoe', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO, ROLE_FOFEO_VALIDAR_PAGO, ROLE_FOFEO_VALIDAR_PAGO_MULTIPLE, ROLE_FOFEO_REGISTRAR_FACTURA, ROLE_FOFEO_DETALLE_INSTITUCION_EDUCATIVA] }
+        - { path: '^/fofoe/inicio', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO] }
+        - { path: '^/fofoe/validar-pago', roles: [ROLE_SUPER, ROLE_FOFEO_VALIDAR_PAGO] }
+        - { path: '^/fofoe/validar-pago-multiple', roles: [ROLE_SUPER, ROLE_FOFEO_VALIDAR_PAGO_MULTIPLE] }
+        - { path: '^/fofoe/registrar-factura', roles: [ROLE_SUPER, ROLE_FOFEO_REGISTRAR_FACTURA] }
+        - { path: '^/fofoe/detalle-institucion-educativa', roles: [ROLE_SUPER, ROLE_FOFEO_DETALLE_INSTITUCION_EDUCATIVA] }
+        - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/formatos', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/factura', roles: [IS_AUTHENTICATED_FULLY] }
+        - { path: '^/pago', roles: [IS_AUTHENTICATED_FULLY] }

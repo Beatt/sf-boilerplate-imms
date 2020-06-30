@@ -4,25 +4,34 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('build/came_solicitud_index.css') }}">
     <style>
-        .square {
-            height: 25px;
-            width: 25px;
-            background-color: #555;
-        }
         .wrapper-came{
-            margin: 80px 104px;
+            margin-top: 80px;
+            margin-bottom: 80px;
         }
     </style>
 {% endblock %}
 
 {% block body %}
+    {{ render(controller('AppBundle:Came\\Came:menu')) }}
     <div class='container-fluid wrapper-came'>
-        <div class='row'>
-            <div class='col-md-12'>
-                <h1 style="text-align: center; padding-bottom: 40px">Nueva solicitud</h1>
+        <div class="container">
+            <div class='row'>
+                <div class="col-md-12">
+                    <a href="{{ path('came.solicitud.index') }}">Regresar</a>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <h1 style="text-align: center; padding-bottom: 40px">Nueva solicitud</h1>
+                </div>
+            </div>
+            <div id="solicitud-wrapper"></div>
+            <div class='row'>
+                <div class="col-md-12">
+                    <a href="{{ path('came.solicitud.index') }}">Regresar</a>
+                </div>
             </div>
         </div>
-        <div id="solicitud-wrapper"></div>
     </div>
 {% endblock %}
 

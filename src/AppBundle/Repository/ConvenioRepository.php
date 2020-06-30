@@ -62,4 +62,15 @@ class ConvenioRepository extends EntityRepository implements ConvenioRepositoryI
         ->getOneOrNullResult();
 
     }
+
+    public function getConveniosUnicosByInstitucionId($id)
+    {
+        return $this->createQueryBuilder('convenio')
+            ->join('convenio.camposClinicos', 'camposClinicos')
+            ->where('convenio.institucion = :id')
+            ->distinct()
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
 }

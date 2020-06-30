@@ -33,24 +33,22 @@ class Permiso
      *
      * @ORM\Column(type="string", length=255)
      */
-    private $descripcion;
+    private $clave;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=80)
-     */
-    private $rolSeguridad;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Rol", inversedBy="permisos")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Rol", inversedBy="permisos")
      * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
      */
-    private $roles;
+    private $rol;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="usuarios")
+     */
+    private $usuarios;
 
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
+        $this->usuarios = new ArrayCollection();
     }
 
     /**
@@ -88,79 +86,66 @@ class Permiso
     }
 
     /**
-     * Set descripcion
-     *
-     * @param string $descripcion
-     *
-     * @return Permiso
-     */
-    public function setDescripcion($descripcion)
-    {
-        $this->descripcion = $descripcion;
-
-        return $this;
-    }
-
-    /**
-     * Get descripcion
-     *
      * @return string
      */
-    public function getDescripcion()
+    public function getClave()
     {
-        return $this->descripcion;
+        return $this->clave;
     }
 
     /**
-     * Set rolSeguridad
-     *
-     * @param string $rolSeguridad
-     *
+     * @param string $clave
+     */
+    public function setClave($clave)
+    {
+        $this->clave = $clave;
+    }
+
+    /**
+     * @return Rol
+     */
+    public function getRol()
+    {
+        return $this->rol;
+    }
+
+    /**
+     * @param Rol $rol
+     */
+    public function setRol(Rol $rol)
+    {
+        $this->rol = $rol;
+    }
+
+    /**
+     * @param Usuario $usuario
      * @return Permiso
      */
-    public function setRolSeguridad($rolSeguridad)
+    public function addUsuario(Usuario $usuario)
     {
-        $this->rolSeguridad = $rolSeguridad;
+        $this->usuarios[] = $usuario;
 
         return $this;
     }
 
     /**
-     * Get rolSeguridad
-     *
-     * @return string
+     * @param Usuario $usuario
      */
-    public function getRolSeguridad()
+    public function removeUsuario(Usuario $usuario)
     {
-        return $this->rolSeguridad;
-    }
-
-    /**
-     * @param Rol $role
-     * @return Permiso
-     */
-    public function addRole(Rol $role)
-    {
-        if(!$this->roles->contains($role)) {
-            $this->roles[] = $role;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Rol $role
-     */
-    public function removeRole(Rol $role)
-    {
-        $this->roles->removeElement($role);
+        $this->usuarios->removeElement($usuario);
     }
 
     /**
      * @return Collection
      */
-    public function getRoles()
+    public function getUsuarios()
     {
-        return $this->roles;
+        return $this->usuarios;
+    }
+
+    public function __toString()
+    {
+      return $this->clave;
     }
 }

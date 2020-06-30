@@ -12,12 +12,27 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
     {
         try {
             return $this->createQueryBuilder('u')
-                ->where('u.username = :username OR u.email = :email')
+                ->where("(u.matricula is not null and concat(u.matricula, '') = :username) OR u.correo = :email")
+                ->andWhere('u.activo = true')
                 ->setParameter('username', $username)
                 ->setParameter('email', $username)
                 ->getQuery()
                 ->getOneOrNullResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (\Exception $e) {
         }
+    }
+
+    public function getCameByDelegacion($delegacion_id)
+    {
+        return $this->createQueryBuilder('usuario')
+            ->innerJoin('usuario.delegaciones', 'delegaciones')
+            ->innerJoin('usuario.permisos', 'permiso')
+            ->where('delegaciones.id = :delegacion')
+            ->andWhere('usuario.activo = true')
+            ->andWhere('permiso.clave = :clave')
+            ->setParameter('delegacion', $delegacion_id)
+            ->setParameter('clave', 'CAME')
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

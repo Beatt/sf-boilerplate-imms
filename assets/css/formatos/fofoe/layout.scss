@@ -1,0 +1,73 @@
+body{
+  margin: 16px;
+  //font-size: 10px;
+}
+
+header {
+  padding: 16px;
+  //border: 1px solid;
+}
+
+h1 {
+  text-align: center;
+}
+
+main {
+  padding: 16px;
+  //border: 1px solid;
+  margin-top: 16px;
+}
+
+#cabecera img {
+  width: 40px;
+}
+
+@media print {
+  .sf-toolbarreset {
+    display: none;
+  }
+}
+
+#cabecera {
+  text-align: center;
+}
+
+#periodo {
+  display: flex;
+  display: -webkit-box; /* wkhtmltopdf uses this one */
+  text-align: center;
+}
+
+#periodo p {
+  width: 50%;
+}
+
+.monto {
+  display: flex;
+  display: -webkit-box; /* wkhtmltopdf uses this one */
+}
+
+.monto_name {
+  width: 60%;
+}
+
+.monto_value{
+  width: 40%;
+  text-align: right;
+  border: solid 1px;
+}
+
+.monto_value p {
+  margin-right: 16px;
+}
+
+#firmas {
+  margin-top: 120px;
+  display: flex;
+  display: -webkit-box; /* wkhtmltopdf uses this one */
+  text-align: center;
+}
+
+#firmas div {
+  width: 50%;
+}

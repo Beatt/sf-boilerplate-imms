@@ -11,10 +11,10 @@ easy_admin:
         fields:
           - id
           - { property: nombre, label: 'Nombre' }
-          - { property: rolSeguridad, label: 'Rol' }
-          - { property: descripcion, label: 'Descripción' }
+          - { property: rol.nombre, label: 'Rol' }
+          - { property: clave, label: 'Clave' }
       form:
         fields:
           - { property: nombre, label: 'Nombre' }
-          - { property: rolSeguridad, label: 'Rol' }
-          - { property: descripcion, label: 'Descripción' }
+          - { property: rol, label: 'Rol', type: entity}
+          - { property: Clave, label: 'Clave' }

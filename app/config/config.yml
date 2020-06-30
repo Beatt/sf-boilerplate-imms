@@ -80,10 +80,10 @@ doctrine:
 # Swiftmailer Configuration
 swiftmailer:
     transport: '%mailer_transport%'
-    host: '%mailer_host%'
-    port: '%mailer_port%'
     username: '%mailer_user%'
     password: '%mailer_password%'
+    port: '%mailer_port%'
+    host: '%mailer_host%'
     spool: { type: memory }
 
 doctrine_migrations:
@@ -111,3 +111,14 @@ vich_uploader:
             upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
             namer: AppBundle\Vich\Naming\ComprobanteInscripcionNamer
             directory_namer: app.directory_namer.institucion
+        facturas:
+            uri_prefix: '%app.path.instituciones%'
+            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            namer: AppBundle\Vich\Naming\FacturaNamer
+            directory_namer: app.directory_namer.institucion
+
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     '%wkhtmltopdf_path%'
+        options:    []

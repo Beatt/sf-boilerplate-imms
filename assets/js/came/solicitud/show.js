@@ -1,10 +1,58 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
+import './show.scss';
+
+const LinkCredenciales = (props) => {
+    const status = [4,7];
+    if(status.indexOf(props.campoClinico.estatus.id)>-1){
+        return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/credenciales/download`} target={'_blank'}>Credenciales</a>);
+    }
+    return (<></>);
+}
+
+const LinkFormatoFofoe = (props) => {
+    const status = [2, 3, 4, 5, 6, 7];
+    if ((status.indexOf(props.campoClinico.estatus.id) > -1) || props.showFormatoFofoe) {
+        return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
+            FOFOE</a>);
+    }
+    return (<></>);
+}
+
+const ComprobanteOficio = (props) => {
+    if(props.solicitud.fechaComprobante)
+        return (<a href={`/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+    return (<></>);
+}
+
+const LinkPago = (props) => {
+    if(props.pago)
+        return (<a href={`/pago/${props.pago.id}/download`} target={'_blank'}>Comprobante de pago</a>)
+    return (<></>);
+}
+
+const LinkFactura = (props) => {
+    if(props.factura)
+        return (<a href={`/factura/${props.factura.id}/download`} target={'_blank'}>Factura</a>)
+    return (<></>);
+}
+
+const searchPago = (pagos, campo_clinico) =>{
+    const results =  pagos.filter(item => {
+        return campo_clinico.referenciaBancaria.toString() === item.referenciaBancaria.toString();
+    });
+    if(results.length > 0){
+        return results[0];
+    }
+    return null;
+}
 
 const DetalleSolicitudDetallado = (props) => {
     const [isLoading, setIsLoading] = React.useState(false)
 
     const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
+
+    const [query, setQuery] = React.useState({});
 
     const handleSearchEvent = (query) => {
         setIsLoading(true);
@@ -13,7 +61,7 @@ const DetalleSolicitudDetallado = (props) => {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {
@@ -31,23 +79,20 @@ const DetalleSolicitudDetallado = (props) => {
     return (
         <>
             <div className="table-responsive">
-                <table className="table">
+                <table className="table table-striped">
                     <thead>
                     <tr>
-                        <th><input type="text" placeholder={'Sede'}
-                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Campo Clínico'}
-                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Nivel'}
-                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Carrera'}
-                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
-                        <th>No. de lugares solicitados</th>
-                        <th>No. de lugares autorizados</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Término</th>
-                        <th>Comprobante</th>
-                        <th>Factura</th>
+                        <th>Sede <br/> <input type="text" placeholder={'Sede'}
+                                   onChange={e => {setQuery(Object.assign(query,{unidad: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Campo Clínico <br/> <input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => {setQuery(Object.assign(query,{cicloAcademico: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Nivel <br/> <input type="text" placeholder={'Nivel'}
+                                   onChange={e => {setQuery(Object.assign(query,{nivelAcademico: e.target.value} )); handleSearchEvent()}}/></th>
+                        <th>Carrera <br/> <input type="text" placeholder={'Carrera'}
+                                   onChange={e => {setQuery(Object.assign(query, {carrera: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>No. de lugares</th>
+                        <th>Fechas</th>
+                        <th> </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -58,12 +103,14 @@ const DetalleSolicitudDetallado = (props) => {
                                 <td>{cc.convenio.cicloAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nombre}</td>
-                                <td>{cc.lugaresSolicitados}</td>
-                                <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicialFormatted}</td>
-                                <td>{cc.fechaFinalFormatted}</td>
-                                <td></td>
-                                <td></td>
+                                <td>Solicitados {cc.lugaresSolicitados} <br/> Autorizados {cc.lugaresAutorizados}</td>
+                                <td>Inicio {cc.fechaInicialFormatted} <br/> Final {cc.fechaFinalFormatted}</td>
+                                <td>
+                                    <LinkPago pago={searchPago(props.solicitud.pagos, cc)}/> <br/>
+                                    <LinkFactura factura={searchPago(props.solicitud.pagos, cc) ? searchPago(props.solicitud.pagos, cc).factura: null}/> <br/>
+                                    <LinkFormatoFofoe campoClinico={cc} showFormatoFofoe={props.solicitud.estatus === 'Montos validados CAME'}/> <br/>
+                                    <LinkCredenciales campoClinico={cc}/>
+                                </td>
                             </tr>
                         )
                     })}
@@ -75,11 +122,6 @@ const DetalleSolicitudDetallado = (props) => {
 }
 
 const ExpedienteUnico = (props) => {
-    const Comprobante = () => {
-        if(props.solicitud.fechaComprobante)
-            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
-        return (<></>);
-    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -94,17 +136,17 @@ const ExpedienteUnico = (props) => {
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
                     <td>{props.solicitud.fechaComprobanteFormatted}</td>
-                    <td><Comprobante/></td>
+                    <td><ComprobanteOficio solicitud={props.solicitud}/></td>
                 </tr>
                 <tr>
                     <td>Comprobante de Pago</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.pago? props.solicitud.pago.fechaPagoFormatted: ''}</td>
+                    <td><LinkPago pago={props.solicitud.pago}/></td>
                 </tr>
                 <tr>
                     <td>Factura (CFDI)</td>
-                    <td></td>
-                    <td></td>
+                    <td>{props.solicitud.pago && props.solicitud.pago.factura? props.solicitud.pago.factura.fechaFacturacionFormatted: ''}</td>
+                    <td><LinkFactura factura={props.solicitud.pago && props.solicitud.pago.factura? props.solicitud.pago.factura :null}/></td>
                 </tr>
                 </tbody>
             </table>
@@ -113,11 +155,6 @@ const ExpedienteUnico = (props) => {
 }
 
 const ExpedienteDetallado = (props) => {
-    const Comprobante = () => {
-        if(props.solicitud.fechaComprobante)
-            return (<a href={`/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
-        return (<></>);
-    }
     return (
         <div className="table-responsive">
             <table className="table">
@@ -132,7 +169,7 @@ const ExpedienteDetallado = (props) => {
                 <tr>
                     <td>Oficio de Montos de Colegiatura e Inscripción</td>
                     <td>{props.solicitud.fechaComprobanteFormatted}</td>
-                    <td><Comprobante/></td>
+                    <td><ComprobanteOficio solicitud={props.solicitud}/></td>
                 </tr>
                 </tbody>
             </table>
@@ -146,14 +183,16 @@ const DetalleSolicitudUnico = (props) => {
 
     const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.campoClinicos);
 
-    const handleSearchEvent = (query) => {
+    const [query, setQuery] = React.useState({});
+
+    const handleSearchEvent = () => {
         setIsLoading(true);
         let querystring = '';
         for (const i in query) {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/api/came/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {
@@ -171,21 +210,20 @@ const DetalleSolicitudUnico = (props) => {
     return (
         <><Loader show={isLoading}/>
             <div className="table-responsive">
-                <table className="table">
+                <table className="table table-striped">
                     <thead>
                     <tr>
-                        <th><input type="text" placeholder={'Sede'}
-                                   onChange={e => handleSearchEvent({unidad: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Campo Clínico'}
-                                   onChange={e => handleSearchEvent({cicloAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Nivel'}
-                                   onChange={e => handleSearchEvent({nivelAcademico: e.target.value})}/></th>
-                        <th><input type="text" placeholder={'Carrera'}
-                                   onChange={e => handleSearchEvent({carrera: e.target.value})}/></th>
-                        <th>No. de lugares solicitados</th>
-                        <th>No. de lugares autorizados</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Término</th>
+                        <th>Sede <br/> <input type="text" placeholder={'Sede'}
+                                   onChange={e => {setQuery(Object.assign(query,{unidad: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Campo Clínico <br/> <input type="text" placeholder={'Campo Clínico'}
+                                   onChange={e => {setQuery(Object.assign(query,{cicloAcademico: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>Nivel <br/> <input type="text" placeholder={'Nivel'}
+                                   onChange={e => {setQuery(Object.assign(query,{nivelAcademico: e.target.value} )); handleSearchEvent()}}/></th>
+                        <th>Carrera <br/> <input type="text" placeholder={'Carrera'}
+                                   onChange={e => {setQuery(Object.assign(query, {carrera: e.target.value})); handleSearchEvent()}}/></th>
+                        <th>No. de lugares</th>
+                        <th>Fechas</th>
+                        <th> </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -196,10 +234,12 @@ const DetalleSolicitudUnico = (props) => {
                                 <td>{cc.convenio.cicloAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nivelAcademico.nombre}</td>
                                 <td>{cc.convenio.carrera.nombre}</td>
-                                <td>{cc.lugaresSolicitados}</td>
-                                <td>{cc.lugaresAutorizados}</td>
-                                <td>{cc.fechaInicialFormatted}</td>
-                                <td>{cc.fechaFinalFormatted}</td>
+                                <td>Solicitados {cc.lugaresSolicitados} <br/> Autorizados {cc.lugaresAutorizados}</td>
+                                <td>Inicio {cc.fechaInicialFormatted} <br/> Final {cc.fechaFinalFormatted}</td>
+                                <td>
+                                    <LinkFormatoFofoe campoClinico={cc} showFormatoFofoe={props.solicitud.estatus === 'Montos validados CAME'}/> <br/>
+                                    <LinkCredenciales campoClinico={cc}/>
+                                </td>
                             </tr>
                         )
                     })}
@@ -213,8 +253,8 @@ const DetalleSolicitudUnico = (props) => {
 const SolicitudShow = (props) => {
     const Detalle = () => {
         if (props.solicitud.tipoPago === 'Multiple')
-            return (<DetalleSolicitudDetallado solicitud={props.solicitud}/>)
-        return (<DetalleSolicitudUnico solicitud={props.solicitud}/>)
+            return (<div className={'panel panel-default came-table-detalle'}><DetalleSolicitudDetallado solicitud={props.solicitud}/></div>)
+        return (<div className={'panel panel-default came-table-detalle'}><DetalleSolicitudUnico solicitud={props.solicitud}/></div>)
     }
 
     const Expediente = () => {
@@ -232,7 +272,7 @@ const SolicitudShow = (props) => {
                 <p><strong>Estado:</strong> {props.solicitud.estatusCameFormatted}</p>
             </div>
             <div className="col-md-12">
-                <p><strong>Insitución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
+                <p><strong>Institución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
             </div>
             <div className="col-md-12">
                 <p>Se <strong>autorizaron</strong> {props.solicitud.camposClinicosAutorizados} de {props.solicitud.camposClinicosSolicitados} Campos
