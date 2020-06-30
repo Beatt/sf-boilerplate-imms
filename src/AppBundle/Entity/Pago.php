@@ -341,7 +341,6 @@ class Pago implements ComprobantePagoInterface
          $fechaInicio = $campo->getFechaInicial();
          $inicial = Carbon::instance($fechaInicio);
          if ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
-         $tiempo = null;
          || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
             && $this->referenciaBancaria == $campo->getReferenciaBancaria()) ) {
            $final = Carbon::instance($this->getFechaPago());

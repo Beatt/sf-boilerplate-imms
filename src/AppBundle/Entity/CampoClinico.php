@@ -538,12 +538,4 @@ class CampoClinico implements ReferenciaBancariaInterface
         : '';
     }
 
-    public function getDisplayCarrera() {
-      $carrera = $this->convenio ?
-        $this->convenio
-          ->getCarrera() : null;
-      return  $carrera ?
-        $carrera->getDisplayName() : '';
-    }
-
 }
