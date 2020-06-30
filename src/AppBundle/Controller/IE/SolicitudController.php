@@ -12,8 +12,10 @@ use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\Normalizer\CampoClinicoNormalizer;
 use AppBundle\Normalizer\FormaPagoNormalizer;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
+use AppBundle\Repository\InstitucionRepository;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPago;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
@@ -138,9 +140,12 @@ class SolicitudController extends DIEControllerController
         $id,
         Request $request,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
+        InstitucionRepositoryInterface $institucionRepository,
         EntityManagerInterface $entityManager
     ) {
+
         $routeName = $request->attributes->get('_route');
+
         $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -149,6 +154,24 @@ class SolicitudController extends DIEControllerController
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($id);
+
+        $verificaInstitucion = $institucionRepository->getInstitucionBySolicitudId($id);
+
+        if($verificaInstitucion->getId() != $institucion->getId()){
+            $this->addFlash('danger', 'No tiene acceso a esa solicitud');
+
+            return $this->redirectToRoute('ie#inicio', [
+                'id' => $id
+            ]);
+        }
+
+        if($solicitud->getEstatus() != SolicitudInterface::CONFIRMADA || $solicitud->getEstatus() != SolicitudInterface::MONTOS_INCORRECTOS_CAME){
+            $this->addFlash('danger', 'No puede realizar esta acción en este momento');
+
+            return $this->redirectToRoute('ie#inicio', [
+                'id' => $id
+            ]);
+        }
 
         $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
             'action' => $this->generateUrl("ie#registrar-montos", [
@@ -165,7 +188,7 @@ class SolicitudController extends DIEControllerController
             $entityManager->persist($data);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Se ha guardado correctamente los montos');
+            $this->addFlash('success', 'Se han guardado correctamente los montos para la solicitud ' . $solicitud->getNoSolicitud());
 
             return $this->redirectToRoute('ie#inicio', [
                 'id' => $id

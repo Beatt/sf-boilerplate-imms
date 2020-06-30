@@ -26,13 +26,15 @@ const ListaCampos = ({
             if(
                 solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES
             ) {
-                redirectRoute = `/instituciones/${institucion}/solicitudes/${solicitud.id}/campos-clinicos`
+                redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
                 { console.log("opcion 1") }
             } else {
                 { console.log("opcion 2") }
                 switch(solicitud.estatus) {
             case SOLICITUD.CONFIRMADA:
-                redirectRoute = `/instituciones/${institucion}/solicitudes/${solicitud.id}/registrar`
+                redirectRoute = `ie/solicitudes/${solicitud.id}/registrar-montos`
+            case SOLICITUD.MONTOS_INCORRECTOS_CAME:
+                redirectRoute = `ie/solicitudes/${solicitud.id}/corregir-montos`
                 }
             }
 
