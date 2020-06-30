@@ -28,6 +28,9 @@ class InstitucionType extends AbstractType
             ->add('isConfirmacionInformacion', TextType::class, [
                 'mapped' => false
             ])
+            ->add('extension', TextType::class, [
+                'required' => false
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {

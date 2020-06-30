@@ -4,6 +4,7 @@ namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
+use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\ConvenioRepositoryInterface;
@@ -71,12 +72,13 @@ class InstitucionController extends DIEControllerController
         ]);
     }
 
-    public function menuAction($id, InstitucionRepositoryInterface $institucionRepository)
+    public function menuAction()
     {
-        $institucion = $institucionRepository->find($id);
+        /** @var Usuario $user */
+        $user = $this->getUser();
 
         return $this->render('ie/institucion/_menu.twig', [
-            'institucion' => $institucion
+            'institucion' => $user->getInstitucion()
         ]);
     }
 }

@@ -97,7 +97,7 @@ class Institucion
      * @var string
      * @ORM\Column(type="string", length=13, nullable=true)
      * @Assert\Length(
-     *     min="13",
+     *     min="12",
      *     max="13",
      *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
      *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
@@ -143,6 +143,17 @@ class Institucion
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $confirmacionInformacion;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=5, nullable=true)
+     * @Assert\Length(
+     *     max="5",
+     *     minMessage="Este valor es demasiado corto. Debería tener {{ limit }} caracteres o más.",
+     *     maxMessage="Este valor es demasiado largo. Debería tener {{ limit }} caracteres o menos."
+     * )
+     */
+    protected $extension;
 
     public function __construct()
     {
@@ -429,5 +440,21 @@ class Institucion
     public function isConfirmacionInformacion()
     {
         return $this->confirmacionInformacion !== null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param string $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
     }
 }

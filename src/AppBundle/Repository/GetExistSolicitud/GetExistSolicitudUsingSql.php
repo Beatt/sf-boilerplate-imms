@@ -35,14 +35,14 @@ class GetExistSolicitudUsingSql implements GetExistSolicitud
                       ON institucion.id = convenio.institucion_id
                     JOIN campo_clinico
                       ON convenio.id = campo_clinico.convenio_id
-                    WHERE institucion.id = :institucionId
+                    WHERE usuario.id = :usuarioId
                   ) AS solicitudes_id
                   WHERE solicitud_id IN (:solicitudId)
-                )   
+                )
             ");
 
             $stmt->execute([
-                'institucionId' => $usuarioId->asInt(),
+                'usuarioId' => $usuarioId->asInt(),
                 'solicitudId' => $solicitudId->asInt(),
             ]);
 
