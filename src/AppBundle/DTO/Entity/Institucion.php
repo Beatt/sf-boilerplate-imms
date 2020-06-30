@@ -16,6 +16,7 @@ class Institucion extends InstitucionBase
         $this->direccion = $institucion->direccion;
         $this->correo = $institucion->correo;
         $this->telefono = $institucion->telefono;
+        $this->extension = $institucion->extension;
         $this->fax = $institucion->fax;
         $this->sitioWeb = $institucion->sitioWeb;
         $this->cedulaIdentificacion = $institucion->cedulaIdentificacion;
