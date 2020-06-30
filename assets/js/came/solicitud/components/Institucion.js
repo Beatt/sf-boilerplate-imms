@@ -230,7 +230,7 @@ const Institucion = (props) => {
                                 <span className="help-block">{errores.fax ? errores.fax[0] : ''}</span>
                             </div>
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                             <label htmlFor="btn_institucion">&#160;</label>
                             <button id="btn_institucion" className={'form-control btn btn-primary'}>Guardar datos de la Institución Educativa</button>
                         </div>
