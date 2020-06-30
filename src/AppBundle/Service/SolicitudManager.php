@@ -129,26 +129,22 @@ class SolicitudManager implements SolicitudManagerInterface
 
         try {
             if ($is_valid) {
-                $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
-                $this->processMontos($solicitud);
-            } else {
-                $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
-                $this->sendEmailMontosInvalidos($solicitud, $came_usuario);
-            }
-
-            $this->entityManager->persist($solicitud);
-            $this->entityManager->flush();
-            if ($solicitud->getValidado()) {
                 foreach ($montos as $monto) {
-                    if ($monto->getMontoInscripcion() && $monto->getMontoColegiatura()) {
+                    if (!is_null($monto->getMontoInscripcion()) && !is_null($monto->getMontoColegiatura())) {
                         $this->entityManager->persist($monto);
                         $this->entityManager->flush();
                     } else {
                         throw new \Exception("Montos no puedes ser vacios");
                     }
                 }
+                $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
+                $this->processMontos($solicitud);
+            }else {
+                $solicitud->setEstatus(Solicitud::MONTOS_INCORRECTOS_CAME);
+                $this->sendEmailMontosInvalidos($solicitud, $came_usuario);
             }
-
+            $this->entityManager->persist($solicitud);
+            $this->entityManager->flush();
         } catch (OptimisticLockException $exception) {
             $this->logger->critical($exception->getMessage());
             return [

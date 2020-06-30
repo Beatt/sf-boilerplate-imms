@@ -70,7 +70,7 @@ abstract class DIEControllerController extends Controller
     protected function jsonErrorResponse($form, $data = [])
     {
         return new JsonResponse([
-            'message' => isset($data['message']) ? $data['message'] : 'Ocurrío un error al procesar su solicitud',
+            'message' => isset($data['message']) ? $data['message'] : 'Ocurrió un error al procesar la solicitud. Por favor verifique la información ingresada.',
             'status' => false,
             'errors' => $this->get('serializer')->normalize($this->getFormErrors($form), 'json'),
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -88,7 +88,7 @@ abstract class DIEControllerController extends Controller
     {
         return new JsonResponse([
             'message' => $message,
-            'status' => true,
+            'status' => false,
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 

@@ -91,7 +91,7 @@ const CampoClinicoForm = (props) => {
         if (fechaI > fechaF) {
             errores = Object.assign(errores, {
                 fechaInicial: ['Fecha Inicial debe ser menor a Fecha Final'],
-                fechaFinal: ['Fecha Inicial debe ser mayor a Fecha Inicial']
+                fechaFinal: ['Fecha Final debe ser mayor a Fecha Inicial']
             });
             result = false;
         }

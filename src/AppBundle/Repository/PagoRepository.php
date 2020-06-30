@@ -58,7 +58,7 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         return ['data' => $queryBuilder->orderBy('pago.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
-            'total' => $qb2->select('COUNT(pago.id)')->getQuery()->getSingleScalarResult()
+            'total' => $qb2->select('COUNT(distinct pago.id)')->getQuery()->getSingleScalarResult()
         ];
     }
 

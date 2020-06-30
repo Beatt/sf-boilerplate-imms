@@ -14,6 +14,7 @@ class UnidadRepository extends EntityRepository
             ->innerJoin('unidad.delegacion', 'delegacion')
             ->where('delegacion.id = :delegacion_id')
             ->setParameter('delegacion_id', $delegacion_id)
+            ->orderBy('unidad.nombre')
             ->getQuery()
             ->getResult();
     }

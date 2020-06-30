@@ -7,6 +7,7 @@ import SolicitudShow from "./show";
 import SolicitudValidaMontos from "./validaMontos";
 import Loader from "../../components/Loader/Loader";
 import ReactPaginate from 'react-paginate';
+import './styles/tables.scss';
 
 const CameTableExample = (props) => {
     return (
@@ -150,7 +151,9 @@ const SolicitudIndex = (props) => {
                                            onChange={e => {setQuery(Object.assign(query,{no_solicitud: e.target.value})); handleSearchEvent()}}/></th>
                                 <th>Institución Educativa <br/> <input type="text" placeholder={'Institución Educativa'}
                                             onChange={e => {setQuery(Object.assign(query,{institucion: e.target.value})); handleSearchEvent()}}/></th>
-                                <th>Fecha <input type="date" placeholder={'Año-mes-día'}
+                                <th className={'date-col'}>Fecha <br/>
+                                    <input type="date" placeholder={'Año-mes-día'}
+                                           className={'date-input'}
                                                   onChange={e => {setQuery(Object.assign(query,{fecha: e.target.value})); handleSearchEvent()}}/></th>
                                 <th>No. de campos clínicos</th>
                                 <th>Estado</th>
@@ -163,7 +166,7 @@ const SolicitudIndex = (props) => {
                                     <tr key={solicitud.id}>
                                         <td><a href={`/came/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
                                         <td>{solicitud.institucion.nombre}</td>
-                                        <td>{solicitud.fecha}</td>
+                                        <td className={'date-col'}>{solicitud.fecha}</td>
                                         <td>
                                             Solicitados: {solicitud.camposClinicosSolicitados} <br/>
                                             Autorizados: {solicitud.camposClinicosAutorizados}

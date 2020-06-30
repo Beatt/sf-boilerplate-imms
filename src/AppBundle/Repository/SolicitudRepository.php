@@ -69,7 +69,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         return ['data' => $queryBuilder->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
-            'total' => $qb2->select('COUNT(solicitud.id)')->getQuery()->getSingleScalarResult()
+            'total' => $qb2->select('COUNT(distinct solicitud.id)')->getQuery()->getSingleScalarResult()
         ];
     }
 
@@ -115,7 +115,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         return ['data' => $queryBuilder->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
-            'total' => $qb2->select('COUNT(solicitud.id)')->getQuery()->getSingleScalarResult()
+            'total' => $qb2->select('COUNT(distinct solicitud.id)')->getQuery()->getSingleScalarResult()
         ];
 
     }
