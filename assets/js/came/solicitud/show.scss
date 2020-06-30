@@ -4,17 +4,19 @@
 }
 
 .table td {
-  width: 30px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .table th {
-  width: 30px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .table input {
   width: 100%;
+}
+
+.table input[type='date'] {
+  width: 135px;
 }

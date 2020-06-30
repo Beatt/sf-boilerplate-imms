@@ -28,7 +28,7 @@ class InstitucionRepository extends EntityRepository implements InstitucionRepos
                 ->setParameter('delegacion_id', $delegacion_id);
         }
 
-        return $querybuilder->getQuery()
+        return $querybuilder->orderBy('institucion.nombre')->getQuery()
             ->getResult();
     }
 

@@ -8,6 +8,7 @@ use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampo;
 use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Usuario;
+use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Snappy\Pdf;
 use Symfony\Component\Finder\Finder;
@@ -73,9 +74,12 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
             }catch (\Exception $ex){}
         }
 
+        $date = Carbon::now()->format('Ymd');
+        $type = $campoClinico->getConvenio()->getCicloAcademico()->getId()  === 1? 'CCS' : 'INT';
+
         $response = new Response(file_get_contents($file));
         $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . self::PDF_NAME . '"');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . "{$date}_{$campoClinico->getSolicitud()->getNoSolicitud()}-{$type}_{$campoClinico->getId()}_FormatoFOFOE.pdf" . '"');
         $response->headers->set('Content-length', filesize($file));
         return $response;
     }

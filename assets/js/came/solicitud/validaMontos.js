@@ -77,10 +77,10 @@ const SolicitudValidaMontos = (props) => {
                 <p><strong>Insitución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
             </div>
             <div className="col-md-12">
-                <p><strong>Por favor valide los que los montos que se muestran a continuación coincidan con los reportados en el oficio</strong></p>
+                <p><strong>Por favor valide los montos que se muestran a continuación coincidan con los reportados en el oficio</strong></p>
             </div>
             <div className="col-md-12">
-                <p>Oficio: {props.solicitud.documento}</p>
+                <p>Oficio: <a href={`/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>{props.solicitud.urlArchivo}</a></p>
             </div>
             <div className="col-md-12">
                 <p>Valide los montos correspondientes a cada carrera de su solicitud</p>
@@ -103,14 +103,28 @@ const SolicitudValidaMontos = (props) => {
                                 <tr key={monto.id}>
                                     <td>{monto.carrera.nivelAcademico.nombre}</td>
                                     <td>{monto.carrera.nombre}</td>
-                                    <td><input type="number" value={montos[i].montoInscripcion}
-                                               min={0}
-                                               required={true}
-                                               onChange={e => {montos[i].montoInscripcion = e.target.value; setMontos(Object.assign([], montos))}}/></td>
-                                    <td><input type="number" value={montos[i].montoColegiatura}
-                                               min={0}
-                                               required={true}
-                                               onChange={e => {montos[i].montoColegiatura = e.target.value; setMontos(Object.assign([], montos))}}/></td>
+                                    <td>
+                                        <div className="input-group">
+                                            <span className="input-group-addon">$</span>
+                                            <input className="form-control"
+                                                   type="number" value={montos[i].montoInscripcion}
+                                                   min={0}
+                                                   required={true}
+                                                   onChange={e => {montos[i].montoInscripcion = e.target.value; setMontos(Object.assign([], montos))}}
+                                                   />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="input-group">
+                                            <span className="input-group-addon">$</span>
+                                            <input className="form-control"
+                                                   type="number" value={montos[i].montoColegiatura}
+                                                   min={0}
+                                                   required={true}
+                                                   onChange={e => {montos[i].montoColegiatura = e.target.value; setMontos(Object.assign([], montos))}}
+                                        />
+                                        </div>
+                                    </td>
                                 </tr>
                             )
                         })}

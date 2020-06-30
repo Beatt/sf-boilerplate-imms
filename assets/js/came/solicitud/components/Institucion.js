@@ -99,9 +99,9 @@ const Institucion = (props) => {
     const validateForm = () => {
         let result = true;
         let obj_errors = {};
-        if(rfc.toString().length != 13){
+        if(rfc.toString().length > 13 || rfc.toString().length < 12){
             result = false;
-            obj_errors = Object.assign(obj_errors, {'rfc': ['Este valor debería tener exactamente 13 caracteres.']});
+            obj_errors = Object.assign(obj_errors, {'rfc': ['Este valor debería tener 12 caracteres como mínimo o 13 como máximo.']});
         }
         if(phone.toString().length != 10){
             result = false;
@@ -230,11 +230,9 @@ const Institucion = (props) => {
                                 <span className="help-block">{errores.fax ? errores.fax[0] : ''}</span>
                             </div>
                         </div>
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                             <label htmlFor="btn_institucion">&#160;</label>
-                            <button id="btn_institucion" className={'form-control btn btn-primary'}>Guardar Institución
-                                Educativa
-                            </button>
+                            <button id="btn_institucion" className={'form-control btn btn-primary'}>Guardar datos de la Institución Educativa</button>
                         </div>
                     </div>
                 </div>
