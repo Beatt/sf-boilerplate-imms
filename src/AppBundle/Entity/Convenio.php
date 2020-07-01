@@ -376,6 +376,6 @@ class Convenio implements GroupSequenceProviderInterface
      */
     public function getVigenciaFormatted()
     {
-        return $this->getVigencia()->format('d/m/Y');
+        return $this->vigencia->format('d/m/Y');
     }
 }
