@@ -52,6 +52,7 @@ class CampoClinicoNormalizer implements InstitucionPerfilNormalizerInterface
                     'direccion',
                     'correo',
                     'telefono',
+                    'extension',
                     'fax',
                     'sitioWeb',
                     'cedulaIdentificacion',

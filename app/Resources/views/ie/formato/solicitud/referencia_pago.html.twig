@@ -31,7 +31,12 @@
   <div style="border-bottom: 1px solid #a3a3a3">
     <h3 style="text-align: center; font-weight: bold; color: black;" class="mt-20 mb-10" >Forma de Pago: {{esPagoUnico ? "Solicitud de Campos Clínicos" : "Por campo clínico" }}</h3>
     <p class="mt-10 mb-10">Detalle de campos clínicos que cubre el pago por solicitud</p>
-    {% if esPagoUnico %} <p class="mt-10 mb-10">No. de Campos Autorizados: {{ campos|length }} </p> {% endif %}
+    {% if esPagoUnico %} <p class="mt-10 mb-10">No. de Campos Autorizados:
+      {{ campos| map(c =>
+        attribute(c, 'lugaresAutorizados') is defined ?
+        (attribute(c, 'lugaresAutorizados') > 0 ? 1 : 0 ): 0) |reduce(
+        (elem, acc) => elem + acc, 0)
+       }} </p> {% endif %}
 
     <table class="table table-bordered" style="text-align: center;" >
       <thead style="background-color: lightgrey;">
@@ -44,6 +49,7 @@
       </thead>
       <tbody>
         {% for campo in campos %}
+          {% if campo.lugaresAutorizados > 0 %}
           <tr>
             <td>{{ campo.unidad.nombre | default("") }}</td>
             <td>{{ campo.nombreCicloAcademico| default("") }}</td>
@@ -53,6 +59,7 @@
               - {{ campo.fechaFinalFormatted| default("") }} </td>
             <td>{{ campo.weeks|default("")  }} </td>
           </tr>
+          {% endif %}
       {% endfor %}
       </tbody>
     </table>

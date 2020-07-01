@@ -225,10 +225,6 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
                 ->setParameter('nivelAcademico', '%'.($filters['nivelAcademico']).'%');
         }
 
-
-//        $queryBuilder->setMaxResults($perPage)
-//            ->setFirstResult(($offset-1) * $perPage);
-
         return $queryBuilder->getQuery()->getResult();
     }
 

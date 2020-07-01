@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Pregrado;
 
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Util\CVSUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,18 +17,7 @@ class ReporteController extends DIEControllerController
      */
     public function showAction(Request $request)
     {
-        $campos_filtros = ["page", "limit", "search", "estatus", "cicloAcademico", "delegacion",
-          "carrera", "fechaIni", "fechaFin", "export", "fechaIni", "fechaFin"];
-        $isSomeValueSet = false;
-        $filtros = [];
-
-        foreach ($campos_filtros as $f) {
-          $valF = $request->query->get($f);
-          if (isset($valF) && $valF != "null") {
-            $isSomeValueSet = true;
-            $filtros[$f] = $valF;
-          }
-        }
+      list($filtros, $isSomeValueSet) = $this->setFilters($request);
 
       if($isSomeValueSet) {
         $result =  $this->getDoctrine()
@@ -65,6 +55,22 @@ class ReporteController extends DIEControllerController
         return $this->render('pregrado/reporte/index.html.twig');
     }
 
+    private function setFilters(Request $request) {
+      $campos_filtros = ["page", "limit", "search", "estatus", "cicloAcademico", "delegacion",
+        "carrera", "fechaIni", "fechaFin", "export", "fechaIni", "fechaFin"];
+      $isSomeValueSet = false;
+      $filtros = [];
+
+      foreach ($campos_filtros as $f) {
+        $valF = $request->query->get($f);
+        if (isset($valF) && $valF != "null") {
+          $isSomeValueSet = true;
+          $filtros[$f] = $valF;
+        }
+      }
+      return array($filtros, $isSomeValueSet);
+    }
+
     protected function generarCVS($campos) {
       $cvs = [];
 
@@ -74,10 +80,10 @@ class ReporteController extends DIEControllerController
         'Fecha_Inicio', 'Fecha_Término', 'Horario', 'Asignatura',
         'Estado_Solicitud'
       ];
-      $cvs[] = $this->arrayToCsvLine($headersCVS);
+      $cvs[] = CVSUtil::arrayToCsvLine($headersCVS);
 
       foreach($campos as $c) {
-        $cvs[] = $this->arrayToCsvLine(
+        $cvs[] = CVSUtil::arrayToCsvLine(
           [$c['id'], $c['solicitud']['noSolicitud'],
             $c['convenio']['carrera']['displayName'],
             $c['convenio']['delegacion']['nombre'],
@@ -126,23 +132,5 @@ class ReporteController extends DIEControllerController
       ]]
     );
   }
-
-  /**
-   * @param array values
-   * @return string CVS line
-   */
-  private function arrayToCsvLine(array $values, $delimiter=',') {
-  $line = '';
-
-  $values = array_map(function ($v) {
-    return '"' .
-      ( str_replace('"', '""', strval($v))  )
-      . '"';
-  }, $values);
-
-  $line .= implode($delimiter, $values);
-
-  return $line;
-}
 
 }
