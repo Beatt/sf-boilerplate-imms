@@ -155,7 +155,6 @@ class SolicitudController extends DIEControllerController
         }
 
         return $this->render('ie/solicitud/detalle_de_solicitud.html.twig', [
-            'institucion' => $institucion,
             'solicitud' => $solicitud,
             'totalCampos' => $totalCampos,
             'autorizado' => $acc,
@@ -196,6 +195,15 @@ class SolicitudController extends DIEControllerController
             $solicitud
         );
 
+        if(
+            $solicitud->getEstatus() != SolicitudInterface::CONFIRMADA &&
+            $solicitud->getEstatus() != SolicitudInterface::MONTOS_INCORRECTOS_CAME
+        ) {
+            $this->addFlash('danger', 'No puede realizar esta acción en este momento');
+
+            return $this->redirectToRoute('ie#inicio');
+        }
+
         $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
         $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
 
@@ -214,11 +222,9 @@ class SolicitudController extends DIEControllerController
             $entityManager->persist($data);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Se ha guardado correctamente los montos');
+            $this->addFlash('success', 'Se han guardado correctamente los montos para la solicitud ' . $solicitud->getNoSolicitud());
 
-            return $this->redirectToRoute('ie#inicio', [
-                'id' => $id
-            ]);
+            return $this->redirectToRoute('ie#inicio');
         }
 
         return $this->render('ie/solicitud/registrar_montos.html.twig', [
