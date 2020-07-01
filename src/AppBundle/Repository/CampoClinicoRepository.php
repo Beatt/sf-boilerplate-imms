@@ -100,6 +100,7 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
                          WHERE campo_clinico.lugares_autorizados <> 0 AND campo_clinico.solicitud_id = :id
                      ) as carreras_unicas
                          LEFT JOIN monto_carrera on carreras_unicas.id = monto_carrera.carrera_id
+                         AND monto_carrera.solicitud_id = :id
             ');
 
             $stmt->bindParam('id', $id);

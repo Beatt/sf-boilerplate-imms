@@ -8,12 +8,15 @@ const Registrar = (
     solicitudId,
     institucion,
     carreras,
-    errors
+    errors,
+    route
   }) => {
 
   let acceso = false;
+  let editar = false;
 
   if (autorizados[0].autorizados !== 0) acceso = true;
+  if (route == "ie#corregir_montos") editar = true;
 
   return (
     <>
@@ -25,13 +28,34 @@ const Registrar = (
             encType='multipart/form-data'
           >
             <div className='row'>
-              <div className="col-md-12 mb-10">
+              <div className="col-md-12 mb-10 mt-10">
                 <p>Se autorizaron {autorizados[0].autorizados} Campos Clínicos para las carreras de&nbsp;
                   <strong>{carreras.map(carrera => carrera.nombre).join(', ')}</strong>
                 </p>
               </div>
 
-              <div className="col-md-12 mb-10">
+              {
+                editar ? 
+                
+                <div>
+                  <div className="col-md-12 bm-10 tm-10">
+                    <span className="error-message mb-10 mt-10"><strong>Por favor, ingrese la información correcta correspondiente a los montos de inscripción y de colegiaturas</strong></span>
+                  </div>
+
+                  <div className="col-md-12 bm-10 mt-10">
+                    <p>Observaciones:</p>
+                    <p className="bm-10 mt-10 background">{solicitudId.observaciones}</p>
+                  </div>
+                </div>
+
+                :
+
+                ''
+              }
+
+              
+
+              <div className="col-md-12 mb-10 mt-10">
                 <div className="row">
                   <div className="col-md-8">
                     <p>Cargue el oficio que contenga los montos de inscripción de todas las carreras que comprenden su
@@ -171,6 +195,7 @@ ReactDOM.render(
     carreras={camelcaseKeys(window.CARRERAS_PROP)}
     solicitudId={window.SOLICITUD_ID_PROP}
     errors={window.ERRORS_PROP}
+    route={window.ROUTE_PROP}
   />,
   document.getElementById('registrar-montos-component')
 );
