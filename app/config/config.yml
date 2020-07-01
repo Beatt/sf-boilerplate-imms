@@ -75,6 +75,7 @@ doctrine:
                 least: DoctrineExtensions\Query\Postgresql\Least
                 regexp_replace: DoctrineExtensions\Query\Postgresql\RegexpReplace
                 unaccent: AppBundle\Doctrine\DQL\Unaccent
+                to_char: AppBundle\Doctrine\DQL\ToChar
 
 # Swiftmailer Configuration
 swiftmailer:

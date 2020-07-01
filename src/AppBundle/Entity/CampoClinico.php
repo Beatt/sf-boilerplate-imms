@@ -6,6 +6,7 @@ use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -520,4 +521,21 @@ class CampoClinico implements ReferenciaBancariaInterface
         $criteria = PagoRepository::createGetPagoByReferenciaBancariaCriteria($this->getReferenciaBancaria());
         return $this->getSolicitud()->getPagos()->matching($criteria);
     }
+
+    public function getDisplayDelegacion() {
+      return $this->convenio ?
+        $this->convenio
+          ->getDelegacion()
+          ->getNombre()
+        : '';
+    }
+
+    public function getDisplayCicloAcademico() {
+      return $this->convenio ?
+        $this->convenio
+          ->getCicloAcademico()
+          ->getNombre()
+        : '';
+    }
+
 }

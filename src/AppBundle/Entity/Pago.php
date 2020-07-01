@@ -333,4 +333,21 @@ class Pago implements ComprobantePagoInterface
     {
         return GestionPagoDTO::create($this);
     }
+     public function getCamposPagados() {
+       $campos = $this->solicitud->getCamposClinicos();
+       $tiempos = [];
+       $camposPagados = [];
+       foreach ($campos as $campo) {
+         $fechaInicio = $campo->getFechaInicial();
+         $inicial = Carbon::instance($fechaInicio);
+         if ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
+         || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
+            && $this->referenciaBancaria == $campo->getReferenciaBancaria()) ) {
+           $final = Carbon::instance($this->getFechaPago());
+           $tiempos[$campo->getId()] = $final->diffInDays($inicial);
+           $camposPagados[] = $campo;
+         }
+       }
+       return array('campos' => $camposPagados, 'tiempos' => $tiempos);
+     }
 }
