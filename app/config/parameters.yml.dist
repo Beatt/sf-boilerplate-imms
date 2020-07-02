@@ -10,7 +10,7 @@ parameters:
     # You should uncomment this if you want to use pdo_sqlite
     #database_path: '%kernel.project_dir%/var/data/data.sqlite'
 
-    mailer_transport: smtp
+    mailer_transport: gmail
     mailer_host: 127.0.0.1
     mailer_port: 32769
     mailer_user: sied.ad.imss@gmail.com
