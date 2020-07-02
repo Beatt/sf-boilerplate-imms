@@ -68,7 +68,7 @@ class GeneradorReferenciaBancariaPDF implements GeneradorReferenciaBancariaPDFIn
             ),
             $output,
           ['page-size' => 'Letter','encoding' => 'utf-8'],
-          false
+          true
         );
     }
 
