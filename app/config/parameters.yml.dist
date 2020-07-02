@@ -13,9 +13,9 @@ parameters:
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_port: 32769
-    mailer_user: ~
-    mailer_password: ~
-    mailer_sender: send@example.com
+    mailer_user: sied.ad.imss@gmail.com
+    mailer_password: S13d.4d.1m$$
+    mailer_sender: sied.ad.imss@gmail.com
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
