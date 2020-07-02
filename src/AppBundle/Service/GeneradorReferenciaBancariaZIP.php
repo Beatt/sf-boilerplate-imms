@@ -60,7 +60,7 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
      * @param $files
      * @return string
      */
-    protected function createZip($files)
+    private function createZip($files)
     {
         $zip = new ZipArchive();
         $zip->open($this->zipReferenciasBancariasDir, ZipArchive::CREATE);
@@ -71,7 +71,7 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
     /**
      * @return Response
      */
-    protected function getZipResponse()
+    private function getZipResponse()
     {
         $response = new Response(file_get_contents($this->zipReferenciasBancariasDir));
         $response->headers->set('Content-Type', 'application/zip');
@@ -80,7 +80,7 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
         return $response;
     }
 
-    protected function removeFiles()
+    private function removeFiles()
     {
         $filesystem = new Filesystem();
         $filesystem->remove($this->directoryOutput);
@@ -91,7 +91,7 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
      * @param $files
      * @param ZipArchive $zip
      */
-    protected function addFilesToZip($files, ZipArchive $zip)
+    private function addFilesToZip($files, ZipArchive $zip)
     {
         foreach ($files as $file) $zip->addFromString(basename($file), file_get_contents($file));
     }
