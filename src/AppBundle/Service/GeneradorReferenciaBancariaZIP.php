@@ -12,8 +12,6 @@ use ZipArchive;
 
 class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPInterface
 {
-    const ZIP_NAME = 'web/ReferenciasBancarias.zip';
-
     private $entityManager;
 
     private $generadorReferenciaBancariaPDF;
@@ -22,16 +20,20 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
 
     private $directoryOutput;
 
+    private $zipReferenciasBancariasDir;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         GeneradorReferenciaBancariaPDFInterface $generadorReferenciaBancariaPDF,
         EventDispatcherInterface $dispatcher,
-        $directoryOutput
+        $directoryOutput,
+        $zipReferenciasBancariasDir
     ) {
         $this->entityManager = $entityManager;
         $this->generadorReferenciaBancariaPDF = $generadorReferenciaBancariaPDF;
         $this->directoryOutput = $directoryOutput;
         $this->dispatcher = $dispatcher;
+        $this->zipReferenciasBancariasDir = $zipReferenciasBancariasDir;
     }
 
     public function generarZipResponse(Solicitud $solicitud)
@@ -61,7 +63,7 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
     protected function createZip($files)
     {
         $zip = new ZipArchive();
-        $zip->open(self::ZIP_NAME, ZipArchive::CREATE);
+        $zip->open($this->zipReferenciasBancariasDir, ZipArchive::CREATE);
         $this->addFilesToZip($files, $zip);
         $zip->close();
     }
@@ -71,10 +73,10 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
      */
     protected function getZipResponse()
     {
-        $response = new Response(file_get_contents(self::ZIP_NAME));
+        $response = new Response(file_get_contents($this->zipReferenciasBancariasDir));
         $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . self::ZIP_NAME . '"');
-        $response->headers->set('Content-length', filesize(self::ZIP_NAME));
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $this->zipReferenciasBancariasDir . '"');
+        $response->headers->set('Content-length', filesize($this->zipReferenciasBancariasDir));
         return $response;
     }
 
@@ -82,7 +84,7 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
     {
         $filesystem = new Filesystem();
         $filesystem->remove($this->directoryOutput);
-        unlink(self::ZIP_NAME);
+        unlink($this->zipReferenciasBancariasDir);
     }
 
     /**
