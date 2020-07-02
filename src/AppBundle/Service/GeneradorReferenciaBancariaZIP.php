@@ -75,7 +75,7 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
     {
         $response = new Response(file_get_contents($this->zipReferenciasBancariasDir));
         $response->headers->set('Content-Type', 'application/zip');
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $this->zipReferenciasBancariasDir . '"');
+        $response->headers->set('Content-Disposition', 'attachment;filename="ReferenciasBancaria.zip"');
         $response->headers->set('Content-length', filesize($this->zipReferenciasBancariasDir));
         return $response;
     }
