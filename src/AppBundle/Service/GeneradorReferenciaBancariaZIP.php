@@ -12,7 +12,7 @@ use ZipArchive;
 
 class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPInterface
 {
-    const ZIP_NAME = 'ReferenciasBancarias.zip';
+    const ZIP_NAME = 'web/ReferenciasBancarias.zip';
 
     private $entityManager;
 

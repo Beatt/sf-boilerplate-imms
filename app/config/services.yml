@@ -1,7 +1,7 @@
 # Learn more about services, parameters and containers at
 # https://symfony.com/doc/current/service_container.html
 parameters:
-    referencias_bancarias_dir: '%kernel.root_dir%/../var/referencias_bancarias'
+    referencias_bancarias_dir: '%kernel.root_dir%/../web/referencias_bancarias'
     formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
     credenciales_dir: '%kernel.root_dir%/../var/credenciales'
     comprobantes_pago_dir: '/uploads/files/instituciones'

@@ -2,10 +2,8 @@
 
 <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.css" media="all">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600,700">
-<script src="http://educacionensalud.imss.gob.mx/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js?v=1.10.2"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.js"></script>
-<link rel="stylesheet" href="{{app.request.getSchemeAndHttpHost() ~ asset('build/layout-formato-fofoe.css') }}">
-<link rel="stylesheet" href="{{app.request.getSchemeAndHttpHost() ~ asset('build/layout.css') }}">
+<link rel="stylesheet" href="{{ absolute_url(asset('build/layout-formato-fofoe.css')) }}">
+<link rel="stylesheet" href="{{ absolute_url(asset('build/layout.css')) }}">
 <style>
 .center{
   text-align: center;

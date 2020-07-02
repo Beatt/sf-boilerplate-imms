@@ -64,9 +64,7 @@ class GeneradorReferenciaBancariaZIPTest extends AbstractWebTestCase
     protected function settingDefaultValuesToSolicitud()
     {
         /** @var Solicitud $solicitud */
-        $solicitud = $this->solicitudRepository->findOneBy([
-            'estatus' => SolicitudInterface::CARGANDO_COMPROBANTES
-        ]);
+        $solicitud = $this->solicitudRepository->findOneBy([]);
 
         $solicitud->setEstatus(SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS);
         $this->entityManager->flush();
