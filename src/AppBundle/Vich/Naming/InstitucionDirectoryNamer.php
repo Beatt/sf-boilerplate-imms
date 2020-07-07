@@ -34,7 +34,7 @@ class InstitucionDirectoryNamer implements DirectoryNamerInterface
         if($object instanceof Institucion) {
             /** @var Institucion $institucion */
             $institucion = $this->tokenStorage->getToken()->getUser()->getInstitucion();
-            return $institucion->getNombre();
+            return $institucion->getId();
         }
 
         $id = null;
@@ -42,7 +42,8 @@ class InstitucionDirectoryNamer implements DirectoryNamerInterface
         if($object instanceof Pago) $id = $object->getSolicitud()->getId();
         elseif($object instanceof Solicitud) $id = $object->getId();
 
+        /** @var Institucion $institucion */
         $institucion = $this->institucionRepository->getInstitucionBySolicitudId($id);
-        return $institucion->getNombre();
+        return $institucion->getId();
     }
 }
