@@ -21,6 +21,6 @@ final class SolicitudId
      */
     public function asInt()
     {
-        return $this->id;
+        return (int) $this->id;
     }
 }

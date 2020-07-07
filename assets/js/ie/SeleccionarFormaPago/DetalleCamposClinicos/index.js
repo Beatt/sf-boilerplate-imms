@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {moneyFormat} from "../../../utils";
+import { moneyFormat } from "../../../utils";
 
 const DetalleCamposClinicos = ({ camposClinicos }) => {
 
   function getTotalBySolicitud() {
     let total = 0;
     for(let camposClinico of camposClinicos) {
-      total += camposClinico.montoPagar
+      total += parseInt(camposClinico.montoPagar)
     }
 
     return moneyFormat(total)

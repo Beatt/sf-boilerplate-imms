@@ -150,3 +150,12 @@ services:
     AppBundle\Repository\GetExistSolicitud\GetExistSolicitud:
         class: AppBundle\Repository\GetExistSolicitud\GetExistSolicitudUsingSql
         public: true
+
+    AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CamposClinicos:
+        class: AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CamposClinicosUsingSql
+        public: true
+
+    app.formato_fofoe_normalizer:
+        class: AppBundle\Normalizer\FormatoFOFOENormalizer
+        public: true
+        tags: ['serializer.normalizer']
