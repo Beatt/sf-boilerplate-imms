@@ -42,7 +42,7 @@ class Permiso
     private $rol;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="usuarios")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Usuario", mappedBy="permisos")
      */
     private $usuarios;
 

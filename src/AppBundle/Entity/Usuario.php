@@ -86,7 +86,7 @@ class Usuario implements UserInterface, \Serializable
     private $departamento;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Delegacion", inversedBy="usuariosPorDelegacion")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Delegacion", inversedBy="usuarios")
      * @ORM\JoinColumn(name="delegacion_id", referencedColumnName="id")
      */
     private $delegaciones;

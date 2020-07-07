@@ -58,7 +58,7 @@ class CampoClinico implements ReferenciaBancariaInterface
     private $lugaresAutorizados;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Convenio")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Convenio", inversedBy="camposClinicos")
      * @ORM\JoinColumn(name="convenio_id", referencedColumnName="id")
      */
     private $convenio;

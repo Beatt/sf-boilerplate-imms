@@ -92,7 +92,7 @@ class Convenio implements GroupSequenceProviderInterface
 
     /**
      * @var Carrera
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Carrera", inversedBy="convenios")
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id", nullable=true)
      * @Assert\NotBlank(groups={Convenio::TIPO_ESPECIFICO},
         message="Debe especificar el grado y el nombre de la carrera,
@@ -101,7 +101,7 @@ class Convenio implements GroupSequenceProviderInterface
 
     /**
      * @var Institucion
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Institucion")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Institucion", inversedBy="convenios")
      * @ORM\JoinColumn(name="institucion_id", referencedColumnName="id", nullable=false)
      * @Assert\NotBlank
      */
@@ -218,7 +218,7 @@ class Convenio implements GroupSequenceProviderInterface
      */
     public function getVigencia()
     {
-        return $this->vigencia->format('d/m/Y');
+        return $this->vigencia;
     }
 
     /**
