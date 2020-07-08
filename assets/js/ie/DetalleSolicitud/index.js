@@ -5,7 +5,7 @@ import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
 } from "../../utils"
-import {SOLICITUD} from "../../constants"
+import { SOLICITUD } from "../../constants"
 const DEFAULT_SEARCH_VALUE = ''
 
 const ListaCampos = (
