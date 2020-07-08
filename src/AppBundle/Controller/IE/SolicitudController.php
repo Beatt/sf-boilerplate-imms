@@ -11,8 +11,9 @@ use AppBundle\Event\ReferenciaBancariaZipUnloadedEvent;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
-use AppBundle\Normalizer\FormaPagoNormalizer;
+use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
+use AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CamposClinicos;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
@@ -256,15 +257,17 @@ class SolicitudController extends DIEControllerController
      * @Route("/solicitudes/{id}/seleccionar-forma-de-pago", name="ie#seleccionar_forma_de_pago")
      * @param int $id
      * @param Request $request
-     * @param FormaPagoNormalizer $formaPagoNormalizer
      * @param ProcesadorFormaPagoInterface $procesadorFormaPago
+     * @param CamposClinicos $camposClinicos
+     * @param NormalizerInterface $normalizer
      * @return Response
      */
     public function seleccionarFormaDePagoAction(
         $id,
         Request $request,
-        FormaPagoNormalizer $formaPagoNormalizer,
-        ProcesadorFormaPagoInterface $procesadorFormaPago
+        ProcesadorFormaPagoInterface $procesadorFormaPago,
+        CamposClinicos $camposClinicos,
+        NormalizerInterface $normalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -302,7 +305,9 @@ class SolicitudController extends DIEControllerController
         }
 
         return $this->render('ie/solicitud/seleccionar_forma_pago.html.twig', [
-            'camposClinicos' => $formaPagoNormalizer->normalizeCamposClinicos($solicitud->getCamposClinicos()),
+            'camposClinicos' => $normalizer->normalize(
+                $camposClinicos->listaCamposClinicosAutorizados(new SolicitudId($solicitud->getId()))
+            ),
             'institucion' => $institucion,
             'solicitud' => $this->getNormalizeSolicitud($solicitud)
         ]);

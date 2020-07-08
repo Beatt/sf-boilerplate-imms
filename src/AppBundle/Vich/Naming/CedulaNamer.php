@@ -14,6 +14,8 @@ class CedulaNamer implements NamerInterface
      */
     public function name($object, PropertyMapping $mapping)
     {
-        return $object->getRfc() . '.' . $object->getCedulaFile()->guessExtension();
+        return sprintf('identificacion-fiscal.%s',
+            $object->getCedulaFile()->guessExtension()
+        );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace AppBundle\Vich\Naming;
 
-use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Factura;
 use Carbon\Carbon;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 use Vich\UploaderBundle\Naming\NamerInterface;

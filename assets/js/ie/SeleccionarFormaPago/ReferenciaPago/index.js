@@ -79,8 +79,8 @@ const ReferenciaPago = (
         </div>
         <div className="col-md-12 mt-20">
           <div className="row">
-            <div className="col-md-10"/>
-            <div className="col-md-2">
+            <div className="col-md-9"/>
+            <div className="col-md-3">
               <button
                 type="submit"
                 className='btn btn-success btn-block'

@@ -6,7 +6,6 @@ use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -403,27 +402,6 @@ class CampoClinico implements ReferenciaBancariaInterface
     public function getAsignatura()
     {
         return $this->asignatura;
-    }
-
-    public function getNumeroSemanas()
-    {
-        return Carbon::instance($this->fechaInicial)->diffInWeeks(
-            Carbon::instance($this->fechaFinal)
-        );
-    }
-
-    public function getEnlaceCalculoCuotas()
-    {
-        return $this->lugaresAutorizados !== 0 ?
-            sprintf('/formato/campo_clinico/%s/formato_fofoe/download', $this->id) :
-            '';
-    }
-
-    public function getMontoPagar()
-    {
-        return $this->lugaresAutorizados !== 0 ?
-            $this->monto :
-            'No aplica';
     }
 
     /**
