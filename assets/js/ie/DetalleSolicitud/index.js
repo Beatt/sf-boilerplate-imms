@@ -21,16 +21,18 @@ const ListaCampos = (
   const [ camposClinicos, setCamposClinicos ] = useState([])
   const [ isLoading, toggleLoading ] = useState(false)
 
+  useEffect(() => getCamposClinicos(), [])
+
   function handleStatusAction(solicitud) {
     if (isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
 
     let redirectRoute = ''
     switch (solicitud.estatus) {
       case SOLICITUD.CONFIRMADA:
-        redirectRoute = `ie/solicitudes/${solicitud.id}/registrar-montos`
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
         break;
       case SOLICITUD.MONTOS_INCORRECTOS_CAME:
-        redirectRoute = `ie/solicitudes/${solicitud.id}/corregir-montos`
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
         break;
       case SOLICITUD.CARGANDO_COMPROBANTES:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
@@ -40,17 +42,14 @@ const ListaCampos = (
     window.location.href = redirectRoute
   }
 
-  let isPago = false;
-  let isFactura = false;
+  function isPago() {
+    return pago[0] !== undefined &&
+      pago[0] !== '';
+  }
 
-  if (pago[0]) {
-    isPago = true;
-    if (pago[0].factura)
-      isFactura = true;
-  } else
-    isPago = false;
-
-  useEffect(() => getCamposClinicos(), [])
+  function isFactura() {
+    return pago[0] && pago[0].factura;
+  }
 
   function getCamposClinicos() {
     toggleLoading(true)
@@ -142,7 +141,7 @@ const ListaCampos = (
                 <td><a href='#'>{campos[0].solicitud.urlArchivo ? campos[0].solicitud.urlArchivo : ''}</a></td>
               </tr>
               {
-                isPago ?
+                isPago() ?
                   <tr>
                     <td>Comprobante de pago</td>
                     <td>{pago[0].fechaPago}</td>
@@ -157,7 +156,7 @@ const ListaCampos = (
                   </tr>
               }
               {
-                isFactura ?
+                isFactura() ?
                   <tr>
                     <td>Factura (CFDI)</td>
                     <td>{pago[0].factura.fechaFacturacion}</td>
