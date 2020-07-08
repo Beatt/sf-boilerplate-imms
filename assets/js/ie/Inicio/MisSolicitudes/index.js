@@ -107,9 +107,10 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
           <div className="form-group">
             <input
               type="text"
-              placeholder='Buscar por...'
+              placeholder='Buscar por No. de solicitud o fecha...'
               className='input-sm form-control'
               onChange={({ target }) => setSearch(target.value)}
+              style={{ width: 250 }}
             />
           </div>
           <button
