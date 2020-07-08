@@ -75,7 +75,6 @@ services:
             - '@logger'
         public: true
 
-
     AppBundle\Service\ConvenioManagerInterface:
         class: AppBundle\Service\ConvenioManager
         arguments:
