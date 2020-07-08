@@ -95,7 +95,7 @@ class ReporteCiclosClinicosController extends DIEControllerController
           $c['convenio']['institucion']['nombre'],
           $c['convenio']['cicloAcademico']['nombre'],
           $c['lugaresSolicitados'], $c['lugaresAutorizados'],
-          $c['displayFechaInicial'], $c['displayFechaFinal'],
+          $c['fechaInicialFormatted'], $c['fechaFinalFormatted'],
           $c['horario'], $c['asignatura'],
           $c['estatus']['nombre']
         ]

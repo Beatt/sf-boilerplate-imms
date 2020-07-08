@@ -17,11 +17,11 @@ const getReporteCampos = (
 }
 
 const getReporteCamposCSV = (
-  desdeSel, hastaSel, delegacionSel, unidadSel,
-  carreraSel, cicloSel, search
+  desde, hasta, delegacion, unidad,
+  carrera, ciclo, search
 ) => {
 
-  let urlQuery = `/fofoe/reporte_ciclos?search=${search}`
+  let urlQuery = `/enfermeria/reporte_ciclos?search=${search}`
     + `&fechaIni=${desde}&fechaFin=${hasta}`
     + `&delegacion=${delegacion}&unidad=${unidad}`
     + `&carrera=${carrera}&cicloAcademico=${ciclo}`
