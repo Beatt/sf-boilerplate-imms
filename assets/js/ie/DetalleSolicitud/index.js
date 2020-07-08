@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import {solicitudesGet} from "../api/camposClinicos";
-import { getActionNameByInstitucionEducativa, isActionDisabledByInstitucionEducativa } from "../../utils";
-import { SOLICITUD } from "../../constants";
+import { solicitudesGet } from "../api/camposClinicos"
+import {
+  getActionNameByInstitucionEducativa,
+  isActionDisabledByInstitucionEducativa
+} from "../../utils"
+import {SOLICITUD} from "../../constants"
+const DEFAULT_SEARCH_VALUE = ''
 
 const ListaCampos = (
   {
@@ -13,28 +17,24 @@ const ListaCampos = (
     campos
   }) => {
 
-  const {useState, useEffect} = React
-  const [camposClinicos, setCamposClinicos] = useState([])
-  const [search, setSearch] = useState('')
-  const [isLoading, toggleLoading] = useState(false)
-
+  const { useState, useEffect } = React
+  const [ camposClinicos, setCamposClinicos ] = useState([])
+  const [ isLoading, toggleLoading ] = useState(false)
 
   function handleStatusAction(solicitud) {
-
     if (isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
 
     let redirectRoute = ''
-    if (
-      solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES
-    ) {
-      redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
-    } else {
-      switch (solicitud.estatus) {
-        case SOLICITUD.CONFIRMADA:
-          redirectRoute = `ie/solicitudes/${solicitud.id}/registrar-montos`
-        case SOLICITUD.MONTOS_INCORRECTOS_CAME:
-          redirectRoute = `ie/solicitudes/${solicitud.id}/corregir-montos`
-      }
+    switch (solicitud.estatus) {
+      case SOLICITUD.CONFIRMADA:
+        redirectRoute = `ie/solicitudes/${solicitud.id}/registrar-montos`
+        break;
+      case SOLICITUD.MONTOS_INCORRECTOS_CAME:
+        redirectRoute = `ie/solicitudes/${solicitud.id}/corregir-montos`
+        break;
+      case SOLICITUD.CARGANDO_COMPROBANTES:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
+        break;
     }
 
     window.location.href = redirectRoute
@@ -50,56 +50,40 @@ const ListaCampos = (
   } else
     isPago = false;
 
-  useEffect(() => {
-    if (
-      search === null ||
-      search == ''
-    ) {
-      getCamposClinicos()
-    }
-  }, [search])
-
-  function handleSearch() {
-    if (!search) return;
-    getCamposClinicos()
-  }
+  useEffect(() => getCamposClinicos(), [])
 
   function getCamposClinicos() {
     toggleLoading(true)
 
     solicitudesGet(
       solicitud,
-      search
-    )
-      .then((res) => {
-        setCamposClinicos(res.camposClinicos)
-      })
-      .finally(() => {
-        toggleLoading(false)
-      })
+      DEFAULT_SEARCH_VALUE
+    ).then((res) => setCamposClinicos(res.camposClinicos)
+    ).finally(() => toggleLoading(false))
   }
 
   return (
     <div className='row'>
-      <div className="col-md-12 mt-10">
+      <div className="col-md-12">
+        <div className="row">
+          <div className="col-md-6 mt-10">
+            <p><strong>Estado:</strong> {campos[0].solicitud.estatus}</p>
+          </div>
+          <div className="col-md-6">
+            <strong>Acción</strong>&nbsp;
+            <button
+              className='btn btn-default'
+              disabled={isActionDisabledByInstitucionEducativa(campos[0].solicitud.estatus)}
+              onClick={() => handleStatusAction(campos[0].solicitud)}
+            >
+              {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="col-md-12 mt-20">
         <p>Se autorizaron {autorizado} de {total} campos clínicos</p>
       </div>
-      <div className="col-md-6 mt-10">
-        <p className='text-bold'>Estado: {campos[0].solicitud.estatus} </p>
-      </div>
-
-      <div className="col-md-6 mt-10">
-        Acción
-        <button
-          className='btn btn-default'
-          disabled={isActionDisabledByInstitucionEducativa(campos[0].solicitud.estatus)}
-          onClick={() => handleStatusAction(campos[0].solicitud)}
-        >
-          {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}
-        </button>
-      </div>
-
-
       <div className="col-md-12 mt-10">
         <div className="panel panel-default">
           <div className="panel-body">
@@ -108,13 +92,10 @@ const ListaCampos = (
               <tr>
                 <th>Sede</th>
                 <th>Campo clínico</th>
-                <th>Nivel</th>
                 <th>Carrera</th>
-                <th>No. lugares solicitados</th>
-                <th>No. lugares autorizados</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Termino</th>
-                <th>No. de semanas</th>
+                <th>No. lugares <br/>solicitados</th>
+                <th>No. lugares <br/>autorizados</th>
+                <th>Periodo</th>
               </tr>
               </thead>
               <tbody>
@@ -123,19 +104,16 @@ const ListaCampos = (
                   <tr>
                     <th className='text-center' colSpan={9}>Cargando información...</th>
                   </tr> :
-                  camposClinicos.map((item, index) => {
-                    return <tr key={index}>
-                      <td>{item.unidad.nombre ? item.unidad.nombre : 'No asignado'}</td>
-                      <td>{item.convenio.cicloAcademico ? item.convenio.cicloAcademico.nombre : 'No asignado'}</td>
-                      <td>{item.convenio.carrera ? item.convenio.carrera.nivelAcademico.nombre : 'No asignado'}</td>
-                      <td>{item.convenio.carrera ? item.convenio.carrera.nombre : 'No asignado'}</td>
-                      <td>{item.lugaresSolicitados}</td>
-                      <td>{item.lugaresAutorizados}</td>
-                      <td>{item.fechaInicial}</td>
-                      <td>{item.fechaFinal}</td>
-                      <td>{item.weeks}</td>
+                  camposClinicos.map((campoClinico, index) =>
+                    <tr key={index}>
+                      <td>{campoClinico.unidad.nombre ? campoClinico.unidad.nombre : 'No asignado'}</td>
+                      <td>{campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : 'No asignado'}</td>
+                      <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
+                      <td>{campoClinico.lugaresSolicitados}</td>
+                      <td>{campoClinico.lugaresAutorizados}</td>
+                      <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
                     </tr>
-                  })
+                  )
               }
               </tbody>
             </table>
@@ -144,7 +122,7 @@ const ListaCampos = (
       </div>
 
       <div className="col-md-12">
-        <p className="text-bold mt-10">Expediente</p>
+        <p className="text-bold mt-10 mb-10">Expediente</p>
         <div className="panel panel-default">
           <div className="panel-body">
             <table className='table'>
@@ -165,7 +143,6 @@ const ListaCampos = (
               </tr>
               {
                 isPago ?
-
                   <tr>
                     <td>Comprobante de pago</td>
                     <td>{pago[0].fechaPago}</td>
@@ -181,7 +158,6 @@ const ListaCampos = (
               }
               {
                 isFactura ?
-
                   <tr>
                     <td>Factura (CFDI)</td>
                     <td>{pago[0].factura.fechaFacturacion}</td>
@@ -212,5 +188,5 @@ ReactDOM.render(
     campos={window.CAMPOS_PROP}
     pago={window.PAGO_PROP}
   />,
-  document.getElementById('detalle-solicitud')
+  document.getElementById('detalle-solicitud-component')
 );
