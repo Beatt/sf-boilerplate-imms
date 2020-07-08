@@ -1,7 +1,8 @@
 import * as React from "react";
 
 const ContenedorFiltro = ({
-  EtiquetaFiltro, name, valores, setValSel, tipo
+  EtiquetaFiltro, name, valores, setValSel, tipo,
+                            defaultOptionText=''
 }) => {
 
   function handler(e) {
@@ -19,7 +20,14 @@ const ContenedorFiltro = ({
               className='form-control'
               onChange={({target}) => handler(target)}
             >
-              <option value="">Elige una opción</option>
+              {valores.length > 0 ?
+                <option value="">Elige una opción</option>
+                :
+                <option value="">
+                  { defaultOptionText ? defaultOptionText
+                    : "Elige una opción válida de otro seleccionador"}
+                </option>
+              }
               { valores.map((valor) =>
                 <option  value={valor.id}  key={valor.id}>
                   {valor.nombre}

@@ -4,43 +4,129 @@ import ReactPaginate from "react-paginate";
 import ContenedorFiltro from "../../pregrado/components/ContenedorFiltro";
 import Buscador from "../../pregrado/components/Buscador";
 import OpcionesPageSize from "../../pregrado/components/OpcionesPageSize";
-//import {getReportePagos, getReportePagosCSV} from "./reportePagos";
+import {getCarreras, getCiclosAcademicos, getDelegaciones, getUnidades} from "../../pregrado/api/catalogos";
+import {Fragment} from "react";
+import {getReporteCampos, getReporteCamposCSV} from "./reporteCampos";
 
-const Index = (props) => {
+const Filtros = (props) => {
+  const {useState, useEffect} = React
+  const [delegaciones, setDelegaciones] = useState([])
+  const [unidades, setUnidades] = useState([])
+  const [carreras, setCarreras] = useState([])
+  const [ciclos, setCiclos] = useState([])
+
+  useEffect(() => {
+    getDelegaciones()
+      .then((res) => setDelegaciones(res.data))
+    getCarreras()
+      .then((res) => setCarreras(res.data))
+    getCiclosAcademicos()
+      .then((res) => setCiclos(res.data))
+  }, []);
+
+  function handleDelegacion(delegacion) {
+    props.setDelegacionSel(delegacion);
+    getUnidades(delegacion)
+      .then((res)=> setUnidades(res.data));
+  }
+
+  return (
+    <Fragment>
+      <div className="row">
+        <ContenedorFiltro
+          EtiquetaFiltro={"Delegación"}
+          setValSel={handleDelegacion}
+          valores={delegaciones}
+          name="delegacion"
+          tipo="Select"
+        />
+        <ContenedorFiltro
+          EtiquetaFiltro={"Unidad"}
+          setValSel={props.setUnidadSel}
+          valores={unidades}
+          name="unidad"
+          tipo="Select"
+          defaultOptionText="Elige primero una Delegación"
+        />
+        <ContenedorFiltro
+          EtiquetaFiltro={"Carrera"}
+          setValSel={props.setCarreraSel}
+          valores={carreras}
+          name="carrera"
+          tipo="Select"
+        />
+        <ContenedorFiltro
+          EtiquetaFiltro={"Ciclo Académico"}
+          setValSel={props.setCicloSel}
+          valores={ciclos}
+          name="ciclo"
+          tipo="Select"
+        />
+        <div className="col-md-2">Período de Consulta de ciclos clínicos</div>
+        <ContenedorFiltro
+          EtiquetaFiltro={"Desde: "}
+          setValSel={props.setDesde}
+          valores={[]}
+          name="desde"
+          tipo="date"
+        />
+        <ContenedorFiltro
+          EtiquetaFiltro={"Hasta: "}
+          setValSel={props.setHasta}
+          valores={[]}
+          name="desde"
+          tipo="date"
+        />
+      </div>
+      <Buscador
+        handleSearch={ props.handleSearch }
+        handleExport={ props.exportar }
+        setSearch={props.setSearch}
+      />
+    </Fragment>
+  );
+}
+
+const Index = () => {
 
   const {useState, useEffect} = React
   const [reporteCiclos, setReporteCiclos] = useState([])
   const [desdeSel, setDesde] = useState(null)
   const [hastaSel, setHasta] = useState(null)
-
+  const [delegacionSel, setDelegacionSel] = useState(null)
+  const [unidadSel, setUnidadSel] = useState(null)
+  const [carreraSel, setCarreraSel] = useState(null)
+  const [cicloSel, setCicloSel] = useState(null)
   const [search, setSearch] = useState('')
   const [isLoading, toggleLoading] = useState(false)
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-
   useEffect(()=>{
     getDatosReporte();
-  }, [])
+  }, []);
 
   function getDatosReporte(pag=1, limit=pageSize) {
-    //toggleLoading(true);
-    /*getReportePagos( desdeSel, hastaSel, search, pag, limit)
+    toggleLoading(true);
+    getReporteCampos(
+      desdeSel, hastaSel, delegacionSel, unidadSel,
+      carreraSel, cicloSel, search, pag, limit)
       .then( (res) => {
-          console.log(res);
-          setReportePagos(res.reporte)
+          setReporteCiclos( res.camposClinicos )
           setTotalItems( res.totalItems )
           setTotalPages( res.numPags)
           setCurrentPage(pag)
         }
       ).finally(() => {
       toggleLoading(false)
-    })*/
+    })
   }
 
   function exportar() {
-    //getReportePagosCSV(desdeSel, hastaSel, search);
+    getReporteCamposCSV(
+      desdeSel, hastaSel, delegacionSel, unidadSel,
+      carreraSel, cicloSel, search);
   }
 
   let offset = totalItems > 0 ?
@@ -54,40 +140,26 @@ const Index = (props) => {
   }
 
   function handleSearch() {
-    getDatosReporte();
+    getDatosReporte(1);
   }
 
   return (
     <div className="panel panel-default">
-
       <div className="panel-heading">
         Pago oportuno de cuotas de recuperación al Fondo de Fomento a la Educación (FOFOE)
       </div>
       <div className="panel-body">
-
-        <div className="row">
-          <div className="col-md-2">Período de Consulta de pagos recibidos</div>
-          <ContenedorFiltro
-            EtiquetaFiltro={"Desde: "}
-            setValSel={setDesde}
-            valores={[]}
-            name="desde"
-            tipo="date"
-          />
-          <ContenedorFiltro
-            EtiquetaFiltro={"Hasta: "}
-            setValSel={setHasta}
-            valores={[]}
-            name="desde"
-            tipo="date"
-          />
-        </div>
-        <Buscador
-          handleSearch={ handleSearch }
-          handleExport={ exportar }
+        <Filtros
+          setDesde={setDesde}
+          setHasta={setHasta}
+          setDelegacionSel={setDelegacionSel}
+          setUnidadSel={setUnidadSel}
+          setCarreraSel={setCarreraSel}
+          setCicloSel={setCicloSel}
           setSearch={setSearch}
+          handleSearch={handleSearch}
+          exportar={exportar}
         />
-
         <OpcionesPageSize
           setPageSize={setPageSize}
           handleSearch={handleSearch}
@@ -95,6 +167,10 @@ const Index = (props) => {
         <table className="table">
           <thead>
           <tr>
+            {delegacionSel ? null
+            : <th>Delegación</th>}
+            {unidadSel ? null
+              : <th>Unidad</th>}
             <th>Carrera</th>
             <th>Asignatura</th>
             <th>Institución Educativa</th>
@@ -110,26 +186,29 @@ const Index = (props) => {
               <tr>
                 <th className='text-center' colSpan={14}>Cargando información...</th>
               </tr>
-              : //   reporteCiclos.length > 0 ?
-              //reporteCiclos.map( ( campo ) => (
-                  <tr key={++indexRow}>
-                    <td> Licenciatura en Enfermería </td>
-                    <td> (6° Semestre) Atención de Enf. al paciente en Edo. Crítico </td>
-                    <td> FAEN </td>
-                    <td> 01/02/2019 </td>
-                    <td> 30/11/2019 </td>
-                    <td> 10-11am </td>
-                    <td> 120 </td>
-                  </tr>
-                //))
-             /* :
-              <tr>
-                <td colSpan={10} className="text-center"> No hay registros disponibles </td>
-              </tr> */
+              : reporteCiclos.length > 0 ?
+              reporteCiclos.map( ( campo ) => (
+              <tr key={++indexRow}>
+                {!isLoading && !delegacionSel ? <td> {campo.convenio.delegacion.nombre} </td> : null }
+                {!isLoading && !unidadSel ? <td> {campo.unidad.nombre} </td> : null }
+                <td> {campo.convenio.carrera.displayName} </td>
+                <td> {campo.asignatura} </td>
+                <td> {campo.convenio.institucion.nombre} </td>
+                <td> {campo.fechaInicialFormatted} </td>
+                <td> {campo.fechaFinalFormatted} </td>
+                <td> {campo.horario} </td>
+                <td> {campo.lugaresAutorizados} </td>
+              </tr>
+            ))
+             :
+             <tr>
+               <td colSpan={10} className="text-center"> No hay registros disponibles </td>
+             </tr>
           }
           </tbody>
         </table>
-        { !isLoading ?
+        { isLoading ? null
+          : reporteCiclos.length > 0 ?
           <div className="col-md-12">
             <div className="col-md-3">
               {offset} - {offset + (reporteCiclos.length - 1)} de {totalItems}
@@ -151,7 +230,7 @@ const Index = (props) => {
               />
             </div>
           </div>
-          : ''
+          : null
         }
       </div>
     </div>
@@ -160,7 +239,7 @@ const Index = (props) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <Index pagos={window.PAGOS} />,
+    <Index />,
     document.getElementById('reporte-wrapper')
   )
 })

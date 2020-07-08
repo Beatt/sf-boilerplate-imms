@@ -57,7 +57,7 @@ class ReporteController extends DIEControllerController
 
     private function setFilters(Request $request) {
       $campos_filtros = ["page", "limit", "search", "estatus", "cicloAcademico", "delegacion",
-        "carrera", "fechaIni", "fechaFin", "export", "fechaIni", "fechaFin"];
+        "carrera", "fechaIni", "fechaFin", "export"];
       $isSomeValueSet = false;
       $filtros = [];
 
