@@ -158,3 +158,15 @@ services:
         class: AppBundle\Normalizer\FormatoFOFOENormalizer
         public: true
         tags: ['serializer.normalizer']
+
+    AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos\CamposClinicos:
+        class: AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos\CamposClinicosUsingSql
+        public: true
+
+    AppBundle\Repository\IE\DetalleSolicitud\TotalCamposClinicosAutorizados\TotalCamposClinicos:
+        class: AppBundle\Repository\IE\DetalleSolicitud\TotalCamposClinicosAutorizados\TotalCamposClinicosUsingSql
+        public: true
+
+    AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitud:
+        class: AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitudUsingSql
+        public: true

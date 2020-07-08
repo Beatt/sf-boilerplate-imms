@@ -13,9 +13,9 @@ use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
 use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
+use AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitud;
 use AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CamposClinicos;
 use AppBundle\Repository\SolicitudRepositoryInterface;
-use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
@@ -104,16 +104,14 @@ class SolicitudController extends DIEControllerController
     /**
      * @Route("/solicitudes/{id}/detalle-de-solicitud", name="ie#detalle_de_solicitud", methods={"GET"})
      * @param integer $id
-     * @param Request $request
-     * @param CampoClinicoRepositoryInterface $campoClinicoRepository
-     * @param PagoRepositoryInterface $pagoRepository
+     * @param DetalleSolicitud $detalleSolicitud
+     * @param NormalizerInterface $normalizer
      * @return Response
      */
     public function detalleDeSolicitudAction(
         $id,
-        Request $request,
-        CampoClinicoRepositoryInterface $campoClinicoRepository,
-        PagoRepositoryInterface $pagoRepository
+        DetalleSolicitud $detalleSolicitud,
+        NormalizerInterface $normalizer
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -125,43 +123,10 @@ class SolicitudController extends DIEControllerController
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
 
-        $isSearchSet = $request->query->get('search');
-
-        $search = $request->query->get('search', null);
-
-        $camposClinicos = $campoClinicoRepository->getAllCamposClinicosByRequest(
-            $id,
-            $search,
-            false
-        );
-
-        $pagos = $pagoRepository->getAllPagosByRequest($id);
-
-        $totalCampos = count($camposClinicos);
-
-        $acc = 0;
-
-        foreach ($camposClinicos as $campoClinico) {
-            if ($campoClinico->getLugaresAutorizados() > 0) {
-                $acc++;
-            }
-        }
-
-        if (isset($isSearchSet)) {
-            return new JsonResponse([
-                'totalCampos' => $totalCampos,
-                'autorizado' => $acc,
-                'camposClinicos' => $this->getNormalizeCamposClinicos($camposClinicos)
-            ]);
-        }
+        $solicitud = $detalleSolicitud->detalleBySolicitud(SolicitudId::fromString($solicitud->getId()));
 
         return $this->render('ie/solicitud/detalle_de_solicitud.html.twig', [
-            'solicitud' => $solicitud,
-            'totalCampos' => $totalCampos,
-            'autorizado' => $acc,
-            'camposClinicos' => $this->getNormalizeCamposClinicos($camposClinicos),
-            'search' => $search,
-            'pago' => $this->getNormalizePagos($pagos)
+            'solicitud' => $normalizer->normalize($solicitud, 'json')
         ]);
     }
 

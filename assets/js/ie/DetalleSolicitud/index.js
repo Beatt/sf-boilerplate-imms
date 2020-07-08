@@ -1,12 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import { solicitudesGet } from "../api/camposClinicos"
 import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
 } from "../../utils"
 import { SOLICITUD } from "../../constants"
-const DEFAULT_SEARCH_VALUE = ''
 
 const ListaCampos = (
   {
@@ -17,11 +15,9 @@ const ListaCampos = (
     campos
   }) => {
 
-  const { useState, useEffect } = React
-  const [ camposClinicos, setCamposClinicos ] = useState([])
-  const [ isLoading, toggleLoading ] = useState(false)
-
-  useEffect(() => getCamposClinicos(), [])
+  const { useState } = React
+  const [ camposClinicos ] = useState([])
+  const [ isLoading ] = useState(false)
 
   function handleStatusAction(solicitud) {
     if (isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
@@ -51,37 +47,27 @@ const ListaCampos = (
     return pago[0] && pago[0].factura;
   }
 
-  function getCamposClinicos() {
-    toggleLoading(true)
-
-    solicitudesGet(
-      solicitud,
-      DEFAULT_SEARCH_VALUE
-    ).then((res) => setCamposClinicos(res.camposClinicos)
-    ).finally(() => toggleLoading(false))
-  }
-
   return (
     <div className='row'>
       <div className="col-md-12">
         <div className="row">
           <div className="col-md-6 mt-10">
-            <p><strong>Estado:</strong> {campos[0].solicitud.estatus}</p>
+            <p><strong>Estado:</strong> {solicitud.estatus}</p>
           </div>
           <div className="col-md-6">
             <strong>Acción</strong>&nbsp;
             <button
               className='btn btn-default'
-              disabled={isActionDisabledByInstitucionEducativa(campos[0].solicitud.estatus)}
-              onClick={() => handleStatusAction(campos[0].solicitud)}
+              disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
+              onClick={() => handleStatusAction(solicitud)}
             >
-              {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}
+              {getActionNameByInstitucionEducativa(solicitud.estatus, false)}
             </button>
           </div>
         </div>
       </div>
       <div className="col-md-12 mt-20">
-        <p>Se autorizaron {autorizado} de {total} campos clínicos</p>
+        <p>Se autorizaron {autorizado} de {solicitud.totalCamposClinicosAutorizados} campos clínicos</p>
       </div>
       <div className="col-md-12 mt-10">
         <div className="panel panel-default">
@@ -103,7 +89,7 @@ const ListaCampos = (
                   <tr>
                     <th className='text-center' colSpan={9}>Cargando información...</th>
                   </tr> :
-                  camposClinicos.map((campoClinico, index) =>
+                  solicitud.camposClinicos.map((campoClinico, index) =>
                     <tr key={index}>
                       <td>{campoClinico.unidad.nombre ? campoClinico.unidad.nombre : 'No asignado'}</td>
                       <td>{campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : 'No asignado'}</td>
@@ -120,7 +106,7 @@ const ListaCampos = (
         </div>
       </div>
 
-      <div className="col-md-12">
+      {/*<div className="col-md-12">
         <p className="text-bold mt-10 mb-10">Expediente</p>
         <div className="panel panel-default">
           <div className="panel-body">
@@ -174,7 +160,7 @@ const ListaCampos = (
             </table>
           </div>
         </div>
-      </div>
+      </div>*/}
     </div>
   )
 }
