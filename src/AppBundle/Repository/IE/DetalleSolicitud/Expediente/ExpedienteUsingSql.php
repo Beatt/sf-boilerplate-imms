@@ -16,5 +16,37 @@ final class ExpedienteUsingSql implements Expediente
 
     public function expedienteBySolicitud(SolicitudId $solicitudId)
     {
+        $oficioMonto = $this->getOficioMonto($solicitudId);
+
+        return new Documents(
+            $oficioMonto
+        );
+    }
+
+    /**
+     * @param SolicitudId $solicitudId
+     * @return OficioMontos
+     */
+    protected function getOficioMonto(SolicitudId $solicitudId)
+    {
+        $statement = $this->connection->prepare('
+            SELECT documento,
+                   fecha_comprobante,
+                   url_archivo
+            FROM solicitud
+            WHERE solicitud.id = :id
+        ');
+
+        $statement->execute([
+            'id' => $solicitudId->asInt()
+        ]);
+
+        $record = $statement->fetch();
+
+        return new OficioMontos(
+            $record['fecha_comprobante'],
+            '',
+            $record['url_archivo']
+        );
     }
 }

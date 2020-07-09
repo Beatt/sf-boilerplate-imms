@@ -428,27 +428,6 @@ class SolicitudController extends DIEControllerController
     }
 
     /**
-     * @param $pagos
-     * @return array
-     */
-    private function getNormalizePagos($pagos)
-    {
-        return $this->get('serializer')->normalize(
-            $pagos,
-            'json',
-            [
-                'attributes' => [
-                    'monto',
-                    'fechaPago',
-                    'comprobantePago',
-                    'requiereFactura',
-                    'referenciaBancaria',
-                    'factura'
-                ]
-            ]);
-    }
-
-    /**
      * @param Request $request
      * @return array
      */
@@ -481,53 +460,6 @@ class SolicitudController extends DIEControllerController
     private function isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)
     {
         return isset($isOffsetSet) || isset($isSearchSet) || isset($isTipoPagoSet);
-    }
-
-    /**
-     * @param $camposClinicos
-     * @return array
-     */
-    private function getNormalizeCamposClinicos($camposClinicos)
-    {
-
-        return $this->get('serializer')->normalize(
-            $camposClinicos,
-            'json',
-            [
-                'attributes' => [
-                    'id',
-                    'lugaresSolicitados',
-                    'lugaresAutorizados',
-                    'fechaInicial',
-                    'fechaFinal',
-                    'weeks',
-                    'convenio' => [
-                        'carrera' => [
-                            'id',
-                            'nombre',
-                            'nivelAcademico' => [
-                                'id',
-                                'nombre'
-                            ]
-                        ],
-                        'cicloAcademico' => [
-                            'nombre'
-                        ]
-                    ],
-                    'solicitud' => [
-                        'id',
-                        'noSolicitud',
-                        'estatus',
-                        'documento',
-                        'fechaComprobante',
-                        'descripcion',
-                        'urlArchivo'
-                    ],
-                    'unidad' => [
-                        'nombre'
-                    ]
-                ]
-            ]);
     }
 
     private function getNormalizeSolicitud($solicitud)

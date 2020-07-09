@@ -26,6 +26,7 @@ services:
             $comprobantesPagoDir: '%comprobantes_pago_dir%'
             $cedulaIdentificacionDir: '%cedula_identificacion_pago_dir%'
             $zipReferenciasBancariasDir: '%zip_referencias_bancarias_dir%'
+            $institucionDocumentsDir: '%app.path.instituciones%'
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -170,3 +171,12 @@ services:
     AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitud:
         class: AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitudUsingSql
         public: true
+
+    AppBundle\Repository\IE\DetalleSolicitud\Expediente\Expediente:
+        class: AppBundle\Repository\IE\DetalleSolicitud\Expediente\ExpedienteUsingSql
+        public: true
+
+    app.oficio_montos_normalizer:
+        class: AppBundle\Normalizer\OficioMontosNormalizer
+        public: true
+        tags: ['serializer.normalizer']

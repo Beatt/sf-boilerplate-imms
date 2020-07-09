@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud;
 
+use AppBundle\Repository\IE\DetalleSolicitud\Expediente\Documents;
+
 final class Solicitud
 {
     private $id;
@@ -14,18 +16,22 @@ final class Solicitud
 
     private $noSolicitud;
 
+    private $expediente;
+
     public function __construct(
         $id,
         $estatus,
         $noSolicitud,
         array $camposClinicos,
-        $totalCamposClinicosAutorizados
+        $totalCamposClinicosAutorizados,
+        Documents $expediente
     ) {
         $this->id = $id;
         $this->estatus = $estatus;
         $this->totalCamposClinicosAutorizados = $totalCamposClinicosAutorizados;
         $this->camposClinicos = $camposClinicos;
         $this->noSolicitud = $noSolicitud;
+        $this->expediente = $expediente;
     }
 
     /**
@@ -66,5 +72,13 @@ final class Solicitud
     public function getNoSolicitud()
     {
         return $this->noSolicitud;
+    }
+
+    /**
+     * @return Documents
+     */
+    public function getExpediente()
+    {
+        return $this->expediente;
     }
 }

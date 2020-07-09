@@ -5,14 +5,12 @@ import {
   isActionDisabledByInstitucionEducativa
 } from "../../utils"
 import { SOLICITUD } from "../../constants"
+const DEFAULT_DOCUMENT_VALUE = '-'
 
 const ListaCampos = (
   {
     solicitud,
-    total,
     autorizado,
-    pago,
-    campos
   }) => {
 
   const { useState } = React
@@ -36,15 +34,6 @@ const ListaCampos = (
     }
 
     window.location.href = redirectRoute
-  }
-
-  function isPago() {
-    return pago[0] !== undefined &&
-      pago[0] !== '';
-  }
-
-  function isFactura() {
-    return pago[0] && pago[0].factura;
   }
 
   return (
@@ -105,8 +94,7 @@ const ListaCampos = (
           </div>
         </div>
       </div>
-
-      {/*<div className="col-md-12">
+      <div className="col-md-12">
         <p className="text-bold mt-10 mb-10">Expediente</p>
         <div className="panel panel-default">
           <div className="panel-body">
@@ -121,12 +109,18 @@ const ListaCampos = (
               </thead>
               <tbody>
               <tr>
-                <td>{campos[0].solicitud.documento ? campos[0].solicitud.documento : 'Oficio de Montos de Colgiatura e inscripción'}</td>
-                <td>{campos[0].solicitud.fechaComprobante ? campos[0].solicitud.fechaComprobante : ''}</td>
-                <td>{campos[0].solicitud.descripcion ? campos[0].solicitud.descripcion : ''}</td>
-                <td><a href='#'>{campos[0].solicitud.urlArchivo ? campos[0].solicitud.urlArchivo : ''}</a></td>
+                <td>{solicitud.expediente.oficioMontos.nombre}</td>
+                <td>{solicitud.expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
+                <td>{solicitud.expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+                <td>
+                  {
+                    solicitud.expediente.oficioMontos.urlArchivo ?
+                      <a href={solicitud.expediente.oficioMontos.urlArchivo}>Descargar</a> :
+                      DEFAULT_DOCUMENT_VALUE
+                  }
+                </td>
               </tr>
-              {
+              {/*{
                 isPago() ?
                   <tr>
                     <td>Comprobante de pago</td>
@@ -155,12 +149,12 @@ const ListaCampos = (
                     <td>No se solicitó factura</td>
                     <td/>
                   </tr>
-              }
+              }*/}
               </tbody>
             </table>
           </div>
         </div>
-      </div>*/}
+      </div>
     </div>
   )
 }
