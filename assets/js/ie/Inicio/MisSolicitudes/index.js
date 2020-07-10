@@ -93,6 +93,14 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
     setCurrentPage(DEFAULT_PAGE)
   }
 
+  function handleNoSolicitud(event, solicitud) {
+    event.preventDefault();
+
+    window.location = solicitud.tipoPago === TIPO_PAGO.UNICO ?
+      `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :
+      `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
+  }
+
   return(
     <div className='row'>
       <div className="col-md-3">
@@ -169,7 +177,12 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
                   camposClinicos.length !== 0 ?
                     camposClinicos.map((solicitud, index) => (
                       <tr key={index}>
-                        <th><a href="">{solicitud.noSolicitud}</a></th>
+                        <th>
+                          <a
+                            href="#"
+                            onClick={event => handleNoSolicitud(event, solicitud)}
+                          >{solicitud.noSolicitud}</a>
+                        </th>
                         <th>{solicitud.noCamposSolicitados}</th>
                         <th>{solicitud.noCamposAutorizados}</th>
                         <th>{solicitud.fecha}</th>
