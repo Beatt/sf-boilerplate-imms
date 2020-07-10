@@ -7,11 +7,7 @@ import {
 import { SOLICITUD } from "../../constants"
 const DEFAULT_DOCUMENT_VALUE = '-'
 
-const ListaCampos = (
-  {
-    solicitud,
-    autorizado,
-  }) => {
+const ListaCampos = ({ solicitud }) => {
 
   function handleStatusAction(solicitud) {
     if (isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
@@ -42,6 +38,10 @@ const ListaCampos = (
     return solicitud.expediente.facturas.length === 0;
   }
 
+  function getTotalCamposClinicos() {
+    return solicitud.camposClinicos.length;
+  }
+
   return (
     <div className='row'>
       <div className="col-md-12">
@@ -62,7 +62,7 @@ const ListaCampos = (
         </div>
       </div>
       <div className="col-md-12 mt-20">
-        <p>Se autorizaron {autorizado} de {solicitud.totalCamposClinicosAutorizados} campos clínicos</p>
+        <p>Se autorizaron {getTotalCamposClinicos()} de {solicitud.totalCamposClinicosAutorizados} campos clínicos</p>
       </div>
       <div className="col-md-12 mt-10">
         <div className="panel panel-default">
