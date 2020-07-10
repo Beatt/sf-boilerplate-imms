@@ -2,7 +2,9 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud\Expediente;
 
-final class ComprobantePago extends AbstractDocument implements DocumentInterface
+use AppBundle\Normalizer\ComprobantePagoFileInterface;
+
+final class ComprobantePagoInterface extends AbstractDocument implements DocumentInterface, ComprobantePagoFileInterface
 {
     const NAME = "Comprobante de pago";
 

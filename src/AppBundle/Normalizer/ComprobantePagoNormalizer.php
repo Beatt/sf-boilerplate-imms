@@ -5,7 +5,7 @@ namespace AppBundle\Normalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-final class OficioMontosNormalizer implements NormalizerInterface
+final class ComprobantePagoNormalizer implements NormalizerInterface
 {
     private $normalizer;
 
@@ -18,14 +18,14 @@ final class OficioMontosNormalizer implements NormalizerInterface
     }
 
     /**
-     * @param OficioMontosFileInterfaces $oficioMontosFile
+     * @param ComprobantePagoFileInterface $comprobantePagoFile
      * @param string $format
      * @param array $context
      * @return array
      */
-    public function normalize($oficioMontosFile, $format = null, array $context = [])
+    public function normalize($comprobantePagoFile, $format = null, array $context = [])
     {
-        $data = $this->normalizer->normalize($oficioMontosFile, $format, $context);
+        $data = $this->normalizer->normalize($comprobantePagoFile, $format, $context);
 
         if(empty($data['urlArchivo'])) return $data;
 
@@ -38,6 +38,6 @@ final class OficioMontosNormalizer implements NormalizerInterface
 
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof OficioMontosFileInterfaces;
+        return $data instanceof ComprobantePagoFileInterface;
     }
 }

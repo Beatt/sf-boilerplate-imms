@@ -2,7 +2,9 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud\Expediente;
 
-final class Factura extends AbstractDocument implements DocumentInterface
+use AppBundle\Normalizer\FacturaFileInterface;
+
+final class Factura extends AbstractDocument implements DocumentInterface, FacturaFileInterface
 {
     const NAME = "Factura (CFDI)";
 

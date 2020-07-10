@@ -13,10 +13,6 @@ const ListaCampos = (
     autorizado,
   }) => {
 
-  const { useState } = React
-  const [ camposClinicos ] = useState([])
-  const [ isLoading ] = useState(false)
-
   function handleStatusAction(solicitud) {
     if (isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
 
@@ -34,6 +30,13 @@ const ListaCampos = (
     }
 
     window.location.href = redirectRoute
+  }
+
+  function isComprobantesPagoEmpty() {
+    return solicitud.expediente.comprobantesPago.length === 0;
+  }
+  function isFacturasEmpty() {
+    return solicitud.expediente.facturas.length === 0;
   }
 
   return (
@@ -74,20 +77,16 @@ const ListaCampos = (
               </thead>
               <tbody>
               {
-                isLoading ?
-                  <tr>
-                    <th className='text-center' colSpan={9}>Cargando información...</th>
-                  </tr> :
-                  solicitud.camposClinicos.map((campoClinico, index) =>
-                    <tr key={index}>
-                      <td>{campoClinico.unidad.nombre ? campoClinico.unidad.nombre : 'No asignado'}</td>
-                      <td>{campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : 'No asignado'}</td>
-                      <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
-                      <td>{campoClinico.lugaresSolicitados}</td>
-                      <td>{campoClinico.lugaresAutorizados}</td>
-                      <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
-                    </tr>
-                  )
+                solicitud.camposClinicos.map((campoClinico, index) =>
+                  <tr key={index}>
+                    <td>{campoClinico.unidad.nombre ? campoClinico.unidad.nombre : 'No asignado'}</td>
+                    <td>{campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : 'No asignado'}</td>
+                    <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
+                    <td>{campoClinico.lugaresSolicitados}</td>
+                    <td>{campoClinico.lugaresAutorizados}</td>
+                    <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
+                  </tr>
+                )
               }
               </tbody>
             </table>
@@ -102,16 +101,16 @@ const ListaCampos = (
               <thead className='headers'>
               <tr>
                 <th>Documento</th>
-                <th>Fecha</th>
                 <th>Descripcion</th>
+                <th>Fecha</th>
                 <th>Archivo</th>
               </tr>
               </thead>
               <tbody>
               <tr>
                 <td>{solicitud.expediente.oficioMontos.nombre}</td>
-                <td>{solicitud.expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
                 <td>{solicitud.expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+                <td>{solicitud.expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
                 <td>
                   {
                     solicitud.expediente.oficioMontos.urlArchivo ?
@@ -120,36 +119,48 @@ const ListaCampos = (
                   }
                 </td>
               </tr>
-              {/*{
-                isPago() ?
-                  <tr>
-                    <td>Comprobante de pago</td>
-                    <td>{pago[0].fechaPago}</td>
-                    <td>Pago ref: {pago[0].referenciaBancaria}</td>
-                    <td><a href='#'>{pago[0].comprobantePago}</a></td>
-                  </tr> :
-                  <tr>
-                    <td>Comprobante de pago</td>
-                    <td/>
-                    <td>No se ha cargado información</td>
-                    <td/>
-                  </tr>
+              {
+                !isComprobantesPagoEmpty() &&
+                <tr>
+                  <td>{solicitud.expediente.comprobantesPago[0].nombre}</td>
+                  <td>{solicitud.expediente.comprobantesPago[0].descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+                  <td>
+                    {
+                      solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
+                        <p key={index}>{comprobantePago.fecha}</p>
+                      )
+                    }
+                  </td>
+                  <td>
+                    {
+                      solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
+                        <p key={index}><a href={comprobantePago.urlArchivo}>Descargar</a></p>
+                      )
+                    }
+                  </td>
+                </tr>
               }
               {
-                isFactura() ?
-                  <tr>
-                    <td>Factura (CFDI)</td>
-                    <td>{pago[0].factura.fechaFacturacion}</td>
-                    <td/>
-                    <td><a href='#'>{pago[0].factura.zip}</a></td>
-                  </tr> :
-                  <tr>
-                    <td>Factura (CFDI)</td>
-                    <td/>
-                    <td>No se solicitó factura</td>
-                    <td/>
-                  </tr>
-              }*/}
+                !isFacturasEmpty() &&
+                <tr>
+                  <td>{solicitud.expediente.facturas[0].nombre}</td>
+                  <td>{solicitud.expediente.facturas[0].descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+                  <td>
+                    {
+                      solicitud.expediente.facturas.map((factura, index) =>
+                        <p key={index}>{factura.fecha}</p>
+                      )
+                    }
+                  </td>
+                  <td>
+                    {
+                      solicitud.expediente.facturas.map((factura, index) =>
+                        <p key={index}><a href={factura.urlArchivo}>Descargar</a></p>
+                      )
+                    }
+                  </td>
+                </tr>
+              }
               </tbody>
             </table>
           </div>

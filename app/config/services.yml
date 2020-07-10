@@ -180,3 +180,13 @@ services:
         class: AppBundle\Normalizer\OficioMontosNormalizer
         public: true
         tags: ['serializer.normalizer']
+
+    app.comprobante_pago_normalizer:
+        class: AppBundle\Normalizer\ComprobantePagoNormalizer
+        public: true
+        tags: ['serializer.normalizer']
+
+    app.factura_normalizer:
+        class: AppBundle\Normalizer\FacturaNormalizer
+        public: true
+        tags: ['serializer.normalizer']

@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Repository\IE\DetalleSolicitud\Expediente;
+namespace AppBundle\Normalizer;
 
 interface OficioMontosFileInterfaces
 {
