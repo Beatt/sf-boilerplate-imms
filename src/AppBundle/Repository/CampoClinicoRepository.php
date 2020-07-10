@@ -7,6 +7,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class CampoClinicoRepository extends EntityRepository implements CampoClinicoRepositoryInterface
@@ -112,67 +113,19 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         return 0;
     }
 
-    function getAllCamposByPage($filtros) {
+    public function getAllCamposByPage($filtros) {
       $query =  $this->createQueryBuilder('campo_clinico')
         ->join('campo_clinico.convenio', 'convenio')
         ->join('campo_clinico.solicitud', 'solicitud')
         ->join('convenio.institucion', 'institucion')
         ->orderBy('institucion.nombre', 'ASC');
 
-      if ( array_key_exists('search', $filtros) && $filtros['search']) {
-        $query = $query
-          ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
-          //->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
-          ->orWhere("LOWER(institucion.nombre) LIKE LOWER(:search)")
-          ->setParameter('search', '%' . $filtros['search'] . '%');
-      }
-
-      if ( array_key_exists('estatus', $filtros)  && $filtros['estatus']) {
-        $query = $query->andWhere('campo_clinico.estatus = :status')
-          ->setParameter('status', $filtros['estatus']);
-      }
-
-      if ( array_key_exists('fechaIni', $filtros)  && $filtros['fechaIni']) {
-        $query = $query->andWhere('campo_clinico.fechaInicial >= :fechaIni')
-          ->setParameter('fechaIni', new \DateTime($filtros['fechaIni']) );
-      }
-
-      if ( array_key_exists('fechaFin', $filtros)  && $filtros['fechaFin']) {
-        $query = $query->andWhere('campo_clinico.fechaFinal <= :fechaFin')
-          ->setParameter('fechaFin', new \DateTime($filtros['fechaFin']));
-      }
-
-      if ( array_key_exists('cicloAcademico', $filtros)  &&  $filtros['cicloAcademico']) {
-        $query = $query->andWhere('carrera.nivelAcademico = :ciclo')
-          ->setParameter('ciclo', $filtros['cicloAcademico']);
-      }
-
-      if ( array_key_exists('carrera', $filtros) && $filtros['carrera']) {
-        $query = $query->andWhere('convenio.carrera = :carrera')
-          ->setParameter('carrera', $filtros['carrera']);
-      }
-
-      if ( array_key_exists('delegacion', $filtros) && $filtros['delegacion']) {
-        $query = $query->andWhere('convenio.delegacion = :delegacion')
-          ->setParameter('delegacion', $filtros['delegacion']);
-      }
+      $query = $this->procesarFiltros($query, $filtros);
 
       $query = $query->getQuery();
 
-      // load doctrine Paginator
-      $paginator = new Paginator($query);
-
-      // get total items
-      $totalItems = count($paginator);
-
-      $pageSize = array_key_exists('limit', $filtros)
-        && $filtros['limit'] > 0 ?
-        $filtros['limit'] : 10;
-      $page = array_key_exists('limit', $filtros)
-        && $filtros['page'] > 0 ? $filtros['page'] : 1;
-
-      // get total pages
-      $pagesCount = ceil($totalItems / $pageSize);
+      list($paginator, $page, $pageSize, $pagesCount, $totalItems)
+        = $this->setPaginador($query, $filtros);
 
       $campos = [];
       if(array_key_exists('export', $filtros) && $filtros['export']) {
@@ -190,7 +143,6 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
       }
 
       return [$campos, $totalItems, $pagesCount, $pageSize];
-
     }
 
     public function getAllCamposClinicosBySolicitud($solicitud_id, $perPage = 10, $offset = 1, $filters = [])
@@ -252,4 +204,109 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
         return Criteria::create()
             ->andWhere(Criteria::expr()->eq('referenciaBancaria', $referenciaBancaria));
     }
+
+  /**
+   * @param array $filtros
+   * @param string $param
+   * @return boolean
+   */
+  private function verificarParametro($filtros, $param) {
+    return array_key_exists($param, $filtros)  && $filtros[$param];
+  }
+
+  /**
+   * @param QueryBuilder $query
+   * @param array $filtros
+   * @return QueryBuilder
+   */
+  private function procesarFiltrosCampo($query, $filtros) {
+    if ( $this->verificarParametro($filtros, 'estatus')) {
+      $query = $query->andWhere('campo_clinico.estatus = :status')
+        ->setParameter('status', $filtros['estatus']);
+    }
+
+    if ( $this->verificarParametro($filtros, 'fechaIni') ) {
+      $query = $query->andWhere('campo_clinico.fechaInicial >= :fechaIni')
+        ->setParameter('fechaIni', new \DateTime($filtros['fechaIni']) );
+    }
+
+    if ( $this->verificarParametro($filtros, 'fechaFin') ) {
+      $query = $query->andWhere('campo_clinico.fechaFinal <= :fechaFin')
+        ->setParameter('fechaFin', new \DateTime($filtros['fechaFin']));
+    }
+
+    if ( $this->verificarParametro($filtros, 'unidad') ) {
+      $query = $query->andWhere('campo_clinico.unidad = :unidad')
+        ->setParameter('unidad', $filtros['unidad']);
+    }
+    return $query;
+  }
+
+  /**
+   * @param QueryBuilder $query
+   * @param array $filtros
+   * @return QueryBuilder
+   */
+  private function procesarFiltrosConvenio($query, $filtros) {
+    if ( $this->verificarParametro($filtros, 'carrera') ) {
+      $query = $query->andWhere('convenio.carrera = :carrera')
+        ->setParameter('carrera', $filtros['carrera']);
+    }
+
+    if ( $this->verificarParametro($filtros, 'delegacion') ) {
+      $query = $query->andWhere('convenio.delegacion = :delegacion')
+        ->setParameter('delegacion', $filtros['delegacion']);
+    }
+    return $query;
+  }
+
+  /**
+   * @param QueryBuilder $query
+   * @param array $filtros
+   * @return QueryBuilder
+   */
+  private function procesarFiltros($query, $filtros) {
+    if ( $this->verificarParametro($filtros, 'search') ) {
+      $query = $query
+        ->andWhere("LOWER(solicitud.noSolicitud) LIKE LOWER(:search)")
+        //->orWhere("date_format(solicitud.fecha, 'dd/mm/YYYY') LIKE :search")
+        ->orWhere("LOWER(institucion.nombre) LIKE LOWER(:search)")
+        ->setParameter('search', '%' . $filtros['search'] . '%');
+    }
+
+    $query = $this->procesarFiltrosCampo($query, $filtros);
+
+    if ( $this->verificarParametro($filtros, 'cicloAcademico' ) ) {
+      $query = $query->andWhere('carrera.nivelAcademico = :ciclo')
+        ->setParameter('ciclo', $filtros['cicloAcademico']);
+    }
+
+    $query = $this->procesarFiltrosConvenio($query, $filtros);
+
+    return $query;
+  }
+
+  /**
+   * @param QueryBuilder $query
+   * @param array $filtros
+   * @return array
+   */
+  private function setPaginador($query, $filtros) {
+    // load doctrine Paginator
+    $paginator = new Paginator($query);
+
+    // get total items
+    $totalItems = count($paginator);
+
+    $pageSize = array_key_exists('limit', $filtros)
+    && $filtros['limit'] > 0 ?
+      $filtros['limit'] : 10;
+    $page = array_key_exists('limit', $filtros)
+    && $filtros['page'] > 0 ? $filtros['page'] : 1;
+
+    // get total pages
+    $pagesCount = ceil($totalItems / $pageSize);
+
+    return array($paginator, $page, $pageSize, $pagesCount, $totalItems);
+  }
 }

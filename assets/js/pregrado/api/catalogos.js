@@ -31,6 +31,13 @@ const getEstatusCampoClinico = () => {
     })
 }
 
+const getUnidades = (delegacion) => {
+  return fetch(`/api/pregrado/unidad/${delegacion}`)
+    .then(function(response) {
+      return response.json();
+    })
+}
+
 export {
-  getCarreras, getCiclosAcademicos, getDelegaciones, getEstatusCampoClinico
+  getCarreras, getCiclosAcademicos, getDelegaciones, getUnidades, getEstatusCampoClinico
 }
