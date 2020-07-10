@@ -23,6 +23,9 @@ const ListaCampos = ({ solicitud }) => {
       case SOLICITUD.CARGANDO_COMPROBANTES:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
         break
+      case SOLICITUD.MONTOS_VALIDADOS_CAME:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        break
       case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
         break
