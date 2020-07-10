@@ -20,13 +20,16 @@ const ListaCampos = (
     switch (solicitud.estatus) {
       case SOLICITUD.CONFIRMADA:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
-        break;
+        break
       case SOLICITUD.MONTOS_INCORRECTOS_CAME:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
-        break;
+        break
       case SOLICITUD.CARGANDO_COMPROBANTES:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
-        break;
+        break
+      case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        break
     }
 
     window.location.href = redirectRoute
