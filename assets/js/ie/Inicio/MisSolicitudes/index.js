@@ -96,7 +96,7 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
   function handleNoSolicitud(event, solicitud) {
     event.preventDefault();
 
-    window.location = solicitud.tipoPago === TIPO_PAGO.UNICO ?
+    window.location = solicitud.tipoPago === TIPO_PAGO.MULTIPLE ?
       `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :
       `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
   }
