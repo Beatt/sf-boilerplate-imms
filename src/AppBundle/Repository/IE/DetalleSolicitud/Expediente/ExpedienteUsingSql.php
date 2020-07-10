@@ -45,13 +45,49 @@ final class ExpedienteUsingSql implements Expediente
             'id' => $solicitudId->asInt()
         ]);
 
-        $record = $statement->fetch();
+        $oficioRecord = $statement->fetch();
+
+        $statement = $this->connection->prepare('
+            SELECT nivel_academico.nombre AS nombre_nivel_academico,
+                   carrera.nombre AS nombre_carrera,
+                   monto_inscripcion,
+                   monto_colegiatura
+            FROM solicitud
+            JOIN monto_carrera
+              ON solicitud.id = monto_carrera.solicitud_id
+            JOIN carrera
+              ON monto_carrera.carrera_id = carrera.id
+            JOIN nivel_academico
+              ON carrera.nivel_academico_id = nivel_academico.id
+            WHERE solicitud.id = :id
+        ');
+
+        $statement->execute([
+            'id' => $solicitudId->asInt()
+        ]);
+
+        $montosCarreraRecord = $statement->fetchAll();
 
         return new OficioMontos(
-            $record['fecha_comprobante'],
-            '',
-            $record['url_archivo']
+            $oficioRecord['fecha_comprobante'],
+            $this->getDescripcionOficioMontos($montosCarreraRecord),
+            $oficioRecord['url_archivo']
         );
+    }
+
+    private function getDescripcionOficioMontos(array $montosCarreraRecord)
+    {
+        $items = array_map(function (array $record) {
+            return sprintf(
+                "%s %s: Inscripción $%s, Colegiatura: $%s",
+                $record['nombre_nivel_academico'],
+                $record['nombre_carrera'],
+                $record['monto_inscripcion'],
+                $record['monto_colegiatura']
+            );
+        }, $montosCarreraRecord);
+
+        return implode('. ', $items);
     }
 
     private function getComprobantesPago(SolicitudId $solicitudId)
