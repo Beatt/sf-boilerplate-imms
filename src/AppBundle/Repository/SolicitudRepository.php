@@ -11,9 +11,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
     {
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
-            ->join('campos_clinicos.convenio', 'convenio')
-            ->where('convenio.institucion = :id')
-            ->setParameter('id', $id);
+            ->join('campos_clinicos.convenio', 'convenio');
 
         if ($tipoPago !== 'null' && $tipoPago !== '') {
             $queryBuilder = $queryBuilder
@@ -29,6 +27,8 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         }
 
         $query = $queryBuilder
+            ->andWhere('convenio.institucion = :id')
+            ->setParameter('id', $id)
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
             ->setFirstResult(($offset - 1) * self::PAGINATOR_PER_PAGE)
             ->orderBy('solicitud.fecha', 'DESC')

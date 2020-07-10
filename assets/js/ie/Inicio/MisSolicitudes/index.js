@@ -7,23 +7,25 @@ import {
   isActionDisabledByInstitucionEducativa
 } from "../../../utils";
 import GestionPagoModal from "../../components/GestionPagoModal";
+const DEFAULT_PAGE = 1;
+const DEFAULT_STRING_VALUE = '';
 
 const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
 
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
-  const [ search, setSearch ] = useState('')
-  const [ tipoPago, setTipoPago ] = useState(null)
+  const [ search, setSearch ] = useState(DEFAULT_STRING_VALUE)
+  const [ tipoPago, setTipoPago ] = useState(DEFAULT_STRING_VALUE)
   const [ total, setTotal ] = useState(totalInit)
-  const [ currentPage, setCurrentPage ] = useState(1)
+  const [ currentPage, setCurrentPage ] = useState(DEFAULT_PAGE)
   const [ isLoading, toggleLoading ] = useState(false)
-  const [modalIsOpen, setModalIsOpen] = React.useState(false);
-  const [campoClinicoSelected, setCampoClinicoSelected] = useState({
+  const [ modalIsOpen, setModalIsOpen ] = React.useState(false);
+  const [ campoClinicoSelected, setCampoClinicoSelected ] = useState({
     pago: { id: null }
   })
 
   useEffect(() => {
-    if(currentPage !== null || tipoPago !== null) getCamposClinicos()
+    if(currentPage !== null || tipoPago !== DEFAULT_STRING_VALUE) getCamposClinicos()
   }, [currentPage, tipoPago])
 
   function handleSearch() {
@@ -85,6 +87,20 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
     return total > paginatorTotalPerPage;
   }
 
+  function cleanFilters() {
+    setTipoPago(DEFAULT_STRING_VALUE)
+    setSearch(DEFAULT_STRING_VALUE)
+    setCurrentPage(DEFAULT_PAGE)
+  }
+
+  function handleNoSolicitud(event, solicitud) {
+    event.preventDefault();
+
+    window.location = solicitud.tipoPago === TIPO_PAGO.UNICO ?
+      `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :
+      `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
+  }
+
   return(
     <div className='row'>
       <div className="col-md-3">
@@ -94,6 +110,7 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
             id="solicitud_tipoPago"
             className='form-control'
             onChange={({ target }) => setTipoPago(target.value)}
+            value={tipoPago}
           >
             <option value=''>Ver todos</option>
             <option value={TIPO_PAGO.UNICO}>Pago único</option>
@@ -107,9 +124,11 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
           <div className="form-group">
             <input
               type="text"
-              placeholder='Buscar por...'
+              placeholder='Buscar por No. de solicitud o fecha...'
               className='input-sm form-control'
               onChange={({ target }) => setSearch(target.value)}
+              style={{ width: 250 }}
+              value={search}
             />
           </div>
           <button
@@ -119,6 +138,18 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
           >
             Buscar
           </button>
+        </div>
+      </div>
+      <div className="col-md-12 mb-20">
+        <div className="row">
+          <div className="col-md-3">
+            <button
+              className="btn btn-default btn-block"
+              onClick={cleanFilters}
+            >
+              Limpiar filtros
+            </button>
+          </div>
         </div>
       </div>
 
@@ -146,7 +177,12 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
                   camposClinicos.length !== 0 ?
                     camposClinicos.map((solicitud, index) => (
                       <tr key={index}>
-                        <th><a href="">{solicitud.noSolicitud}</a></th>
+                        <th>
+                          <a
+                            href="#"
+                            onClick={event => handleNoSolicitud(event, solicitud)}
+                          >{solicitud.noSolicitud}</a>
+                        </th>
                         <th>{solicitud.noCamposSolicitados}</th>
                         <th>{solicitud.noCamposAutorizados}</th>
                         <th>{solicitud.fecha}</th>

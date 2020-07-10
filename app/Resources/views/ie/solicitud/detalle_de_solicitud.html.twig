@@ -10,9 +10,9 @@
     <div class="section-md">
         <div class='container-fluid'>
             <div class='container'>
-                <h1 class="text-bold text-center">Detalle de Solicitud de Campos Clínicos</h1>
+                <h1 class="text-bold text-center">Detalle de Solicitud</h1>
                 <div style="display: flex;">
-                    <p class="text-bold mt-10">No. Solicitud: {{ solicitud.noSolicitud }}</p>
+                    <p class="mt-10"><strong>No. Solicitud:</strong> {{ solicitud.noSolicitud }}</p>
                     <div id="noSolicitud"></div>
                 </div>
                 <div class="row">
@@ -28,11 +28,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-      window.TOTAL_PROP = {{ totalCampos|json_encode|raw }}
-      window.AUTORIZADO_PROP = {{ autorizado|json_encode|raw }}
-      window.SOLICITUD_PROP = {{ solicitud.Id |json_encode|raw }}
-      window.CAMPOS_PROP = {{ camposClinicos|json_encode|raw }}
-      window.PAGO_PROP = {{ pago|json_encode|raw }}
+      window.SOLICITUD_PROP = {{ solicitud |json_encode|raw }}
     </script>
     <script src="{{ asset('build/ie.detalle.solicitud.js') }}"></script>
 {% endblock %}

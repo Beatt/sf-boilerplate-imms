@@ -1,105 +1,72 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
-import {solicitudesGet} from "../api/camposClinicos";
-import { getActionNameByInstitucionEducativa, isActionDisabledByInstitucionEducativa } from "../../utils";
-import { SOLICITUD } from "../../constants";
+import {
+  getActionNameByInstitucionEducativa,
+  isActionDisabledByInstitucionEducativa
+} from "../../utils"
+import { SOLICITUD } from "../../constants"
+const DEFAULT_DOCUMENT_VALUE = '-'
 
-const ListaCampos = (
-  {
-    solicitud,
-    total,
-    autorizado,
-    pago,
-    campos
-  }) => {
-
-  const {useState, useEffect} = React
-  const [camposClinicos, setCamposClinicos] = useState([])
-  const [search, setSearch] = useState('')
-  const [isLoading, toggleLoading] = useState(false)
-
+const ListaCampos = ({ solicitud }) => {
 
   function handleStatusAction(solicitud) {
-
     if (isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
 
     let redirectRoute = ''
-    if (
-      solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES
-    ) {
-      redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
-    } else {
-      switch (solicitud.estatus) {
-        case SOLICITUD.CONFIRMADA:
-          redirectRoute = `ie/solicitudes/${solicitud.id}/registrar-montos`
-        case SOLICITUD.MONTOS_INCORRECTOS_CAME:
-          redirectRoute = `ie/solicitudes/${solicitud.id}/corregir-montos`
-      }
+    switch (solicitud.estatus) {
+      case SOLICITUD.CONFIRMADA:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
+        break
+      case SOLICITUD.MONTOS_INCORRECTOS_CAME:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
+        break
+      case SOLICITUD.CARGANDO_COMPROBANTES:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
+        break
+      case SOLICITUD.MONTOS_VALIDADOS_CAME:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        break
+      case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
+        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
+        break
     }
 
     window.location.href = redirectRoute
   }
 
-  let isPago = false;
-  let isFactura = false;
-
-  if (pago[0]) {
-    isPago = true;
-    if (pago[0].factura)
-      isFactura = true;
-  } else
-    isPago = false;
-
-  useEffect(() => {
-    if (
-      search === null ||
-      search == ''
-    ) {
-      getCamposClinicos()
-    }
-  }, [search])
-
-  function handleSearch() {
-    if (!search) return;
-    getCamposClinicos()
+  function isComprobantesPagoEmpty() {
+    return solicitud.expediente.comprobantesPago.length === 0;
+  }
+  function isFacturasEmpty() {
+    return solicitud.expediente.facturas.length === 0;
   }
 
-  function getCamposClinicos() {
-    toggleLoading(true)
-
-    solicitudesGet(
-      solicitud,
-      search
-    )
-      .then((res) => {
-        setCamposClinicos(res.camposClinicos)
-      })
-      .finally(() => {
-        toggleLoading(false)
-      })
+  function getTotalCamposClinicos() {
+    return solicitud.camposClinicos.length;
   }
 
   return (
     <div className='row'>
-      <div className="col-md-12 mt-10">
-        <p>Se autorizaron {autorizado} de {total} campos clínicos</p>
+      <div className="col-md-12">
+        <div className="row">
+          <div className="col-md-6 mt-10">
+            <p><strong>Estado:</strong> {solicitud.estatus}</p>
+          </div>
+          <div className="col-md-6">
+            <strong>Acción</strong>&nbsp;
+            <button
+              className='btn btn-default'
+              disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
+              onClick={() => handleStatusAction(solicitud)}
+            >
+              {getActionNameByInstitucionEducativa(solicitud.estatus, false)}
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="col-md-6 mt-10">
-        <p className='text-bold'>Estado: {campos[0].solicitud.estatus} </p>
+      <div className="col-md-12 mt-20">
+        <p>Se autorizaron {getTotalCamposClinicos()} de {solicitud.totalCamposClinicosAutorizados} campos clínicos</p>
       </div>
-
-      <div className="col-md-6 mt-10">
-        Acción
-        <button
-          className='btn btn-default'
-          disabled={isActionDisabledByInstitucionEducativa(campos[0].solicitud.estatus)}
-          onClick={() => handleStatusAction(campos[0].solicitud)}
-        >
-          {getActionNameByInstitucionEducativa(campos[0].solicitud.estatus, false)}
-        </button>
-      </div>
-
-
       <div className="col-md-12 mt-10">
         <div className="panel panel-default">
           <div className="panel-body">
@@ -108,92 +75,99 @@ const ListaCampos = (
               <tr>
                 <th>Sede</th>
                 <th>Campo clínico</th>
-                <th>Nivel</th>
                 <th>Carrera</th>
-                <th>No. lugares solicitados</th>
-                <th>No. lugares autorizados</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Termino</th>
+                <th>No. lugares <br/>solicitados</th>
+                <th>No. lugares <br/>autorizados</th>
+                <th>Periodo</th>
                 <th>No. de semanas</th>
               </tr>
               </thead>
               <tbody>
               {
-                isLoading ?
-                  <tr>
-                    <th className='text-center' colSpan={9}>Cargando información...</th>
-                  </tr> :
-                  camposClinicos.map((item, index) => {
-                    return <tr key={index}>
-                      <td>{item.unidad.nombre ? item.unidad.nombre : 'No asignado'}</td>
-                      <td>{item.convenio.cicloAcademico ? item.convenio.cicloAcademico.nombre : 'No asignado'}</td>
-                      <td>{item.convenio.carrera ? item.convenio.carrera.nivelAcademico.nombre : 'No asignado'}</td>
-                      <td>{item.convenio.carrera ? item.convenio.carrera.nombre : 'No asignado'}</td>
-                      <td>{item.lugaresSolicitados}</td>
-                      <td>{item.lugaresAutorizados}</td>
-                      <td>{item.fechaInicial}</td>
-                      <td>{item.fechaFinal}</td>
-                      <td>{item.weeks}</td>
-                    </tr>
-                  })
+                solicitud.camposClinicos.map((campoClinico, index) =>
+                  <tr key={index}>
+                    <td>{campoClinico.unidad.nombre ? campoClinico.unidad.nombre : 'No asignado'}</td>
+                    <td>{campoClinico.convenio.cicloAcademico ? campoClinico.convenio.cicloAcademico.nombre : 'No asignado'}</td>
+                    <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
+                    <td>{campoClinico.lugaresSolicitados}</td>
+                    <td>{campoClinico.lugaresAutorizados}</td>
+                    <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
+                    <td>{campoClinico.noSemanas}</td>
+                  </tr>
+                )
               }
               </tbody>
             </table>
           </div>
         </div>
       </div>
-
       <div className="col-md-12">
-        <p className="text-bold mt-10">Expediente</p>
+        <p className="text-bold mt-10 mb-10">Expediente</p>
         <div className="panel panel-default">
           <div className="panel-body">
             <table className='table'>
               <thead className='headers'>
               <tr>
                 <th>Documento</th>
-                <th>Fecha</th>
                 <th>Descripcion</th>
+                <th>Fecha</th>
                 <th>Archivo</th>
               </tr>
               </thead>
               <tbody>
               <tr>
-                <td>{campos[0].solicitud.documento ? campos[0].solicitud.documento : 'Oficio de Montos de Colgiatura e inscripción'}</td>
-                <td>{campos[0].solicitud.fechaComprobante ? campos[0].solicitud.fechaComprobante : ''}</td>
-                <td>{campos[0].solicitud.descripcion ? campos[0].solicitud.descripcion : ''}</td>
-                <td><a href='#'>{campos[0].solicitud.urlArchivo ? campos[0].solicitud.urlArchivo : ''}</a></td>
+                <td>{solicitud.expediente.oficioMontos.nombre}</td>
+                <td>{solicitud.expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+                <td>{solicitud.expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
+                <td>
+                  {
+                    solicitud.expediente.oficioMontos.urlArchivo ?
+                      <a href={solicitud.expediente.oficioMontos.urlArchivo}>Descargar</a> :
+                      DEFAULT_DOCUMENT_VALUE
+                  }
+                </td>
               </tr>
               {
-                isPago ?
-
-                  <tr>
-                    <td>Comprobante de pago</td>
-                    <td>{pago[0].fechaPago}</td>
-                    <td>Pago ref: {pago[0].referenciaBancaria}</td>
-                    <td><a href='#'>{pago[0].comprobantePago}</a></td>
-                  </tr> :
-                  <tr>
-                    <td>Comprobante de pago</td>
-                    <td/>
-                    <td>No se ha cargado información</td>
-                    <td/>
-                  </tr>
+                !isComprobantesPagoEmpty() &&
+                <tr>
+                  <td>{solicitud.expediente.comprobantesPago[0].nombre}</td>
+                  <td>{solicitud.expediente.comprobantesPago[0].descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+                  <td>
+                    {
+                      solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
+                        <p key={index}>{comprobantePago.fecha}</p>
+                      )
+                    }
+                  </td>
+                  <td>
+                    {
+                      solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
+                        <p key={index}><a href={comprobantePago.urlArchivo}>Descargar</a></p>
+                      )
+                    }
+                  </td>
+                </tr>
               }
               {
-                isFactura ?
-
-                  <tr>
-                    <td>Factura (CFDI)</td>
-                    <td>{pago[0].factura.fechaFacturacion}</td>
-                    <td/>
-                    <td><a href='#'>{pago[0].factura.zip}</a></td>
-                  </tr> :
-                  <tr>
-                    <td>Factura (CFDI)</td>
-                    <td/>
-                    <td>No se solicitó factura</td>
-                    <td/>
-                  </tr>
+                !isFacturasEmpty() &&
+                <tr>
+                  <td>{solicitud.expediente.facturas[0].nombre}</td>
+                  <td>{solicitud.expediente.facturas[0].descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+                  <td>
+                    {
+                      solicitud.expediente.facturas.map((factura, index) =>
+                        <p key={index}>{factura.fecha}</p>
+                      )
+                    }
+                  </td>
+                  <td>
+                    {
+                      solicitud.expediente.facturas.map((factura, index) =>
+                        <p key={index}><a href={factura.urlArchivo}>Descargar</a></p>
+                      )
+                    }
+                  </td>
+                </tr>
               }
               </tbody>
             </table>
@@ -212,5 +186,5 @@ ReactDOM.render(
     campos={window.CAMPOS_PROP}
     pago={window.PAGO_PROP}
   />,
-  document.getElementById('detalle-solicitud')
+  document.getElementById('detalle-solicitud-component')
 );
