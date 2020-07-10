@@ -76,6 +76,7 @@ const ListaCampos = (
                 <th>No. lugares <br/>solicitados</th>
                 <th>No. lugares <br/>autorizados</th>
                 <th>Periodo</th>
+                <th>No. de semanas</th>
               </tr>
               </thead>
               <tbody>
@@ -88,6 +89,7 @@ const ListaCampos = (
                     <td>{campoClinico.lugaresSolicitados}</td>
                     <td>{campoClinico.lugaresAutorizados}</td>
                     <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
+                    <td>{campoClinico.noSemanas}</td>
                   </tr>
                 )
               }

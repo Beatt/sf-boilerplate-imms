@@ -3,6 +3,7 @@
 namespace AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos;
 
 use AppBundle\ObjectValues\SolicitudId;
+use Carbon\Carbon;
 use Doctrine\DBAL\Driver\Connection;
 
 final class CamposClinicosUsingSql implements CamposClinicos
@@ -67,8 +68,19 @@ final class CamposClinicosUsingSql implements CamposClinicos
                 $record['lugares_autorizados'],
                 $record['fecha_inicial'],
                 $record['fecha_final'],
-                $unidad
+                $unidad,
+                $this->getNoSemanas(
+                    $record['fecha_inicial'],
+                    $record['fecha_final']
+                )
             );
         }, $records);
+    }
+
+    private function getNoSemanas($fechaInicial, $fechaFinal)
+    {
+        $inicial = Carbon::instance(new \DateTime($fechaInicial));
+        $final = Carbon::instance(new \DateTime($fechaFinal));
+        return $final->diffInWeeks($inicial) > 0 ? $final->diffInWeeks($inicial) : 1;
     }
 }

@@ -18,6 +18,8 @@ final class CampoClinico
 
     private $unidad;
 
+    private $noSemanas;
+
     public function __construct(
         $id,
         Convenio $convenio,
@@ -25,7 +27,8 @@ final class CampoClinico
         $lugaresAutorizados,
         $fechaInicial,
         $fechaFinal,
-        Unidad $unidad
+        Unidad $unidad,
+        $noSemanas
     ) {
         $this->id = $id;
         $this->convenio = $convenio;
@@ -34,6 +37,7 @@ final class CampoClinico
         $this->fechaInicial = $fechaInicial;
         $this->fechaFinal = $fechaFinal;
         $this->unidad = $unidad;
+        $this->noSemanas = $noSemanas;
     }
 
     /**
@@ -90,5 +94,13 @@ final class CampoClinico
     public function getUnidad()
     {
         return $this->unidad;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNoSemanas()
+    {
+        return $this->noSemanas;
     }
 }
