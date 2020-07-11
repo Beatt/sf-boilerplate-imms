@@ -12,7 +12,10 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
     if(factura === 'Pendiente' || factura === 'No solicitada') return factura;
 
     return(
-      <a href={`${factura}`}>Descargar</a>
+      <a
+        href={`${factura}`}
+        target='_blank'
+      >Descargar</a>
     )
   }
 

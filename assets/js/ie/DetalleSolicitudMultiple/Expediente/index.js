@@ -21,7 +21,12 @@ const Expediente = ({ expediente }) => (
             <td>
               {
                 expediente.oficioMontos.urlArchivo ?
-                  <a href={expediente.oficioMontos.urlArchivo}>Descargar</a> :
+                  <a
+                    href={expediente.oficioMontos.urlArchivo}
+                    target='_blank'
+                  >
+                    Descargar
+                  </a> :
                   DEFAULT_DOCUMENT_VALUE
               }
             </td>
