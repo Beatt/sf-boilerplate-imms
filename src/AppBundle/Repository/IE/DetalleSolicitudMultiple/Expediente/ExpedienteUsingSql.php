@@ -3,6 +3,7 @@
 namespace AppBundle\Repository\IE\DetalleSolicitudMultiple\Expediente;
 
 use AppBundle\ObjectValues\SolicitudId;
+use AppBundle\Repository\IE\DetalleSolicitud\Expediente\ComprobantePagoInterface;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\Documents;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\OficioMontos;
 use Doctrine\DBAL\Driver\Connection;
@@ -19,10 +20,11 @@ final class ExpedienteUsingSql implements Expediente
     public function expedienteBySolicitud(SolicitudId $solicitudId)
     {
         $oficioMonto = $this->getOficioMonto($solicitudId);
+        $comprobantesPago = $this->getComprobantesPago($solicitudId);
 
         return new Documents(
             $oficioMonto,
-            [],
+            $comprobantesPago,
             []
         );
     }
@@ -88,5 +90,40 @@ final class ExpedienteUsingSql implements Expediente
         }, $montosCarreraRecord);
 
         return implode('. ', $items);
+    }
+
+    private function getComprobantesPago(SolicitudId $solicitudId)
+    {
+        $statement = $this->connection->prepare('
+            SELECT campo_clinico.id,
+                   unidad.nombre AS nombre_unidad,
+                   pago.comprobante_pago,
+                   pago.fecha_pago
+            FROM solicitud
+                     JOIN campo_clinico
+                          ON solicitud.id = campo_clinico.solicitud_id
+                     JOIN pago
+                          ON solicitud.id = pago.solicitud_id
+                     JOIN unidad
+                          ON campo_clinico.unidad_id = unidad.id
+            WHERE solicitud.id = :id
+              AND campo_clinico.referencia_bancaria = pago.referencia_bancaria
+              AND campo_clinico.lugares_autorizados > 0
+            ORDER BY id
+        ');
+
+        $statement->execute([
+            'id' => $solicitudId->asInt()
+        ]);
+
+        $records = $statement->fetchAll();
+
+        return array_map(function (array $record) {
+            return new ComprobantePagoInterface(
+                $record['fecha_pago'],
+                $record['nombre_unidad'],
+                $record['comprobante_pago']
+            );
+        }, $records);
     }
 }
