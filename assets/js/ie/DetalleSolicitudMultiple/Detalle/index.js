@@ -8,12 +8,13 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
     pago: { id: null }
   })
 
-  function getFactura(factura) {
-    if(factura === 'Pendiente' || factura === 'No solicitada') return factura;
+  function getFactura(urlArchivo, requiereFactura) {
+    if(requiereFactura === false) return 'No solicitada';
+    if(!urlArchivo) return 'Pendiente';
 
     return(
       <a
-        href={`${factura}`}
+        href={`${urlArchivo}`}
         target='_blank'
       >Descargar</a>
     )
@@ -74,7 +75,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                 <td>
                   {
                     isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
-                    getFactura(campoClinico.factura)
+                    getFactura(campoClinico.pago.urlArchivo, campoClinico.requiereFactura)
                   }
                 </td>
               </tr>
