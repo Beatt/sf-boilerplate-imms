@@ -13,8 +13,9 @@
             <div class='container'>
                 <h1 class="text-bold text-center mb-20">Detalle de solicitud</h1>
                 <div class="row">
-                    <div class="col-md-12 mb-20">
-                        <p><span class="text-bold">No. solicitud:</span> {{ noSolicitud }}</p>
+                    <div class="col-md-12">
+                        <p><span class="text-bold">No. solicitud:</span> {{ solicitud.noSolicitud }}</p>
+                        <p class="mb-20"><span class="text-bold">Estado de la solicitud:</span> {{ solicitud.estatus }}</p>
                         <p><span class="text-bold">Se autorizarón:</span> 5 de 6 campos clínicos solicitados</p>
                     </div>
                     <div class="col-md-12">
@@ -33,8 +34,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        window.CAMPOS_CLINICOS_PROPS = {{ camposClinicos|json_encode|raw }}
-        window.EXPEDIENTE_PROP = {{ expediente|json_encode|raw }}
+        window.SOLICITUD_PROP = {{ solicitud|json_encode|raw }}
     </script>
     <script src="{{ asset('build/ie.detalle.solicitud.multiple.js') }}"></script>
 {% endblock %}

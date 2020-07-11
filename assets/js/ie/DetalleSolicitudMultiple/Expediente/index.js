@@ -1,4 +1,5 @@
 import * as React from 'react'
+const DEFAULT_DOCUMENT_VALUE = '-'
 
 const Expediente = ({ expediente }) => (
   <div className='panel panel-default'>
@@ -7,25 +8,24 @@ const Expediente = ({ expediente }) => (
         <thead>
         <tr>
           <th>Documento</th>
-          <th>Fecha</th>
           <th>Descripción</th>
+          <th>Fecha</th>
           <th>Archivo</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>{expediente.documento}</td>
-          <td>{expediente.fechaComprobante}</td>
-          <td>{expediente.expedienteDescripcion}</td>
-          <td>
-            <a
-              href={expediente.urlArchivo}
-              target='_blank'
-            >
-              Descargar oficio de montos
-            </a>
-          </td>
-        </tr>
+          <tr>
+            <td>{expediente.oficioMontos.nombre}</td>
+            <td>{expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+            <td>{expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
+            <td>
+              {
+                expediente.oficioMontos.urlArchivo ?
+                  <a href={expediente.oficioMontos.urlArchivo}>Descargar</a> :
+                  DEFAULT_DOCUMENT_VALUE
+              }
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

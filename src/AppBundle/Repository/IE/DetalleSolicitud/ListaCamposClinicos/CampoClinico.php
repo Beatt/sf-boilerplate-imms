@@ -2,7 +2,7 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos;
 
-final class CampoClinico
+class CampoClinico
 {
     private $id;
 

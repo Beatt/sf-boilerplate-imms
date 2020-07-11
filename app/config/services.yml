@@ -190,3 +190,16 @@ services:
         class: AppBundle\Normalizer\FacturaNormalizer
         public: true
         tags: ['serializer.normalizer']
+
+
+    AppBundle\Repository\IE\DetalleSolicitudMultiple\DetalleSolicitudMultiple:
+        class: AppBundle\Repository\IE\DetalleSolicitudMultiple\DetalleSolicitudMultipleUsingSql
+        public: true
+
+    AppBundle\Repository\IE\DetalleSolicitudMultiple\Expediente\Expediente:
+        class: AppBundle\Repository\IE\DetalleSolicitudMultiple\Expediente\ExpedienteUsingSql
+        public: true
+
+    AppBundle\Repository\IE\DetalleSolicitudMultiple\ListaCamposClinicos\CamposClinicos:
+        class: AppBundle\Repository\IE\DetalleSolicitudMultiple\ListaCamposClinicos\CamposClinicosUsingSql
+        public: true

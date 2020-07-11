@@ -1,9 +1,8 @@
 import * as React from 'react'
 import GestionPagoModal from "../../components/GestionPagoModal";
 
-const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
+const DetalleSolicitudMultiple = ({ solicitud }) => {
   const { useState } = React
-  const [camposClinicos] = useState(initCamposClinicos)
   const [modalIsOpen, setModalIsOpen] = React.useState(false);
   const [campoClinicoSelected, setCampoClinicoSelected] = useState({
     pago: { id: null }
@@ -13,12 +12,16 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
     if(factura === 'Pendiente' || factura === 'No solicitada') return factura;
 
     return(
-      <a href={`${factura}`}>Descargar factura</a>
+      <a href={`${factura}`}>Descargar</a>
     )
   }
 
   function closeModal() {
     setModalIsOpen(false)
+  }
+
+  function isCampoClinicoAutorizado(lugaresAutorizados) {
+    return lugaresAutorizados > 0;
   }
 
   return(
@@ -40,7 +43,7 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
           </thead>
           <tbody>
           {
-            camposClinicos.map((campoClinico, index) =>
+            solicitud.camposClinicos.map((campoClinico, index) =>
               <tr key={index}>
                 <td>{campoClinico.unidad.nombre}</td>
                 <td>{campoClinico.convenio.cicloAcademico.nombre}</td>
@@ -48,10 +51,16 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                 <td>{campoClinico.lugaresSolicitados}</td>
                 <td>{campoClinico.lugaresAutorizados}</td>
                 <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
-                <td>{campoClinico.estatus.nombre}</td>
                 <td>
                   {
-                    campoClinico.estatus.nombre === 'Pago' ?
+                    isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
+                    campoClinico.estatus
+                  }
+                </td>
+                <td>
+                  {
+                    isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
+                    campoClinico.estatus === 'Pago' ?
                       <button className='btn btn-default' disabled={true}>En validación por FOFOE</button> :
                       <button className="btn btn-success" onClick={() => {
                         setCampoClinicoSelected(campoClinico)
@@ -59,7 +68,12 @@ const DetalleSolicitudMultiple = ({ initCamposClinicos }) => {
                       }}>Cargar comprobante</button>
                   }
                 </td>
-                <td>{getFactura(campoClinico.factura)}</td>
+                <td>
+                  {
+                    isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
+                    getFactura(campoClinico.factura)
+                  }
+                </td>
               </tr>
             )
           }
