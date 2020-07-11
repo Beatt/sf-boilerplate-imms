@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {dateFormat} from "../../../utils";
 const DEFAULT_DOCUMENT_VALUE = '-'
 
 const Expediente = ({ expediente }) => {
@@ -23,7 +24,7 @@ const Expediente = ({ expediente }) => {
           <tr>
             <td>{expediente.oficioMontos.nombre}</td>
             <td>{expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
-            <td>{expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
+            <td>{dateFormat(expediente.oficioMontos.fecha) || DEFAULT_DOCUMENT_VALUE}</td>
             <td>
               {
                 expediente.oficioMontos.urlArchivo ?
@@ -44,18 +45,33 @@ const Expediente = ({ expediente }) => {
                 <td></td>
                 <td>
                   {
-                    expediente.comprobantesPago.map(comprobante => {
+                    expediente.comprobantesPago.map((comprobante, key) => {
                       if(comprobante.descripcion === item) {
-                        return <span>{comprobante.fecha} <br/></span>;
+                        return(
+                          <span
+                            key={key}
+                          >
+                            {dateFormat(comprobante.fecha)}
+                            <br/>
+                          </span>
+                        );
                       }
                     })
                   }
                 </td>
                 <td>
                   {
-                    expediente.comprobantesPago.map(comprobante => {
+                    expediente.comprobantesPago.map((comprobante, key) => {
                       if(comprobante.descripcion === item) {
-                        return <a href={comprobante.urlArchivo}>Descargar <br/></a>;
+                        return(
+                          <a
+                            key={key}
+                            href={comprobante.urlArchivo}
+                            target='_blank'
+                          >
+                            Descargar <br/>
+                          </a>
+                        );
                       }
                     })
                   }

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import GestionPagoModal from "../../components/GestionPagoModal";
+import {dateFormat} from "../../../utils";
 
 const DetalleSolicitudMultiple = ({ solicitud }) => {
   const { useState } = React
@@ -54,7 +55,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                 <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
                 <td>{campoClinico.lugaresSolicitados}</td>
                 <td>{campoClinico.lugaresAutorizados}</td>
-                <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
+                <td>{dateFormat(campoClinico.fechaInicial)} - {dateFormat(campoClinico.fechaFinal)}</td>
                 <td>
                   {
                     isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
