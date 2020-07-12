@@ -2,9 +2,9 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\ComprobantePagoInterface;
+use AppBundle\Entity\Pago;
 
 interface UploaderComprobantePagoInterface
 {
-    public function update(ComprobantePagoInterface $pago);
+    public function update(Pago $pago);
 }

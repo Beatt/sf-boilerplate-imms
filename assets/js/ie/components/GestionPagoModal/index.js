@@ -180,7 +180,7 @@ const GestionPagoModal = (
                     <label htmlFor='comprobante_pago_requiereFactura_yes'>Si&nbsp;</label>
                     <input
                       type="radio"
-                      value=""
+                      value="1"
                       id='comprobante_pago_requiereFactura_yes'
                       name='comprobante_pago[requiereFactura]'
                       required={true}
@@ -189,7 +189,7 @@ const GestionPagoModal = (
                     <label htmlFor="comprobante_pago_requiereFactura_no">No&nbsp;</label>
                     <input
                       type="radio"
-                      value=""
+                      value="0"
                       id='comprobante_pago_requiereFactura_no'
                       name='comprobante_pago[requiereFactura]'
                       required={true}
