@@ -9,8 +9,6 @@ use AppBundle\Form\Type\ComprobantePagoType\ComprobantePagoType;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\UploaderComprobantePagoInterface;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,8 +30,7 @@ class ComprobantePagoController extends DIEControllerController
         $id,
         Request $request,
         UploaderComprobantePagoInterface $uploaderComprobantePago,
-        PagoRepositoryInterface $pagoRepository,
-        EntityManagerInterface $entityManager
+        PagoRepositoryInterface $pagoRepository
     ) {
         /** @var Pago $pago */
         $pago = $pagoRepository->find($id);
