@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {dateFormat} from "../../../utils";
 const DEFAULT_DOCUMENT_VALUE = '-'
 
 const Expediente = ({ expediente }) => {
