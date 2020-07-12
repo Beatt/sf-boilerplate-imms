@@ -34,6 +34,7 @@ services:
     arguments:
       - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
       - '%app.path.instituciones%'
+      - '@security.token_storage'
     public: true
     tags: ['serializer.normalizer']
 
@@ -42,6 +43,7 @@ services:
     arguments:
       - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
       - '%app.path.instituciones%'
+      - '@security.token_storage'
     public: true
     tags: ['serializer.normalizer']
 
@@ -50,5 +52,6 @@ services:
     arguments:
       - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
       - '%app.path.instituciones%'
+      - '@security.token_storage'
     public: true
     tags: ['serializer.normalizer']
