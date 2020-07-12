@@ -1,0 +1,6 @@
+services:
+  AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CamposClinicos:
+    class: AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CamposClinicosUsingSql
+    arguments:
+      - '@database_connection'
+    public: true

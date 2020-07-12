@@ -1,0 +1,54 @@
+services:
+  AppBundle\Normalizer\InstitucionPerfilNormalizerInterface:
+    class: AppBundle\Normalizer\CampoClinicoNormalizer
+    arguments:
+      - '@serializer'
+    public: true
+
+  app.gestion_pago_normalizer:
+    class: AppBundle\Normalizer\GestionPagoNormalizer
+    arguments:
+      - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+      - '%comprobantes_pago_dir%'
+    public: true
+    tags: ['serializer.normalizer']
+
+  app.cedula_identificacion_normalizer:
+    class: AppBundle\Normalizer\CedulaIdentificacionNormalizer
+    arguments:
+      - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+      - '%cedula_identificacion_pago_dir%'
+    public: true
+    tags: ['serializer.normalizer']
+
+  app.formato_fofoe_normalizer:
+    class: AppBundle\Normalizer\FormatoFOFOENormalizer
+    arguments:
+      - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+      - '@router'
+    public: true
+    tags: ['serializer.normalizer']
+
+  app.oficio_montos_normalizer:
+    class: AppBundle\Normalizer\OficioMontosNormalizer
+    arguments:
+      - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+      - '%app.path.instituciones%'
+    public: true
+    tags: ['serializer.normalizer']
+
+  app.comprobante_pago_normalizer:
+    class: AppBundle\Normalizer\ComprobantePagoNormalizer
+    arguments:
+      - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+      - '%app.path.instituciones%'
+    public: true
+    tags: ['serializer.normalizer']
+
+  app.factura_normalizer:
+    class: AppBundle\Normalizer\FacturaNormalizer
+    arguments:
+      - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+      - '%app.path.instituciones%'
+    public: true
+    tags: ['serializer.normalizer']
