@@ -58,10 +58,10 @@ class ComprobantePagoController extends DIEControllerController
             $uploaderComprobantePago->update($pago);
 
             $this->addFlash('success', '¡El comprobante se ha cargado correctamente!');
-            return $this->redirectToRoute('ie#inicio');
+            return new RedirectResponse($request->headers->get('referer'));
         }
 
-        $this->addFlash('success', '¡Lo sentimos! Ha ocurrido un problema al cargar tu comprobante.');
-        return $this->redirectToRoute('ie#inicio');
+        $this->addFlash('danger', '¡Lo sentimos! Ha ocurrido un problema al cargar tu comprobante.');
+        return new RedirectResponse($request->headers->get('referer'));
     }
 }
