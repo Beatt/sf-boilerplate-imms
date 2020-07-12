@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import {
+  dateFormat,
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
 } from "../../utils"
@@ -91,7 +92,7 @@ const ListaCampos = ({ solicitud }) => {
                     <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
                     <td>{campoClinico.lugaresSolicitados}</td>
                     <td>{campoClinico.lugaresAutorizados}</td>
-                    <td>{new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}</td>
+                    <td>{dateFormat(campoClinico.fechaInicial)} - {dateFormat(campoClinico.fechaFinal)}</td>
                     <td>{campoClinico.noSemanas}</td>
                   </tr>
                 )

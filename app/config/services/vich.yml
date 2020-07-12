@@ -1,0 +1,12 @@
+services:
+  AppBundle\Vich\Naming\CedulaNamer:
+    public: true
+
+  AppBundle\Vich\Naming\ComprobantePagoNamer:
+    public: true
+
+  AppBundle\Vich\Naming\ComprobanteInscripcionNamer:
+    public: true
+
+  AppBundle\Vich\Naming\FacturaNamer:
+    public: true

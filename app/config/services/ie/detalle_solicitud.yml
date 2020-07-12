@@ -1,0 +1,27 @@
+services:
+  AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos\CamposClinicos:
+    class: AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos\CamposClinicosUsingSql
+    arguments:
+      - '@database_connection'
+    public: true
+
+  AppBundle\Repository\IE\DetalleSolicitud\TotalCamposClinicosAutorizados\TotalCamposClinicos:
+    class: AppBundle\Repository\IE\DetalleSolicitud\TotalCamposClinicosAutorizados\TotalCamposClinicosUsingSql
+    arguments:
+      - '@database_connection'
+    public: true
+
+  AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitud:
+    class: AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitudUsingSql
+    arguments:
+      - '@AppBundle\Repository\SolicitudRepositoryInterface'
+      - '@AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos\CamposClinicos'
+      - '@AppBundle\Repository\IE\DetalleSolicitud\TotalCamposClinicosAutorizados\TotalCamposClinicos'
+      - '@AppBundle\Repository\IE\DetalleSolicitud\Expediente\Expediente'
+    public: true
+
+  AppBundle\Repository\IE\DetalleSolicitud\Expediente\Expediente:
+    class: AppBundle\Repository\IE\DetalleSolicitud\Expediente\ExpedienteUsingSql
+    arguments:
+      - '@database_connection'
+    public: true

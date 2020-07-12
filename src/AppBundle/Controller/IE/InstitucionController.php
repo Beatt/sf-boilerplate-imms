@@ -8,7 +8,6 @@ use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\InstitucionType;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\ConvenioRepositoryInterface;
-use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;

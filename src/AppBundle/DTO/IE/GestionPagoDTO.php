@@ -70,9 +70,9 @@ class GestionPagoDTO implements GestionPagoDTOInterface
             $this->campoClinico->getMonto();
     }
 
-    public function getNombreInstitucion()
+    public function getIdInstitucion()
     {
-        return $this->solicitud->getInstitucion()->getNombre();
+        return $this->solicitud->getInstitucion()->getId();
     }
 
     public function getMontoTotalPorPagar()

@@ -31,7 +31,7 @@ class GestionPagoNormalizer implements NormalizerInterface
         foreach($data['pagos'] as &$pago) {
             $pago['comprobanteConEnlace'] = sprintf('%s/%s/%s',
                 $this->comprobantesPagoDir,
-                $gestionPagoDTO->getNombreInstitucion(),
+                $gestionPagoDTO->getIdInstitucion(),
                 $pago['comprobanteConEnlace']
             );
         }

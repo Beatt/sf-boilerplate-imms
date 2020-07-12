@@ -7,14 +7,13 @@ import Expediente from "./Expediente";
 document.addEventListener('DOMContentLoaded',  () => {
   ReactDOM.render(
     <DetalleSolicitudMultiple
-      initCamposClinicos={window.CAMPOS_CLINICOS_PROPS}
-      solicitud={window.SOLICITUD_PROPS}
+      solicitud={window.SOLICITUD_PROP}
     />,
     document.getElementById('detalle-solicitud-multiple-component')
   )
   ReactDOM.render(
     <Expediente
-      expediente={window.EXPEDIENTE_PROP}
+      expediente={window.SOLICITUD_PROP.expediente}
     />,
     document.getElementById('expediente-solicitud-multiple-component')
   )

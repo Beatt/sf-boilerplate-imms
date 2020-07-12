@@ -31,7 +31,7 @@ class CedulaIdentificacionNormalizer implements NormalizerInterface
         if($data['cedulaIdentificacion'] === null) return $data;
 
         $data['cedulaIdentificacion'] = sprintf('%s/%s',
-            $this->cedulaIdentificacionDir . '/' . $perfilInstitucion->getNombre() ,
+            $this->cedulaIdentificacionDir . '/' . $perfilInstitucion->getId() ,
             $data['cedulaIdentificacion']
         );
 
