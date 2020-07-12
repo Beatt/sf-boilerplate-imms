@@ -122,11 +122,12 @@ const GestionPagoModal = (
                     Fecha en que se realizó el nuevo pago:
                   </label>
                   <div className="col-md-3">
-                    <InputMask
-                      mask="99/99/9999"
+                    <input
+                      type="date"
                       id='comprobante_pago_fechaPago'
                       className='form-control'
                       name='comprobante_pago[fechaPago]'
+                      required={true}
                     />
                   </div>
                 </div>
@@ -145,6 +146,7 @@ const GestionPagoModal = (
                         id='comprobante_pago_monto'
                         name='comprobante_pago[monto]'
                         className='form-control'
+                        required={true}
                       />
                       <div className="input-group-addon">$</div>
                     </div>
@@ -163,6 +165,34 @@ const GestionPagoModal = (
                       id='comprobante_pago_comprobantePagoFile'
                       name='comprobante_pago[comprobantePagoFile]'
                       className='form-control'
+                      required={true}
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label
+                    htmlFor='comprobante_pago_requiere_factura'
+                    className="control-label col-md-4 text-right"
+                  >
+                    ¿Requiere factura?&nbsp;
+                  </label>
+                  <div className="col-md-3">
+                    <label htmlFor='comprobante_pago_requiereFactura_yes'>Si&nbsp;</label>
+                    <input
+                      type="radio"
+                      value=""
+                      id='comprobante_pago_requiereFactura_yes'
+                      name='comprobante_pago[requiereFactura]'
+                      required={true}
+                    />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <label htmlFor="comprobante_pago_requiereFactura_no">No&nbsp;</label>
+                    <input
+                      type="radio"
+                      value=""
+                      id='comprobante_pago_requiereFactura_no'
+                      name='comprobante_pago[requiereFactura]'
+                      required={true}
                     />
                   </div>
                 </div>
