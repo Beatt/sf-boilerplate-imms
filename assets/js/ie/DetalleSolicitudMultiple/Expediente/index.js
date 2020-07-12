@@ -24,7 +24,7 @@ const Expediente = ({ expediente }) => {
           <tr>
             <td>{expediente.oficioMontos.nombre}</td>
             <td>{expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
-            <td>{dateFormat(expediente.oficioMontos.fecha) || DEFAULT_DOCUMENT_VALUE}</td>
+            <td>{expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
             <td>
               {
                 expediente.oficioMontos.urlArchivo ?
@@ -51,7 +51,7 @@ const Expediente = ({ expediente }) => {
                           <span
                             key={key}
                           >
-                            {dateFormat(comprobante.fecha)}
+                            {comprobante.fecha}
                             <br/>
                           </span>
                         );

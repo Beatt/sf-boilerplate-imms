@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import {
-  dateFormat,
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
 } from "../../utils"
@@ -92,7 +91,7 @@ const ListaCampos = ({ solicitud }) => {
                     <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
                     <td>{campoClinico.lugaresSolicitados}</td>
                     <td>{campoClinico.lugaresAutorizados}</td>
-                    <td>{dateFormat(campoClinico.fechaInicial)} - {dateFormat(campoClinico.fechaFinal)}</td>
+                    <td>{campoClinico.fechaInicial} - {campoClinico.fechaFinal}</td>
                     <td>{campoClinico.noSemanas}</td>
                   </tr>
                 )

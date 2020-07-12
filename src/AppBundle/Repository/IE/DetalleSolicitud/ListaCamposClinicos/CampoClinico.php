@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos;
 
+use DateTime;
+
 class CampoClinico
 {
     private $id;
@@ -61,7 +63,7 @@ class CampoClinico
      */
     public function getFechaInicial()
     {
-        return $this->fechaInicial;
+        return (new DateTime($this->fechaInicial))->format('d-m-Y');
     }
 
     /**
@@ -85,7 +87,7 @@ class CampoClinico
      */
     public function getFechaFinal()
     {
-        return $this->fechaFinal;
+        return (new DateTime($this->fechaFinal))->format('d-m-Y');
     }
 
     /**

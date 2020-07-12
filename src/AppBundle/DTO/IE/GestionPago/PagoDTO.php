@@ -25,7 +25,7 @@ class PagoDTO implements PagoDTOInterface
 
     public function getFechaPago()
     {
-        return $this->pago->getFechaPago();
+        return $this->pago->getFechaPago()->format('d-m-Y');
     }
 
     public function getMonto()
