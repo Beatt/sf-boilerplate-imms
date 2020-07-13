@@ -83,9 +83,13 @@ final class CamposClinicosUsingSql implements CamposClinicos
 
     private function getNumeroSemanas($fechaInicial, $fechaFinal)
     {
-        return Carbon::instance(new \DateTime($fechaInicial))->diffInWeeks(
-            Carbon::instance(new \DateTime($fechaFinal))
-        );
+      $inicial = Carbon::instance(new \DateTime($fechaInicial));
+      $final = Carbon::instance(new \DateTime($fechaFinal));
+
+      $dias = 1 + $final->diffInDays($inicial);
+      $weeks = intval($dias/7) + ($dias % 7 > 0 ? 1 : 0);
+
+      return $weeks;
     }
 
     private function getMontoPagar($lugaresAutorizados, $monto)

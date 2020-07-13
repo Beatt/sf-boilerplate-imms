@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\CampoClinicoType;
 use AppBundle\Service\CampoClinicoManagerInterface;
 use AppBundle\Service\GeneradorCredencialesInterface;
@@ -129,13 +130,18 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         $campo_clinico = $this->getDoctrine()
             ->getRepository(CampoClinico::class)
             ->find($campo_clinico_id);
-
         if (!$campo_clinico) {
             throw $this->createNotFoundException(
                 'Not found for id ' . $campo_clinico
             );
         }
-        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico]);
+        $came = $this->getDoctrine()
+          ->getRepository(Usuario::class)
+          ->getCamebyDelegacion(
+            $campo_clinico->getSolicitud()
+              ->getDelegacion()
+              ->getId());
+        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico, 'came' => $came]);
     }
 
     /**

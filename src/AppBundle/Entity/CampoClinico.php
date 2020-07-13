@@ -357,7 +357,11 @@ class CampoClinico implements ReferenciaBancariaInterface
     {
         $inicial = Carbon::instance($this->fechaInicial);
         $final = Carbon::instance($this->fechaFinal);
-        return $final->diffInWeeks($inicial) > 0 ? $final->diffInWeeks($inicial) : 1;
+
+        $dias = 1 + $final->diffInDays($inicial);
+        $weeks = intval($dias/7) + ($dias % 7 > 0 ? 1 : 0);
+
+        return $this->lugaresAutorizados > 0 ? $weeks : 0;
     }
 
 

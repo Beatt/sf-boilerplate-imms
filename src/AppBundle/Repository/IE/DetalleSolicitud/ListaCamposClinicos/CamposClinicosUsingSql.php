@@ -79,8 +79,13 @@ final class CamposClinicosUsingSql implements CamposClinicos
 
     private function getNoSemanas($fechaInicial, $fechaFinal)
     {
-        $inicial = Carbon::instance(new \DateTime($fechaInicial));
-        $final = Carbon::instance(new \DateTime($fechaFinal));
-        return $final->diffInWeeks($inicial) > 0 ? $final->diffInWeeks($inicial) : 1;
+
+      $inicial = Carbon::instance(new \DateTime($fechaInicial));
+      $final = Carbon::instance(new \DateTime($fechaFinal));
+
+      $dias = 1 + $final->diffInDays($inicial);
+      $weeks = intval($dias/7) + ($dias % 7 > 0 ? 1 : 0);
+
+      return $weeks;
     }
 }
