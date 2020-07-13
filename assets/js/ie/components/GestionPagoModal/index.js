@@ -5,6 +5,8 @@ import {moneyFormat} from "../../../utils";
 import {TIPO_PAGO} from "../../../constants";
 Modal.setAppElement('body')
 import Cleave from 'cleave.js/react';
+const SI_REQUIERE_FACTURA_DEFAULT = 1
+const NO_REQUIERE_FACTURA_DEFAULT = 0
 
 const GestionPagoModal = (
   {
@@ -190,7 +192,7 @@ const GestionPagoModal = (
                     <label htmlFor='comprobante_pago_requiereFactura_yes'>Si&nbsp;</label>
                     <input
                       type="radio"
-                      value="1"
+                      value={SI_REQUIERE_FACTURA_DEFAULT}
                       id='comprobante_pago_requiereFactura_yes'
                       name='comprobante_pago[requiereFactura]'
                       required={true}
@@ -199,7 +201,7 @@ const GestionPagoModal = (
                     <label htmlFor="comprobante_pago_requiereFactura_no">No&nbsp;</label>
                     <input
                       type="radio"
-                      value="0"
+                      value={NO_REQUIERE_FACTURA_DEFAULT}
                       id='comprobante_pago_requiereFactura_no'
                       name='comprobante_pago[requiereFactura]'
                       required={true}
