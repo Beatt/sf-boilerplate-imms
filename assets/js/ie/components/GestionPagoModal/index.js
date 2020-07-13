@@ -1,10 +1,10 @@
 import * as React from 'react'
-import InputMask from "react-input-mask";
 import Modal from "react-modal";
 import {getGestionPagoAsync} from "../../api/pago";
 import {moneyFormat} from "../../../utils";
 import {TIPO_PAGO} from "../../../constants";
 Modal.setAppElement('body')
+import Cleave from 'cleave.js/react';
 
 const GestionPagoModal = (
   {
@@ -17,6 +17,7 @@ const GestionPagoModal = (
 
   const [gestionPago, setGestionPago] = useState({})
   const [isLoading, unLoading] = useState(true)
+  const [monto, setMonto] = useState(undefined)
 
   useEffect(() => {
     getGestionPagoAsync(pagoId)
@@ -25,6 +26,10 @@ const GestionPagoModal = (
         unLoading(false)
       })
   }, [])
+
+  function handleMonto({ target }) {
+    setMonto(target.rawValue)
+  }
 
   return(
     <Modal
@@ -141,14 +146,19 @@ const GestionPagoModal = (
                   </label>
                   <div className="col-md-3">
                     <div className="input-group">
-                      <input
-                        type="number"
-                        id='comprobante_pago_monto'
-                        name='comprobante_pago[monto]'
+                      <Cleave
+                        options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                         className='form-control'
                         required={true}
+                        onChange={handleMonto}
                       />
                       <div className="input-group-addon">$</div>
+                      <input
+                        type="hidden"
+                        id='comprobante_pago_monto'
+                        name='comprobante_pago[monto]'
+                        defaultValue={monto}
+                      />
                     </div>
                   </div>
                 </div>
