@@ -55,7 +55,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                 <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
                 <td>{campoClinico.lugaresSolicitados}</td>
                 <td>{campoClinico.lugaresAutorizados}</td>
-                <td>{dateFormat(campoClinico.fechaInicial)} - {dateFormat(campoClinico.fechaFinal)}</td>
+                <td>{campoClinico.fechaInicial} - {campoClinico.fechaFinal}</td>
                 <td>
                   {
                     isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&

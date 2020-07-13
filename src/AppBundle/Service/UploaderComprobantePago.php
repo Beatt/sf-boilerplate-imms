@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\ComprobantePagoInterface;
+use AppBundle\Entity\Pago;
 use AppBundle\Repository\PagoRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -36,24 +36,22 @@ class UploaderComprobantePago implements UploaderComprobantePagoInterface
     }
 
     /**
-     * @param ComprobantePagoInterface $pago
+     * @param Pago $pago
      * @return bool
      * @throws Exception
      */
-    public function update(ComprobantePagoInterface $pago)
+    public function update(Pago $pago)
     {
         $this->logger->info(sprintf(
             'Iniciado el guardado del comprobante de pago para el pago con id %s', $pago->getId()
         ));
 
-        try {
-            $this->entityManager->flush();
-        } catch (Exception $exception) {
-            $this->logger->critical($exception->getMessage());
-            throw $exception;
-        }
+        $file = $pago->getComprobantePagoFile();
+        $pago->setComprobantePagoFile(null);
+        $this->entityManager->flush();
 
-        $this->logger->info('El comprobante de pago se ha guardado correctamente');
+        $pago->setComprobantePagoFile($file);
+        $this->entityManager->flush();
 
         return true;
     }

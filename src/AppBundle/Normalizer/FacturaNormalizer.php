@@ -2,6 +2,7 @@
 
 namespace AppBundle\Normalizer;
 
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -11,10 +12,16 @@ final class FacturaNormalizer implements NormalizerInterface
 
     private $institucionDocumentsDir;
 
-    public function __construct(ObjectNormalizer $normalizer, $institucionDocumentsDir)
-    {
+    private $tokenStorage;
+
+    public function __construct(
+        ObjectNormalizer $normalizer,
+        $institucionDocumentsDir,
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->normalizer = $normalizer;
         $this->institucionDocumentsDir = $institucionDocumentsDir;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -29,8 +36,9 @@ final class FacturaNormalizer implements NormalizerInterface
 
         if(empty($data['urlArchivo'])) return $data;
 
-        $data['urlArchivo'] = sprintf('%s/%s',
+        $data['urlArchivo'] = sprintf('%s/%s/%s',
             $this->institucionDocumentsDir,
+            $this->tokenStorage->getToken()->getUser()->getInstitucion()->getId(),
             $data['urlArchivo']
         );
         return $data;

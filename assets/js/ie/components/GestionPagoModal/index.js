@@ -1,10 +1,12 @@
 import * as React from 'react'
-import InputMask from "react-input-mask";
 import Modal from "react-modal";
 import {getGestionPagoAsync} from "../../api/pago";
 import {moneyFormat} from "../../../utils";
 import {TIPO_PAGO} from "../../../constants";
 Modal.setAppElement('body')
+import Cleave from 'cleave.js/react';
+const SI_REQUIERE_FACTURA_DEFAULT = 1
+const NO_REQUIERE_FACTURA_DEFAULT = 0
 
 const GestionPagoModal = (
   {
@@ -17,6 +19,7 @@ const GestionPagoModal = (
 
   const [gestionPago, setGestionPago] = useState({})
   const [isLoading, unLoading] = useState(true)
+  const [monto, setMonto] = useState(undefined)
 
   useEffect(() => {
     getGestionPagoAsync(pagoId)
@@ -25,6 +28,10 @@ const GestionPagoModal = (
         unLoading(false)
       })
   }, [])
+
+  function handleMonto({ target }) {
+    setMonto(target.rawValue)
+  }
 
   return(
     <Modal
@@ -122,11 +129,12 @@ const GestionPagoModal = (
                     Fecha en que se realizó el nuevo pago:
                   </label>
                   <div className="col-md-3">
-                    <InputMask
-                      mask="99/99/9999"
+                    <input
+                      type="date"
                       id='comprobante_pago_fechaPago'
                       className='form-control'
                       name='comprobante_pago[fechaPago]'
+                      required={true}
                     />
                   </div>
                 </div>
@@ -140,13 +148,19 @@ const GestionPagoModal = (
                   </label>
                   <div className="col-md-3">
                     <div className="input-group">
-                      <input
-                        type="number"
-                        id='comprobante_pago_monto'
-                        name='comprobante_pago[monto]'
+                      <Cleave
+                        options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                         className='form-control'
+                        required={true}
+                        onChange={handleMonto}
                       />
                       <div className="input-group-addon">$</div>
+                      <input
+                        type="hidden"
+                        id='comprobante_pago_monto'
+                        name='comprobante_pago[monto]'
+                        defaultValue={monto}
+                      />
                     </div>
                   </div>
                 </div>
@@ -163,6 +177,34 @@ const GestionPagoModal = (
                       id='comprobante_pago_comprobantePagoFile'
                       name='comprobante_pago[comprobantePagoFile]'
                       className='form-control'
+                      required={true}
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label
+                    htmlFor='comprobante_pago_requiere_factura'
+                    className="control-label col-md-4 text-right"
+                  >
+                    ¿Requiere factura?&nbsp;
+                  </label>
+                  <div className="col-md-3">
+                    <label htmlFor='comprobante_pago_requiereFactura_yes'>Si&nbsp;</label>
+                    <input
+                      type="radio"
+                      value={SI_REQUIERE_FACTURA_DEFAULT}
+                      id='comprobante_pago_requiereFactura_yes'
+                      name='comprobante_pago[requiereFactura]'
+                      required={true}
+                    />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <label htmlFor="comprobante_pago_requiereFactura_no">No&nbsp;</label>
+                    <input
+                      type="radio"
+                      value={NO_REQUIERE_FACTURA_DEFAULT}
+                      id='comprobante_pago_requiereFactura_no'
+                      name='comprobante_pago[requiereFactura]'
+                      required={true}
                     />
                   </div>
                 </div>
