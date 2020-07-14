@@ -94,12 +94,15 @@ final class ExpedienteUsingSql implements Expediente
     {
         $statement = $this->connection->prepare(
             '
-            SELECT comprobante_pago,
-                   fecha_pago
+            SELECT pago.comprobante_pago,
+                   pago.fecha_pago,
+                   pago.monto,
+                   solicitud.referencia_bancaria,
+                   pago.requiere_factura
             FROM solicitud
-              JOIN pago
-                ON solicitud.id = pago.solicitud_id AND
-                solicitud.referencia_bancaria = pago.referencia_bancaria
+            JOIN pago
+              ON solicitud.id = pago.solicitud_id AND
+                 solicitud.referencia_bancaria = pago.referencia_bancaria
             WHERE solicitud.id = :id
         ');
 
@@ -110,9 +113,11 @@ final class ExpedienteUsingSql implements Expediente
         $records = $statement->fetchAll();
 
         return array_map(function (array $record) {
+            $descripcion = $this->getDescripcion($record);
+
             return new ComprobantePago(
                 $record['fecha_pago'],
-                '',
+                implode(', ', $descripcion),
                 $record['comprobante_pago']
             );
         }, $records);
@@ -146,5 +151,28 @@ final class ExpedienteUsingSql implements Expediente
                 $record['zip']
             );
         }, $records);
+    }
+
+    /**
+     * @param array $record
+     * @return array
+     */
+    private function getDescripcion(array $record)
+    {
+        $descripcion = [];
+        array_push(
+            $descripcion,
+            sprintf('Monto del comprobante de pago: $%s', $record['monto'])
+        );
+        array_push(
+            $descripcion,
+            sprintf('Número de referencia de pago: %s', $record['referencia_bancaria'])
+        );
+        array_push(
+            $descripcion,
+            sprintf('Factura %s', $record ? 'solicitada' : 'no solicitada')
+        );
+
+        return $descripcion;
     }
 }
