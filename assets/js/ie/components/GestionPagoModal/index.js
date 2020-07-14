@@ -1,13 +1,13 @@
 import * as React from 'react'
 import Modal from "react-modal";
-import {getGestionPagoAsync} from "../../api/pago";
-import {moneyFormat} from "../../../utils";
-import {TIPO_PAGO} from "../../../constants";
-Modal.setAppElement('body')
+import { getGestionPagoAsync } from "../../api/pago";
+import { moneyFormat } from "../../../utils";
+import { TIPO_PAGO } from "../../../constants";
 import Cleave from 'cleave.js/react';
 const SI_REQUIERE_FACTURA_DEFAULT = 1
 const NO_REQUIERE_FACTURA_DEFAULT = 0
 
+Modal.setAppElement('body')
 const GestionPagoModal = (
   {
     modalIsOpen,
