@@ -110,7 +110,7 @@ final class ExpedienteUsingSql implements Expediente
         $records = $statement->fetchAll();
 
         return array_map(function (array $record) {
-            return new ComprobantePagoInterface(
+            return new ComprobantePago(
                 $record['fecha_pago'],
                 '',
                 $record['comprobante_pago']
