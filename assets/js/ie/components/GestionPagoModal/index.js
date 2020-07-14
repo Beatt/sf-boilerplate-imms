@@ -1,13 +1,13 @@
 import * as React from 'react'
 import Modal from "react-modal";
-import {getGestionPagoAsync} from "../../api/pago";
-import {moneyFormat} from "../../../utils";
-import {TIPO_PAGO} from "../../../constants";
-Modal.setAppElement('body')
+import { getGestionPagoAsync } from "../../api/pago";
+import { moneyFormat } from "../../../utils";
+import { TIPO_PAGO } from "../../../constants";
 import Cleave from 'cleave.js/react';
 const SI_REQUIERE_FACTURA_DEFAULT = 1
 const NO_REQUIERE_FACTURA_DEFAULT = 0
 
+Modal.setAppElement('body')
 const GestionPagoModal = (
   {
     modalIsOpen,
@@ -20,6 +20,7 @@ const GestionPagoModal = (
   const [gestionPago, setGestionPago] = useState({})
   const [isLoading, unLoading] = useState(true)
   const [monto, setMonto] = useState(undefined)
+  const [hasMontoError, setMontoError] = useState(false)
 
   useEffect(() => {
     getGestionPagoAsync(pagoId)
@@ -31,6 +32,22 @@ const GestionPagoModal = (
 
   function handleMonto({ target }) {
     setMonto(target.rawValue)
+  }
+
+  function isPagoMultiple() {
+    return gestionPago.tipoPago === TIPO_PAGO.MULTIPLE;
+  }
+
+  function handleCargarComprobanteDePago(event) {
+    event.preventDefault();
+
+    if(parseInt(monto) >= parseInt(gestionPago.montoTotalPorPagar)) {
+      setMontoError(false);
+      event.target.submit()
+      return;
+    }
+
+    setMontoError(true)
   }
 
   return(
@@ -53,7 +70,7 @@ const GestionPagoModal = (
           <h3>Cargando información...</h3> :
           <div className='row'>
             <div className="col-md-12">
-              <h2 className='mb-20'>Gestión de pagos</h2>
+              <h2 className='mb-20'>Carga de comprobante de pago</h2>
               <div className="row">
                 <div className="col-md-6">
                   <p className='mb-5'>No. de Solicitud <strong>{gestionPago.noSolicitud}</strong></p>
@@ -61,7 +78,7 @@ const GestionPagoModal = (
                   <p className='mb-20'>Monto total: <strong>{moneyFormat(gestionPago.montoTotal)}</strong></p>
                 </div>
                 {
-                  gestionPago.tipoPago === TIPO_PAGO.MULTIPLE &&
+                  isPagoMultiple() &&
                   <div className="col-md-6">
                     <p className='mb-5'><strong>Campo clínico</strong></p>
                     <p className='mb-5'>Sede: <strong>{gestionPago.campoClinico.sede}</strong></p>
@@ -114,12 +131,13 @@ const GestionPagoModal = (
             }
             <div className="col-md-12">
               <h3 className='mb-5'>Registrar comprobante de pago</h3>
-              <p className='mb-20'>Monto total por pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
+              <p className='mb-20'>Monto total a pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
               <form
                 action={`/ie/pagos/${pagoId}/cargar-comprobante-de-pago`}
                 method='post'
                 className='form-horizontal'
                 encType='multipart/form-data'
+                onSubmit={handleCargarComprobanteDePago}
               >
                 <div className="form-group">
                   <label
@@ -147,7 +165,7 @@ const GestionPagoModal = (
                     <span className='text-danger text-sm'>NOTA: El monto debe coincidir con el comprobante registrado</span>
                   </label>
                   <div className="col-md-3">
-                    <div className="input-group">
+                    <div className={`input-group ${hasMontoError && 'has-error'}`}>
                       <Cleave
                         options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                         className='form-control'
@@ -162,6 +180,7 @@ const GestionPagoModal = (
                         defaultValue={monto}
                       />
                     </div>
+                    { hasMontoError && <span className='text-danger'>El monto registrado es menor al monto total a pagar.</span> }
                   </div>
                 </div>
                 <div className="form-group">
