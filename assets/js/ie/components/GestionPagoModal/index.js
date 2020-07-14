@@ -53,7 +53,7 @@ const GestionPagoModal = (
           <h3>Cargando información...</h3> :
           <div className='row'>
             <div className="col-md-12">
-              <h2 className='mb-20'>Gestión de pagos</h2>
+              <h2 className='mb-20'>Carga de comprobante de pago</h2>
               <div className="row">
                 <div className="col-md-6">
                   <p className='mb-5'>No. de Solicitud <strong>{gestionPago.noSolicitud}</strong></p>
