@@ -33,6 +33,10 @@ const GestionPagoModal = (
     setMonto(target.rawValue)
   }
 
+  function isPagoMultiple() {
+    return gestionPago.tipoPago === TIPO_PAGO.MULTIPLE;
+  }
+
   return(
     <Modal
       isOpen={modalIsOpen}
@@ -61,7 +65,7 @@ const GestionPagoModal = (
                   <p className='mb-20'>Monto total: <strong>{moneyFormat(gestionPago.montoTotal)}</strong></p>
                 </div>
                 {
-                  gestionPago.tipoPago === TIPO_PAGO.MULTIPLE &&
+                  isPagoMultiple() &&
                   <div className="col-md-6">
                     <p className='mb-5'><strong>Campo clínico</strong></p>
                     <p className='mb-5'>Sede: <strong>{gestionPago.campoClinico.sede}</strong></p>
