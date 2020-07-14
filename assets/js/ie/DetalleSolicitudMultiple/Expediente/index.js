@@ -40,7 +40,7 @@ const Expediente = ({ expediente }) => {
           {
             getUniqCamposClinicos(expediente.comprobantesPago).map((item, index) => (
               <tr key={index}>
-                <td>Comprobante de pago de {item}</td>
+                <td>Comprobante de pago del campo clínico {item}</td>
                 <td></td>
                 <td>
                   {
