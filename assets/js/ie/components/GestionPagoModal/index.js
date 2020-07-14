@@ -20,6 +20,7 @@ const GestionPagoModal = (
   const [gestionPago, setGestionPago] = useState({})
   const [isLoading, unLoading] = useState(true)
   const [monto, setMonto] = useState(undefined)
+  const [hasMontoError, setMontoError] = useState(false)
 
   useEffect(() => {
     getGestionPagoAsync(pagoId)
@@ -35,6 +36,18 @@ const GestionPagoModal = (
 
   function isPagoMultiple() {
     return gestionPago.tipoPago === TIPO_PAGO.MULTIPLE;
+  }
+
+  function handleCargarComprobanteDePago(event) {
+    event.preventDefault();
+
+    if(parseInt(monto) >= parseInt(gestionPago.montoTotalPorPagar)) {
+      setMontoError(false);
+      event.target.submit()
+      return;
+    }
+
+    setMontoError(true)
   }
 
   return(
@@ -118,12 +131,13 @@ const GestionPagoModal = (
             }
             <div className="col-md-12">
               <h3 className='mb-5'>Registrar comprobante de pago</h3>
-              <p className='mb-20'>Monto total por pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
+              <p className='mb-20'>Monto total a pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
               <form
                 action={`/ie/pagos/${pagoId}/cargar-comprobante-de-pago`}
                 method='post'
                 className='form-horizontal'
                 encType='multipart/form-data'
+                onSubmit={handleCargarComprobanteDePago}
               >
                 <div className="form-group">
                   <label
@@ -151,7 +165,7 @@ const GestionPagoModal = (
                     <span className='text-danger text-sm'>NOTA: El monto debe coincidir con el comprobante registrado</span>
                   </label>
                   <div className="col-md-3">
-                    <div className="input-group">
+                    <div className={`input-group ${hasMontoError && 'has-error'}`}>
                       <Cleave
                         options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                         className='form-control'
@@ -166,6 +180,7 @@ const GestionPagoModal = (
                         defaultValue={monto}
                       />
                     </div>
+                    { hasMontoError && <span className='text-danger'>El monto registrado es menor al monto total a pagar.</span> }
                   </div>
                 </div>
                 <div className="form-group">
