@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  {{ render(controller('AppBundle:Fofoe\\Fofoe:menu')) }}
+
+  <div id="reporte-wrapper"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="{{ asset('build/fofoe_reportes-inicio.js') }}"></script>
+{% endblock %}
+
