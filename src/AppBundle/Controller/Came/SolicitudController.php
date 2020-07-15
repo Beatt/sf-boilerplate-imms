@@ -111,7 +111,7 @@ class SolicitudController extends DIEControllerController
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax', 'representante']]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'extension', 'correo', 'sitioWeb', 'fax', 'representante']]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
                 ['attributes' => ['id', 'nombre']])
         ]);
@@ -166,14 +166,14 @@ class SolicitudController extends DIEControllerController
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones,
                 'json',
-                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax', 'representante']]),
+                ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'extension','correo', 'sitioWeb', 'fax', 'representante']]),
             'solicitud' => $this->get('serializer')->normalize($solicitud, 'json',
                 ['attributes' => ['id', 'campoClinicos' => ['id', 'asignatura', 'promocion',
                     'convenio' => ['cicloAcademico' => ['id', 'nombre'],
                         'id', 'vigencia', 'vigenciaFormatted', 'label', 'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]],
                     'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
                     'fechaInicial', 'fechaFinal', 'fechaInicialFormatted', 'fechaFinalFormatted'], 'institucion' => ['id', 'nombre', 'fax',
-                    'telefono', 'correo', 'sitioWeb', 'direccion', 'rfc', 'representante', 'convenios' => ['id', 'nombre',
+                    'telefono', 'extension', 'correo', 'sitioWeb', 'direccion', 'rfc', 'representante', 'convenios' => ['id', 'nombre',
                         'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
                         'cicloAcademico' => ['id', 'nombre'], 'vigencia', 'vigenciaFormatted', 'label']]
                 ]]),

@@ -12,7 +12,7 @@ const LinkCredenciales = (props) => {
 
 const LinkFormatoFofoe = (props) => {
     const status = [2, 3, 4, 5, 6, 7];
-    if ((status.indexOf(props.campoClinico.estatus.id) > -1) || props.showFormatoFofoe) {
+    if ( (props.campoClinico.lugaresAutorizados > 0) && ((status.indexOf(props.campoClinico.estatus.id) > -1) || props.showFormatoFofoe) ) {
         return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
             FOFOE</a>);
     }

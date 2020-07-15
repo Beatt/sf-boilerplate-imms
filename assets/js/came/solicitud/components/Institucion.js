@@ -9,6 +9,7 @@ const Institucion = (props) => {
     const [rfc, setRfc] = React.useState(props.institucion && props.institucion.rfc ? props.institucion.rfc : '');
     const [domicilio, setDomicilio] = React.useState(props.institucion && props.institucion.direccion ? props.institucion.direccion : '');
     const [phone, setPhone] = React.useState(props.institucion && props.institucion.telefono ? props.institucion.telefono : '');
+    const [extension, setExtension] = React.useState(props.institucion && props.institucion.extension ? props.institucion.extension : '')
     const [web, setWeb] = React.useState(props.institucion && props.institucion.sitioWeb ? props.institucion.sitioWeb : '');
     const [email, setEmail] = React.useState(props.institucion && props.institucion.correo ? props.institucion.correo : '');
     const [fax, setFax] = React.useState(props.institucion && props.institucion.fax ? props.institucion.fax : '');
@@ -28,6 +29,7 @@ const Institucion = (props) => {
         setRfc(institucion.rfc ? institucion.rfc : '');
         setDomicilio(institucion.direccion ? institucion.direccion : '');
         setPhone(institucion.telefono ? institucion.telefono : '');
+        setExtension(institucion.extension ? institucion.extension: '');
         setWeb(institucion.sitioWeb ? institucion.sitioWeb : '');
         setEmail(institucion.correo ? institucion.correo : '');
         setFax(institucion.fax ? institucion.fax : '');
@@ -59,6 +61,7 @@ const Institucion = (props) => {
             data.append('institucion[fax]', fax);
             data.append('institucion[sitioWeb]', web);
             data.append('institucion[telefono]', phone);
+            data.append('institucion[extension]', extension);
             data.append('institucion[representante]', representante);
             fetch('/came/api/institucion/' + selectedInstitution.id, {
                 method: 'post',
@@ -111,9 +114,20 @@ const Institucion = (props) => {
             result = false;
             obj_errors = Object.assign(obj_errors, {'telefono': ['Solo se pueden ingresar números']});
         }
+
+        if(!(/^\d+$/.test(extension))) {
+            result = false;
+            obj_errors = Object.assign(obj_errors, {'extension': ['Solo se pueden ingresar números']});
+        }
+
         if(!(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email))){
             result = false;
             obj_errors = Object.assign(obj_errors, {'correo': ['Este valor no es una dirección de email válida']});
+        }
+
+        if(representante.indexOf(' ') < 1) {
+            result = false;
+            obj_errors = Object.assign(obj_errors, {'representante': ['Este valor no es un nombre válido']});
         }
         if(!result){
             setErrores(obj_errors);
@@ -202,7 +216,16 @@ const Institucion = (props) => {
                                 <span className="help-block">{errores.telefono ? errores.telefono[0] : ''}</span>
                             </div>
                         </div>
-                        <div className="col-md-9">
+                        <div className="col-md-2">
+                            <div className={`form-group ${errores.extension ? 'has-error has-feedback' : ''}`}>
+                                <label htmlFor="extension">Extension:</label>
+                                <input id={'v'} className={'form-control'}
+                                       required={true}
+                                       type="text" value={extension} onChange={e => setExtension(e.target.value)}/>
+                                <span className="help-block">{errores.v ? errores.extension[0] : ''}</span>
+                            </div>
+                        </div>
+                        <div className="col-md-7">
                             <div className={`form-group ${errores.sitioWeb ? 'has-error has-feedback' : ''}`}>
                                 <label htmlFor="web_page">Página web (Opcional):</label>
                                 <input id="web_page" className={'form-control'}
