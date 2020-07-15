@@ -56,7 +56,7 @@ class InstitucionController extends \AppBundle\Controller\DIEControllerControlle
                 $normalizers = [new DateTimeNormalizer(), new ObjectNormalizer()];
                 $serializer = new Serializer($normalizers, $encoders);
                 $result['object'] = $serializer->normalize($institucion, 'json', ['attributes' =>[
-                    'id', 'nombre', 'rfc', 'direccion', 'telefono', 'correo', 'sitioWeb', 'fax', 'representante'
+                    'id', 'nombre', 'rfc', 'direccion', 'telefono', 'extension', 'correo', 'sitioWeb', 'fax', 'representante'
                 ]]);
                 $result['message'] = 'Los datos de la Institución han sido actualizados con éxito.';
                 return $this->jsonResponse($result);

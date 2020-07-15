@@ -179,10 +179,13 @@ class SolicitudManager implements SolicitudManagerInterface
 
         $user_db = $this->entityManager->getRepository(Usuario::class)->findOneBy(['correo' => $institucion->getCorreo()]);
         if(!$user_db){
+            $name = explode(' ', $institucion->getRepresentante())[0];
+            $pos = strpos($institucion->getRepresentante(), ' ');
+            $last_name = substr($institucion->getRepresentante(), $pos + 1 , 250);
             $user = new Usuario();
             $user->setCorreo($institucion->getCorreo());
-            $user->setNombre(substr($institucion->getRepresentante(), 0, 50));
-            $user->setApellidoPaterno(substr($institucion->getNombre(), 0, 50));
+            $user->setNombre(substr($name, 0, 250));
+            $user->setApellidoPaterno($last_name);
             $user->setCurp('0');
             $user->setRfc('0');
             $user->setSexo('0');

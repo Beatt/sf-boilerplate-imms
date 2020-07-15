@@ -112,7 +112,8 @@ const SolicitudEdit = (props) => {
                     callbackCampoClinico={callbackCampoClinico}
                     callbackIsLoading={callbackIsLoading}
                 />
-                <form onSubmit={handleSolicitudSubmit}>
+                <form onSubmit={handleSolicitudSubmit}
+                      style={{display : (props.solicitud && camposClinicos.length > 0 ? 'block' : 'none')}}>
                     <div className="row">
                         <div className="col-md-12">
                             <label htmlFor="btn_solicitud">&#160;</label>
