@@ -33,14 +33,16 @@ security:
         - { path: '^/admin', roles: ROLE_SUPER }
         - { path: '^/ie', roles: [ROLE_SUPER, ROLE_IE] }
         - { path: '^/came', roles: [ROLE_SUPER, ROLE_CAME] }
-        - { path: '^/fofoe', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO, ROLE_FOFOE_VALIDAR_PAGO, ROLE_FOFOE_VALIDAR_PAGO_MULTIPLE, ROLE_FOFOE_REGISTRAR_FACTURA, ROLE_FOFOE_DETALLE_INSTITUCION_EDUCATIVA] }
         - { path: '^/fofoe/inicio', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO] }
         - { path: '^/fofoe/validar-pago', roles: [ROLE_SUPER, ROLE_FOFOE_VALIDAR_PAGO] }
         - { path: '^/fofoe/validar-pago-multiple', roles: [ROLE_SUPER, ROLE_FOFOE_VALIDAR_PAGO_MULTIPLE] }
         - { path: '^/fofoe/registrar-factura', roles: [ROLE_SUPER, ROLE_FOFOE_REGISTRAR_FACTURA] }
         - { path: '^/fofoe/detalle-institucion-educativa', roles: [ROLE_SUPER, ROLE_FOFOE_DETALLE_INSTITUCION_EDUCATIVA] }
-        - { path: '^/pregrado', roles: [ROLE_SUPER, ROLE_CAME, ROLE_FOFOE] }
-        - { path: '^/enfermeria', roles: [ROLE_SUPER, ROLE_CAME, ROLE_FOFOE] }
+        - { path: '^/fofoe/reporte_ingresos', roles: [ROLE_SUPER, ROLE_FOFOE_REPORTE_INGS] }
+        - { path: '^/fofoe/reporte_oportunidad_pago', roles: [ROLE_SUPER, ROLE_FOFOE_REPORTE_OP] }
+        - { path: '^/fofoe', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO, ROLE_FOFOE_VALIDAR_PAGO, ROLE_FOFOE_VALIDAR_PAGO_MULTIPLE, ROLE_FOFOE_REGISTRAR_FACTURA, ROLE_FOFOE_DETALLE_INSTITUCION_EDUCATIVA] }
+        - { path: '^/pregrado/reporte', roles: [ROLE_SUPER, ROLE_REPORTE_CCS_DET] }
+        - { path: '^/enfermeria/reporte_ciclos', roles: [ROLE_SUPER, ROLE_REPORTE_CCS_ENF] }
         - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
         - { path: '^/formatos', roles: [IS_AUTHENTICATED_FULLY] }
