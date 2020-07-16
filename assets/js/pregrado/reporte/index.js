@@ -1,5 +1,4 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
 import ReactPaginate from 'react-paginate';
 import {Fragment} from "react";
 import {getCarreras, getCiclosAcademicos, getDelegaciones, getEstatusCampoClinico} from "../api/catalogos";
@@ -184,7 +183,7 @@ const TablaCampos = (props) => {
   );
 };
 
-const Index = () => {
+const ReporteDetalle = () => {
   const {useState, useEffect} = React
 
   const [search, setSearch] = useState('')
@@ -238,7 +237,11 @@ const Index = () => {
   }
 
   return (
-    <React.Fragment>
+    <div className="panel panel-default">
+      <div className="panel-heading">
+        Reporte detallado de campos clínicos - Ciclos Clínicos e Internado Médico
+      </div>
+      <div className="panel-body">
       <Filtros
         setCarreraSel={setCarreraSel}
         setCASel={setCASel}
@@ -265,13 +268,9 @@ const Index = () => {
         getCampos={getCampos}
         handleSearch={handleSearch}
       />
-    </React.Fragment>
+      </div>
+    </div>
   );
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-    <Index />,
-    document.getElementById('reporte-wrapper')
-  )
-})
+export default ReporteDetalle
