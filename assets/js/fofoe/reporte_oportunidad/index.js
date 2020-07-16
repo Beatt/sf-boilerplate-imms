@@ -1,12 +1,11 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
 import ReactPaginate from "react-paginate";
 import ContenedorFiltro from "../../pregrado/components/ContenedorFiltro";
 import Buscador from "../../pregrado/components/Buscador";
 import OpcionesPageSize from "../../pregrado/components/OpcionesPageSize";
 import {getReportePagos, getReportePagosCSV} from "./reportePagos";
 
-const Index = (props) => {
+const ReporteOportunidad = () => {
 
   const {useState, useEffect} = React
   const [reportePagos, setReportePagos] = useState([])
@@ -28,7 +27,6 @@ const Index = (props) => {
     toggleLoading(true);
     getReportePagos( desdeSel, hastaSel, search, pag, limit)
       .then( (res) => {
-        console.log(res);
           setReportePagos(res.reporte)
           setTotalItems( res.totalItems )
           setTotalPages( res.numPags)
@@ -143,12 +141,12 @@ const Index = (props) => {
               ) )
             )) :
               <tr>
-                <td colSpan={10} className="text-center"> No hay registros disponibles </td>
+                <td colSpan={14} className="text-center"> No hay registros disponibles </td>
               </tr>
           }
           </tbody>
         </table>
-        { !isLoading ?
+        { !isLoading && reportePagos.length > 0 ?
           <div className="col-md-12">
             <div className="col-md-3">
               {offset} - {offset + (reportePagos.length - 1)} de {totalItems}
@@ -177,9 +175,4 @@ const Index = (props) => {
   );
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-    <Index pagos={window.PAGOS} />,
-    document.getElementById('reporte-wrapper')
-  )
-})
+export default ReporteOportunidad

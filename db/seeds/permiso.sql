@@ -7,3 +7,8 @@ INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Detalle de institución edu
 INSERT INTO permiso (nombre, clave, rol_id) VALUES ('CAME', 'CAME', (select id from rol where rol.clave = 'CAME' limit 1));
 INSERT INTO permiso (nombre, clave, rol_id) VALUES ('IE', 'IE', (select id from rol where rol.clave = 'IE' limit 1));
 INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Super admin', 'SUPER', (select id from rol where rol.clave = 'SUPER' limit 1));
+
+INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte de Ingresos', 'FOFOE_REPORTE_INGS', (select id from rol where rol.clave = 'FOFOE' limit 1));
+INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte Oportunidad de Pago', 'FOFOE_REPORTE_OP', (select id from rol where rol.clave = 'FOFOE' limit 1));
+INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte Detallado de CCS', 'REPORTE_CCS_DET', (select id from rol where rol.clave = 'FOFOE' limit 1));
+INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte de CCS [Enfermeria]', 'REPORTE_CCS_ENF', (select id from rol where rol.clave = 'FOFOE' limit 1));

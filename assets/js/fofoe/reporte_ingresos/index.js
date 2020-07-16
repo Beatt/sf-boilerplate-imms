@@ -1,9 +1,7 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
-import {getReporteIngresos} from './reporteIngresos'
+import {getReporteIngresos} from "./reporteIngresos";
 
-
-const Index = () => {
+const ReporteIngresos = () => {
 
   const {useState, useEffect} = React
   const [reporteIngresos, setReporteIngresos] = useState([]);
@@ -17,11 +15,9 @@ const Index = () => {
   function getDatosReporte() {
     toggleLoading(true);
     getReporteIngresos(anioSel).then((res) => {
-      console.log(res)
       setReporteIngresos(res.reporte)
     }).finally( () => {
         toggleLoading(false);
-        console.log(reporteIngresos);
     })
   }
 
@@ -121,9 +117,6 @@ const Index = () => {
   );
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-  <Index />,
-  document.getElementById('reporte-wrapper')
-  )
-})
+export default ReporteIngresos
+
+
