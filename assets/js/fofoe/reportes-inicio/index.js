@@ -41,11 +41,11 @@ const ReportesInicio = () => {
               <ReporteIngresos />
            : (reporteActivo == 'oportunidad') ?
               <ReporteOportunidad />
-           : (reporteActivo == 'detalle') ?
-              <ReporteDetalle />
-           : (reporteActivo == 'unidad') ?
+            : (reporteActivo == 'unidad') ?
               <ReporteUnidad />
-           : <div><span> Seleccione un reporte </span></div>
+           : // (reporteActivo == 'detalle') ?
+              <ReporteDetalle />
+           //: <div><span> Seleccione un reporte </span></div>
         }
       </div>
     </div>
