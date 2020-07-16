@@ -1,5 +1,4 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
 import ReactPaginate from "react-paginate";
 import ContenedorFiltro from "../../pregrado/components/ContenedorFiltro";
 import Buscador from "../../pregrado/components/Buscador";
@@ -87,7 +86,7 @@ const Filtros = (props) => {
   );
 }
 
-const Index = () => {
+const ReporteUnidad = () => {
 
   const {useState, useEffect} = React
   const [reporteCiclos, setReporteCiclos] = useState([])
@@ -139,14 +138,14 @@ const Index = () => {
     getDatosReporte( e.selected + 1 )
   }
 
-  function handleSearch() {
-    getDatosReporte(1);
+  function handleSearch(numPage, pagSize) {
+    getDatosReporte(1, pagSize);
   }
 
   return (
     <div className="panel panel-default">
       <div className="panel-heading">
-        Pago oportuno de cuotas de recuperación al Fondo de Fomento a la Educación (FOFOE)
+        Reporte de Campos Clínicos por Unidad
       </div>
       <div className="panel-body">
         <Filtros
@@ -162,7 +161,7 @@ const Index = () => {
         />
         <OpcionesPageSize
           setPageSize={setPageSize}
-          handleSearch={handleSearch}
+          handleSearch={getDatosReporte}
         />
         <table className="table">
           <thead>
@@ -237,9 +236,13 @@ const Index = () => {
   );
 };
 
+export default ReporteUnidad
+
+/*
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <Index />,
     document.getElementById('reporte-wrapper')
   )
 })
+*/
