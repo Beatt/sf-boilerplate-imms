@@ -43,9 +43,9 @@ const ReportesInicio = () => {
               <ReporteOportunidad />
             : (reporteActivo == 'unidad') ?
               <ReporteUnidad />
-           : // (reporteActivo == 'detalle') ?
+           :  (reporteActivo == 'detalle') ?
               <ReporteDetalle />
-           //: <div><span> Seleccione un reporte </span></div>
+           : <h2> Seleccione una de las opciones </h2>
         }
       </div>
     </div>
