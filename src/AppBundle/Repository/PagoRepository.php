@@ -141,12 +141,6 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         ];
     }
 
-    public function getYears(){
-        $rsm = new ResultSetMapping();
-        $queryBuilder = $this->createNativeNamedQuery("select extract(YEAR from fecha_pago) from pago group by 1", $rsm);
-        return $queryBuilder->getResult();
-    }
-
     public function getComprobantesPagoByReferenciaBancaria($referenciaBancaria)
     {
         return $this->createQueryBuilder('pago')
