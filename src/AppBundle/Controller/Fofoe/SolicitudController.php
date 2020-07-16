@@ -110,10 +110,7 @@ class SolicitudController extends DIEControllerController
     }
 
 
-    /**
-     * @Route("/inicio", methods={"GET"}, name="fofoe/inicio")
-     *
-     */
+
     public function indexAction(Request $request)
     {
         $perPage = $request->query->get('perPage', 10);

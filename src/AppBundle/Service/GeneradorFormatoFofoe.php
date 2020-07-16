@@ -77,10 +77,13 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
         $date = Carbon::now()->format('Ymd');
         $type = $campoClinico->getConvenio()->getCicloAcademico()->getId()  === 1? 'CCS' : 'INT';
 
-        $response = new Response(file_get_contents($file));
+        $filesize = filesize($file);
+        $filecontent = file_get_contents($file);
+        unlink($file);
+        $response = new Response($filecontent);
         $response->headers->set('Content-Type', 'application/pdf');
         $response->headers->set('Content-Disposition', 'attachment;filename="' . "{$date}_{$campoClinico->getSolicitud()->getNoSolicitud()}-{$type}_{$campoClinico->getId()}_FormatoFOFOE.pdf" . '"');
-        $response->headers->set('Content-length', filesize($file));
+        $response->headers->set('Content-length', $filesize);
         return $response;
     }
 }

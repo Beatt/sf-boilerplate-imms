@@ -109,6 +109,7 @@ const SolicitudValidaMontos = (props) => {
                                             <input className="form-control"
                                                    type="number" value={montos[i].montoInscripcion}
                                                    min={0}
+                                                   step="0.01"
                                                    required={true}
                                                    onChange={e => {montos[i].montoInscripcion = e.target.value; setMontos(Object.assign([], montos))}}
                                                    />
@@ -120,6 +121,7 @@ const SolicitudValidaMontos = (props) => {
                                             <input className="form-control"
                                                    type="number" value={montos[i].montoColegiatura}
                                                    min={0}
+                                                   step="0.01"
                                                    required={true}
                                                    onChange={e => {montos[i].montoColegiatura = e.target.value; setMontos(Object.assign([], montos))}}
                                         />

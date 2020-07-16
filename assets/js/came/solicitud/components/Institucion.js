@@ -115,7 +115,7 @@ const Institucion = (props) => {
             obj_errors = Object.assign(obj_errors, {'telefono': ['Solo se pueden ingresar números']});
         }
 
-        if(!(/^\d+$/.test(extension))) {
+        if(extension.trim() !== '' && !(/^\d+$/.test(extension))) {
             result = false;
             obj_errors = Object.assign(obj_errors, {'extension': ['Solo se pueden ingresar números']});
         }
@@ -129,6 +129,12 @@ const Institucion = (props) => {
             result = false;
             obj_errors = Object.assign(obj_errors, {'representante': ['Este valor no es un nombre válido']});
         }
+
+        if(representante.length > 250) {
+            result = false;
+            obj_errors = Object.assign(obj_errors, {'representante': ['La longitud de representante debe ser menor a 250 letras']});
+        }
+
         if(!result){
             setErrores(obj_errors);
         }else{
@@ -220,7 +226,6 @@ const Institucion = (props) => {
                             <div className={`form-group ${errores.extension ? 'has-error has-feedback' : ''}`}>
                                 <label htmlFor="extension">Extension:</label>
                                 <input id={'v'} className={'form-control'}
-                                       required={true}
                                        type="text" value={extension} onChange={e => setExtension(e.target.value)}/>
                                 <span className="help-block">{errores.v ? errores.extension[0] : ''}</span>
                             </div>

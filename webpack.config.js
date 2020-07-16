@@ -24,7 +24,7 @@ Encore
     .addEntry('enfermeria_reporte-ciclos', './assets/js/enfermeria/reporte_ciclos/index.js')
 
     // FOFOE
-    .addEntry('fofoe_solicitud', './assets/js/fofoe/solicitud/index.js')
+    .addEntry('fofoe_pago', './assets/js/fofoe/pago/index.js')
     .addEntry('fofoe.registrar.factura', './assets/js/fofoe/RegistrarFactura/index.js')
     .addEntry('fofoe_reporte-oportunidad', './assets/js/fofoe/reporte_oportunidad/index.js')
     .addEntry('fofoe_reporte-ingresos', './assets/js/fofoe/reporte_ingresos/index.js')
