@@ -181,7 +181,7 @@ class SolicitudManager implements SolicitudManagerInterface
         if(!$user_db){
             $name = explode(' ', $institucion->getRepresentante())[0];
             $pos = strpos($institucion->getRepresentante(), ' ');
-            $last_name = substr($institucion->getRepresentante(), $pos + 1 , 250);
+            $last_name = substr($institucion->getRepresentante(), $pos + 1 , 50);
             $user = new Usuario();
             $user->setCorreo($institucion->getCorreo());
             $user->setNombre(substr($name, 0, 250));

@@ -46,7 +46,69 @@
             position: inherit;
         }
     }
+
+    .fade-out {
+        animation: fadeOut ease 4s;
+        -webkit-animation: fadeOut ease 4s;
+        -moz-animation: fadeOut ease 4s;
+        -o-animation: fadeOut ease 4s;
+        -ms-animation: fadeOut ease 4s;
+    }
+
+    @keyframes fadeOut {
+         0% {
+             opacity:1;
+         }
+         100% {
+             opacity:0;
+         }
+     }
+
+    @-moz-keyframes fadeOut {
+        0% {
+            opacity:1;
+        }
+        100% {
+            opacity:0;
+        }
+    }
+
+    @-webkit-keyframes fadeOut {
+        0% {
+            opacity:1;
+        }
+        100% {
+            opacity:0;
+        }
+    }
+
+    @-o-keyframes fadeOut {
+        0% {
+            opacity:1;
+        }
+        100% {
+            opacity:0;
+        }
+    }
+
+    @-ms-keyframes fadeOut {
+        0% {
+            opacity:1;
+        }
+        100% {
+            opacity:0;
+        }
+    }
 </style>
+
+<script type="application/javascript">
+    const alert_close_event = (target) => {
+        target.parentNode.classList.add('fade-out');
+        setTimeout(()=>{
+            target.parentNode.remove();
+        }, 4000)
+    }
+</script>
 
 <div class='container-fluid'>
     <div class='row'>
@@ -81,7 +143,8 @@
         {% for label, messages in app.flashes(['success', 'danger']) %}
             {% for message in messages %}
                 <div class="alert alert-{{ label }} text-center alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            onclick="alert_close_event(this)"><span aria-hidden="true">&times;</span></button>
                     {{ message }}
                 </div>
             {% endfor %}

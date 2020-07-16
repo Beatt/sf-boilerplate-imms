@@ -3,8 +3,10 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Pago;
+use Carbon\Carbon;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class PagoRepository extends EntityRepository implements PagoRepositoryInterface
@@ -53,14 +55,96 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
     public function paginate($perPage = 10, $offset = 1, $filters = [])
     {
         $queryBuilder = $this->createQueryBuilder('pago')
+            ->join('pago.solicitud', 'solicitud')
+            ->join('solicitud.camposClinicos', 'campos_clinicos')
+            ->join('campos_clinicos.convenio', 'convenio')
+            ->join('convenio.institucion', 'institucion')
+            ->join('convenio.delegacion', 'delegacion')
+            ->leftJoin('pago.factura', 'factura');
             ;
+
+        if(isset($filters['institucion']) && $filters['institucion']){
+            $queryBuilder->andWhere('upper(unaccent(institucion.nombre)) like UPPER(unaccent(:institucion))')
+                ->setParameter('institucion', '%'.$filters['institucion'].'%');
+        }
+
+        if(isset($filters['delegacion']) && $filters['delegacion']){
+            $queryBuilder->andWhere('upper(unaccent(delegacion.nombre)) like UPPER(unaccent(:delegacion))')
+                ->setParameter('delegacion', '%'.$filters['delegacion'].'%');
+        }
+
+        if(isset($filters['referencia']) && $filters['referencia']){
+            $queryBuilder->andWhere('upper(unaccent(pago.referenciaBancaria)) like UPPER(unaccent(:referencia))')
+                ->setParameter('referencia', '%'.$filters['referencia'].'%');
+        }
+
+        if(isset($filters['factura']) && $filters['factura']){
+            $queryBuilder->andWhere('upper(unaccent(factura.folio)) like UPPER(unaccent(:factura))')
+                ->setParameter('factura', '%'.$filters['factura'].'%');
+        }
+
+        if(isset($filters['no_solicitud']) && $filters['no_solicitud']){
+            $queryBuilder->andWhere('upper(unaccent(solicitud.noSolicitud)) like UPPER(unaccent(:no_solicitud))')
+                ->setParameter('no_solicitud', '%'.$filters['no_solicitud'].'%');
+        }
+
+        if(isset($filters['estado']) && $filters['estado']){
+            switch ($filters['estado']){
+                case 'a':
+                    $queryBuilder->andWhere('pago.validado is null');
+                    break;
+                case 'b':
+                    $queryBuilder->andWhere('pago.validado = true');
+                    break;
+                case 'c':
+                    $queryBuilder->andWhere('pago.validado = true AND pago.requiereFactura = true AND pago.factura is NULL');
+                    break;
+            }
+        }
+
+        if(!isset($filters['year']) || !$filters['year']) {
+            $filters['year'] = Carbon::now()->format('Y');
+        }
+        $fecha_i = "{$filters['year']}-01-01";
+        $fecha_f = "{$filters['year']}-12-31";
+        $queryBuilder->andWhere('pago.fechaPago >= :fecha_i AND pago.fechaPago <= :fecha_f')
+            ->setParameter('fecha_i', $fecha_i)
+            ->setParameter('fecha_f', $fecha_f);
+
+
         $qb2 = clone $queryBuilder;
 
-        return ['data' => $queryBuilder->orderBy('pago.id', 'DESC')->setMaxResults($perPage)
+        if(isset($filter['orderby']) && $filter['orderby']) {
+            switch ($filter['orderby']){
+                case 'a':
+                    $queryBuilder->orderBy('pago.fechaPago', 'DESC');
+                    break;
+                case 'b':
+                    $queryBuilder->orderBy('pago.fechaPago', 'ASC');
+                    break;
+                case 'c':
+                    $queryBuilder->orderBy('solicitud.noSolicitud', 'DESC');
+                    break;
+                case 'd':
+                default:
+                    $queryBuilder->orderBy('solicitud.noSolicitud', 'ASC');
+                    break;
+            }
+        }else{
+            $queryBuilder->orderBy('pago.id', 'DESC');
+        }
+
+        return ['data' => $queryBuilder->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
             'total' => $qb2->select('COUNT(distinct pago.id)')->getQuery()->getSingleScalarResult()
         ];
+    }
+
+    public function getYears(){
+        $rsm = new ResultSetMapping();
+        $queryBuilder = $this->createNativeNamedQuery("select extract(YEAR from fecha_pago) from pago group by 1", $rsm);
+        return $queryBuilder->getResult();
     }
 
     public function getComprobantesPagoByReferenciaBancaria($referenciaBancaria)
