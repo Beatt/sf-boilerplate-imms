@@ -5,8 +5,8 @@ import ReactPaginate from "react-paginate";
 import './index.scss';
 
 const AccionFofoe = ({pago}) => {
-    const RegistroFactura  = () => (<a href="/fofoe/registrar-factura">Registrar Factura</a>);
-    const ValidarPago = () => (<a href="/fofoe/validar-pago">Validar Pago</a>);
+    const RegistroFactura  = () => (<a href={`/fofoe/registrar-factura/${pago.id}`}>Registrar Factura</a>);
+    const ValidarPago = () => (<a href={`/fofoe/validar-pago/${pago.id}`}>Validar Pago</a>);
     if(pago.validado && pago.requiereFactura && !pago.factura){
         return (<RegistroFactura/>);
     }else if(!pago.validado){
@@ -67,7 +67,7 @@ const PagoIndex = (props) => {
                 <div className={``}>
                     <label htmlFor="year">Año: </label>
                     <select id="year" className="form-control"
-                            onChange={e => {setMeta(Object.assign(meta, {year: e.target.value}));  handleSearchEvent(); }}>
+                            onChange={e => {setQuery(Object.assign(query, {year: e.target.value}));  handleSearchEvent(); }}>
                         {props.years.map(item => {
                             return (<option key={`${item.year}`} value={`${item.year}`}>{item.year}</option>)
                         })}
@@ -79,7 +79,7 @@ const PagoIndex = (props) => {
                 <div className={``}>
                     <label htmlFor="orderby">Ordenar por: </label>
                     <select id="orderby" className="form-control"
-                            onChange={e => {setMeta(Object.assign(meta, {orderby: e.target.value}));  handleSearchEvent(); }}>
+                            onChange={e => {setQuery(Object.assign(query, {orderby: e.target.value}));  handleSearchEvent(); }}>
                         {/*<option value="1">1</option>*/}
                         <option value="a">Fecha de pago: más reciente</option>
                         <option value="b">Fecha de pago: más antigua</option>
@@ -153,7 +153,15 @@ const PagoIndex = (props) => {
                                 <th><input type="text" placeholder={'Factura'}
                                            onChange={e => {setQuery(Object.assign(query,{factura: e.target.value})); handleSearchEvent()}}/></th>
                                 <th> </th>
-                                <th> </th>
+                                <th>
+                                    <select className="form-control"
+                                            onChange={e => {console.log(e.target.value); setQuery(Object.assign(query, {estado: e.target.value}));  handleSearchEvent(); }}>>
+                                        <option value="">Seleccionar ...</option>
+                                        <option value="a">Pendiente Validación</option>
+                                        <option value="b">Solicitud Pagada</option>
+                                        <option value="c">Factura Pendiente</option>
+                                    </select>
+                                </th>
                                 <th> </th>
                             </tr>
                             </thead>

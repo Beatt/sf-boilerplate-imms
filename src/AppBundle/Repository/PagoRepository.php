@@ -88,6 +88,20 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
                 ->setParameter('no_solicitud', '%'.$filters['no_solicitud'].'%');
         }
 
+        if(isset($filters['estado']) && $filters['estado']){
+            switch ($filters['estado']){
+                case 'a':
+                    $queryBuilder->andWhere('pago.validado is null');
+                    break;
+                case 'b':
+                    $queryBuilder->andWhere('pago.validado = true');
+                    break;
+                case 'c':
+                    $queryBuilder->andWhere('pago.validado = true AND pago.requiereFactura = true AND pago.factura is NULL');
+                    break;
+            }
+        }
+
         if(!isset($filters['year']) || !$filters['year']) {
             $filters['year'] = Carbon::now()->format('Y');
         }
