@@ -4,7 +4,7 @@ const DEFAULT_DOCUMENT_VALUE = '-'
 const Expediente = ({ expediente }) => {
 
   function getUniqCamposClinicos(comprobantesPago) {
-    return [...new Set(comprobantesPago.map(item => item.descripcion))];
+    return [...new Set(comprobantesPago.map(item => item.options))];
   }
 
   return(
@@ -13,10 +13,10 @@ const Expediente = ({ expediente }) => {
         <table className='table'>
           <thead>
           <tr>
-            <th>Documento</th>
-            <th>Descripción</th>
-            <th>Fecha</th>
-            <th>Archivo</th>
+            <th className='col-md-3'>Documento</th>
+            <th className='col-md-7'>Descripción</th>
+            <th className='col-md-1'>Fecha</th>
+            <th className='col-md-1'>Archivo</th>
           </tr>
           </thead>
           <tbody>
@@ -41,11 +41,26 @@ const Expediente = ({ expediente }) => {
             getUniqCamposClinicos(expediente.comprobantesPago).map((item, index) => (
               <tr key={index}>
                 <td>Comprobante de pago del campo clínico {item}</td>
-                <td></td>
                 <td>
                   {
                     expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.descripcion === item) {
+                      if(comprobante.options === item) {
+                        return(
+                          <span
+                            key={key}
+                          >
+                            {comprobante.descripcion}
+                            <br/>
+                          </span>
+                        );
+                      }
+                    })
+                  }
+                </td>
+                <td>
+                  {
+                    expediente.comprobantesPago.map((comprobante, key) => {
+                      if(comprobante.options === item) {
                         return(
                           <span
                             key={key}
@@ -61,7 +76,7 @@ const Expediente = ({ expediente }) => {
                 <td>
                   {
                     expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.descripcion === item) {
+                      if(comprobante.options === item) {
                         return(
                           <a
                             key={key}

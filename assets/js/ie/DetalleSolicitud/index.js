@@ -108,10 +108,10 @@ const ListaCampos = ({ solicitud }) => {
             <table className='table'>
               <thead className='headers'>
               <tr>
-                <th>Documento</th>
-                <th>Descripcion</th>
-                <th>Fecha</th>
-                <th>Archivo</th>
+                <th className='col-md-3'>Documento</th>
+                <th className='col-md-7'>Descripción</th>
+                <th className='col-md-1'>Fecha</th>
+                <th className='col-md-1'>Archivo</th>
               </tr>
               </thead>
               <tbody>

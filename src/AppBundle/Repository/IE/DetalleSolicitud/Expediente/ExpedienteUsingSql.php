@@ -5,7 +5,7 @@ namespace AppBundle\Repository\IE\DetalleSolicitud\Expediente;
 use AppBundle\ObjectValues\SolicitudId;
 use Doctrine\DBAL\Driver\Connection;
 
-final class ExpedienteUsingSql implements Expediente
+final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
 {
     private $connection;
 
@@ -94,12 +94,15 @@ final class ExpedienteUsingSql implements Expediente
     {
         $statement = $this->connection->prepare(
             '
-            SELECT comprobante_pago,
-                   fecha_pago
+            SELECT pago.comprobante_pago,
+                   pago.fecha_pago,
+                   pago.monto,
+                   solicitud.referencia_bancaria,
+                   pago.requiere_factura
             FROM solicitud
-              JOIN pago
-                ON solicitud.id = pago.solicitud_id AND
-                solicitud.referencia_bancaria = pago.referencia_bancaria
+            JOIN pago
+              ON solicitud.id = pago.solicitud_id AND
+                 solicitud.referencia_bancaria = pago.referencia_bancaria
             WHERE solicitud.id = :id
         ');
 
@@ -110,9 +113,10 @@ final class ExpedienteUsingSql implements Expediente
         $records = $statement->fetchAll();
 
         return array_map(function (array $record) {
-            return new ComprobantePagoInterface(
+
+            return new ComprobantePago(
                 $record['fecha_pago'],
-                '',
+                $this->getDescripcion($record),
                 $record['comprobante_pago']
             );
         }, $records);
