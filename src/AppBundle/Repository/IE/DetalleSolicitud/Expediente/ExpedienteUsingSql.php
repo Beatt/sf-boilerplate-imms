@@ -5,7 +5,7 @@ namespace AppBundle\Repository\IE\DetalleSolicitud\Expediente;
 use AppBundle\ObjectValues\SolicitudId;
 use Doctrine\DBAL\Driver\Connection;
 
-final class ExpedienteUsingSql implements Expediente
+final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
 {
     private $connection;
 
@@ -113,11 +113,10 @@ final class ExpedienteUsingSql implements Expediente
         $records = $statement->fetchAll();
 
         return array_map(function (array $record) {
-            $descripcion = $this->getDescripcion($record);
 
             return new ComprobantePago(
                 $record['fecha_pago'],
-                implode(', ', $descripcion),
+                $this->getDescripcion($record),
                 $record['comprobante_pago']
             );
         }, $records);
@@ -151,28 +150,5 @@ final class ExpedienteUsingSql implements Expediente
                 $record['zip']
             );
         }, $records);
-    }
-
-    /**
-     * @param array $record
-     * @return array
-     */
-    private function getDescripcion(array $record)
-    {
-        $descripcion = [];
-        array_push(
-            $descripcion,
-            sprintf('Monto del comprobante de pago: $%s', $record['monto'])
-        );
-        array_push(
-            $descripcion,
-            sprintf('Número de referencia de pago: %s', $record['referencia_bancaria'])
-        );
-        array_push(
-            $descripcion,
-            sprintf('Factura %s', $record ? 'solicitada' : 'no solicitada')
-        );
-
-        return $descripcion;
     }
 }

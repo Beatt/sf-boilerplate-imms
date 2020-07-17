@@ -3,12 +3,13 @@
 namespace AppBundle\Repository\IE\DetalleSolicitudMultiple\Expediente;
 
 use AppBundle\ObjectValues\SolicitudId;
+use AppBundle\Repository\IE\DetalleSolicitud\Expediente\AbstractExpediente;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\ComprobantePago;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\Documents;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\OficioMontos;
 use Doctrine\DBAL\Driver\Connection;
 
-final class ExpedienteUsingSql implements Expediente
+final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
 {
     private $connection;
 
@@ -98,7 +99,9 @@ final class ExpedienteUsingSql implements Expediente
             SELECT campo_clinico.id,
                    unidad.nombre AS nombre_unidad,
                    pago.comprobante_pago,
-                   pago.fecha_pago
+                   pago.fecha_pago,
+                   pago.referencia_bancaria,
+                   pago.monto
             FROM solicitud
                      JOIN campo_clinico
                           ON solicitud.id = campo_clinico.solicitud_id
@@ -121,8 +124,9 @@ final class ExpedienteUsingSql implements Expediente
         return array_map(function (array $record) {
             return new ComprobantePago(
                 $record['fecha_pago'],
-                $record['nombre_unidad'],
-                $record['comprobante_pago']
+                $this->getDescripcion($record),
+                $record['comprobante_pago'],
+                $record['nombre_unidad']
             );
         }, $records);
     }

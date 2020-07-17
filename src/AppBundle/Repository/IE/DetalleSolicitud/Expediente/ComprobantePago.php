@@ -8,8 +8,8 @@ final class ComprobantePago extends AbstractDocument implements DocumentInterfac
 {
     const NAME = "Comprobante de pago";
 
-    public function __construct($fecha, $descripcion, $urlArchivo)
+    public function __construct($fecha, $descripcion, $urlArchivo, $options = null)
     {
-        parent::__construct(self::NAME, $fecha, $descripcion, $urlArchivo);
+        parent::__construct(self::NAME, $fecha, $descripcion, $urlArchivo, $options);
     }
 }
