@@ -95,15 +95,16 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
         $statement = $this->connection->prepare(
             '
             SELECT pago.comprobante_pago,
-                   pago.fecha_pago,
+                   pago.fecha_creacion,
                    pago.monto,
                    solicitud.referencia_bancaria,
                    pago.requiere_factura
             FROM solicitud
             JOIN pago
-              ON solicitud.id = pago.solicitud_id AND
-                 solicitud.referencia_bancaria = pago.referencia_bancaria
+              ON solicitud.id = pago.solicitud_id 
             WHERE solicitud.id = :id
+                AND solicitud.referencia_bancaria = pago.referencia_bancaria
+                AND pago.fecha_pago IS NOT NULL
         ');
 
         $statement->execute([
@@ -115,7 +116,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
         return array_map(function (array $record) {
 
             return new ComprobantePago(
-                $record['fecha_pago'],
+                $record['fecha_creacion'],
                 $this->getDescripcion($record),
                 $record['comprobante_pago']
             );

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import GestionPagoModal from "../../components/GestionPagoModal";
-import {dateFormat} from "../../../utils";
+import { SOLICITUD } from "../../../constants";
+import { getActionNameByInstitucionEducativa } from "../../../utils";
 
 const DetalleSolicitudMultiple = ({ solicitud }) => {
   const { useState } = React
@@ -30,68 +31,96 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
   }
 
   return(
-    <div className="panel panel-default">
-      <div className="panel-body">
-        <table className='table'>
-          <thead className='headers'>
-          <tr>
-            <th>Sede</th>
-            <th>Campo clínico</th>
-            <th>Carrera</th>
-            <th>No. de lugares <br/>solicitados</th>
-            <th>No. de lugares <br/>autorizados</th>
-            <th>Periodo</th>
-            <th>Estado</th>
-            <th>Comprobante</th>
-            <th>Factura</th>
-          </tr>
-          </thead>
-          <tbody>
+    <div className='row'>
+      <div className="col-md-12">
+        <p><span className="text-bold">No. solicitud:</span> {solicitud.noSolicitud}</p>
+        <div className="row">
+          <div className="col-md-6 mt-10">
+            <p className="mb-20"><span className="text-bold">Estado de la solicitud:</span> {solicitud.estatus}</p>
+          </div>
           {
-            solicitud.camposClinicos.map((campoClinico, index) =>
-              <tr key={index}>
-                <td>{campoClinico.unidad.nombre}</td>
-                <td>{campoClinico.convenio.cicloAcademico.nombre}</td>
-                <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
-                <td>{campoClinico.lugaresSolicitados}</td>
-                <td>{campoClinico.lugaresAutorizados}</td>
-                <td>{campoClinico.fechaInicial} - {campoClinico.fechaFinal}</td>
-                <td>
-                  {
-                    isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
-                    campoClinico.estatus
-                  }
-                </td>
-                <td>
-                  {
-                    isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
-                    campoClinico.estatus === 'Pago' ?
-                      <button className='btn btn-default' disabled={true}>En validación por FOFOE</button> :
-                      <button className="btn btn-success" onClick={() => {
-                        setCampoClinicoSelected(campoClinico)
-                        setModalIsOpen(true)
-                      }}>Cargar comprobante</button>
-                  }
-                </td>
-                <td>
-                  {
-                    isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
-                    getFactura(campoClinico.pago.urlArchivo, campoClinico.requiereFactura)
-                  }
-                </td>
-              </tr>
-            )
+            solicitud.estatus === SOLICITUD.FORMATOS_DE_PAGO_GENERADOS &&
+            <div className="col-md-6">
+              <strong>Acción</strong>&nbsp;
+              <a
+                href={`/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`}
+                className='btn btn-default'
+              >
+                {getActionNameByInstitucionEducativa(solicitud.estatus, false)}
+              </a>
+            </div>
           }
-          </tbody>
-        </table>
-        {
-          modalIsOpen &&
-          <GestionPagoModal
-            modalIsOpen={modalIsOpen}
-            closeModal={closeModal}
-            pagoId={campoClinicoSelected.pago.id}
-          />
-        }
+        </div>
+      </div>
+      <div className="col-md-12 mt-20">
+        <p><span className="text-bold">Se autorizarón:</span> {solicitud.totalCamposClinicosAutorizados} de {solicitud.camposClinicos.length} campos clínicos solicitados</p>
+      </div>
+      <div className="col-md-12 mt-10">
+        <div className="panel panel-default">
+          <div className="panel-body">
+            <table className='table'>
+              <thead className='headers'>
+              <tr>
+                <th>Sede</th>
+                <th>Campo clínico</th>
+                <th>Carrera</th>
+                <th>No. de lugares <br/>solicitados</th>
+                <th>No. de lugares <br/>autorizados</th>
+                <th>Periodo</th>
+                <th>Estado</th>
+                <th>Comprobante</th>
+                <th>Factura</th>
+              </tr>
+              </thead>
+              <tbody>
+              {
+                solicitud.camposClinicos.map((campoClinico, index) =>
+                  <tr key={index}>
+                    <td>{campoClinico.unidad.nombre}</td>
+                    <td>{campoClinico.convenio.cicloAcademico.nombre}</td>
+                    <td>{campoClinico.convenio.carrera.nivelAcademico.nombre}. {campoClinico.convenio.carrera.nombre}</td>
+                    <td>{campoClinico.lugaresSolicitados}</td>
+                    <td>{campoClinico.lugaresAutorizados}</td>
+                    <td>{campoClinico.fechaInicial} - {campoClinico.fechaFinal}</td>
+                    <td>
+                      {
+                        isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
+                        campoClinico.estatus
+                      }
+                    </td>
+                    <td>
+                      {
+                        isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
+                        campoClinico.estatus === 'Pago' ?
+                          <button className='btn btn-default' disabled={true}>En validación por FOFOE</button> :
+                          solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES ?
+                            <button className="btn btn-success" onClick={() => {
+                              setCampoClinicoSelected(campoClinico)
+                              setModalIsOpen(true)
+                            }}>Cargar comprobante</button> : 'Pendiente'
+                      }
+                    </td>
+                    <td>
+                      {
+                        isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
+                        getFactura(campoClinico.pago.urlArchivo, campoClinico.requiereFactura)
+                      }
+                    </td>
+                  </tr>
+                )
+              }
+              </tbody>
+            </table>
+            {
+              modalIsOpen &&
+              <GestionPagoModal
+                modalIsOpen={modalIsOpen}
+                closeModal={closeModal}
+                pagoId={campoClinicoSelected.pago.id}
+              />
+            }
+          </div>
+        </div>
       </div>
     </div>
   )
