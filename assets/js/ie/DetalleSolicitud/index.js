@@ -48,9 +48,10 @@ const ListaCampos = ({ solicitud }) => {
   return (
     <div className='row'>
       <div className="col-md-12">
+        <p><span className="text-bold">No. solicitud:</span> {solicitud.noSolicitud}</p>
         <div className="row">
           <div className="col-md-6 mt-10">
-            <p><strong>Estado:</strong> {solicitud.estatus}</p>
+            <p><strong>Estado de la solicitud:</strong> {solicitud.estatus}</p>
           </div>
           <div className="col-md-6">
             <strong>Acción</strong>&nbsp;
