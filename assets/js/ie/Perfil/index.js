@@ -178,7 +178,7 @@ const ValidarInfo = (
           {
             institucion.cedulaIdentificacion &&
             <a
-              href={institucion.cedulaIdentificacion}
+              href={`/ie/descargar-cedula-de-identificacion-fiscal`}
               download
             >
               Descargar cédula

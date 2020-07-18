@@ -6,6 +6,7 @@ use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Exception\CouldNotFoundCedulaIdentificacionFiscal;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
@@ -53,9 +54,30 @@ final class DocumentController extends DIEControllerController
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_COMPROBANTE_DE_PAGO, $solicitud);
 
         return $this->pdfResponse(
-            sprintf('../uploads/instituciones/%s/%s',
+            sprintf(
+                '../uploads/instituciones/%s/%s',
                 $institucion->getId(),
                 $pago->getComprobantePago()
+            )
+        );
+    }
+
+    /**
+     * @Route("/descargar-cedula-de-identificacion-fiscal", name="ie#descargar_cedula_de_identificacion_fiscal")
+     */
+    public function descargarCedulaDeIdentificacionFiscal()
+    {
+        /** @var Institucion $institucion */
+        $institucion = $this->getUser()->getInstitucion();
+        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+
+        if(!$institucion->getCedulaIdentificacion()) throw CouldNotFoundCedulaIdentificacionFiscal::withInstitucionId($institucion->getId());
+
+        return $this->pdfResponse(
+            sprintf(
+                '../uploads/instituciones/%s/%s',
+                $institucion->getId(),
+                $institucion->getCedulaIdentificacion()
             )
         );
     }
