@@ -66,10 +66,11 @@ final class CampoClinico
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function getFechaInicial()
     {
-        return $this->fechaInicial;
+        return (new \DateTime($this->fechaInicial))->format('d-m-Y');
     }
 
     /**
@@ -122,9 +123,10 @@ final class CampoClinico
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function getFechaFinal()
     {
-        return $this->fechaFinal;
+        return (new \DateTime($this->fechaFinal))->format('d-m-Y');
     }
 }

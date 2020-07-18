@@ -39,7 +39,7 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
                 <td>{campoClinico.lugaresSolicitados}</td>
                 <td>{campoClinico.lugaresAutorizados}</td>
                 <td>
-                  {new Date(campoClinico.fechaInicial).toLocaleDateString()} - {new Date(campoClinico.fechaFinal).toLocaleDateString()}
+                  {campoClinico.fechaInicial} - {campoClinico.fechaFinal}
                 </td>
                 <td>{campoClinico.numeroSemanas}</td>
                 <td>
