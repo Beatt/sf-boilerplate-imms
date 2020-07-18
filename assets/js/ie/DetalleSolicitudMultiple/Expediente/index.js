@@ -4,7 +4,7 @@ const DEFAULT_DOCUMENT_VALUE = '-'
 const Expediente = ({ expediente }) => {
 
   function getUniqCamposClinicos(comprobantesPago) {
-    return [...new Set(comprobantesPago.map(item => item.options))];
+    return [...new Set(comprobantesPago.map(item => item.options.unidad))];
   }
 
   return(
@@ -44,7 +44,7 @@ const Expediente = ({ expediente }) => {
                 <td>
                   {
                     expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.options === item) {
+                      if(comprobante.options.unidad === item) {
                         return(
                           <span
                             key={key}
@@ -60,7 +60,7 @@ const Expediente = ({ expediente }) => {
                 <td>
                   {
                     expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.options === item) {
+                      if(comprobante.options.unidad === item) {
                         return(
                           <span
                             key={key}
@@ -76,11 +76,11 @@ const Expediente = ({ expediente }) => {
                 <td>
                   {
                     expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.options === item) {
+                      if(comprobante.options.unidad === item) {
                         return(
                           <a
                             key={key}
-                            href={comprobante.urlArchivo}
+                            href={`/ie/solicitudes/${comprobante.options.solicitudId}/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
                             target='_blank'
                           >
                             Descargar <br/>
