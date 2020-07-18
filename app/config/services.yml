@@ -5,7 +5,7 @@ parameters:
     zip_referencias_bancarias_dir: '%kernel.root_dir%/../var/Referenciasbancarias.zip'
     formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
     credenciales_dir: '%kernel.root_dir%/../var/credenciales'
-    comprobantes_pago_dir: '/uploads/files/instituciones'
+    comprobantes_pago_dir: '%kernel.root_dir%/../uploads/instituciones'
     cedula_identificacion_pago_dir: '/uploads/files/instituciones'
 
 imports:

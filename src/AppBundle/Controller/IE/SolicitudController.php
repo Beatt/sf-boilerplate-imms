@@ -16,7 +16,6 @@ use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitud;
 use AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CamposClinicos;
-use AppBundle\Repository\PagoRepository;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
@@ -459,7 +458,7 @@ class SolicitudController extends DIEControllerController
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_COMPROBANTE_DE_PAGO, $solicitud);
 
         return $this->pdfResponse(
-            sprintf('uploads/files/instituciones/%s/%s',
+            sprintf('../uploads/instituciones/%s/%s',
                 $institucion->getId(),
                 $pago->getComprobantePago()
             )

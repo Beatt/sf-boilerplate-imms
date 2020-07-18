@@ -100,7 +100,7 @@ vich_uploader:
             directory_namer: app.directory_namer.institucion
         comprobantes_pagos:
             uri_prefix: '%app.path.instituciones%'
-            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            upload_destination: '%kernel.root_dir%/../uploads/instituciones'
             namer: AppBundle\Vich\Naming\ComprobantePagoNamer
             directory_namer: app.directory_namer.institucion
         comprobantes_inscripcion:
