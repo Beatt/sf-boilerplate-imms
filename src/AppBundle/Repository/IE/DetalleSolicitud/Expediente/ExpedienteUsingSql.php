@@ -101,9 +101,11 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                    pago.requiere_factura
             FROM solicitud
             JOIN pago
-              ON solicitud.id = pago.solicitud_id AND
-                 solicitud.referencia_bancaria = pago.referencia_bancaria
+              ON solicitud.id = pago.solicitud_id 
             WHERE solicitud.id = :id
+                AND solicitud.referencia_bancaria = pago.referencia_bancaria
+                AND pago.fecha_pago IS NOT NULL
+            ORDER BY unidad.nombre
         ');
 
         $statement->execute([
