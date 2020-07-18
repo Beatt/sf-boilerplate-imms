@@ -99,7 +99,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
             SELECT campo_clinico.id,
                    unidad.nombre AS nombre_unidad,
                    pago.comprobante_pago,
-                   pago.fecha_pago,
+                   pago.fecha_creacion,
                    pago.referencia_bancaria,
                    pago.monto
             FROM solicitud
@@ -123,7 +123,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
 
         return array_map(function (array $record) {
             return new ComprobantePago(
-                $record['fecha_pago'],
+                $record['fecha_creacion'],
                 $this->getDescripcion($record),
                 $record['comprobante_pago'],
                 $record['nombre_unidad']
