@@ -1,6 +1,5 @@
 import * as React from 'react'
 import GestionPagoModal from "../../components/GestionPagoModal";
-import {dateFormat} from "../../../utils";
 
 const DetalleSolicitudMultiple = ({ solicitud }) => {
   const { useState } = React
