@@ -105,7 +105,6 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
             WHERE solicitud.id = :id
                 AND solicitud.referencia_bancaria = pago.referencia_bancaria
                 AND pago.fecha_pago IS NOT NULL
-            ORDER BY unidad.nombre
         ');
 
         $statement->execute([
