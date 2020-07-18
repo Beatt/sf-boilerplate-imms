@@ -27,7 +27,7 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
     public function procesar(Solicitud $solicitud)
     {
         if($solicitud->getEstatus() !== SolicitudInterface::MONTOS_VALIDADOS_CAME) {
-            throw new \Exception('Asignación de forma de pago no permitida');
+            throw new \Exception('Asignación de tipo de pago no permitida');
         }
 
         if($this->isPagoUnico($solicitud)) {
