@@ -98,7 +98,8 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                    pago.fecha_creacion,
                    pago.monto,
                    solicitud.referencia_bancaria,
-                   pago.requiere_factura
+                   pago.requiere_factura,
+                   pago.id AS pago_id
             FROM solicitud
             JOIN pago
               ON solicitud.id = pago.solicitud_id 
@@ -113,12 +114,16 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
 
         $records = $statement->fetchAll();
 
-        return array_map(function (array $record) {
+        return array_map(function (array $record) use ($solicitudId) {
 
             return new ComprobantePago(
                 $record['fecha_creacion'],
                 $this->getDescripcion($record),
-                $record['comprobante_pago']
+                $record['comprobante_pago'],
+                [
+                    'pagoId' => $record['pago_id'],
+                    'solicitudId' => $solicitudId->asInt()
+                ]
             );
         }, $records);
     }
