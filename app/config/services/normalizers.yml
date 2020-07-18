@@ -9,7 +9,7 @@ services:
     class: AppBundle\Normalizer\GestionPagoNormalizer
     arguments:
       - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
-      - '%comprobantes_pago_dir%'
+      - '%institucion_dir%'
     public: true
     tags: ['serializer.normalizer']
 
@@ -17,7 +17,7 @@ services:
     class: AppBundle\Normalizer\CedulaIdentificacionNormalizer
     arguments:
       - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
-      - '%cedula_identificacion_pago_dir%'
+      - '%institucion_dir%'
     public: true
     tags: ['serializer.normalizer']
 
