@@ -69,19 +69,17 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         ]);
 
         $monto = 30000;
-
         /** @var CampoClinico $campoClinico */
         $campoClinico = $solicitud->getCamposClinicos()->first();
         $campoClinico->setMonto($monto);
-
         /** @var Pago $pago */
         $pago = $solicitud->getPagos()->first();
         $pago->setMonto($monto);
-
         $this->entityManager->flush();
 
         $this->procesadorValidarPago->procesar($pago);
 
+        $this->entityManager->clear();
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($solicitud->getId());
 
@@ -108,19 +106,17 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         ]);
 
         $monto = 30000;
-
         /** @var CampoClinico $campoClinico */
         $campoClinico = $solicitud->getCamposClinicos()->first();
         $campoClinico->setMonto($monto);
-
         /** @var Pago $pago */
         $pago = $solicitud->getPagos()->first();
         $pago->setMonto($monto);
-
         $this->entityManager->flush();
 
         $this->procesadorValidarPago->procesar($pago);
 
+        $this->entityManager->clear();
         /** @var CampoClinico $campoClinico */
         $campoClinico = $this->campoClinicoRepository->findOneBy([
             'referenciaBancaria' => $pago->getReferenciaBancaria()
@@ -146,20 +142,18 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         ]);
 
         $monto = 30000;
-
         /** @var CampoClinico $campoClinico */
         $campoClinico = $solicitud->getCamposClinicos()->first();
         $campoClinico->setMonto($monto);
-
         /** @var Pago $pago */
         $pago = $solicitud->getPagos()->first();
         $pago->setMonto($monto);
         $pago->setRequiereFactura(false);
-
         $this->entityManager->flush();
 
         $this->procesadorValidarPago->procesar($pago);
 
+        $this->entityManager->clear();
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($solicitud->getId());
 
@@ -184,22 +178,18 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
             'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
             'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_UNICO
         ]);
-
         $montoAPagar = 30000;
         $montoPagado = 10000;
-
         $solicitud->setMonto($montoAPagar);
-
         /** @var Pago $pago */
         $pago = $solicitud->getPagos()->first();
         $pago->setMonto($montoPagado);
         $pago->setValidado(false);
-
         $this->entityManager->flush();
 
         $this->procesadorValidarPago->procesar($pago);
 
-        $this->entityManager->detach($solicitud);
+        $this->entityManager->clear();
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($solicitud->getId());
 
