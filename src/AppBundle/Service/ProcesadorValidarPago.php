@@ -7,6 +7,7 @@ use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampo;
 use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
+use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
@@ -39,16 +40,11 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         $solicitud = $pago->getSolicitud();
 
         if($solicitud->isPagoUnico()) {
-            /** @var CampoClinico $camposClinico */
-            foreach($solicitud->getCamposClinicos() as $camposClinico) {
-                $estatus = $this->getEstatusCampoByPagoValidado($pago);
-                $camposClinico->setEstatus($estatus);
-            }
-
             if(!$pago->isRequiereFactura()) $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
+            $this->updateEstadoCamposClinicosPorPagoUnico($pago, $solicitud);
         }
         else {
-            $this->actualizarEstatusDeCampoClinicoActual($pago);
+            $this->updateEstatusCampoClinicoPorPagoMultiple($pago);
         }
 
         if(!$pago->isValidado()) {
@@ -60,29 +56,14 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
 
     /**
      * @param Pago $pago
+     * @param Solicitud $solicitud
      */
-    private function createPago(Pago $pago)
+    private function updateEstadoCamposClinicosPorPagoUnico(Pago $pago, Solicitud $solicitud)
     {
-        $newPago = new Pago();
-        $newPago->setRequiereFactura(false);
-        $newPago->setSolicitud($pago->getSolicitud());
-        $newPago->setReferenciaBancaria($pago->getReferenciaBancaria());
-        $newPago->setMonto($this->calculator->getMontoAPagar($pago));
-        $pago->getSolicitud()->addPago($pago);
-        $this->entityManager->persist($newPago);
-    }
-
-    /**
-     * @param Pago $pago
-     */
-    private function actualizarEstatusDeCampoClinicoActual(Pago $pago)
-    {
-        $camposClinico = $this->campoClinicoRepository->findOneBy([
-            'referenciaBancaria' => $pago->getReferenciaBancaria()
-        ]);
-
-        $estatus = $this->getEstatusCampoByPagoValidado($pago);
-        $camposClinico->setEstatus($estatus);
+        array_map(function (CampoClinico $campoClinico) use ($pago) {
+            $estatus = $this->getEstatusCampoByPagoValidado($pago);
+            $campoClinico->setEstatus($estatus);
+        }, $solicitud->getCamposClinicos()->toArray());
     }
 
     /**
@@ -98,5 +79,32 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
                 EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE :
                 EstatusCampoInterface::CREDENCIALES_GENERADAS
         ]);
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    private function updateEstatusCampoClinicoPorPagoMultiple(Pago $pago)
+    {
+        $camposClinico = $this->campoClinicoRepository->findOneBy([
+            'referenciaBancaria' => $pago->getReferenciaBancaria()
+        ]);
+
+        $estatus = $this->getEstatusCampoByPagoValidado($pago);
+        $camposClinico->setEstatus($estatus);
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    private function createPago(Pago $pago)
+    {
+        $newPago = new Pago();
+        $newPago->setRequiereFactura(false);
+        $newPago->setSolicitud($pago->getSolicitud());
+        $newPago->setReferenciaBancaria($pago->getReferenciaBancaria());
+        $newPago->setMonto($this->calculator->getMontoAPagar($pago));
+        $pago->getSolicitud()->addPago($pago);
+        $this->entityManager->persist($newPago);
     }
 }
