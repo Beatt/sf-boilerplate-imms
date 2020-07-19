@@ -95,42 +95,6 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         }
     }
 
-    public function testLaIEHaPagadoCorrectamenteElMontoTotalPorCampoClinicoYSolicitoFactura()
-    {
-        $this->commandTester->execute(['--append' => true]);
-
-        /** @var Solicitud $solicitud */
-        $solicitud = $this->solicitudRepository->findOneBy([
-            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
-            'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
-        ]);
-
-        $monto = 30000;
-        /** @var CampoClinico $campoClinico */
-        $campoClinico = $solicitud->getCamposClinicos()->first();
-        $campoClinico->setMonto($monto);
-        /** @var Pago $pago */
-        $pago = $solicitud->getPagos()->first();
-        $pago->setMonto($monto);
-        $this->entityManager->flush();
-
-        $this->procesadorValidarPago->procesar($pago);
-
-        $this->entityManager->clear();
-        /** @var CampoClinico $campoClinico */
-        $campoClinico = $this->campoClinicoRepository->findOneBy([
-            'referenciaBancaria' => $pago->getReferenciaBancaria()
-        ]);
-
-        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $campoClinico->getSolicitud()->getEstatus());
-        $this->assertCount(1, $campoClinico->getPagos());
-        $this->assertEquals(EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE, $campoClinico->getEstatus()->getNombre());
-        $this->assertEquals(
-            EstatusCampoInterface::PAGO,
-            $campoClinico->getSolicitud()->getCamposClinicos()->last()->getEstatus()->getNombre()
-        );
-    }
-
     public function testLaIEHaPagadoCorrectamenteElMontoTotalPorSolicitudYNoSolicitoFactura()
     {
         $this->commandTester->execute(['--append' => true]);
@@ -169,6 +133,42 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         }
     }
 
+    public function testLaIEHaPagadoCorrectamenteElMontoTotalPorCampoClinicoYSolicitoFactura()
+    {
+        $this->commandTester->execute(['--append' => true]);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->findOneBy([
+            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
+            'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
+        ]);
+
+        $monto = 30000;
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $solicitud->getCamposClinicos()->first();
+        $campoClinico->setMonto($monto);
+        /** @var Pago $pago */
+        $pago = $solicitud->getPagos()->first();
+        $pago->setMonto($monto);
+        $this->entityManager->flush();
+
+        $this->procesadorValidarPago->procesar($pago);
+
+        $this->entityManager->clear();
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $this->campoClinicoRepository->findOneBy([
+            'referenciaBancaria' => $pago->getReferenciaBancaria()
+        ]);
+
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $campoClinico->getSolicitud()->getEstatus());
+        $this->assertCount(1, $campoClinico->getPagos());
+        $this->assertEquals(EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE, $campoClinico->getEstatus()->getNombre());
+        $this->assertEquals(
+            EstatusCampoInterface::PAGO,
+            $campoClinico->getSolicitud()->getCamposClinicos()->last()->getEstatus()->getNombre()
+        );
+    }
+
     public function testLaIENoHaPagadoCorrectamenteElMontoTotalPorSolicitud()
     {
         $this->commandTester->execute(['--append' => true]);
@@ -195,7 +195,7 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
 
         $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $solicitud->getEstatus());
         $this->assertCount(2, $solicitud->getPagos());
-        $this->assertEquals(20000, $solicitud->getPagos()[1]->getMonto());
+        $this->assertEquals(20000, $solicitud->getPagos()->last()->getMonto());
 
         /** @var CampoClinico $camposClinico  */
         foreach($solicitud->getCamposClinicos() as $camposClinico) {
