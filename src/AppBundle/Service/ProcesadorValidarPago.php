@@ -37,10 +37,11 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
     public function procesar(Pago $pago)
     {
         $solicitud = $pago->getSolicitud();
+
         if($solicitud->isPagoUnico()) {
             /** @var CampoClinico $camposClinico */
             foreach($solicitud->getCamposClinicos() as $camposClinico) {
-                $estatus = $this->getEstatusByPagoValidado($pago);
+                $estatus = $this->getEstatusCampoByPagoValidado($pago);
                 $camposClinico->setEstatus($estatus);
             }
 
@@ -80,7 +81,7 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
             'referenciaBancaria' => $pago->getReferenciaBancaria()
         ]);
 
-        $estatus = $this->getEstatusByPagoValidado($pago);
+        $estatus = $this->getEstatusCampoByPagoValidado($pago);
         $camposClinico->setEstatus($estatus);
     }
 
@@ -88,7 +89,7 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
      * @param Pago $pago
      * @return EstatusCampo|object
      */
-    private function getEstatusByPagoValidado(Pago $pago)
+    private function getEstatusCampoByPagoValidado(Pago $pago)
     {
         $estatus = null;
 
