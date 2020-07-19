@@ -11,9 +11,10 @@ use AppBundle\Entity\SolicitudTipoPagoInterface;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class SolicitudFixture extends Fixture implements DependentFixtureInterface
+class SolicitudFixture extends Fixture implements DependentFixtureInterface, FixtureInterface
 {
     public function load(ObjectManager $manager)
     {

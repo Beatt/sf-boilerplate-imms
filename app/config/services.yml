@@ -132,3 +132,7 @@ services:
     AppBundle\Repository\GetExistSolicitud\GetExistSolicitud:
         class: AppBundle\Repository\GetExistSolicitud\GetExistSolicitudUsingSql
         public: true
+
+    AppBundle\Service\ProcesadorValidarPagoInterface:
+        class: AppBundle\Service\ProcesadorValidarPago
+        public: true
