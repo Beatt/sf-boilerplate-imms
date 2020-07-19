@@ -47,9 +47,7 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
             $this->updateEstatusCampoClinicoPorPagoMultiple($pago);
         }
 
-        if(!$pago->isValidado()) {
-            $this->createPago($pago);
-        }
+        if(!$pago->isValidado()) $this->createPago($pago);
 
         $this->entityManager->flush();
     }
