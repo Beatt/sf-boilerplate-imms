@@ -136,3 +136,7 @@ services:
     AppBundle\Service\ProcesadorValidarPagoInterface:
         class: AppBundle\Service\ProcesadorValidarPago
         public: true
+
+    AppBundle\Calculator\ComprobantePagoCalculatorInterface:
+        class: AppBundle\Calculator\ComprobantePagoCalculator
+        public: true

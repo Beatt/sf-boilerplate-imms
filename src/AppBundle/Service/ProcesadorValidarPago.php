@@ -7,6 +7,7 @@ use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampo;
 use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
+use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,6 +43,8 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
                 $estatus = $this->getEstatusByPagoValidado($pago);
                 $camposClinico->setEstatus($estatus);
             }
+
+            if(!$pago->isRequiereFactura()) $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
         }
         else {
             $this->actualizarEstatusDeCampoClinicoActual($pago);
@@ -64,6 +67,7 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         $newPago->setSolicitud($pago->getSolicitud());
         $newPago->setReferenciaBancaria($pago->getReferenciaBancaria());
         $newPago->setMonto($this->calculator->getMontoAPagar($pago));
+        $pago->getSolicitud()->addPago($pago);
         $this->entityManager->persist($newPago);
     }
 
@@ -82,21 +86,16 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
 
     /**
      * @param Pago $pago
-     * @return EstatusCampo
+     * @return EstatusCampo|object
      */
     private function getEstatusByPagoValidado(Pago $pago)
     {
-        /** @var EstatusCampo $estatus */
-        $estatus = $this->estatusCampoRepository->findOneBy([
-            'nombre' => EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE
-        ]);
+        $estatus = null;
 
-        if (!$pago->isValidado()) {
-            /** @var EstatusCampo $estatus */
-            $estatus = $this->estatusCampoRepository->findOneBy([
-                'nombre' => EstatusCampoInterface::PAGO_NO_VALIDO
-            ]);
-        }
-        return $estatus;
+        return $this->estatusCampoRepository->findOneBy([
+            'nombre' => $pago->isRequiereFactura() ?
+                EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE :
+                EstatusCampoInterface::CREDENCIALES_GENERADAS
+        ]);
     }
 }

@@ -1,0 +1,42 @@
+AppBundle\Entity\Solicitud:
+  solicitud_en_validacion_fofoe_pago_unico:
+    noSolicitud: 'Ns000<randomDigitNotNull()>'
+    estatus: 'En validación FOFOE'
+    tipoPago: 'Único'
+    pagos: ['@pagado']
+    confirmacionOficioAdjunto: true
+    fechaComprobante: "<dateTimeBetween('now', '+0 days')>"
+    camposClinicos: ['@campo_clinico_nuevo', '@campo_clinico_nuevo*']
+    referenciaBancaria: '001'
+    monto: 1000
+
+AppBundle\Entity\CampoClinico:
+  campo_clinico_nuevo:
+    fechaInicial: "<dateTimeBetween('now', '+0 days')>"
+    fechaFinal: "<dateTimeBetween('now', '+30 days')>"
+    horario: '10:00 am a 14:00 pm'
+    lugaresSolicitados: 10
+    lugaresAutorizados: 10
+    estatus: '@estatus_campo_nuevo'
+  campo_clinico_nuevo_{1..1}:
+    fechaInicial: "<dateTimeBetween('now', '+0 days')>"
+    fechaFinal: "<dateTimeBetween('now', '+30 days')>"
+    horario: '10:00 am a 14:00 pm'
+    lugaresSolicitados: 10
+    lugaresAutorizados: 10
+    estatus: '@estatus_campo_nuevo'
+
+AppBundle\Entity\EstatusCampo:
+  estatus_campo_nuevo:
+    nombre: 'Pago'
+
+AppBundle\Entity\Pago:
+  pagado:
+    monto: 10000
+    fechaPago: "<dateTimeBetween('now', '0 days')>"
+    solicitud: "@solicitud_en_validacion_fofoe_pago_unico"
+    comprobantePago: '<imageUrl()>'
+    referenciaBancaria: '001'
+    requiereFactura: true
+    fechaCreacion: "<dateTimeBetween('now', '0 days')>"
+    validado: true

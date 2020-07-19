@@ -2,14 +2,14 @@
 
 namespace Tests\AppBundle\Service;
 
-use AppBundle\DataFixtures\CampoClinicoFixture;
-use AppBundle\DataFixtures\SolicitudFixture;
+use AppBundle\Calculator\ComprobantePagoCalculatorInterface;
 use AppBundle\Entity\CampoClinico;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Entity\SolicitudTipoPagoInterface;
-use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Service\ProcesadorValidarPagoInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -29,14 +29,19 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
     private $solicitudRepository;
 
     /**
-     * @var PagoRepositoryInterface
-     */
-    private $pagoRepository;
-
-    /**
      * @var CommandTester
      */
     private $commandTester;
+
+    /**
+     * @var CampoClinicoRepositoryInterface
+     */
+    private $campoClinicoRepository;
+
+    /**
+     * @var ComprobantePagoCalculatorInterface
+     */
+    private $comprobantePagoCalculator;
 
     protected function setUp()
     {
@@ -44,53 +49,170 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
 
         $this->procesadorValidarPago = $this->container->get(ProcesadorValidarPagoInterface::class);
         $this->solicitudRepository = $this->container->get(SolicitudRepositoryInterface::class);
-        $this->pagoRepository = $this->container->get(PagoRepositoryInterface::class);
+        $this->campoClinicoRepository = $this->container->get(CampoClinicoRepositoryInterface::class);
+        $this->comprobantePagoCalculator = $this->container->get(ComprobantePagoCalculatorInterface::class);
 
         $application = new Application(self::$kernel);
-        $command = $application->find('doctrine:fixtures:load');
+        $command = $application->find('hautelook_alice:fixtures:load');
         $this->commandTester = new CommandTester($command);
     }
 
 
-
-    public function testValidarPagoPorTipoDePagoUnico()
+    public function testLaIEHaPagadoCorrectamenteElMontoTotalPorSolicitudYSolicitoFactura()
     {
         $this->commandTester->execute(['--append' => true]);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->findOneBy([
-            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE
+            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
+            'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_UNICO
         ]);
+
+        $monto = 30000;
+
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $solicitud->getCamposClinicos()->first();
+        $campoClinico->setMonto($monto);
 
         /** @var Pago $pago */
         $pago = $solicitud->getPagos()->first();
+        $pago->setMonto($monto);
+
+        $this->entityManager->flush();
+
         $this->procesadorValidarPago->procesar($pago);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($solicitud->getId());
 
-        $this->assertEquals(
-            SolicitudInterface::EN_VALIDACION_FOFOE,
-            $solicitud->getEstatus()
-        );
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $solicitud->getEstatus());
+        $this->assertCount(1, $solicitud->getPagos());
 
         /** @var CampoClinico $camposClinico  */
         foreach($solicitud->getCamposClinicos() as $camposClinico) {
-            dump($camposClinico->getEstatus());
-           /* $this->assertEquals(
+            $this->assertEquals(
                 EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE,
                 $camposClinico->getEstatus()->getNombre()
-            );*/
+            );
         }
     }
 
-    private function createSolicitud()
+    public function testLaIEHaPagadoCorrectamenteElMontoTotalPorCampoClinicoYSolicitoFactura()
     {
-        $solicitud = new Solicitud();
-        $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_FOFOE);
-        $solicitud->setMonto(0);
-        $solicitud->setNoSolicitud('Ns00000');
+        $this->commandTester->execute(['--append' => true]);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->findOneBy([
+            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
+            'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE
+        ]);
+
+        $monto = 30000;
+
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $solicitud->getCamposClinicos()->first();
+        $campoClinico->setMonto($monto);
+
+        /** @var Pago $pago */
+        $pago = $solicitud->getPagos()->first();
+        $pago->setMonto($monto);
+
+        $this->entityManager->flush();
+
+        $this->procesadorValidarPago->procesar($pago);
+
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $this->campoClinicoRepository->findOneBy([
+            'referenciaBancaria' => $pago->getReferenciaBancaria()
+        ]);
+
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $campoClinico->getSolicitud()->getEstatus());
+        $this->assertCount(1, $campoClinico->getPagos());
+        $this->assertEquals(EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE, $campoClinico->getEstatus()->getNombre());
+        $this->assertEquals(
+            EstatusCampoInterface::PAGO,
+            $campoClinico->getSolicitud()->getCamposClinicos()->last()->getEstatus()->getNombre()
+        );
     }
 
+    public function testLaIEHaPagadoCorrectamenteElMontoTotalPorSolicitudYNoSolicitoFactura()
+    {
+        $this->commandTester->execute(['--append' => true]);
 
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->findOneBy([
+            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
+            'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_UNICO
+        ]);
+
+        $monto = 30000;
+
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $solicitud->getCamposClinicos()->first();
+        $campoClinico->setMonto($monto);
+
+        /** @var Pago $pago */
+        $pago = $solicitud->getPagos()->first();
+        $pago->setMonto($monto);
+        $pago->setRequiereFactura(false);
+
+        $this->entityManager->flush();
+
+        $this->procesadorValidarPago->procesar($pago);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->find($solicitud->getId());
+
+        $this->assertEquals(SolicitudInterface::CREDENCIALES_GENERADAS, $solicitud->getEstatus());
+        $this->assertCount(1, $solicitud->getPagos());
+
+        /** @var CampoClinico $camposClinico  */
+        foreach($solicitud->getCamposClinicos() as $camposClinico) {
+            $this->assertEquals(
+                EstatusCampoInterface::CREDENCIALES_GENERADAS,
+                $camposClinico->getEstatus()->getNombre()
+            );
+        }
+    }
+
+    public function testLaIENoHaPagadoCorrectamenteElMontoTotalPorSolicitud()
+    {
+        $this->commandTester->execute(['--append' => true]);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->findOneBy([
+            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
+            'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_UNICO
+        ]);
+
+        $montoAPagar = 30000;
+        $montoPagado = 10000;
+
+        $solicitud->setMonto($montoAPagar);
+
+        /** @var Pago $pago */
+        $pago = $solicitud->getPagos()->first();
+        $pago->setMonto($montoPagado);
+        $pago->setValidado(false);
+
+        $this->entityManager->flush();
+
+        $this->procesadorValidarPago->procesar($pago);
+
+        $this->entityManager->detach($solicitud);
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->find($solicitud->getId());
+
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $solicitud->getEstatus());
+        $this->assertCount(2, $solicitud->getPagos());
+        $this->assertEquals(20000, $solicitud->getPagos()[1]->getMonto());
+
+        /** @var CampoClinico $camposClinico  */
+        foreach($solicitud->getCamposClinicos() as $camposClinico) {
+            $this->assertEquals(
+                EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE,
+                $camposClinico->getEstatus()->getNombre()
+            );
+        }
+    }
 }

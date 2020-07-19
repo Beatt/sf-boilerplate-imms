@@ -32,7 +32,7 @@ class ComprobantePagoCalculator implements ComprobantePagoCalculatorInterface
         $amount = $this->getSubTotal($comprobantesPago);
         if(!$amount) return $this->getPrecio($pago);
 
-        return $this->getPrecio($pago) - $amount;
+        return $this->getPrecio($pago) - intval($amount);
     }
 
     /**
