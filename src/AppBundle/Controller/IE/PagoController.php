@@ -38,29 +38,6 @@ class PagoController extends DIEControllerController
 
         $this->denyAccessUnlessGranted(SolicitudVoter::OBTENER_GESTION_DE_PAGOS, $pago->getSolicitud());
 
-        return new JsonResponse($normalizer->normalize(
-            $pago->getGestionPago(),
-            'json', [
-                'attributes' => [
-                    'noSolicitud',
-                    'montoTotal',
-                    'montoTotalPorPagar',
-                    'tipoPago',
-                    'campoClinico' => [
-                        'sede',
-                        'carrera'
-                    ],
-                    'pagos' => [
-                        'comprobanteConEnlace',
-                        'referenciaBancaria',
-                        'fechaPago',
-                        'monto'
-                    ],
-                    'ultimoPago' => [
-                        'observaciones'
-                    ]
-                ]
-            ]
-        ));
+        return new JsonResponse($normalizer->normalize($pago->getGestionPago(), 'json'));
     }
 }

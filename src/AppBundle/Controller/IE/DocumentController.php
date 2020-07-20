@@ -5,7 +5,6 @@ namespace AppBundle\Controller\IE;
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
-use AppBundle\Entity\Solicitud;
 use AppBundle\Exception\CouldNotFoundCedulaIdentificacionFiscal;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
@@ -28,30 +27,24 @@ final class DocumentController extends DIEControllerController
     }
 
     /**
-     * @Route("/solicitudes/{id}/pagos/{pagoId}/descargar-comprobante-de-pago", name="ie#descargar_comprobante_de_pago")
+     * @Route("/pagos/{id}/descargar-comprobante-de-pago", name="ie#descargar_comprobante_de_pago")
      * @param int $id
-     * @param int $pagoId
      * @param PagoRepositoryInterface $pagoRepository
      * @return Response
      */
     public function descargarComprobanteDePago(
         $id,
-        $pagoId,
         PagoRepositoryInterface $pagoRepository
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
-        /** @var Solicitud $solicitud */
-        $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
-
         /** @var Pago $pago */
-        $pago = $pagoRepository->find($pagoId);
-        if(!$pago) throw $this->createNotFindPagoException($pagoId);
+        $pago = $pagoRepository->find($id);
+        if(!$pago) throw $this->createNotFindPagoException($id);
 
-        $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_COMPROBANTE_DE_PAGO, $solicitud);
+        $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_COMPROBANTE_DE_PAGO, $pago->getSolicitud());
 
         return $this->pdfResponse(
             sprintf(
