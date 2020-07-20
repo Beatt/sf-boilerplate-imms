@@ -8,12 +8,16 @@ final class Pago
 
     private $montoTotal;
 
+    private $montoPendienteValidar;
+
     public function __construct(
         Solicitud $solicitud,
-        $montoTotal
+        $montoTotal,
+        $montoPendienteValidar
     ) {
         $this->solicitud = $solicitud;
         $this->montoTotal = $montoTotal;
+        $this->montoPendienteValidar = $montoPendienteValidar;
     }
 
     /**
@@ -30,5 +34,13 @@ final class Pago
     public function getMontoTotal()
     {
         return $this->montoTotal;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMontoPendienteValidar()
+    {
+        return $this->montoPendienteValidar;
     }
 }

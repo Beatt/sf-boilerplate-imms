@@ -2,6 +2,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import Cleave from "cleave.js/react";
 import {TIPO_PAGO} from "../../constants";
+import {moneyFormat} from "../../utils";
 const SI_REQUIERE_FACTURA_DEFAULT = 1
 const NO_REQUIERE_FACTURA_DEFAULT = 0
 
@@ -18,7 +19,7 @@ const ValidacionDePago = ({ pago }) => {
           <div className="col-md-6">
             <p className='mb-5'>No. de Solicitud <strong>{pago.solicitud.noSolicitud}</strong></p>
             <p className='mb-5'>Tipo de pago <strong>{pago.solicitud.tipoPago}</strong></p>
-            <p className='mb-20'>Monto total: <strong>{pago.montoTotal}</strong></p>
+            <p className='mb-20'>Monto total: <strong>{moneyFormat(pago.montoTotal)}</strong></p>
           </div>
           {
             isPagoMultiple() &&
@@ -54,7 +55,7 @@ const ValidacionDePago = ({ pago }) => {
       </div>
       <div className="col-md-12">
         <h3 className='mb-10'>Validar comprobante de pago</h3>
-        <p>Monto pendiente a validar: <strong>20,000</strong></p>
+        <p>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
         <p className='mb-20'>Comprobante de pago a validar: <a href="">Descargar</a></p>
         <form
           action={`/ie/pagos/cargar-comprobante-de-pago`}

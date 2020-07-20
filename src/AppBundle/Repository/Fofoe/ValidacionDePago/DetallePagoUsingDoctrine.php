@@ -10,8 +10,9 @@ final class DetallePagoUsingDoctrine implements DetallePago
 {
     private $pagoRepository;
 
-    public function __construct(PagoRepositoryInterface $pagoRepository)
-    {
+    public function __construct(
+        PagoRepositoryInterface $pagoRepository
+    ) {
         $this->pagoRepository = $pagoRepository;
     }
 
@@ -39,7 +40,8 @@ final class DetallePagoUsingDoctrine implements DetallePago
                     $carrera
                 )
             ),
-            $montoTotal
+            $montoTotal,
+            $pago->getMonto()
         );
     }
 
