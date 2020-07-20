@@ -119,11 +119,3 @@ knp_snappy:
         enabled:    true
         binary:     '%wkhtmltopdf_path%'
         options:    []
-
-hautelook_alice:
-    db_drivers:
-        orm: ~          # Enable Doctrine ORM if is registered
-    locale: es_MX       # Locale to used for faker; must be a valid Faker locale otherwise will fallback to en_US
-    seed: 1             # A seed to make sure faker generates data consistently across runs, set to null to disable
-    persist_once: false # Only persist objects once if multiple files are passed
-    loading_limit: 5    # Maxi
