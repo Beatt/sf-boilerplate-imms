@@ -13,9 +13,7 @@ const ValidarInfo = (
 
   return(
     <div
-      action={action}
-      method="post"
-      encType='multipart/form-data'
+      
     >
     <label className="mb-10">Información Institución</label>
 

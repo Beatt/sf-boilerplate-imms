@@ -17,8 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 /**
- * @Route("/ie")
- * @IsGranted("ROLE_IE")
+ * @Route("/fofoe")
+ * 
  */
 class InstitucionController extends DIEControllerController
 {
