@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {{ render(controller('AppBundle:Fofoe\\Fofoe:menu')) }}
+    <div class="section-md">
+        <div class='container-fluid'>
+            <div class='container'>
+                <h1 class="text-bold text-center">Validación de pago</h1>
+                <div style="display: flex;">
+                    <div id="noSolicitud"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="validacion-de-pago-component"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
