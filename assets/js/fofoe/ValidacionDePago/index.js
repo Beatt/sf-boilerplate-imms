@@ -65,7 +65,7 @@ const ValidacionDePago = ({ pago }) => {
         >
           <div className="form-group">
             <label
-              htmlFor="comprobante_pago_fechaPago"
+              htmlFor="validacion_pago_fechaPago"
               className='control-label col-md-4'
             >
               Fecha en que se realizó el nuevo pago:
@@ -73,9 +73,9 @@ const ValidacionDePago = ({ pago }) => {
             <div className="col-md-3">
               <input
                 type="date"
-                id='comprobante_pago_fechaPago'
+                id='validacion_pago_fechaPago'
                 className='form-control'
-                name='comprobante_pago[fechaPago]'
+                name='validacion_pago[fechaPago]'
                 required={true}
                 defaultValue={pago.fechaPago}
               />
@@ -83,7 +83,7 @@ const ValidacionDePago = ({ pago }) => {
           </div>
           <div className="form-group">
             <label
-              htmlFor="comprobante_pago_monto"
+              htmlFor="validacion_pago_monto"
               className='control-label col-md-4'
             >
               Monto del comprobante de nuevo pago:<br/>
@@ -100,36 +100,36 @@ const ValidacionDePago = ({ pago }) => {
                 <div className="input-group-addon">$</div>
                 <input
                   type="hidden"
-                  id='comprobante_pago_monto'
-                  name='comprobante_pago[monto]'
+                  id='validacion_pago_monto'
+                  name='validacion_pago[monto]'
                 />
               </div>
             </div>
           </div>
           <div className="form-group">
             <label
-              htmlFor='comprobante_pago_requiere_factura'
+              htmlFor='validacion_pago_requiere_factura'
               className="control-label col-md-4 text-right"
             >
               ¿Requiere factura?&nbsp;
             </label>
             <div className="col-md-3">
-              <label htmlFor='comprobante_pago_requiereFactura_yes'>Si&nbsp;</label>
+              <label htmlFor='validacion_pago_requiereFactura_yes'>Si&nbsp;</label>
               <input
                 type="radio"
                 value={SI_REQUIERE_FACTURA_DEFAULT}
-                id='comprobante_pago_requiereFactura_yes'
-                name='comprobante_pago[requiereFactura]'
+                id='validacion_pago_requiereFactura_yes'
+                name='validacion_pago[requiereFactura]'
                 required={true}
                 defaultChecked={pago.requiereFactura === true}
               />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <label htmlFor="comprobante_pago_requiereFactura_no">No&nbsp;</label>
+              <label htmlFor="validacion_pago_requiereFactura_no">No&nbsp;</label>
               <input
                 type="radio"
                 value={NO_REQUIERE_FACTURA_DEFAULT}
-                id='comprobante_pago_requiereFactura_no'
-                name='comprobante_pago[requiereFactura]'
+                id='validacion_pago_requiereFactura_no'
+                name='validacion_pago[requiereFactura]'
                 required={true}
                 defaultChecked={pago.requiereFactura === true}
               />
@@ -137,13 +137,18 @@ const ValidacionDePago = ({ pago }) => {
           </div>
           <div className="form-group">
             <label
-              htmlFor="comprobante_pago_fechaPago"
+              htmlFor="validacion_pago_observaciones"
               className='control-label col-md-4'
             >
               Observaciones
             </label>
             <div className="col-md-5">
-              <textarea rows={7} className='form-control'/>
+              <textarea
+                rows={7}
+                className='form-control'
+                id='validacion_pago_observaciones'
+                name='validacion_pago[observaciones]'
+              />
             </div>
           </div>
           <div className="row mt-30">
