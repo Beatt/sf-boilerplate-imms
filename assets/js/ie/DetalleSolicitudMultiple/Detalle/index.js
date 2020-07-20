@@ -1,6 +1,6 @@
 import * as React from 'react'
 import GestionPagoModal from "../../components/GestionPagoModal";
-import { SOLICITUD } from "../../../constants";
+import {CAMPO_CLINICO, SOLICITUD} from "../../../constants";
 import { getActionNameByInstitucionEducativa } from "../../../utils";
 
 const DetalleSolicitudMultiple = ({ solicitud }) => {
@@ -28,6 +28,40 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
 
   function isCampoClinicoAutorizado(lugaresAutorizados) {
     return lugaresAutorizados > 0;
+  }
+
+  function getActionButton(campoClinico) {
+    if(!isCampoClinicoAutorizado(campoClinico.lugaresAutorizados)) return;
+
+    if(campoClinico.estatus === CAMPO_CLINICO.PAGO) {
+      return(
+        <button className='btn btn-default' disabled={true}>En validación por FOFOE</button>
+      );
+    }
+    else if(campoClinico.estatus === CAMPO_CLINICO.PAGO_NO_VALIDO) {
+      return(
+        <button
+          className='btn btn-default'
+          onClick={() => {
+            setCampoClinicoSelected(campoClinico)
+            setModalIsOpen(true)
+          }}
+        >
+          Corregir comprobante
+        </button>
+      );
+    }
+
+    return solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES ?
+      <button
+        className="btn btn-success"
+        onClick={() => {
+          setCampoClinicoSelected(campoClinico)
+          setModalIsOpen(true)
+        }}
+      >
+        Cargar comprobante
+      </button> : 'Pendiente';
   }
 
   return(
@@ -89,16 +123,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                       }
                     </td>
                     <td>
-                      {
-                        isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
-                        campoClinico.estatus === 'Pago' ?
-                          <button className='btn btn-default' disabled={true}>En validación por FOFOE</button> :
-                          solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES ?
-                            <button className="btn btn-success" onClick={() => {
-                              setCampoClinicoSelected(campoClinico)
-                              setModalIsOpen(true)
-                            }}>Cargar comprobante</button> : 'Pendiente'
-                      }
+                      {getActionButton(campoClinico)}
                     </td>
                     <td>
                       {
