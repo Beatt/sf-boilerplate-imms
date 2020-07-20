@@ -2,7 +2,6 @@
 
 namespace Tests\AppBundle\Service;
 
-use AppBundle\Calculator\ComprobantePagoCalculatorInterface;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
@@ -40,11 +39,6 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
     private $campoClinicoRepository;
 
     /**
-     * @var ComprobantePagoCalculatorInterface
-     */
-    private $comprobantePagoCalculator;
-
-    /**
      * @var EstatusCampoRepositoryInterface
      */
     private $estatusCampoRepository;
@@ -56,7 +50,6 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         $this->procesadorValidarPago = $this->container->get(ProcesadorValidarPagoInterface::class);
         $this->solicitudRepository = $this->container->get(SolicitudRepositoryInterface::class);
         $this->campoClinicoRepository = $this->container->get(CampoClinicoRepositoryInterface::class);
-        $this->comprobantePagoCalculator = $this->container->get(ComprobantePagoCalculatorInterface::class);
         $this->estatusCampoRepository = $this->container->get(EstatusCampoRepositoryInterface::class);
 
         $application = new Application(self::$kernel);
