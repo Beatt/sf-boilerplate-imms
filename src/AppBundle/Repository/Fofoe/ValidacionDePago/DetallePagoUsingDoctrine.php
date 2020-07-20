@@ -32,6 +32,7 @@ final class DetallePagoUsingDoctrine implements DetallePago
         }
 
         return new Pago(
+            $pago->getId(),
             new Solicitud(
                 $solicitud->getNoSolicitud(),
                 $solicitud->getTipoPago(),
