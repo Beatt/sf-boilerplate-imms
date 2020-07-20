@@ -5,6 +5,7 @@ namespace AppBundle\Vich\Naming;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Factura;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
@@ -41,6 +42,7 @@ class InstitucionDirectoryNamer implements DirectoryNamerInterface
 
         if($object instanceof Pago) $id = $object->getSolicitud()->getId();
         elseif($object instanceof Solicitud) $id = $object->getId();
+        elseif($object instanceof Factura) $id = 1;
 
         /** @var Institucion $institucion */
         $institucion = $this->institucionRepository->getInstitucionBySolicitudId($id);

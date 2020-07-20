@@ -14,31 +14,30 @@ const Registrar = (
 
     const errors = [];
 
-    if (amount > solicitud.monto) {
-      errors.push("El monto ingresado no puede ser mayor al de la solicitud");
+    if (amount < solicitud.monto) {
+      errors.push("El monto ingresado no puede ser menor al de la solicitud");
     }
 
     return errors;
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
 
-    setErrores([]);
+    setErrores({});
 
     let amount = userAmount;
-    let errors = validate(amount);
+    let errors = {};
+
+    console.log(errors);
+    console.log(amount);
+
+    errors = validate(amount);
+    console.log(errors);
     if (errors.length > 0) {
       setErrores(errors);
-      {
-        console.log("Errores")
-      }
+      e.preventDefault();
       return;
     }
-    {
-      "Console.log"
-    }
-    // send the form...
   };
 
 
@@ -47,6 +46,7 @@ const Registrar = (
       action={`/ie/solicitudes/${solicitud.id}/cargar-comprobante`}
       method="post"
       encType='multipart/form-data'
+      onSubmit= {handleSubmit}
     >
       <div>
 
@@ -98,8 +98,9 @@ const Registrar = (
                           type="number"
                           required={true}
                           name={`solicitud_comprobante_pago[pagos][0][monto]`}
+                          onChange={e => setUserAmount(e.target.value)}
                         />
-                        <span className="errors">{errores[0] ? errores[0] : ''}</span>
+                        <span className="error-message">{errores[0] ? errores[0] : ''}</span>
                       </div>
                     </td>
                     <td>

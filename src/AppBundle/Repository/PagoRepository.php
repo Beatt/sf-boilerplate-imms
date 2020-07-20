@@ -287,4 +287,20 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
       return [$pagos, $totalItems, $pagesCount, $pageSize];
 
     }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getAllPagosByInstitucion($id)
+    {
+      return $this->createQueryBuilder('pago')
+            ->innerJoin('pago.solicitud', 'solicitud')
+            ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
+            ->where('solicitud.id = :solicitud_id')
+            ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
+            ->setParameter('solicitud_id', $id)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
+import {dateFormat} from "../../utils";
 
 const Registrar = (
   {
@@ -53,16 +54,27 @@ const Registrar = (
                     type="text"
                     readOnly={true}
                     value={total}
-                    name={`factura[monto]`}
+                    name={`solicitud_factura[pagos][0][factura][monto]`}
+                    
                   />
                 </div>
               </div>
             </div>
-
+            <div className='hidden'>
+              <div className="form-group">
+                <input
+                  className='form-control'
+                  defaultValue={solicitud.id}
+                  required={true}
+                  name={`solicitud_factura[pagos][0][solicitud]`}
+                />
+              </div>
+            </div>
             <div className="col-md-6">
               <table className='table'>
                 <thead className='headers'>
                 <tr>
+                  <th></th>
                   <th>Comprobante de pago</th>
                   <th>Fecha</th>
                   <th>monto validado</th>
@@ -71,33 +83,34 @@ const Registrar = (
                 <tbody>
                 {
                   solicitud.pagos.map((item, index) =>
-                    (item.requiereFactura == true) ?
-
+                    (item.facturaGenerada == false) ?
                       <tr key={index}>
-
                         <td>
                           <input
                             type="checkbox"
                             onChange={e => handleChecked(e.target)}
                             id={index}
+                            disabled={!item.requiereFactura}
+                            name={`solicitud_factura[pagos][${index}][facturaGenerada]`}
                           />
                         </td>
                         <td>{item.comprobantePago}</td>
-                        <td>{item.fechaPago}</td>
+                        <td>{dateFormat(item.fechaPago)}</td>
                         <td>{item.monto}</td>
                       </tr>
-                      : ''
+                      :
+                      <div></div>
                   )
                 }
                 </tbody>
               </table>
             </div>
             <div className="col-md-1"/>
-            <div className="col-md-5">
+            <div className="col-md-2">
               <p className="mb-10">Subir factura</p>
               <input
                 type="file"
-                name={`solicitud_comprobante_pago[pagos][0][factura][zipFile]`}
+                name={`solicitud_factura[pagos][0][factura][zipFile]`}
                 required={true}
               />
 
@@ -112,8 +125,58 @@ const Registrar = (
         </div>
 
         <div className="row">
+          <div className="col-md-6">
+            <div className="form-group col-md-12">
+              <label>Folio de facturar &nbsp;</label>
+                <input
+                  className='form-control'
+                  type="text"
+                  name={`solicitud_factura[pagos][0][factura][folio]`}
+                />
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="form-group col-md-12">
+                <label className="forma-label">Fecha de factura</label>
+                <input
+                className='form-control col-md-12'
+                type="date"
+                required={true}
+                name={`solicitud_factura[pagos][0][factura][fechaFacturacion]`}
+                />
+                
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
           <div className="col-md-12">
             <p className="mt-10 mb-10"><strong>Facturas generadas</strong></p>
+            <table className='table'>
+                <thead className='headers'>
+                <tr>
+                  <th>Fecha Facturación</th>
+                  <th>Monto Facturado</th>
+                  <th>Comprobante</th>
+                  <th>Archivo Factura</th>
+                  <th>Folio Factura</th>
+                </tr>
+                </thead>
+                <tbody>
+                {
+                  solicitud.pagos.map((item, index) =>
+                      <tr key={index}>
+                        <td>{dateFormat(item.factura.fechaFacturacion)}</td>
+                        <td>{item.factura.monto}</td>
+                        <td>{item.comprobantePago && <a href={item.comprobantePago} download>{item.comprobantePago}</a>}</td>
+                        <td>{item.factura.zip && <a href={item.factura.zip} download>{item.factura.zip}</a>}</td>
+                        <td>{item.factura.folio}</td>
+                      </tr>
+                  )
+                }
+                </tbody>
+              </table>
           </div>
         </div>
       </div>
