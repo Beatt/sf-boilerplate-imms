@@ -41,7 +41,11 @@ final class DetallePagoUsingDoctrine implements DetallePago
                 )
             ),
             $montoTotal,
-            $pago->getMonto()
+            $pago->getMonto(),
+            $pago->getComprobantePago(),
+            $pago->getFechaPago()->format('Y-m-d'),
+            $pago->getMonto(),
+            $pago->isRequiereFactura()
         );
     }
 

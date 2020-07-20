@@ -1,8 +1,8 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import Cleave from "cleave.js/react";
-import {TIPO_PAGO} from "../../constants";
-import {moneyFormat} from "../../utils";
+import { TIPO_PAGO } from "../../constants";
+import { moneyFormat } from "../../utils";
 const SI_REQUIERE_FACTURA_DEFAULT = 1
 const NO_REQUIERE_FACTURA_DEFAULT = 0
 
@@ -77,6 +77,7 @@ const ValidacionDePago = ({ pago }) => {
                 className='form-control'
                 name='comprobante_pago[fechaPago]'
                 required={true}
+                defaultValue={pago.fechaPago}
               />
             </div>
           </div>
@@ -94,6 +95,7 @@ const ValidacionDePago = ({ pago }) => {
                   options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                   className='form-control'
                   required={true}
+                  value={pago.monto}
                 />
                 <div className="input-group-addon">$</div>
                 <input
@@ -119,6 +121,7 @@ const ValidacionDePago = ({ pago }) => {
                 id='comprobante_pago_requiereFactura_yes'
                 name='comprobante_pago[requiereFactura]'
                 required={true}
+                defaultChecked={pago.requiereFactura === true}
               />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <label htmlFor="comprobante_pago_requiereFactura_no">No&nbsp;</label>
@@ -128,6 +131,7 @@ const ValidacionDePago = ({ pago }) => {
                 id='comprobante_pago_requiereFactura_no'
                 name='comprobante_pago[requiereFactura]'
                 required={true}
+                defaultChecked={pago.requiereFactura === true}
               />
             </div>
           </div>
