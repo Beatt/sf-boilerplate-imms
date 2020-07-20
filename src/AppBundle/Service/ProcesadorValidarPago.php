@@ -50,15 +50,11 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         else {
             if($pago->isValidado()) {
                 $this->updateEstatusCampoClinicoPorPagoMultiple($pago);
-                $result = array_filter($solicitud->getCamposClinicos()->toArray(), function (CampoClinico $campoClinico) {
-                    return $campoClinico->getEstatus()->getNombre() != EstatusCampoInterface::CREDENCIALES_GENERADAS;
-                });
-                if(count($result) === 0) $this->setEstatusCredencialesGeneradasToSolicitud($solicitud);
+                if(!$this->existenCamposConEstatusDiferenteACredencialesGeneradas($solicitud)){
+                    $this->setEstatusCredencialesGeneradasToSolicitud($solicitud);
+                }
             } else {
-                $camposClinico = $this->campoClinicoRepository->findOneBy([
-                    'referenciaBancaria' => $pago->getReferenciaBancaria()
-                ]);
-
+                $camposClinico = $this->getCampoClinicoActual($pago);
                 $estatus = $this->getEstatusCampoNoValido();
                 $camposClinico->setEstatus($estatus);
             }
@@ -104,10 +100,7 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
      */
     private function updateEstatusCampoClinicoPorPagoMultiple(Pago $pago)
     {
-        $camposClinico = $this->campoClinicoRepository->findOneBy([
-            'referenciaBancaria' => $pago->getReferenciaBancaria()
-        ]);
-
+        $camposClinico = $this->getCampoClinicoActual($pago);
         $estatus = $this->getEstatusCampoByPagoValidado($pago);
         $camposClinico->setEstatus($estatus);
     }
@@ -155,5 +148,27 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
     private function setEstatusCredencialesGeneradasToSolicitud(Solicitud $solicitud)
     {
         return $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return int
+     */
+    private function existenCamposConEstatusDiferenteACredencialesGeneradas(Solicitud $solicitud)
+    {
+        return count(array_filter($solicitud->getCamposClinicos()->toArray(), function (CampoClinico $campoClinico) {
+            return $campoClinico->getEstatus()->getNombre() != EstatusCampoInterface::CREDENCIALES_GENERADAS;
+        })) !== 0;
+    }
+
+    /**
+     * @param Pago $pago
+     * @return object
+     */
+    private function getCampoClinicoActual(Pago $pago)
+    {
+        return $this->campoClinicoRepository->findOneBy([
+            'referenciaBancaria' => $pago->getReferenciaBancaria()
+        ]);
     }
 }
