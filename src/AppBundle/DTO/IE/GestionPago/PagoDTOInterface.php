@@ -4,7 +4,7 @@ namespace AppBundle\DTO\IE\GestionPago;
 
 interface PagoDTOInterface
 {
-    public function getComprobanteConEnlace();
+    public function getId();
 
     public function getReferenciaBancaria();
 

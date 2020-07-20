@@ -80,7 +80,7 @@ const Expediente = ({ expediente }) => {
                         return(
                           <a
                             key={key}
-                            href={`/ie/solicitudes/${comprobante.options.solicitudId}/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
+                            href={`/ie/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
                             target='_blank'
                           >
                             Descargar <br/>

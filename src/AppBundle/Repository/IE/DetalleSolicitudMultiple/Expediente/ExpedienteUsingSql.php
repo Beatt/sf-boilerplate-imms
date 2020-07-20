@@ -130,8 +130,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                 $record['comprobante_pago'],
                 [
                     'unidad' => $record['nombre_unidad'],
-                    'pagoId' => $record['pago_id'],
-                    'solicitudId' => $solicitudId->asInt()
+                    'pagoId' => $record['pago_id']
                 ]
             );
         }, $records);

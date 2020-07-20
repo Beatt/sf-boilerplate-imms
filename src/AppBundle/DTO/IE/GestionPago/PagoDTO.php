@@ -13,11 +13,6 @@ class PagoDTO implements PagoDTOInterface
         $this->pago = $pago;
     }
 
-    public function getComprobanteConEnlace()
-    {
-        return $this->pago->getComprobantePago();
-    }
-
     public function getReferenciaBancaria()
     {
         return $this->pago->getReferenciaBancaria();
@@ -31,5 +26,10 @@ class PagoDTO implements PagoDTOInterface
     public function getMonto()
     {
         return $this->pago->getMonto();
+    }
+
+    public function getId()
+    {
+        return $this->pago->getId();
     }
 }

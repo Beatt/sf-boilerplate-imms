@@ -145,7 +145,7 @@ const ListaCampos = ({ solicitud }) => {
                       solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
                         <p key={index}>
                           <a
-                            href={`/ie/solicitudes/${comprobantePago.options.solicitudId}/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
+                            href={`/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
                             target='_blank'
                           >
                             Descargar
