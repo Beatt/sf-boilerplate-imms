@@ -133,6 +133,45 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         }
     }
 
+    public function testLaIENoHaPagadoCorrectamenteElMontoTotalPorSolicitudYSolicitoFactura()
+    {
+        $this->commandTester->execute(['--append' => true]);
+
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->findOneBy([
+            'estatus' => SolicitudInterface::EN_VALIDACION_FOFOE,
+            'tipoPago' => SolicitudTipoPagoInterface::TIPO_PAGO_UNICO
+        ]);
+
+        $monto = 30000;
+        $montoPagado = 20000;
+        /** @var CampoClinico $campoClinico */
+        $campoClinico = $solicitud->getCamposClinicos()->first();
+        $campoClinico->setMonto($monto);
+        /** @var Pago $pago */
+        $pago = $solicitud->getPagos()->first();
+        $pago->setMonto($montoPagado);
+        $pago->setValidado(false);
+        $this->entityManager->flush();
+
+        $this->procesadorValidarPago->procesar($pago);
+
+        $this->entityManager->clear();
+        /** @var Solicitud $solicitud */
+        $solicitud = $this->solicitudRepository->find($solicitud->getId());
+
+        $this->assertEquals(SolicitudInterface::EN_VALIDACION_FOFOE, $solicitud->getEstatus());
+        $this->assertCount(2, $solicitud->getPagos());
+
+        /** @var CampoClinico $camposClinico  */
+        foreach($solicitud->getCamposClinicos() as $camposClinico) {
+            $this->assertEquals(
+                EstatusCampoInterface::PAGO_NO_VALIDO,
+                $camposClinico->getEstatus()->getNombre()
+            );
+        }
+    }
+
     public function testLaIEHaPagadoCorrectamenteElMontoTotalPorCampoClinicoYSolicitoFactura()
     {
         $this->commandTester->execute(['--append' => true]);
@@ -200,7 +239,7 @@ class ProcesadorValidarPagoTest extends AbstractWebTestCase
         /** @var CampoClinico $camposClinico  */
         foreach($solicitud->getCamposClinicos() as $camposClinico) {
             $this->assertEquals(
-                EstatusCampoInterface::PENDIENTE_FACTURA_FOFOE,
+                EstatusCampoInterface::PAGO_NO_VALIDO,
                 $camposClinico->getEstatus()->getNombre()
             );
         }

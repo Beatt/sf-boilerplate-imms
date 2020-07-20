@@ -40,11 +40,24 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         $solicitud = $pago->getSolicitud();
 
         if($solicitud->isPagoUnico()) {
-            if(!$pago->isRequiereFactura()) $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
-            $this->updateEstadoCamposClinicosPorPagoUnico($pago, $solicitud);
+            if($pago->isValidado()) {
+                if(!$pago->isRequiereFactura()) $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
+                $this->updateEstadoCamposClinicosPorPagoUnico($pago, $solicitud);
+            } else {
+                $this->updateEstadoCamposClinicosAPagoNoValido($solicitud);
+            }
         }
         else {
-            $this->updateEstatusCampoClinicoPorPagoMultiple($pago);
+            if($pago->isValidado()) {
+                $this->updateEstatusCampoClinicoPorPagoMultiple($pago);
+            } else {
+                $camposClinico = $this->campoClinicoRepository->findOneBy([
+                    'referenciaBancaria' => $pago->getReferenciaBancaria()
+                ]);
+
+                $estatus = $this->getEstatusCampoNoValido();
+                $camposClinico->setEstatus($estatus);
+            }
         }
 
         if(!$pago->isValidado()) $this->createPago($pago);
@@ -56,7 +69,10 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
      * @param Pago $pago
      * @param Solicitud $solicitud
      */
-    private function updateEstadoCamposClinicosPorPagoUnico(Pago $pago, Solicitud $solicitud)
+    private function updateEstadoCamposClinicosPorPagoUnico(
+        Pago $pago,
+        Solicitud $solicitud
+    )
     {
         array_map(function (CampoClinico $campoClinico) use ($pago) {
             $estatus = $this->getEstatusCampoByPagoValidado($pago);
@@ -104,5 +120,27 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         $newPago->setMonto($this->calculator->getMontoAPagar($pago));
         $pago->getSolicitud()->addPago($pago);
         $this->entityManager->persist($newPago);
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     */
+    private function updateEstadoCamposClinicosAPagoNoValido(Solicitud $solicitud)
+    {
+        array_map(function (CampoClinico $campoClinico) {
+            /** @var EstatusCampo $estatus */
+            $estatus = $this->getEstatusCampoNoValido();
+            $campoClinico->setEstatus($estatus);
+        }, $solicitud->getCamposClinicos()->toArray());
+    }
+
+    /**
+     * @return object
+     */
+    private function getEstatusCampoNoValido()
+    {
+        return $this->estatusCampoRepository->findOneBy([
+            'nombre' => EstatusCampoInterface::PAGO_NO_VALIDO
+        ]);
     }
 }
