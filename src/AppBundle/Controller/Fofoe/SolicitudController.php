@@ -5,19 +5,22 @@ namespace AppBundle\Controller\Fofoe;
 use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Factura;
 use AppBundle\Entity\Solicitud;
-use AppBundle\Form\Type\FacturaType\FacturaType;
+use AppBundle\Form\Type\ComprobantePagoType\SolicitudFacturaType as ComprobantePagoTypeSolicitudFacturaType;
+use AppBundle\Form\Type\FacturaType\PagoFacturaType;
+use AppBundle\Form\Type\FacturaType\SolicitudFacturaType;
+use AppBundle\Form\Type\PagoType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/fofoe")
+ * @Route("/ie")
  */
 class SolicitudController extends DIEControllerController
 {
     /**
-     * @Route("/solicitudes/{id}/registrar-factura", name="fofoe#registrar_factura")
+     * @Route("/solicitudes/{id}/registrar-factura", name="fofoe#registrar_factura", methods={"POST", "GET"})
      * @param int $id
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -35,8 +38,8 @@ class SolicitudController extends DIEControllerController
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($id);
 
-        $factura = new Factura();
-        $form = $this->createForm(FacturaType::class, $factura, [
+        //$factura = new Factura();
+        $form = $this->createForm(SolicitudFacturaType::class, $solicitud, [
             'action' => $this->generateUrl('fofoe#registrar_factura', [
                 'id' => $id,
             ]),
@@ -45,9 +48,23 @@ class SolicitudController extends DIEControllerController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Solicitud $solicitud */
+            $solicitud = $form->getData();
 
-            $data = $form->getData();
-            $entityManager->persist($data);
+            $factura = new Factura();
+            
+            $pagos = $solicitud->getPagos();
+
+            $factura = $pagos[0]->getFactura();
+
+            foreach($solicitud->getPagos() as $pago){
+                if($pago->isFacturaGenerada())
+                    $pago->setFactura($factura);
+                else
+                    $pago->setFactura(null);
+            }
+
+            $entityManager->persist($solicitud);
             $entityManager->flush();
 
             $this->addFlash('success', 'Se ha guardado correctamente la factura');
@@ -102,7 +119,14 @@ class SolicitudController extends DIEControllerController
                         'monto',
                         'fechaPago',
                         'comprobantePago',
-                        'requiereFactura'
+                        'requiereFactura',
+                        'facturaGenerada',
+                        'factura' => [
+                            'fechaFacturacion',
+                            'folio',
+                            'zip',
+                            'monto'
+                        ]
                     ]
                 ]
             ]

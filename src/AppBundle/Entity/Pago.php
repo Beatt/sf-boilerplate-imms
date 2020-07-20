@@ -105,6 +105,13 @@ class Pago implements ComprobantePagoInterface
     private $fechaCreacion;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $facturaGenerada;
+
+    /**
      * @return int
      */
     public function getId()
@@ -237,7 +244,7 @@ class Pago implements ComprobantePagoInterface
     /**
      * @param Factura $factura
      */
-    public function setFactura(Factura $factura)
+    public function setFactura(Factura $factura = null)
     {
         $this->factura = $factura;
 
@@ -350,4 +357,20 @@ class Pago implements ComprobantePagoInterface
        }
        return array('campos' => $camposPagados, 'tiempos' => $tiempos);
      }
+
+     /**
+     * @return bool
+     */
+    public function isFacturaGenerada()
+    {
+        return $this->facturaGenerada;
+    }
+
+    /**
+     * @param bool $facturaGenerada
+     */
+    public function setFacturaGenerada($facturaGenerada)
+    {
+        $this->facturaGenerada = $facturaGenerada;
+    }
 }

@@ -15,4 +15,6 @@ interface PagoRepositoryInterface extends ObjectRepository
 
     public function getReporteIngresosMes($anio);
     public function getReporteOportunidadPago($filtros);
+
+    public function getAllPagosByInstitucion($id);
 }

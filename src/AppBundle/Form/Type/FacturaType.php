@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use AppBundle\Form\Type\ComprobantePagoType\PagoComprobanteType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class FacturaType extends AbstractType
 {
@@ -18,6 +19,11 @@ class FacturaType extends AbstractType
         $builder
             ->add('monto')
             ->add('zipFile', FileType::class)
+            ->add('fechaFacturacion', DateType::class, [
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+            ])
+            ->add('folio')
             ;
     }
 

@@ -12,21 +12,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class PagoFacturaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('monto')
-            ->add('fechaPago', DateType::class, [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-            ])
-            ->add('referenciaBancaria')
             ->add('solicitud')
-            ->add('comprobantePagoFile', FileType::class)
-            ->add('requiereFactura')
+            ->add('facturaGenerada')
             ->add('factura', FacturaType::class)
         ;
     }

@@ -104,6 +104,7 @@ class ComprobantePagoUploadedListener
      */
     private function ActualizarEstatusDeCampoClinicoActual(Pago $pago, $estatusPagado)
     {
+        dump($estatusPagado);
         $camposClinico = $this->campoClinicoRepository->findOneBy([
             'referenciaBancaria' => $pago->getReferenciaBancaria()
         ]);
