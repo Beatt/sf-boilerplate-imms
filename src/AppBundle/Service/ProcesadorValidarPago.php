@@ -157,7 +157,7 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
     private function existenCamposConEstatusDiferenteACredencialesGeneradas(Solicitud $solicitud)
     {
         return count(array_filter($solicitud->getCamposClinicos()->toArray(), function (CampoClinico $campoClinico) {
-            return $campoClinico->getEstatus()->getNombre() != EstatusCampoInterface::CREDENCIALES_GENERADAS;
+            return $campoClinico->getEstatus()->getNombre() !== EstatusCampoInterface::CREDENCIALES_GENERADAS;
         })) !== 0;
     }
 
