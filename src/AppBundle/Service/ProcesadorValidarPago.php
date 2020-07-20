@@ -41,8 +41,8 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
 
         if($solicitud->isPagoUnico()) {
             if($pago->isValidado()) {
-                if(!$pago->isRequiereFactura()) $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
                 $this->updateEstadoCamposClinicosPorPagoUnico($pago, $solicitud);
+                if(!$pago->isRequiereFactura()) $this->setEstatusCredencialesGeneradasToSolicitud($solicitud);
             } else {
                 $this->updateEstadoCamposClinicosAPagoNoValido($solicitud);
             }
@@ -50,6 +50,10 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         else {
             if($pago->isValidado()) {
                 $this->updateEstatusCampoClinicoPorPagoMultiple($pago);
+                $result = array_filter($solicitud->getCamposClinicos()->toArray(), function (CampoClinico $campoClinico) {
+                    return $campoClinico->getEstatus()->getNombre() != EstatusCampoInterface::CREDENCIALES_GENERADAS;
+                });
+                if(count($result) === 0) $this->setEstatusCredencialesGeneradasToSolicitud($solicitud);
             } else {
                 $camposClinico = $this->campoClinicoRepository->findOneBy([
                     'referenciaBancaria' => $pago->getReferenciaBancaria()
@@ -142,5 +146,14 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         return $this->estatusCampoRepository->findOneBy([
             'nombre' => EstatusCampoInterface::PAGO_NO_VALIDO
         ]);
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return Solicitud
+     */
+    private function setEstatusCredencialesGeneradasToSolicitud(Solicitud $solicitud)
+    {
+        return $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
     }
 }
