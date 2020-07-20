@@ -29,6 +29,7 @@ Encore
     .addEntry('fofoe_reportes-inicio', './assets/js/fofoe/reportes-inicio/index.js')
     .addEntry('fofoe_reporte-oportunidad', './assets/js/fofoe/reporte_oportunidad/index.js')
     .addEntry('fofoe_reporte-ingresos', './assets/js/fofoe/reporte_ingresos/index.js')
+    .addEntry('validacion.de.pago', './assets/js/fofoe/ValidacionDePago/index.js')
     .addStyleEntry('layout-formato-fofoe', './assets/css/formatos/fofoe/layout.scss')
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
