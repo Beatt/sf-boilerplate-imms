@@ -16,8 +16,6 @@ final class Pago
 
     private $monto;
 
-    private $requiereFactura;
-
     private $id;
 
     public function __construct(
@@ -27,8 +25,7 @@ final class Pago
         $montoPendienteValidar,
         $comprobantePago,
         $fechaPago,
-        $monto,
-        $requiereFactura
+        $monto
     ) {
         $this->solicitud = $solicitud;
         $this->montoTotal = $montoTotal;
@@ -36,7 +33,6 @@ final class Pago
         $this->comprobantePago = $comprobantePago;
         $this->fechaPago = $fechaPago;
         $this->monto = $monto;
-        $this->requiereFactura = $requiereFactura;
         $this->id = $id;
     }
 
@@ -86,14 +82,6 @@ final class Pago
     public function getMonto()
     {
         return $this->monto;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRequiereFactura()
-    {
-        return $this->requiereFactura;
     }
 
     /**

@@ -3,13 +3,20 @@ import ReactDOM from 'react-dom';
 import Cleave from "cleave.js/react";
 import { TIPO_PAGO } from "../../constants";
 import { moneyFormat } from "../../utils";
-const SI_REQUIERE_FACTURA_DEFAULT = 1
-const NO_REQUIERE_FACTURA_DEFAULT = 0
+const SI_ES_PAGO_CORRECTO_DEFAULT = 1
+const NO_ES_PAGO_CORRECTO_DEFAULT = 0
 
 const ValidacionDePago = ({ pago }) => {
 
+  const { useState } = React
+  const [monto, setMonto] = useState(pago.monto)
+
   function isPagoMultiple() {
     return pago.solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
+  }
+
+  function handleMonto({ target }) {
+    setMonto(target.rawValue)
   }
 
   return(
@@ -65,7 +72,7 @@ const ValidacionDePago = ({ pago }) => {
           </a>
         </p>
         <form
-          action={`/ie/pagos/cargar-comprobante-de-pago`}
+          action={`/fofoe/pagos/${pago.id}/validacion-de-pago`}
           method='post'
           className='form-horizontal'
           encType='multipart/form-data'
@@ -102,13 +109,15 @@ const ValidacionDePago = ({ pago }) => {
                   options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                   className='form-control'
                   required={true}
-                  value={pago.monto}
+                  value={monto}
+                  onChange={handleMonto}
                 />
                 <div className="input-group-addon">$</div>
                 <input
                   type="hidden"
                   id='validacion_pago_monto'
                   name='validacion_pago[monto]'
+                  value={monto}
                 />
               </div>
             </div>
@@ -118,27 +127,25 @@ const ValidacionDePago = ({ pago }) => {
               htmlFor='validacion_pago_requiere_factura'
               className="control-label col-md-4 text-right"
             >
-              ¿Requiere factura?&nbsp;
+              ¿El pago es correcto?&nbsp;
             </label>
             <div className="col-md-3">
-              <label htmlFor='validacion_pago_requiereFactura_yes'>Si&nbsp;</label>
+              <label htmlFor='validacion_pago_validado_yes'>Si&nbsp;</label>
               <input
                 type="radio"
-                value={SI_REQUIERE_FACTURA_DEFAULT}
-                id='validacion_pago_requiereFactura_yes'
-                name='validacion_pago[requiereFactura]'
+                value={SI_ES_PAGO_CORRECTO_DEFAULT}
+                id='validacion_pago_validado_yes'
+                name='validacion_pago[validado]'
                 required={true}
-                defaultChecked={pago.requiereFactura === true}
               />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <label htmlFor="validacion_pago_requiereFactura_no">No&nbsp;</label>
+              <label htmlFor="validacion_pago_validado_no">No&nbsp;</label>
               <input
                 type="radio"
-                value={NO_REQUIERE_FACTURA_DEFAULT}
-                id='validacion_pago_requiereFactura_no'
-                name='validacion_pago[requiereFactura]'
+                value={NO_ES_PAGO_CORRECTO_DEFAULT}
+                id='validacion_pago_validado_no'
+                name='validacion_pago[validado]'
                 required={true}
-                defaultChecked={pago.requiereFactura === true}
               />
             </div>
           </div>

@@ -21,7 +21,7 @@ class ValidacionPagoType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'YYYY-MM-dd'
             ])
-            ->add('requiereFactura', TextType::class)
+            ->add('validado', TextType::class)
             ->add('observaciones')
         ;
 
@@ -31,7 +31,7 @@ class ValidacionPagoType extends AbstractType
             $form = $event->getForm();
 
             $pago->setRequiereFactura(
-                $form->get('requiereFactura')->getViewData() === '1' ? 1 : 0
+                $form->get('validado')->getViewData() === '1' ? 1 : 0
             );
         });
     }
