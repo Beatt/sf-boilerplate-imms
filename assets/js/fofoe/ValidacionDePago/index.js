@@ -1,13 +1,14 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import Cleave from "cleave.js/react";
+import {TIPO_PAGO} from "../../constants";
 const SI_REQUIERE_FACTURA_DEFAULT = 1
 const NO_REQUIERE_FACTURA_DEFAULT = 0
 
-const ValidacionDePago = () => {
+const ValidacionDePago = ({ pago }) => {
 
   function isPagoMultiple() {
-    return true;
+    return pago.solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
   }
 
   return(
@@ -15,16 +16,16 @@ const ValidacionDePago = () => {
       <div className="col-md-12 mb-20">
         <div className="row">
           <div className="col-md-6">
-            <p className='mb-5'>No. de Solicitud <strong>Numero de solicitud</strong></p>
-            <p className='mb-5'>Tipo de pago <strong>Tipo de pago</strong></p>
-            <p className='mb-20'>Monto total: <strong>Monto total</strong></p>
+            <p className='mb-5'>No. de Solicitud <strong>{pago.solicitud.noSolicitud}</strong></p>
+            <p className='mb-5'>Tipo de pago <strong>{pago.solicitud.tipoPago}</strong></p>
+            <p className='mb-20'>Monto total: <strong>{pago.montoTotal}</strong></p>
           </div>
           {
             isPagoMultiple() &&
             <div className="col-md-6">
               <p className='mb-5'><strong>Campo clínico</strong></p>
-              <p className='mb-5'>Sede: <strong>Sede</strong></p>
-              <p className='mb-5'>Carrera <strong>Carrera</strong></p>
+              <p className='mb-5'>Sede: <strong>{pago.solicitud.campoClinico.sede}</strong></p>
+              <p className='mb-5'>Carrera <strong>{pago.solicitud.campoClinico.carrera}</strong></p>
             </div>
           }
         </div>
@@ -168,7 +169,9 @@ export default ValidacionDePago;
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <ValidacionDePago/>,
+    <ValidacionDePago
+      pago={window.PAGO_PROPS}
+    />,
     document.getElementById('validacion-de-pago-component')
   )
 });

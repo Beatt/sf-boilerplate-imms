@@ -15,6 +15,7 @@ imports:
     - { resource: './services/ie/detalle_solicitud.yml' }
     - { resource: './services/ie/detalle_solicitud_multiple.yml' }
     - { resource: './services/ie/seleccionar_forma_pago.yml' }
+    - { resource: './services/fofoe/validacion_pago.yml' }
 
 services:
     # default configuration for services in *this* file

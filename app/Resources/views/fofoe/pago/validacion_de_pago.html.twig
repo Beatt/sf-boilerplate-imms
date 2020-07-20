@@ -25,5 +25,8 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+      window.PAGO_PROPS = {{ pago|json_encode|raw }}
+    </script>
     <script src="{{ asset('build/validacion.de.pago.js') }}"></script>
 {% endblock %}
