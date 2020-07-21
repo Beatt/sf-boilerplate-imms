@@ -19,6 +19,12 @@ const ValidacionDePago = ({ pago }) => {
     setMonto(target.rawValue)
   }
 
+  function getMontoTotalTitle() {
+    return isPagoMultiple() ?
+      'Monto total del campo clínico:' :
+      'Monto total de la solicitud:';
+  }
+
   return(
     <div className='row mt-20'>
       <div className="col-md-12 mb-20">
@@ -27,7 +33,7 @@ const ValidacionDePago = ({ pago }) => {
             <p className='mb-5'><strong>Solicitud</strong></p>
             <p className='mb-5'>No. de Solicitud: <strong>{pago.solicitud.noSolicitud}</strong></p>
             <p className='mb-5'>Tipo de pago: <strong>{pago.solicitud.tipoPago}</strong></p>
-            <p className='mb-20'>Monto total: <strong>{moneyFormat(pago.montoTotal)}</strong></p>
+            <p className='mb-20'>{getMontoTotalTitle()} <strong>{moneyFormat(pago.montoTotal)}</strong></p>
           </div>
           {
             isPagoMultiple() &&
@@ -76,7 +82,7 @@ const ValidacionDePago = ({ pago }) => {
         </table>
       </div>
       <div className="col-md-12">
-        <h3 className='mb-10'>Validar comprobante de pago</h3>
+        <h3 className='mb-20'>Validar comprobante de pago</h3>
         <p className='mb-5'>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
         <p className='mb-5'>Comprobante de pago a validar:&nbsp;&nbsp;
           <a
