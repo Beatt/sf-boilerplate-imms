@@ -100,7 +100,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                 <th>Carrera</th>
                 <th>No. de lugares <br/>solicitados</th>
                 <th>No. de lugares <br/>autorizados</th>
-                <th>Periodo</th>
+                <th className='col-md-2'>Periodo</th>
                 <th>Estado</th>
                 <th>Comprobante</th>
                 <th>Factura</th>
