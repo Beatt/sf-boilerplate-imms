@@ -52,7 +52,7 @@ final class DetallePagoUsingDoctrine implements DetallePago
                 return new PagoValidado(
                     $pago->getId(),
                     $pago->getReferenciaBancaria(),
-                    $pago->getFechaCreacion(),
+                    $pago->getFechaPago(),
                     $pago->getMonto()
                 );
             }, $pagos)
