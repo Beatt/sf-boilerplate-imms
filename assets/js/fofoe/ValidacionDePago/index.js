@@ -23,22 +23,23 @@ const ValidacionDePago = ({ pago }) => {
     <div className='row mt-20'>
       <div className="col-md-12 mb-20">
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-4">
+            <p className='mb-5'><strong>Solicitud</strong></p>
             <p className='mb-5'>No. de Solicitud: <strong>{pago.solicitud.noSolicitud}</strong></p>
             <p className='mb-5'>Tipo de pago: <strong>{pago.solicitud.tipoPago}</strong></p>
             <p className='mb-20'>Monto total: <strong>{moneyFormat(pago.montoTotal)}</strong></p>
-            <p className='mb-5'><strong>Institución</strong></p>
-            <p className='mb-5'>Nombre: <strong>{pago.institucion.nombre}</strong></p>
-            <p className='mb-20'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
           </div>
           {
             isPagoMultiple() &&
-            <div className="col-md-6">
+            <div className="col-md-4">
               <p className='mb-5'><strong>Campo clínico</strong></p>
               <p className='mb-5'>Sede: <strong>{pago.solicitud.campoClinico.sede}</strong></p>
               <p className='mb-5'>Carrera: <strong>{pago.solicitud.campoClinico.carrera}</strong></p>
             </div>
           }
+          <p className='mb-5'><strong>Institución</strong></p>
+          <p className='mb-5'>Nombre: <strong>{pago.institucion.nombre}</strong></p>
+          <p className='mb-5'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
         </div>
       </div>
       <div className="col-md-12 mb-20">
@@ -76,8 +77,8 @@ const ValidacionDePago = ({ pago }) => {
       </div>
       <div className="col-md-12">
         <h3 className='mb-10'>Validar comprobante de pago</h3>
-        <p>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
-        <p>Comprobante de pago a validar:&nbsp;&nbsp;
+        <p className='mb-5'>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
+        <p className='mb-5'>Comprobante de pago a validar:&nbsp;&nbsp;
           <a
             href={`/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}
             target='_blank'
