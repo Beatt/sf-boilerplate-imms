@@ -89,7 +89,7 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         }
 
         if(isset($filters['estado']) && $filters['estado']){
-            switch ($filters['estado']){
+            switch ($filters['estado']) {
                 case 'a':
                     $queryBuilder->andWhere('pago.validado is null');
                     break;
@@ -98,6 +98,9 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
                     break;
                 case 'c':
                     $queryBuilder->andWhere('pago.validado = true AND pago.requiereFactura = true AND pago.factura is NULL');
+                    break;
+                case 'd':
+                    $queryBuilder->andWhere('pago.validado = false');
                     break;
             }
         }
