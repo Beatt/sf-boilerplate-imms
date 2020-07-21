@@ -116,6 +116,7 @@ const ValidacionDePago = ({ pago }) => {
             </label>
             <div className="col-md-3">
               <div className={`input-group`}>
+                <div className="input-group-addon">$</div>
                 <Cleave
                   options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                   className='form-control'
@@ -123,7 +124,6 @@ const ValidacionDePago = ({ pago }) => {
                   value={monto}
                   onChange={handleMonto}
                 />
-                <div className="input-group-addon">$</div>
                 <input
                   type="hidden"
                   id='validacion_pago_monto'
