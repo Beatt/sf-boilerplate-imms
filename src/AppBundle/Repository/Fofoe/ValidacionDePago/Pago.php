@@ -18,6 +18,8 @@ final class Pago
 
     private $id;
 
+    private $historial;
+
     public function __construct(
         $id,
         Solicitud $solicitud,
@@ -25,7 +27,8 @@ final class Pago
         $montoPendienteValidar,
         $comprobantePago,
         $fechaPago,
-        $monto
+        $monto,
+        $historial
     ) {
         $this->solicitud = $solicitud;
         $this->montoTotal = $montoTotal;
@@ -34,6 +37,7 @@ final class Pago
         $this->fechaPago = $fechaPago;
         $this->monto = $monto;
         $this->id = $id;
+        $this->historial = $historial;
     }
 
     /**
@@ -90,5 +94,13 @@ final class Pago
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHistorial()
+    {
+        return $this->historial;
     }
 }

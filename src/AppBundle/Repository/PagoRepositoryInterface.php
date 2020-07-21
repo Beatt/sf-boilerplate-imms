@@ -17,4 +17,6 @@ interface PagoRepositoryInterface extends ObjectRepository
     public function getReporteOportunidadPago($filtros);
 
     public function getAllPagosByInstitucion($id);
+
+    public function getComprobantesPagoValidadosByReferenciaBancaria($referenciaBancaria);
 }

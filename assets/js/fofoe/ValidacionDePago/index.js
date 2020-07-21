@@ -49,14 +49,25 @@ const ValidacionDePago = ({ pago }) => {
           </tr>
           </thead>
           <tbody>
-            <tr>
-              <td
-                className='text-center text-info'
-                colSpan={4}
-              >
-                Aún no se ha validado ningún comprobante de pago
-              </td>
-            </tr>
+          {
+            pago.historial.length !== 0 ?
+              pago.historial.map((pago, index) =>
+                <tr key={index}>
+                  <td>{pago.referenciaBancaria}</td>
+                  <td><a href={`/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}>Descargar</a></td>
+                  <td>{pago.fechaPago}</td>
+                  <td>{moneyFormat(pago.monto)}</td>
+                </tr>
+              ) :
+              <tr>
+                <td
+                  className='text-center text-info'
+                  colSpan={4}
+                >
+                  Aún no se ha validado ningún comprobante de pago
+                </td>
+              </tr>
+          }
           </tbody>
         </table>
       </div>
