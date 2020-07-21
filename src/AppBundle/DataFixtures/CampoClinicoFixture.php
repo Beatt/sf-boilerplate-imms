@@ -9,9 +9,10 @@ use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Unidad;
 use Carbon\Carbon;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class CampoClinicoFixture extends Fixture
+class CampoClinicoFixture extends Fixture implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {

@@ -1,0 +1,5 @@
+services:
+  AppBundle\Repository\Fofoe\ValidacionDePago\DetallePago:
+    class: AppBundle\Repository\Fofoe\ValidacionDePago\DetallePagoUsingDoctrine
+    arguments:
+      - '@AppBundle\Repository\PagoRepositoryInterface'

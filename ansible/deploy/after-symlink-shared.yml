@@ -6,6 +6,23 @@
     mode: 0777
     recurse: true
 
+- name: Creates uploads directory
+  become: true
+  file:
+    path: "{{ ansistrano_release_path.stdout }}/uploads/instituciones"
+    state: directory
+    mode: 0777
+
+- name: Creates link uploads directory
+  become: true
+  file:
+    path: "{{ ansistrano_release_path.stdout }}/uploads/instituciones"
+    src: "{{ ansistrano_shared_path }}/uploads/instituciones"
+    state: link
+    mode: 0777
+    follow: yes
+    force: true
+
 - name: Creates upload files directory
   become: true
   file:

@@ -55,4 +55,18 @@ class InstitucionRepository extends EntityRepository implements InstitucionRepos
         ->getQuery()
         ->getOneOrNullResult();
     }
+
+    public function getInstitucionByPagoId($id)
+    {
+        return $this->createQueryBuilder('institucion')
+            ->join('institucion.convenios', 'convenios')
+            ->join('convenios.camposClinicos', 'camposClinicos')
+            ->join('camposClinicos.solicitud', 'solicitud')
+            ->join('solicitud.pagos', 'pagos')
+            ->where('pagos.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult()
+            ;
+    }
 }

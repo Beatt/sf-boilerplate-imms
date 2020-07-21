@@ -1,6 +1,7 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ListConvenios from "../../components/ListConvenios";
+import Swal from "sweetalert2";
 
 const ValidarInfo = (
   {
@@ -8,12 +9,41 @@ const ValidarInfo = (
     errores,
     action
   }) => {
+  const { useRef } = React
+  const formRef = useRef(null)
+
+  function handleForm(event) {
+    event.preventDefault();
+
+    let cedulaSelectedText = 'La información de la Cédula de Identificación Fiscal será utilizada para el proceso de facturación de sus pagos';
+    if(!formRef.current.elements['institucion[cedulaFile]'].value) {
+      cedulaSelectedText = 'La cédula de identificación es necesaria para el proceso de facturación en caso de no adjuntar el archivo, o de que los datos no sean correctos, no se podrá emitir la factura correspondiente';
+    }
+
+    Swal.fire({
+      title: '¿Confirma que los datos son correctos? ',
+      text: cedulaSelectedText,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '¡Si, estoy seguro!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        formRef.current.elements['institucion[isConfirmacionInformacion]'].defaultChecked = true;
+        formRef.current.submit();
+      }
+    })
+  }
 
   return(
     <form
       action={action}
       method="post"
       encType='multipart/form-data'
+      onSubmit={handleForm}
+      ref={formRef}
     >
       <div className='row'>
         <div className='col-md-6'>
@@ -148,7 +178,7 @@ const ValidarInfo = (
           {
             institucion.cedulaIdentificacion &&
             <a
-              href={institucion.cedulaIdentificacion}
+              href={`/ie/descargar-cedula-de-identificacion-fiscal`}
               download
             >
               Descargar cédula
@@ -157,17 +187,14 @@ const ValidarInfo = (
         </div>
         <div className="col-md-12 mt-15 text-right">
           <div className='form-group'>
-            <label htmlFor='institucion_isConfirmacionInformacion'>
-              Declaro que la información aquí descrita esta correcta y actualizada
-            </label>&nbsp;
-            <input
-              type="checkbox"
-              name='institucion[isConfirmacionInformacion]'
-              id='institucion_isConfirmacionInformacion'
-              value='checked'
-              defaultChecked={institucion.confirmacionInformacion !== null}
-              required={true}
-            />
+            <div className="hidden">
+              <input
+                type="checkbox"
+                name='institucion[isConfirmacionInformacion]'
+                id='institucion_isConfirmacionInformacion'
+                value='checked'
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -175,7 +202,12 @@ const ValidarInfo = (
       <div className='row'>
         <div className="col-md-9"/>
         <div className='col-md-3'>
-          <button type="submit" className="btn btn-success btn-block">Guardar</button>
+          <button
+            type="submit"
+            className="btn btn-success btn-block"
+          >
+            Guardar
+          </button>
         </div>
       </div>
     </form>

@@ -48,9 +48,10 @@ const ListaCampos = ({ solicitud }) => {
   return (
     <div className='row'>
       <div className="col-md-12">
+        <p><span className="text-bold">No. solicitud:</span> {solicitud.noSolicitud}</p>
         <div className="row">
           <div className="col-md-6 mt-10">
-            <p><strong>Estado:</strong> {solicitud.estatus}</p>
+            <p><strong>Estado de la solicitud:</strong> {solicitud.estatus}</p>
           </div>
           <div className="col-md-6">
             <strong>Acción</strong>&nbsp;
@@ -108,10 +109,10 @@ const ListaCampos = ({ solicitud }) => {
             <table className='table'>
               <thead className='headers'>
               <tr>
-                <th>Documento</th>
-                <th>Descripcion</th>
-                <th>Fecha</th>
-                <th>Archivo</th>
+                <th className='col-md-3'>Documento</th>
+                <th className='col-md-7'>Descripción</th>
+                <th className='col-md-1'>Fecha</th>
+                <th className='col-md-1'>Archivo</th>
               </tr>
               </thead>
               <tbody>
@@ -142,7 +143,14 @@ const ListaCampos = ({ solicitud }) => {
                   <td>
                     {
                       solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
-                        <p key={index}><a href={comprobantePago.urlArchivo}>Descargar</a></p>
+                        <p key={index}>
+                          <a
+                            href={`/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
+                            target='_blank'
+                          >
+                            Descargar
+                          </a>
+                        </p>
                       )
                     }
                   </td>

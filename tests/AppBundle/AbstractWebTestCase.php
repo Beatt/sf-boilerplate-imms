@@ -24,6 +24,10 @@ abstract class AbstractWebTestCase extends WebTestCase
 
         $this->container = $client->getContainer();
         $this->entityManager = $this->container->get('doctrine.orm.default_entity_manager');
+
+        $this->clearTablaCampoClinico();
+        $this->clearTablaPago();
+        $this->clearTablaSolicitud();
     }
 
     protected function clearTablaCampoClinico()

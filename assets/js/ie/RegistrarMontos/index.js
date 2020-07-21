@@ -16,6 +16,30 @@ const Registrar = (
   let acceso = false;
   let editar = false;
 
+  const handleCurrency = (e) => {
+    {console.log(e)}
+    if(!isNaN(e.value)){
+      e.value = e.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }else{
+      e.value = '';
+    }
+  };
+
+  const formSubmit = (e) =>{
+    
+    try{
+      var tag = document.getElementsByClassName('solicitud_validacion_montos_inscripcion');
+
+      for (var i = 0; i < tag.length; i++) {
+        tag[i].value = tag[i].value.replace(/,/g, '');
+      }
+
+    }catch(error){
+      e.preventDefault();
+    }
+  };
+
+
   if (autorizados[0].autorizados !== 0) acceso = true;
   if (route == "ie#corregir_montos") editar = true;
   return (
@@ -26,6 +50,7 @@ const Registrar = (
             action={`/ie/solicitudes/${solicitudId.id}/registrar-montos`}
             method="post"
             encType='multipart/form-data'
+            onSubmit= {formSubmit}
           >
             <div className='row'>
               <div className="col-md-12 mb-10 mt-10">
@@ -110,13 +135,14 @@ const Registrar = (
                                   <div className="input-group-addon">$</div>
                                   <input
                                     className='form-control'
-                                    type="number"
+                                    type="text"
                                     min={1}
                                     step={0.01}
                                     name={`solicitud_validacion_montos[montosCarreras][${index}][montoInscripcion]`}
-                                    id="solicitud_validacion_montos_montosCarreras_${index}_montoInscripcion"
+                                    className="form-control solicitud_validacion_montos_inscripcion"
                                     defaultValue={carrera.montoInscripcion}
                                     required={true}
+                                    onBlur={e => handleCurrency(e.target)}
                                   />
                                 </div>
                               </div>
@@ -129,9 +155,11 @@ const Registrar = (
                                     className='form-control'
                                     type="text"
                                     name={`solicitud_validacion_montos[montosCarreras][${index}][montoColegiatura]`}
-                                    id="solicitud_validacion_montos_montosCarreras_${index}_montoColegiatura"
+                                    id="solicitud_validacion_montos_inscripcion"
+                                    className="form-control solicitud_validacion_montos_inscripcion"
                                     defaultValue={carrera.montoColegiatura}
                                     required={true}
+                                    onBlur={e => handleCurrency(e.target)}
                                   />
                                 </div>
                               </div>

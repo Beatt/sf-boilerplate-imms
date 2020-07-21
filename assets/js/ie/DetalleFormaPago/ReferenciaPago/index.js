@@ -42,7 +42,7 @@ const ReferenciaPago = (
             />Generar un único Formato para pagar todos los Campos Clínicos Autorizados en esta solicitud.
           </label>
         </div>
-        <p className='text-danger'>Considere que el pago deberá realizarce en una sola exibición y por el monto total de la solicitud.</p>
+        <p className='text-danger'>Considere que el pago deberá realizarse en una sola exhibición y por el monto total de la solicitud.</p>
       </div>
       <div className="col-md-12 mt-20">
         <p><strong>NOTA: Para realizar su pago, por favor descargue su formato de referencia, es muy importante que está sea incluida por su banco al realizar su pago.</strong></p>

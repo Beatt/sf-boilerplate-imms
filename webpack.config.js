@@ -17,6 +17,7 @@ Encore
     .addEntry('ie.cargar.comprobante', './assets/js/ie/RegistrarPago/index.js')
     .addEntry('ie.seleccionar.forma.pago', './assets/js/ie/SeleccionarFormaPago/index.js')
     .addEntry('ie.correccion.pago.fofoe', './assets/js/ie/EditarPagoFofoe/index.js')
+    .addEntry('ie.detalle.ie', './assets/js/fofoe/DetalleIE/index.js')
 
     // CAME
     .addEntry('came_solicitud_index', './assets/js/came/solicitud/index.js')
@@ -29,6 +30,7 @@ Encore
     .addEntry('fofoe_reportes-inicio', './assets/js/fofoe/reportes-inicio/index.js')
     .addEntry('fofoe_reporte-oportunidad', './assets/js/fofoe/reporte_oportunidad/index.js')
     .addEntry('fofoe_reporte-ingresos', './assets/js/fofoe/reporte_ingresos/index.js')
+    .addEntry('validacion.de.pago', './assets/js/fofoe/ValidacionDePago/index.js')
     .addStyleEntry('layout-formato-fofoe', './assets/css/formatos/fofoe/layout.scss')
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()

@@ -75,7 +75,7 @@ const ReferenciaPago = (
           <p className='text-danger'>Considere que el pago deberá realizarce en una sola exhibición y por el monto total de la solicitud.</p>
         </div>
         <div className="col-md-12 mt-20">
-          <p><strong>NOTA: Seleccione la opción que más le convenga, ya que una vez seleccionada la forma de pago, esta es inamovible durante el resto del procedimiento.</strong></p>
+          <p><strong>NOTA: Seleccione la opción que más le convenga, ya que una vez seleccionada el tipo de pago, esta es inamovible durante el resto del procedimiento.</strong></p>
         </div>
         <div className="col-md-12 mt-20">
           <div className="row">

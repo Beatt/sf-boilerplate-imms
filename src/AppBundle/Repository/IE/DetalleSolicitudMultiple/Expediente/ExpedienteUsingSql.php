@@ -3,12 +3,13 @@
 namespace AppBundle\Repository\IE\DetalleSolicitudMultiple\Expediente;
 
 use AppBundle\ObjectValues\SolicitudId;
-use AppBundle\Repository\IE\DetalleSolicitud\Expediente\ComprobantePagoInterface;
+use AppBundle\Repository\IE\DetalleSolicitud\Expediente\AbstractExpediente;
+use AppBundle\Repository\IE\DetalleSolicitud\Expediente\ComprobantePago;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\Documents;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\OficioMontos;
 use Doctrine\DBAL\Driver\Connection;
 
-final class ExpedienteUsingSql implements Expediente
+final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
 {
     private $connection;
 
@@ -98,7 +99,10 @@ final class ExpedienteUsingSql implements Expediente
             SELECT campo_clinico.id,
                    unidad.nombre AS nombre_unidad,
                    pago.comprobante_pago,
-                   pago.fecha_pago
+                   pago.fecha_creacion,
+                   pago.referencia_bancaria,
+                   pago.monto,
+                   pago.id AS pago_id
             FROM solicitud
                      JOIN campo_clinico
                           ON solicitud.id = campo_clinico.solicitud_id
@@ -109,7 +113,8 @@ final class ExpedienteUsingSql implements Expediente
             WHERE solicitud.id = :id
               AND campo_clinico.referencia_bancaria = pago.referencia_bancaria
               AND campo_clinico.lugares_autorizados > 0
-            ORDER BY id
+              AND pago.fecha_pago IS NOT NULL
+            ORDER BY unidad.nombre
         ');
 
         $statement->execute([
@@ -118,11 +123,15 @@ final class ExpedienteUsingSql implements Expediente
 
         $records = $statement->fetchAll();
 
-        return array_map(function (array $record) {
-            return new ComprobantePagoInterface(
-                $record['fecha_pago'],
-                $record['nombre_unidad'],
-                $record['comprobante_pago']
+        return array_map(function (array $record) use ($solicitudId) {
+            return new ComprobantePago(
+                $record['fecha_creacion'],
+                $this->getDescripcion($record),
+                $record['comprobante_pago'],
+                [
+                    'unidad' => $record['nombre_unidad'],
+                    'pagoId' => $record['pago_id']
+                ]
             );
         }, $records);
     }

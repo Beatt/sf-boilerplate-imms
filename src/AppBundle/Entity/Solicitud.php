@@ -56,6 +56,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\CampoClinico", mappedBy="solicitud")
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     protected $camposClinicos;
 
@@ -108,6 +109,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
     /**
      * @var Pago
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="solicitud", cascade={"persist"})
+     * @ORM\OrderBy({"id" = "ASC"})
     */
     protected $pagos;
 

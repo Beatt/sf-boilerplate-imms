@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\SolicitudInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -28,7 +29,9 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
 
         $query = $queryBuilder
             ->andWhere('convenio.institucion = :id')
+            ->andWhere('solicitud.estatus != :estatus')
             ->setParameter('id', $id)
+            ->setParameter('estatus', SolicitudInterface::CREADA)
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
             ->setFirstResult(($offset - 1) * self::PAGINATOR_PER_PAGE)
             ->orderBy('solicitud.fecha', 'DESC')

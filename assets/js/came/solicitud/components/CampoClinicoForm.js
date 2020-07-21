@@ -191,7 +191,7 @@ const CampoClinicoForm = (props) => {
 
             <div className="row">
                 <div className="col-md-12">
-                    <h3>Ingrese la información correspondiente a la carrera solicitada para campo clínico</h3>
+                    <h3>Seleccione la información correspondiente a la carrera solicitada para campo clínico</h3>
                 </div>
             </div>
 

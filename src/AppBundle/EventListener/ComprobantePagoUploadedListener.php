@@ -69,7 +69,7 @@ class ComprobantePagoUploadedListener
             }
             $this->settingSolicitudEnValidacionFOFOE($pago);
         } else {
-            $this->ActualizarEstatusDeCampoClinicoActual($pago, $estatusPagado);
+            $this->actualizarEstatusDeCampoClinicoActual($pago, $estatusPagado);
             if($this->isSolicitudListaParaCambiarDeEstatus($pago)) $this->settingSolicitudEnValidacionFOFOE($pago);
         }
 
@@ -102,7 +102,7 @@ class ComprobantePagoUploadedListener
      * @param Pago $pago
      * @param $estatusPagado
      */
-    private function ActualizarEstatusDeCampoClinicoActual(Pago $pago, $estatusPagado)
+    private function actualizarEstatusDeCampoClinicoActual(Pago $pago, $estatusPagado)
     {
         $camposClinico = $this->campoClinicoRepository->findOneBy([
             'referenciaBancaria' => $pago->getReferenciaBancaria()

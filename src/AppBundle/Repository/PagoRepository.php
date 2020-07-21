@@ -144,12 +144,6 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
     public function getComprobantesPagoByReferenciaBancaria($referenciaBancaria)
     {
         return $this->createQueryBuilder('pago')
-            ->select('NEW AppBundle\DTO\GestionPago\PagoDTO(
-                pago.comprobantePago, 
-                pago.referenciaBancaria, 
-                pago.fechaPago, 
-                pago.monto
-            )')
             ->where('pago.referenciaBancaria = :referenciaBancaria')
             ->setParameter('referenciaBancaria', $referenciaBancaria)
             ->getQuery()
@@ -286,5 +280,32 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 
       return [$pagos, $totalItems, $pagesCount, $pageSize];
 
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getAllPagosByInstitucion($id)
+    {
+      return $this->createQueryBuilder('pago')
+            ->innerJoin('pago.solicitud', 'solicitud')
+            ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
+            ->where('solicitud.id = :solicitud_id')
+            ->Andwhere('pago.referenciaBancaria = campos_clinicos.referenciaBancaria')
+            ->setParameter('solicitud_id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getComprobantesPagoValidadosByReferenciaBancaria($referenciaBancaria)
+    {
+        return $this->createQueryBuilder('pago')
+            ->where('pago.referenciaBancaria = :referenciaBancaria')
+            ->andWhere('pago.validado = TRUE')
+            ->setParameter('referenciaBancaria', $referenciaBancaria)
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }

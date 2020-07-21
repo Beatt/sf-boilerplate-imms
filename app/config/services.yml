@@ -5,8 +5,8 @@ parameters:
     zip_referencias_bancarias_dir: '%kernel.root_dir%/../var/Referenciasbancarias.zip'
     formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
     credenciales_dir: '%kernel.root_dir%/../var/credenciales'
-    comprobantes_pago_dir: '/uploads/files/instituciones'
-    cedula_identificacion_pago_dir: '/uploads/files/instituciones'
+    private_dir: '%kernel.root_dir%/../uploads'
+    institucion_dir: '%private_dir%/instituciones'
 
 imports:
     - { resource: './services/normalizers.yml' }
@@ -15,6 +15,7 @@ imports:
     - { resource: './services/ie/detalle_solicitud.yml' }
     - { resource: './services/ie/detalle_solicitud_multiple.yml' }
     - { resource: './services/ie/seleccionar_forma_pago.yml' }
+    - { resource: './services/fofoe/validacion_pago.yml' }
 
 services:
     # default configuration for services in *this* file
@@ -131,4 +132,12 @@ services:
 
     AppBundle\Repository\GetExistSolicitud\GetExistSolicitud:
         class: AppBundle\Repository\GetExistSolicitud\GetExistSolicitudUsingSql
+        public: true
+
+    AppBundle\Service\ProcesadorValidarPagoInterface:
+        class: AppBundle\Service\ProcesadorValidarPago
+        public: true
+
+    AppBundle\Calculator\ComprobantePagoCalculatorInterface:
+        class: AppBundle\Calculator\ComprobantePagoCalculator
         public: true

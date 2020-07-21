@@ -87,9 +87,12 @@ class GestionPagoDTO implements GestionPagoDTOInterface
         $amountCarry = array_reduce(
             $pagos->toArray(),
             function ($carry, Pago $pago) {
+                if($pago->getFechaCreacion() === null) return $carry;
                 $carry += intval($pago->getMonto());
                 return $carry;
         });
+
+        if(!$amountCarry) return $this->getMonto();
 
         return $this->getMonto() - $amountCarry;
     }

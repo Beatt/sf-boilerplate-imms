@@ -58,9 +58,9 @@ export const isActionDisabledByInstitucionEducativa = (estatus) => {
 }
 
 export const moneyFormat = (monto) => {
-  const formatter = new Intl.NumberFormat('es-MX', {
+  const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'MXN',
+    currency: 'USD',
   });
 
   return formatter.format(monto)

@@ -12,12 +12,15 @@ abstract class AbstractDocument implements DocumentInterface
 
     private $urlArchivo;
 
-    public function __construct($nombre, $fecha, $descripcion, $urlArchivo)
+    private $options;
+
+    public function __construct($nombre, $fecha, $descripcion, $urlArchivo, $options = null)
     {
         $this->nombre = $nombre;
         $this->fecha = $fecha;
         $this->descripcion = $descripcion;
         $this->urlArchivo = $urlArchivo;
+        $this->options = $options;
     }
 
     /**
@@ -50,5 +53,13 @@ abstract class AbstractDocument implements DocumentInterface
     public function getUrlArchivo()
     {
         return $this->urlArchivo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }
