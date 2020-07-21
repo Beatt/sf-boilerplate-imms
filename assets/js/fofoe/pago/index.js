@@ -6,7 +6,7 @@ import './index.scss';
 
 const AccionFofoe = ({pago}) => {
     const RegistroFactura  = () => (<a href={`/fofoe/registrar-factura/${pago.id}`}>Registrar Factura</a>);
-    const ValidarPago = () => (<a href={`/fofoe/validar-pago/${pago.id}`}>Validar Pago</a>);
+    const ValidarPago = () => (<a href={`/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
     if(pago.validado && pago.requiereFactura && !pago.factura){
         return (<RegistroFactura/>);
     }else if(!pago.validado){
