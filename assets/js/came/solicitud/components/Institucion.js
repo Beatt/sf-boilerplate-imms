@@ -224,7 +224,7 @@ const Institucion = (props) => {
                         </div>
                         <div className="col-md-2">
                             <div className={`form-group ${errores.extension ? 'has-error has-feedback' : ''}`}>
-                                <label htmlFor="extension">Extension:</label>
+                                <label htmlFor="extension">Extensión:</label>
                                 <input id={'v'} className={'form-control'}
                                        type="text" value={extension} onChange={e => setExtension(e.target.value)}/>
                                 <span className="help-block">{errores.v ? errores.extension[0] : ''}</span>

@@ -9,10 +9,10 @@
             <p>{{ solicitud.institucion.nombre }}</p>
             <p>{{ solicitud.institucion.representante }}</p>
             <p>Presente</p>
-            <p>Por medio del presente, tengo el agrado de notificar que por medio del <strong>Sistema de Administración del FOFOE</strong>
-                que usted puede consultar el estado y autorización de
+            <p>Tengo el agrado de notificar que por medio del <strong>Sistema de Administración del FOFOE</strong>
+                usted puede consultar el estado y autorización de
                 campos clínicos asociados a su solicitud <strong>{{ solicitud.noSolicitud }}</strong></p>
-            <p>El acceso es mediante la siguiente liga:</p>
+            <p>El acceso al sistema es mediante la siguiente liga:</p>
 
             <p class="text-center"><a href="{{ app.request.getSchemeAndHttpHost()  }}">{{ app.request.getSchemeAndHttpHost() }}</a></p>
 
@@ -21,7 +21,7 @@
             <p><strong>Usuario: </strong>{{ solicitud.institucion.correo }}</p>
             <p><strong>Contraseña: </strong> {{ password }}</p>
             {% endif %}
-            <p>Sin otro particular, le enviamos un cordial saludo.</p>
+            <p>Sin otro particular, le envío un cordial saludo.</p>
 
 
             <div class="text-center text-green">
