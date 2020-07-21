@@ -72,7 +72,8 @@ final class DetallePagoUsingDoctrine implements DetallePago
                     ->first()
                     ->getDelegacion()
                     ->getNombre()
-            )
+            ),
+            $pago->isRequiereFactura()
         );
     }
 

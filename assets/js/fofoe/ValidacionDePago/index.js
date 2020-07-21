@@ -77,7 +77,7 @@ const ValidacionDePago = ({ pago }) => {
       <div className="col-md-12">
         <h3 className='mb-10'>Validar comprobante de pago</h3>
         <p>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
-        <p className='mb-20'>Comprobante de pago a validar:&nbsp;&nbsp;
+        <p>Comprobante de pago a validar:&nbsp;&nbsp;
           <a
             href={`/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}
             target='_blank'
@@ -85,6 +85,7 @@ const ValidacionDePago = ({ pago }) => {
             Descargar
           </a>
         </p>
+        <p className='mb-20'>Factura: <strong>{pago.requiereFactura ? 'Solicitada' : 'No solicitada'}</strong></p>
         <form
           action={`/fofoe/pagos/${pago.id}/validacion-de-pago`}
           method='post'
