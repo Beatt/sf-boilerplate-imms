@@ -35,7 +35,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
     {
         $statement = $this->connection->prepare('
             SELECT documento,
-                   fecha_comprobante,
+                   fecha,
                    url_archivo
             FROM solicitud
             WHERE solicitud.id = :id
@@ -69,7 +69,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
         $montosCarreraRecord = $statement->fetchAll();
 
         return new OficioMontos(
-            $oficioRecord['fecha_comprobante'],
+            $oficioRecord['fecha'],
             $this->getDescripcionOficioMontos($montosCarreraRecord),
             $oficioRecord['url_archivo']
         );
