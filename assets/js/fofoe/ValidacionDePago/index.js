@@ -24,16 +24,19 @@ const ValidacionDePago = ({ pago }) => {
       <div className="col-md-12 mb-20">
         <div className="row">
           <div className="col-md-6">
-            <p className='mb-5'>No. de Solicitud <strong>{pago.solicitud.noSolicitud}</strong></p>
-            <p className='mb-5'>Tipo de pago <strong>{pago.solicitud.tipoPago}</strong></p>
+            <p className='mb-5'>No. de Solicitud: <strong>{pago.solicitud.noSolicitud}</strong></p>
+            <p className='mb-5'>Tipo de pago: <strong>{pago.solicitud.tipoPago}</strong></p>
             <p className='mb-20'>Monto total: <strong>{moneyFormat(pago.montoTotal)}</strong></p>
+            <p className='mb-5'><strong>Institución</strong></p>
+            <p className='mb-5'>Nombre: <strong>{pago.institucion.nombre}</strong></p>
+            <p className='mb-20'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
           </div>
           {
             isPagoMultiple() &&
             <div className="col-md-6">
               <p className='mb-5'><strong>Campo clínico</strong></p>
               <p className='mb-5'>Sede: <strong>{pago.solicitud.campoClinico.sede}</strong></p>
-              <p className='mb-5'>Carrera <strong>{pago.solicitud.campoClinico.carrera}</strong></p>
+              <p className='mb-5'>Carrera: <strong>{pago.solicitud.campoClinico.carrera}</strong></p>
             </div>
           }
         </div>

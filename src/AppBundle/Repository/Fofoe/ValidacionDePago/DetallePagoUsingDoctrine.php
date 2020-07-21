@@ -4,15 +4,21 @@ namespace AppBundle\Repository\Fofoe\ValidacionDePago;
 
 use AppBundle\ObjectValues\PagoId;
 use AppBundle\Repository\CampoClinicoRepository;
+use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 
 final class DetallePagoUsingDoctrine implements DetallePago
 {
     private $pagoRepository;
 
-    public function __construct(PagoRepositoryInterface $pagoRepository)
-    {
+    private $institucionRepository;
+
+    public function __construct(
+        PagoRepositoryInterface $pagoRepository,
+        InstitucionRepositoryInterface $institucionRepository
+    ) {
         $this->pagoRepository = $pagoRepository;
+        $this->institucionRepository = $institucionRepository;
     }
 
     public function detalleByPago(PagoId $pagoId)
@@ -32,6 +38,10 @@ final class DetallePagoUsingDoctrine implements DetallePago
 
         $pagos = $this->pagoRepository
             ->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
+
+        /** @var \AppBundle\Entity\Institucion $institucion */
+        $institucion = $this->institucionRepository
+            ->getInstitucionByPagoId($pago->getId());
 
         return new Pago(
             $pago->getId(),
@@ -55,7 +65,14 @@ final class DetallePagoUsingDoctrine implements DetallePago
                     $pago->getFechaPago(),
                     $pago->getMonto()
                 );
-            }, $pagos)
+            }, $pagos),
+            new Institucion(
+                $institucion->getNombre(),
+                $institucion->getConvenios()
+                    ->first()
+                    ->getDelegacion()
+                    ->getNombre()
+            )
         );
     }
 
