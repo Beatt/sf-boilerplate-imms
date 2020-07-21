@@ -10,9 +10,8 @@ final class DetallePagoUsingDoctrine implements DetallePago
 {
     private $pagoRepository;
 
-    public function __construct(
-        PagoRepositoryInterface $pagoRepository
-    ) {
+    public function __construct(PagoRepositoryInterface $pagoRepository)
+    {
         $this->pagoRepository = $pagoRepository;
     }
 
@@ -31,6 +30,9 @@ final class DetallePagoUsingDoctrine implements DetallePago
             $carrera = $campoClinico->getConvenio()->getCarrera()->getNombre();
         }
 
+        $pagos = $this->pagoRepository
+            ->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
+
         return new Pago(
             $pago->getId(),
             new Solicitud(
@@ -45,7 +47,15 @@ final class DetallePagoUsingDoctrine implements DetallePago
             $pago->getMonto(),
             $pago->getComprobantePago(),
             $pago->getFechaPago()->format('Y-m-d'),
-            $pago->getMonto()
+            $pago->getMonto(),
+            array_map(function (\AppBundle\Entity\Pago $pago) {
+                return new PagoValidado(
+                    $pago->getId(),
+                    $pago->getReferenciaBancaria(),
+                    $pago->getFechaPago(),
+                    $pago->getMonto()
+                );
+            }, $pagos)
         );
     }
 

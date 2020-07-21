@@ -303,4 +303,15 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
             ->getQuery()
             ->getResult();
     }
+
+    public function getComprobantesPagoValidadosByReferenciaBancaria($referenciaBancaria)
+    {
+        return $this->createQueryBuilder('pago')
+            ->where('pago.referenciaBancaria = :referenciaBancaria')
+            ->andWhere('pago.validado = TRUE')
+            ->setParameter('referenciaBancaria', $referenciaBancaria)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
