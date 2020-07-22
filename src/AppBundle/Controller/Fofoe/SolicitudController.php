@@ -199,11 +199,8 @@ class SolicitudController extends DIEControllerController
         
 
         $file = $pago->getZipFile();
-        dump($pago);
         $pago->setZipFile(null);
-        dump($pago);
         $entityManager->persist($pago);
-        dump($pago);
 
         $pago->setZipFile($file);
         $entityManager->flush();
