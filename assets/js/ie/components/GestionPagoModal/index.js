@@ -166,13 +166,13 @@ const GestionPagoModal = (
                   </label>
                   <div className="col-md-3">
                     <div className={`input-group ${hasMontoError && 'has-error'}`}>
+                      <div className="input-group-addon">$</div>
                       <Cleave
                         options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                         className='form-control'
                         required={true}
                         onChange={handleMonto}
                       />
-                      <div className="input-group-addon">$</div>
                       <input
                         type="hidden"
                         id='comprobante_pago_monto'
