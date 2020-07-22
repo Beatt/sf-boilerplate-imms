@@ -7,9 +7,9 @@ import './index.scss';
 const AccionFofoe = ({pago}) => {
     const RegistroFactura  = () => (<a href={`/fofoe/registrar-factura/${pago.id}`}>Registrar Factura</a>);
     const ValidarPago = () => (<a href={`/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
-    if(pago.validado && pago.requiereFactura && !pago.factura){
+    if(pago.validado != null && pago.validado && pago.requiereFactura && !pago.factura){
         return (<RegistroFactura/>);
-    }else if(!pago.validado){
+    }else if(pago.validado == null){
         return (<ValidarPago/>);
     }else{
         return (<></>);
@@ -17,12 +17,14 @@ const AccionFofoe = ({pago}) => {
 }
 
 const EstadosPago = ({pago}) => {
-    if((pago.validado && !pago.requiereFactura) || (pago.validado && pago.requiereFactura && pago.factura)){
+    if(pago.validado == null){
+        return (<span>Pendiente Validación</span>);
+    }else if((pago.validado && !pago.requiereFactura) || (pago.validado && pago.requiereFactura && pago.factura)){
         return (<span>Solicitud Pagada</span>);
     }else if(pago.validado && pago.requiereFactura && !pago.factura){
         return (<span>Factura Pendiente</span>);
     }else{
-        return (<span>Pendiente Validación</span>);
+        return (<span>Pago no Válido</span>);
     }
 }
 
@@ -159,6 +161,7 @@ const PagoIndex = (props) => {
                                         <option value="">Seleccionar ...</option>
                                         <option value="a">Pendiente Validación</option>
                                         <option value="b">Solicitud Pagada</option>
+                                        <option value="d">Pago no Válido</option>
                                         <option value="c">Factura Pendiente</option>
                                     </select>
                                 </th>

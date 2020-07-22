@@ -26,7 +26,7 @@ const ComprobanteOficio = (props) => {
 }
 
 const LinkPago = (props) => {
-    if(props.pago)
+    if(props.pago && props.pago.comprobantePago)
         return (<a href={`/pago/${props.pago.id}/download`} target={'_blank'}>Comprobante de pago</a>)
     return (<></>);
 }
