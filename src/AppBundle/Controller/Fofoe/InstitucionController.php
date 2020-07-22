@@ -57,7 +57,6 @@ class InstitucionController extends DIEControllerController
         ]);
 
         $pagos = $pagoRepository->getAllPagosByInstitucion($institucion->getId());
-        dump($pagos);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {

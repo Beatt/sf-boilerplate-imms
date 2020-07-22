@@ -98,8 +98,6 @@ final class CamposClinicosUsingSql implements CamposClinicos
                 $record['requiere_factura']
             );
 
-            dump($pago);
-
             return new CampoClinico(
                 $record['id_campo_clinico'],
                 $convenio,
