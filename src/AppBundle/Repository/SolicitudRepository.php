@@ -115,7 +115,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         $queryBuilder->distinct();
         $qb2 = clone $queryBuilder;
 
-        return ['data' => $queryBuilder->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
+        return ['data' => $queryBuilder->distinct()->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
             'total' => $qb2->select('COUNT(distinct solicitud.id)')->getQuery()->getSingleScalarResult()
