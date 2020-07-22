@@ -117,8 +117,8 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
 
         $qb2 = clone $queryBuilder;
 
-        if(isset($filter['orderby']) && $filter['orderby']) {
-            switch ($filter['orderby']){
+        if(isset($filters['orderby']) && $filters['orderby']) {
+            switch ($filters['orderby']){
                 case 'a':
                     $queryBuilder->orderBy('pago.fechaPago', 'DESC');
                     break;
@@ -137,8 +137,11 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
             $queryBuilder->orderBy('pago.id', 'DESC');
         }
 
-        return ['data' => $queryBuilder->setMaxResults($perPage)
-            ->setFirstResult(($offset-1) * $perPage)->getQuery()
+        return ['data' => $queryBuilder
+            ->distinct()
+            ->setFirstResult(($offset-1) * $perPage)
+            ->setMaxResults($perPage)
+            ->getQuery()
             ->getResult(),
             'total' => $qb2->select('COUNT(distinct pago.id)')->getQuery()->getSingleScalarResult()
         ];
