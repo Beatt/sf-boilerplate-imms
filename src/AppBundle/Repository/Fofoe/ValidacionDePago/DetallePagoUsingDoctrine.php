@@ -67,6 +67,7 @@ final class DetallePagoUsingDoctrine implements DetallePago
                 );
             }, $pagos),
             new Institucion(
+                $institucion->getId(),
                 $institucion->getNombre(),
                 $institucion->getConvenios()
                     ->first()

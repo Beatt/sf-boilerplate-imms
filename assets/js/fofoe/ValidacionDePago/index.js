@@ -69,7 +69,7 @@ const ValidacionDePago = ({ pago }) => {
             </div>
           }
           <p className='mb-5'><strong>Institución</strong></p>
-          <p className='mb-5'>Nombre: <strong>{pago.institucion.nombre}</strong></p>
+          <p className='mb-5'>Nombre: <strong><a href={`/fofoe/detalle-ie/${pago.institucion.id}`}>{pago.institucion.nombre}</a></strong></p>
           <p className='mb-5'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
         </div>
       </div>
