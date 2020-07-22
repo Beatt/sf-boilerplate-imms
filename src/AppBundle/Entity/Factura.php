@@ -57,6 +57,13 @@ class Factura
 
     private $zipFile;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $aux;
+
 
     /**
      * @return int
@@ -170,4 +177,24 @@ class Factura
         $this->zipFile = $zipFile;
 
     }
+
+    /**
+      * @return int
+      */
+      public function getAux()
+      {
+          return $this->aux;
+      }
+ 
+ 
+      /**
+      * @param string $aux
+      * @return Factura
+      */
+      public function setAux($aux)
+      {
+          $this->aux = $aux;
+ 
+          return $this;
+      }
 }

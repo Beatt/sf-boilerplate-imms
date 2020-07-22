@@ -12,14 +12,14 @@ const Registrar = (
 
   const handleChecked = (event) => {
     let subtotal = total;
-    if (event.checked) subtotal += parseInt(solicitud.pagos[event.id].monto);
-    else subtotal -= parseInt(solicitud.pagos[event.id].monto);
+    if (event.checked) subtotal += parseFloat(solicitud.pagos[event.id].monto);
+    else subtotal -= parseFloat(solicitud.pagos[event.id].monto);
     setTotal(subtotal);
   }
 
   return (
     <form
-      action={`/fofoe/solicitudes/${solicitud.id}/registrar-factura`}
+      action={`/ie/solicitudes/${solicitud.id}/registrar-factura`}
       method="post"
       encType='multipart/form-data'
     >
@@ -70,6 +70,16 @@ const Registrar = (
                 />
               </div>
             </div>
+            <div className='hidden'>
+              <div className="form-group">
+                <input
+                  className='form-control'
+                  defaultValue={solicitud.id}
+                  required={true}
+                  name={`solicitud_factura[pagos][0][factura][aux]`}
+                />
+              </div>
+            </div>
             <div className="col-md-6">
               <table className='table'>
                 <thead className='headers'>
@@ -77,13 +87,13 @@ const Registrar = (
                   <th></th>
                   <th>Comprobante de pago</th>
                   <th>Fecha</th>
-                  <th>monto validado</th>
+                  <th>Monto validado</th>
                 </tr>
                 </thead>
                 <tbody>
                 {
                   solicitud.pagos.map((item, index) =>
-                    (item.facturaGenerada == false) ?
+                    (item.facturaGenerada == false && item.validado == true) ?
                       <tr key={index}>
                         <td>
                           <input
@@ -97,6 +107,7 @@ const Registrar = (
                         <td>{item.comprobantePago}</td>
                         <td>{dateFormat(item.fechaPago)}</td>
                         <td>{item.monto}</td>
+                        <td>{item.referenciaBancaria}</td>
                       </tr>
                       :
                       <div></div>
@@ -166,6 +177,7 @@ const Registrar = (
                 <tbody>
                 {
                   solicitud.pagos.map((item, index) =>
+                  (item.factura) ?
                       <tr key={index}>
                         <td>{dateFormat(item.factura.fechaFacturacion)}</td>
                         <td>{item.factura.monto}</td>
@@ -173,6 +185,8 @@ const Registrar = (
                         <td>{item.factura.zip && <a href={item.factura.zip} download>{item.factura.zip}</a>}</td>
                         <td>{item.factura.folio}</td>
                       </tr>
+                      :
+                      ''
                   )
                 }
                 </tbody>

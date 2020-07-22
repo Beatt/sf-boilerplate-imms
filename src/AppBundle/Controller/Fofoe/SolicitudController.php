@@ -13,9 +13,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use AppBundle\Repository\InstitucionRepositoryInterface;
 
 /**
- * @Route("/fofoe")
+ * @Route("/ie")
  */
 class SolicitudController extends DIEControllerController
 {
@@ -29,10 +30,11 @@ class SolicitudController extends DIEControllerController
     public function registrarFacturaAction(
         $id,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        InstitucionRepositoryInterface $institucionRepository
     ) {
 
-        $institucion = $this->getUser()->getInstitucion();
+        $institucion = $institucionRepository->getInstitucionBySolicitudId($id);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
@@ -121,6 +123,8 @@ class SolicitudController extends DIEControllerController
                         'comprobantePago',
                         'requiereFactura',
                         'facturaGenerada',
+                        'validado',
+                        'referenciaBancaria',
                         'factura' => [
                             'fechaFacturacion',
                             'folio',
