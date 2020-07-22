@@ -11,7 +11,6 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_STRING_VALUE = '';
 
 const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
-
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
   const [ search, setSearch ] = useState(DEFAULT_STRING_VALUE)
@@ -24,17 +23,23 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
     pago: { id: null }
   })
 
+  function isRequestAllowed() {
+    return currentPage !== null ||
+      tipoPago !== DEFAULT_STRING_VALUE ||
+      search !== DEFAULT_STRING_VALUE;
+  }
+
   useEffect(() => {
-    if(currentPage !== null || tipoPago !== DEFAULT_STRING_VALUE) getCamposClinicos()
-  }, [currentPage, tipoPago])
+    if(isRequestAllowed()) getCamposClinicos();
+  }, [currentPage, tipoPago, search])
 
   function handleSearch() {
     if(!search) return;
-    getCamposClinicos()
+    getCamposClinicos();
   }
 
   function getCamposClinicos() {
-    toggleLoading(true)
+    toggleLoading(true);
 
     solicitudesGet(
       tipoPago,
