@@ -59,6 +59,7 @@ class SolicitudController extends DIEControllerController
 
             $factura = $pagos[0]->getFactura();
 
+            //$this->update($factura, $entityManager);
             foreach($solicitud->getPagos() as $pago){
                 if($pago->isFacturaGenerada())
                     $pago->setFactura($factura);
@@ -191,5 +192,22 @@ class SolicitudController extends DIEControllerController
             ),
             'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
+    }
+
+    public function update(Factura $pago, EntityManagerInterface $entityManager)
+    {
+        
+
+        $file = $pago->getZipFile();
+        dump($pago);
+        $pago->setZipFile(null);
+        dump($pago);
+        $entityManager->persist($pago);
+        dump($pago);
+
+        $pago->setZipFile($file);
+        $entityManager->flush();
+
+        return true;
     }
 }
