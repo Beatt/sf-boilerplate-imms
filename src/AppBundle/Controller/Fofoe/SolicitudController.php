@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 
 /**
- * @Route("/ie")
+ * @Route("/fofoe")
  */
 class SolicitudController extends DIEControllerController
 {

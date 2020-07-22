@@ -19,7 +19,7 @@ const Registrar = (
 
   return (
     <form
-      action={`/ie/solicitudes/${solicitud.id}/registrar-factura`}
+      action={`/fofoe/solicitudes/${solicitud.id}/registrar-factura`}
       method="post"
       encType='multipart/form-data'
     >
