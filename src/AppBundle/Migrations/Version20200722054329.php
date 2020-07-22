@@ -19,7 +19,6 @@ class Version20200722054329 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE factura ALTER zip DROP NOT NULL');
-        $this->addSql('ALTER TABLE institucion ALTER representante TYPE VARCHAR(100)');
     }
 
     /**
@@ -31,7 +30,6 @@ class Version20200722054329 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE institucion ALTER representante TYPE VARCHAR(250)');
         $this->addSql('ALTER TABLE factura ALTER zip SET NOT NULL');
     }
 }
