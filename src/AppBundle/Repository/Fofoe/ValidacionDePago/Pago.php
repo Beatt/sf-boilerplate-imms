@@ -20,6 +20,10 @@ final class Pago
 
     private $historial;
 
+    private $institucion;
+
+    private $requiereFactura;
+
     public function __construct(
         $id,
         Solicitud $solicitud,
@@ -28,7 +32,9 @@ final class Pago
         $comprobantePago,
         $fechaPago,
         $monto,
-        $historial
+        $historial,
+        Institucion $institucion,
+        $requiereFactura
     ) {
         $this->solicitud = $solicitud;
         $this->montoTotal = $montoTotal;
@@ -38,6 +44,8 @@ final class Pago
         $this->monto = $monto;
         $this->id = $id;
         $this->historial = $historial;
+        $this->institucion = $institucion;
+        $this->requiereFactura = $requiereFactura;
     }
 
     /**
@@ -102,5 +110,21 @@ final class Pago
     public function getHistorial()
     {
         return $this->historial;
+    }
+
+    /**
+     * @return Institucion
+     */
+    public function getInstitucion()
+    {
+        return $this->institucion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequiereFactura()
+    {
+        return $this->requiereFactura;
     }
 }

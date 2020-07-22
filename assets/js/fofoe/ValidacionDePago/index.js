@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom';
 import Cleave from "cleave.js/react";
 import { TIPO_PAGO } from "../../constants";
 import { moneyFormat } from "../../utils";
+import Swal from "sweetalert2";
 const SI_ES_PAGO_CORRECTO_DEFAULT = 1
 const NO_ES_PAGO_CORRECTO_DEFAULT = 0
 
 const ValidacionDePago = ({ pago }) => {
-
-  const { useState } = React
+  const { useState, useRef } = React
   const [monto, setMonto] = useState(pago.monto)
+  const [isPagoValidado, setPagoValidado] = useState(true)
+  const formRef = useRef(null)
 
   function isPagoMultiple() {
     return pago.solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
@@ -19,23 +21,56 @@ const ValidacionDePago = ({ pago }) => {
     setMonto(target.rawValue)
   }
 
+  function getMontoTotalTitle() {
+    return isPagoMultiple() ?
+      'Monto total del campo clínico:' :
+      'Monto total de la solicitud:';
+  }
+
+  function handlePagoValidado({ target }) {
+    setPagoValidado(parseInt(target.value) === SI_ES_PAGO_CORRECTO_DEFAULT)
+  }
+
+  function handleValidacionDePago(event) {
+    event.preventDefault();
+
+    Swal.fire({
+      title: '¿Confirma que el pago es válido?',
+      text: 'La cantidad del comprobante de pago adjuntado debe indicar un monto que sea mayor o igual al monto total a pagar y debe contener la referencia de pago correspondiente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '¡Si, estoy seguro!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        formRef.current.submit();
+      }
+    })
+  }
+
   return(
     <div className='row mt-20'>
       <div className="col-md-12 mb-20">
         <div className="row">
-          <div className="col-md-6">
-            <p className='mb-5'>No. de Solicitud <strong>{pago.solicitud.noSolicitud}</strong></p>
-            <p className='mb-5'>Tipo de pago <strong>{pago.solicitud.tipoPago}</strong></p>
-            <p className='mb-20'>Monto total: <strong>{moneyFormat(pago.montoTotal)}</strong></p>
+          <div className="col-md-4">
+            <p className='mb-5'><strong>Solicitud</strong></p>
+            <p className='mb-5'>No. de Solicitud: <strong>{pago.solicitud.noSolicitud}</strong></p>
+            <p className='mb-5'>Tipo de pago: <strong>{pago.solicitud.tipoPago}</strong></p>
+            <p className='mb-20'>{getMontoTotalTitle()} <strong>{moneyFormat(pago.montoTotal)}</strong></p>
           </div>
           {
             isPagoMultiple() &&
-            <div className="col-md-6">
+            <div className="col-md-4">
               <p className='mb-5'><strong>Campo clínico</strong></p>
               <p className='mb-5'>Sede: <strong>{pago.solicitud.campoClinico.sede}</strong></p>
-              <p className='mb-5'>Carrera <strong>{pago.solicitud.campoClinico.carrera}</strong></p>
+              <p className='mb-5'>Carrera: <strong>{pago.solicitud.campoClinico.carrera}</strong></p>
             </div>
           }
+          <p className='mb-5'><strong>Institución</strong></p>
+          <p className='mb-5'>Nombre: <strong><a href={`/fofoe/detalle-ie/${pago.institucion.id}`}>{pago.institucion.nombre}</a></strong></p>
+          <p className='mb-5'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
         </div>
       </div>
       <div className="col-md-12 mb-20">
@@ -72,9 +107,9 @@ const ValidacionDePago = ({ pago }) => {
         </table>
       </div>
       <div className="col-md-12">
-        <h3 className='mb-10'>Validar comprobante de pago</h3>
-        <p>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
-        <p className='mb-20'>Comprobante de pago a validar:&nbsp;&nbsp;
+        <h3 className='mb-20'>Validar comprobante de pago</h3>
+        <p className='mb-5'>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
+        <p className='mb-5'>Comprobante de pago a validar:&nbsp;&nbsp;
           <a
             href={`/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}
             target='_blank'
@@ -82,11 +117,14 @@ const ValidacionDePago = ({ pago }) => {
             Descargar
           </a>
         </p>
+        <p className='mb-20'>Factura: <strong>{pago.requiereFactura ? 'Solicitada' : 'No solicitada'}</strong></p>
         <form
           action={`/fofoe/pagos/${pago.id}/validacion-de-pago`}
           method='post'
           className='form-horizontal'
           encType='multipart/form-data'
+          ref={formRef}
+          onSubmit={handleValidacionDePago}
         >
           <div className="form-group">
             <label
@@ -116,6 +154,7 @@ const ValidacionDePago = ({ pago }) => {
             </label>
             <div className="col-md-3">
               <div className={`input-group`}>
+                <div className="input-group-addon">$</div>
                 <Cleave
                   options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                   className='form-control'
@@ -123,7 +162,6 @@ const ValidacionDePago = ({ pago }) => {
                   value={monto}
                   onChange={handleMonto}
                 />
-                <div className="input-group-addon">$</div>
                 <input
                   type="hidden"
                   id='validacion_pago_monto'
@@ -148,6 +186,7 @@ const ValidacionDePago = ({ pago }) => {
                 id='validacion_pago_validado_yes'
                 name='validacion_pago[validado]'
                 required={true}
+                onChange={handlePagoValidado}
               />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <label htmlFor="validacion_pago_validado_no">No&nbsp;</label>
@@ -157,25 +196,30 @@ const ValidacionDePago = ({ pago }) => {
                 id='validacion_pago_validado_no'
                 name='validacion_pago[validado]'
                 required={true}
+                onChange={handlePagoValidado}
               />
             </div>
           </div>
-          <div className="form-group">
-            <label
-              htmlFor="validacion_pago_observaciones"
-              className='control-label col-md-4'
-            >
-              Observaciones
-            </label>
-            <div className="col-md-5">
+          {
+            !isPagoValidado &&
+            <div className="form-group">
+              <label
+                htmlFor="validacion_pago_observaciones"
+                className='control-label col-md-4'
+              >
+                Observaciones
+              </label>
+              <div className="col-md-5">
               <textarea
                 rows={7}
                 className='form-control'
                 id='validacion_pago_observaciones'
                 name='validacion_pago[observaciones]'
+                required={true}
               />
+              </div>
             </div>
-          </div>
+          }
           <div className="row mt-30">
             <div className="col-md-4"/>
             <div className="col-md-2">
