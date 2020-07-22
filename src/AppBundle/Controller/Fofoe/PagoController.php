@@ -26,7 +26,6 @@ class PagoController extends \AppBundle\Controller\DIEControllerController
         $pagos = $this->getDoctrine()
             ->getRepository(Pago::class)
             ->paginate($perPage, $page, $request->query->all());
-        dump($pagos);
         $years = $this->getYears();
         return $this->render('fofoe/pago/index.html.twig', [
             'pagos' => $this->get('serializer')->normalize(
