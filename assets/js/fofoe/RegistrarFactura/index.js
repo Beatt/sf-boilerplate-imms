@@ -93,7 +93,7 @@ const Registrar = (
                 <tbody>
                 {
                   solicitud.pagos.map((item, index) =>
-                    (item.facturaGenerada == false && item.validado == true) ?
+                    (item.facturaGenerada != true && item.validado == true) ?
                       <tr key={index}>
                         <td>
                           <input
