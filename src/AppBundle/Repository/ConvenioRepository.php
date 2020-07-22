@@ -68,7 +68,6 @@ class ConvenioRepository extends EntityRepository implements ConvenioRepositoryI
         return $this->createQueryBuilder('convenio')
             ->join('convenio.camposClinicos', 'camposClinicos')
             ->where('convenio.institucion = :id')
-            ->distinct()
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
