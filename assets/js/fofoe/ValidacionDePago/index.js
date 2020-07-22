@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom';
 import Cleave from "cleave.js/react";
 import { TIPO_PAGO } from "../../constants";
 import { moneyFormat } from "../../utils";
+import Swal from "sweetalert2";
 const SI_ES_PAGO_CORRECTO_DEFAULT = 1
 const NO_ES_PAGO_CORRECTO_DEFAULT = 0
 
 const ValidacionDePago = ({ pago }) => {
-  const { useState } = React
+  const { useState, useRef } = React
   const [monto, setMonto] = useState(pago.monto)
   const [isPagoValidado, setPagoValidado] = useState(true)
+  const formRef = useRef(null)
 
   function isPagoMultiple() {
     return pago.solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
@@ -27,6 +29,25 @@ const ValidacionDePago = ({ pago }) => {
 
   function handlePagoValidado({ target }) {
     setPagoValidado(parseInt(target.value) === SI_ES_PAGO_CORRECTO_DEFAULT)
+  }
+
+  function handleValidacionDePago(event) {
+    event.preventDefault();
+
+    Swal.fire({
+      title: '¿Confirma que el pago es válido?',
+      text: 'La cantidad del comprobante de pago adjuntado debe indicar un monto que sea mayor o igual al monto total a pagar y debe contener la referencia de pago correspondiente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '¡Si, estoy seguro!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        formRef.current.submit();
+      }
+    })
   }
 
   return(
@@ -102,6 +123,8 @@ const ValidacionDePago = ({ pago }) => {
           method='post'
           className='form-horizontal'
           encType='multipart/form-data'
+          ref={formRef}
+          onSubmit={handleValidacionDePago}
         >
           <div className="form-group">
             <label
@@ -192,6 +215,7 @@ const ValidacionDePago = ({ pago }) => {
                 className='form-control'
                 id='validacion_pago_observaciones'
                 name='validacion_pago[observaciones]'
+                required={true}
               />
               </div>
             </div>

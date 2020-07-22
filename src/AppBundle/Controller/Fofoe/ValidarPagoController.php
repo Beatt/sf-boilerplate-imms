@@ -79,47 +79,9 @@ final class ValidarPagoController extends DIEControllerController
      */
     private function getSuccessFlashMessage(Pago $pago)
     {
-        $solicitud = $pago->getSolicitud();
-        if($solicitud->isPagoUnico()) {
-            return sprintf(
-                '¡El comprobante de la solicitud %s se ha cargado correctamente!',
-                $solicitud->getNoSolicitud()
-            );
-        }
-        elseif(!$solicitud->isPagoUnico()) {
-            $campoClinico = $this->getCampoClinico($solicitud, $pago->getReferenciaBancaria());
-
-            return sprintf(
-                '¡El comprobante del campo clínico %s se ha cargado correctamente!',
-                $campoClinico->getUnidad()->getNombre()
-            );
-        }
-
-        $this->setCriticalLogUpdateComprobantePago($solicitud);
-
-        return '';
-    }
-
-    /**
-     * @param Solicitud $solicitud
-     * @param $referenciaBancaria
-     * @return CampoClinico
-     */
-    private function getCampoClinico(Solicitud $solicitud, $referenciaBancaria)
-    {
-        /** @var CampoClinico $campoClinico */
-        return $solicitud->getCamposClinicos()->matching(
-            CampoClinicoRepository::getCampoClinicoByReferenciaBancaria($referenciaBancaria)
-        )->first();
-    }
-
-    /**
-     * @param Solicitud $solicitud
-     */
-    private function setCriticalLogUpdateComprobantePago(Solicitud $solicitud)
-    {
-        $this->logger->critical(sprintf('Se esta tratando de cargar un comprobante de pago sin haber asignado el tipo de pago'), [
-            'id' => $solicitud->getId()
-        ]);
+        return sprintf('¡El comprobante con referencia %s de la solicitud %s se ha cargado correctamente!',
+            $pago->getReferenciaBancaria(),
+            $pago->getSolicitud()->getNoSolicitud()
+        );
     }
 }
