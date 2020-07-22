@@ -24,6 +24,7 @@ class FacturaType extends AbstractType
                 'format' => 'yyyy-MM-dd',
             ])
             ->add('folio')
+            ->add('aux')
             ;
     }
 

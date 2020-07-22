@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use AppBundle\Repository\InstitucionRepositoryInterface;
 
 /**
  * @Route("/fofoe")
@@ -29,10 +30,11 @@ class SolicitudController extends DIEControllerController
     public function registrarFacturaAction(
         $id,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        InstitucionRepositoryInterface $institucionRepository
     ) {
 
-        $institucion = $this->getUser()->getInstitucion();
+        $institucion = $institucionRepository->getInstitucionBySolicitudId($id);
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
@@ -57,6 +59,7 @@ class SolicitudController extends DIEControllerController
 
             $factura = $pagos[0]->getFactura();
 
+            //$this->update($factura, $entityManager);
             foreach($solicitud->getPagos() as $pago){
                 if($pago->isFacturaGenerada())
                     $pago->setFactura($factura);
@@ -121,6 +124,8 @@ class SolicitudController extends DIEControllerController
                         'comprobantePago',
                         'requiereFactura',
                         'facturaGenerada',
+                        'validado',
+                        'referenciaBancaria',
                         'factura' => [
                             'fechaFacturacion',
                             'folio',
@@ -187,5 +192,19 @@ class SolicitudController extends DIEControllerController
             ),
             'meta' => ['total' => $solicitudes['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
+    }
+
+    public function update(Factura $pago, EntityManagerInterface $entityManager)
+    {
+        
+
+        $file = $pago->getZipFile();
+        $pago->setZipFile(null);
+        $entityManager->persist($pago);
+
+        $pago->setZipFile($file);
+        $entityManager->flush();
+
+        return true;
     }
 }
