@@ -128,7 +128,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                     <td>
                       {
                         isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
-                        getFactura(campoClinico.pago.urlArchivo, campoClinico.requiereFactura)
+                        getFactura(campoClinico.pago.urlArchivo, campoClinico.pago.requiereFactura)
                       }
                     </td>
                   </tr>

@@ -48,17 +48,13 @@ final class CamposClinicosUsingSql implements CamposClinicos
                                      ON pago.factura_id = factura.id
                        WHERE pago.solicitud_id = solicitud.id
                          AND pago.referencia_bancaria = campo_clinico.referencia_bancaria
-                         AND pago.requiere_factura = true
                        LIMIT 1
                    )                      AS factura,
                    (
                        SELECT pago.requiere_factura
                        FROM pago
-                                JOIN factura
-                                     ON pago.factura_id = factura.id
                        WHERE pago.solicitud_id = solicitud.id
                          AND pago.referencia_bancaria = campo_clinico.referencia_bancaria
-                         AND pago.requiere_factura = true
                        LIMIT 1
                    )                      AS requiere_factura
             FROM campo_clinico
@@ -101,6 +97,8 @@ final class CamposClinicosUsingSql implements CamposClinicos
                 $record['factura'],
                 $record['requiere_factura']
             );
+
+            dump($pago);
 
             return new CampoClinico(
                 $record['id_campo_clinico'],
