@@ -88,7 +88,7 @@ class GestionPagoDTO implements GestionPagoDTOInterface
             $pagos->toArray(),
             function ($carry, Pago $pago) {
                 if($pago->getFechaCreacion() === null) return $carry;
-                $carry += intval($pago->getMonto());
+                $carry += floatval($pago->getMonto());
                 return $carry;
         });
 
