@@ -95,8 +95,7 @@ const ReferenciaPago = (
             de la solicitud.</p>
         </div>
         <div className="col-md-12 mt-20">
-          <p><strong>NOTA: Seleccione la opción que más le convenga, ya que una vez seleccionada el tipo de pago, esta
-            es inamovible durante el resto del procedimiento.</strong></p>
+          <p><strong>NOTA: Seleccione la opción que más le convenga, ya que una vez seleccionada la modalidad de pago, esta es inamovible durante el resto del procedimiento.</strong></p>
         </div>
         <div className="col-md-12 mt-20">
           <div className="row">
