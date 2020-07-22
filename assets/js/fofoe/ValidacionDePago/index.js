@@ -7,9 +7,9 @@ const SI_ES_PAGO_CORRECTO_DEFAULT = 1
 const NO_ES_PAGO_CORRECTO_DEFAULT = 0
 
 const ValidacionDePago = ({ pago }) => {
-
   const { useState } = React
   const [monto, setMonto] = useState(pago.monto)
+  const [isPagoValidado, setPagoValidado] = useState(true)
 
   function isPagoMultiple() {
     return pago.solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
@@ -23,6 +23,10 @@ const ValidacionDePago = ({ pago }) => {
     return isPagoMultiple() ?
       'Monto total del campo clínico:' :
       'Monto total de la solicitud:';
+  }
+
+  function handlePagoValidado({ target }) {
+    setPagoValidado(parseInt(target.value) === SI_ES_PAGO_CORRECTO_DEFAULT)
   }
 
   return(
@@ -159,6 +163,7 @@ const ValidacionDePago = ({ pago }) => {
                 id='validacion_pago_validado_yes'
                 name='validacion_pago[validado]'
                 required={true}
+                onChange={handlePagoValidado}
               />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <label htmlFor="validacion_pago_validado_no">No&nbsp;</label>
@@ -168,25 +173,29 @@ const ValidacionDePago = ({ pago }) => {
                 id='validacion_pago_validado_no'
                 name='validacion_pago[validado]'
                 required={true}
+                onChange={handlePagoValidado}
               />
             </div>
           </div>
-          <div className="form-group">
-            <label
-              htmlFor="validacion_pago_observaciones"
-              className='control-label col-md-4'
-            >
-              Observaciones
-            </label>
-            <div className="col-md-5">
+          {
+            !isPagoValidado &&
+            <div className="form-group">
+              <label
+                htmlFor="validacion_pago_observaciones"
+                className='control-label col-md-4'
+              >
+                Observaciones
+              </label>
+              <div className="col-md-5">
               <textarea
                 rows={7}
                 className='form-control'
                 id='validacion_pago_observaciones'
                 name='validacion_pago[observaciones]'
               />
+              </div>
             </div>
-          </div>
+          }
           <div className="row mt-30">
             <div className="col-md-4"/>
             <div className="col-md-2">
