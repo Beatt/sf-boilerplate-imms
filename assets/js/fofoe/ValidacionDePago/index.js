@@ -35,8 +35,8 @@ const ValidacionDePago = ({ pago }) => {
     event.preventDefault();
 
     Swal.fire({
-      title: '¿Confirma que el pago es válido?',
-      text: 'La cantidad del comprobante de pago adjuntado debe indicar un monto que sea mayor o igual al monto total a pagar y debe contener la referencia de pago correspondiente.',
+      title: '¿Estás seguro de continuar?',
+      text: 'El monto debe de coincidir con el del comprobante cargado por la institución educativa',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
