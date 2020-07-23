@@ -53,3 +53,20 @@ a {
 .swal2-popup {
   font-size: 1.6rem !important;
 }
+
+.pagination {
+  background-color: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  border: 1px solid #ddd;
+  margin: 26px 0;
+}
+
+.pagination li a {
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  outline: none;
+}

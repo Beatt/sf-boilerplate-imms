@@ -8,7 +8,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class SolicitudRepository extends EntityRepository implements SolicitudRepositoryInterface
 {
-    public function getAllSolicitudesByInstitucion($id, $tipoPago, $offset, $search = null)
+    public function getAllSolicitudesByInstitucion($id, $perPage, $tipoPago, $offset, $search = null)
     {
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
@@ -32,8 +32,8 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
             ->andWhere('solicitud.estatus != :estatus')
             ->setParameter('id', $id)
             ->setParameter('estatus', SolicitudInterface::CREADA)
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
-            ->setFirstResult(($offset - 1) * self::PAGINATOR_PER_PAGE)
+            ->setMaxResults($perPage)
+            ->setFirstResult(($offset - 1) * $perPage)
             ->orderBy('solicitud.fecha', 'DESC')
             ->getQuery();
 

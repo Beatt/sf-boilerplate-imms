@@ -9,6 +9,10 @@ import {
 import GestionPagoModal from "../../components/GestionPagoModal";
 const DEFAULT_PAGE = 1;
 const DEFAULT_STRING_VALUE = '';
+const PER_PAGE_DEFAULT_SELECT_VALUES = [];
+PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION = 2;
+PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION = 3;
+PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION = 5;
 
 const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
   const { useState, useEffect } = React
@@ -17,6 +21,7 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
   const [ tipoPago, setTipoPago ] = useState(DEFAULT_STRING_VALUE)
   const [ total, setTotal ] = useState(totalInit)
   const [ currentPage, setCurrentPage ] = useState(DEFAULT_PAGE)
+  const [ perPage, setPerPage ] = useState(PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION)
   const [ isLoading, toggleLoading ] = useState(false)
   const [ modalIsOpen, setModalIsOpen ] = React.useState(false);
   const [ campoClinicoSelected, setCampoClinicoSelected ] = useState({
@@ -26,12 +31,13 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
   function isRequestAllowed() {
     return currentPage !== null ||
       tipoPago !== DEFAULT_STRING_VALUE ||
-      search !== DEFAULT_STRING_VALUE;
+      search !== DEFAULT_STRING_VALUE ||
+      PER_PAGE_DEFAULT_SELECT_VALUES.includes(perPage)
   }
 
   useEffect(() => {
     if(isRequestAllowed()) getCamposClinicos();
-  }, [currentPage, tipoPago, search])
+  }, [currentPage, tipoPago, search, perPage])
 
   function handleSearch() {
     if(!search) return;
@@ -44,6 +50,7 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
     solicitudesGet(
       tipoPago,
       currentPage,
+      perPage,
       search
     ).then((res) => {
         setCamposClinicos(res.camposClinicos)
@@ -89,7 +96,7 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
   }
 
   function isPaginateEnabledToShow() {
-    return total > paginatorTotalPerPage;
+    return total >= paginatorTotalPerPage;
   }
 
   function cleanFilters() {
@@ -104,6 +111,14 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
     window.location = solicitud.tipoPago === TIPO_PAGO.MULTIPLE ?
       `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :
       `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
+  }
+
+  function getTotalByPage() {
+
+    let first = (PAGINATOR_TOTAL_PER_PAGE_PROPS - currentPage);
+    let second = first * PAGINATOR_TOTAL_PER_PAGE_PROPS;
+
+    return <>{first}-{second}</>;
   }
 
   return(
@@ -210,26 +225,6 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
               }
               </tbody>
             </table>
-            {
-              isPaginateEnabledToShow() &&
-              <div className="text-center">
-                <ReactPaginate
-                  previousLabel={'Anterior'}
-                  nextLabel={'Siguiente'}
-                  breakLabel={'...'}
-                  breakClassName={'break-me'}
-                  pageCount={total}
-                  marginPagesDisplayed={5}
-                  pageRangeDisplayed={2}
-                  onPageChange={(currentPage) => {
-                    setCurrentPage(currentPage.selected + 1)
-                  }}
-                  containerClassName={'pagination'}
-                  subContainerClassName={'pages pagination'}
-                  activeClassName={'active'}
-                />
-              </div>
-            }
           </div>
           {
             modalIsOpen &&
@@ -240,6 +235,51 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
             />
           }
         </div>
+      </div>
+      <div className="col-md-12">
+        {
+          isPaginateEnabledToShow() &&
+          <div className="row">
+            <div className="col-md-10">
+              <ReactPaginate
+                previousLabel={'Anterior'}
+                nextLabel={'Siguiente'}
+                breakLabel={'...'}
+                breakClassName={'break-me'}
+                pageCount={total}
+                marginPagesDisplayed={5}
+                pageRangeDisplayed={2}
+                onPageChange={(currentPage) => {
+                  setCurrentPage(currentPage.selected + 1)
+                }}
+                containerClassName={'pagination'}
+                subContainerClassName={'pages pagination'}
+                activeClassName={'active'}
+              />
+            </div>
+            <div className="col-md-2">
+              <div className="form-group">
+                <label htmlFor="">Mostrar</label>
+                <select
+                  name=""
+                  id=""
+                  className='form-control'
+                  onChange={({ target }) => setPerPage(parseInt(target.value))}
+                >
+                  <option value={PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION}>
+                    {PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION}
+                  </option>
+                  <option value={PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION}>
+                    {PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION}
+                  </option>
+                  <option value={PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION}>
+                    {PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        }
       </div>
     </div>
   )
