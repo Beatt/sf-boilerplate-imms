@@ -259,7 +259,6 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
             </div>
             <div className="col-md-2">
               <div className="form-group">
-                <label htmlFor="">Mostrar</label>
                 <select
                   name=""
                   id=""
@@ -267,13 +266,13 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
                   onChange={({ target }) => setPerPage(parseInt(target.value))}
                 >
                   <option value={PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION}>
-                    {PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION}
+                    Mostrar {PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION}
                   </option>
                   <option value={PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION}>
-                    {PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION}
+                    Mostrar {PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION}
                   </option>
                   <option value={PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION}>
-                    {PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION}
+                    Mostrar {PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION}
                   </option>
                 </select>
               </div>
