@@ -7,7 +7,6 @@ const ValidarInfo = (
   {
     institucion,
     errores,
-    action,
     pagos
   }) => {
 
@@ -144,12 +143,12 @@ const ValidarInfo = (
             <label>Constancia de Situación Fiscal:&nbsp; </label>
             {
                 institucion.cedulaIdentificacion &&
-            <a
-                href={institucion.cedulaIdentificacion}
-                download
-            >
-                Descargar cédula
-            </a>
+                <a
+                  href={`/ie/descargar-cedula-de-identificacion-fiscal`}
+                  download
+                >
+                  Descargar cédula
+                </a>
             }
         </div>
       </div>
@@ -170,13 +169,13 @@ const ValidarInfo = (
                     <tbody>
                     {
                       pagos.map((item) => (
-                        <tr key={item.id}>
+                        <tr>
                           <td>{item.solicitud.noSolicitud}</td>
                           <td>{item.solicitud.fecha ? item.solicitud.fecha : 'No asignada'}</td>
-                          <td>{dateFormat(item.fechaPago)}</td>
+                          <td>{item.fechaPago ? dateFormat(item.fechaPago) : 'No asignada'}</td>
                           <td>{item.monto ? item.monto : 'No asingado'}</td>
-                          <td>{item.factura ? item.factura : item.requiereFactura == true ? 'Pendiente' : 'No requiere'}</td>
-                          <td>{dateFormat(item.vigencia)}</td>
+                          <td>{item.requiereFactura ? item.factura ? item.factura.zip : 'Pendiente de factura' : 'No solicito'}</td>
+                          <td>{item.validado ? (item.validado == true ? 'Pagada' : 'Pendiente de validación') : 'Pendiente de validación'}</td>
                         </tr>
                       ))
                     }
