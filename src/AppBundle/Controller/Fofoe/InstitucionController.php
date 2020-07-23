@@ -30,7 +30,6 @@ class InstitucionController extends DIEControllerController
      * @param ConvenioRepositoryInterface $convenioRepository
      * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
      * @param InstitucionRepositoryInterface $institucionRepository
-     * @param DetalleInstitucionNormalizerInterface $detalleInstitucionNormalizerInterface
      * @param PagoRepositoryInterface $pagoRepository
      * @return Response
      */
@@ -40,7 +39,6 @@ class InstitucionController extends DIEControllerController
         InstitucionManagerInterface $institucionManager,
         ConvenioRepositoryInterface $convenioRepository,
         InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer,
-        DetalleInstitucionNormalizerInterface $detalleInstitucionNormalizerInterface,
         InstitucionRepositoryInterface $institucionRepository,
         PagoRepositoryInterface $pagoRepository
     ) {
@@ -58,23 +56,6 @@ class InstitucionController extends DIEControllerController
 
         $pagos = $pagoRepository->getAllPagosByInstitucion($institucion->getId());
 
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-
-            $institucionManager->create($form->getData());
-
-            $this->addFlash(
-                'success',
-                'Se han actualizado correctamente los datos de contacto de la institución'
-            );
-
-            return $institucion->isConfirmacionInformacion() ?
-                $this->redirectToRoute('ie#inicio') :
-                $this->redirectToRoute('ie#perfil');
-        }
-
-
-
         $convenios = $convenioRepository->getConveniosUnicosByInstitucionId(
             $institucion->getId()
         );
@@ -83,7 +64,7 @@ class InstitucionController extends DIEControllerController
             'convenios' => $institucionPerfilNormalizer->normalizeConvenios($convenios),
             'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
             'errores' => $this->getFormErrors($form),
-            'pagos' => $detalleInstitucionNormalizerInterface->normalizeConvenios($pagos)
+            'pagos' => $this->getNormalizePagos($pagos)
         ]);
     }
 
@@ -95,5 +76,30 @@ class InstitucionController extends DIEControllerController
         return $this->render('ie/institucion/_menu.twig', [
             'institucion' => $user->getInstitucion()
         ]);
+    }
+
+    private function getNormalizePagos($pagos)
+    {
+        return $this->get('serializer')->normalize(
+            $pagos,
+            'json',
+            [
+                'attributes' => [
+                    'id',
+                    'fechaPago',
+                    'monto',
+                    'requiereFactura',
+                    'validado',
+                    'factura' => [
+                        'zip',
+                        'monto'
+                    ],
+                    'solicitud' => [
+                        'noSolicitud',
+                        'fecha'
+                    ]
+                ]
+            ]
+        );
     }
 }
