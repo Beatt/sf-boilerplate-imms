@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    {{ render(controller('AppBundle:IE\\Institucion:menu')) }}
+    {{ render(controller('AppBundle:Fofoe\\Fofoe:menu')) }}
 
     <div class="section-md">
         <div class='container-fluid'>
@@ -27,6 +27,7 @@
     <script>
       window.INSTITUCION_PROP = {{ institucion |json_encode|raw }}
       window.SOLICITUD_PROP = {{ solicitud|json_encode|raw }}
+      window.PAGOS_PROP = {{ pagos|json_encode|raw }}
     </script>
     <script src="{{ asset('build/fofoe.registrar.factura.js') }}"></script>
 {% endblock %}
