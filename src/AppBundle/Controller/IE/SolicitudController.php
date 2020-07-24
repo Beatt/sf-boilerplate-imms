@@ -56,28 +56,31 @@ class SolicitudController extends DIEControllerController
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
-        list($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet) = $this->setFilters($request);
-        list($offset, $search, $tipoPago, $perPage) = $this->initializeFiltersWithDefaultValues($request);
+        list($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet, $isOrderBySet) = $this->setFilters($request);
+        list($offset, $search, $tipoPago, $perPage, $orderBy) = $this->initializeFiltersWithDefaultValues($request);
 
         $solicitudes = $this->solicitudRepository->getAllSolicitudesByInstitucion(
             $institucion->getId(),
             $perPage,
             $tipoPago,
             $offset,
+            $orderBy,
             $search
         );
 
         $collection = new ArrayCollection();
         /** @var Solicitud $solicitud */
-        foreach($solicitudes as $solicitud) {
-            $collection->add(new InicioDTO($solicitud));
-        }
+        foreach($solicitudes as $solicitud) $collection->add(new InicioDTO($solicitud));
 
-        $totalSolicitudes = round(
-            count($solicitudes) / $perPage
-        );
+        $totalSolicitudes = round(count($solicitudes) / $perPage);
 
-        if ($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet)) {
+        if ($this->isRequestedToFilter(
+            $isOffsetSet,
+            $isSearchSet,
+            $isTipoPagoSet,
+            $isPerPageSet,
+            $isOrderBySet
+        )) {
             return new JsonResponse([
                 'camposClinicos' => $normalizer->normalize($collection, 'json', [
                     'attributes' => [
@@ -438,7 +441,8 @@ class SolicitudController extends DIEControllerController
         $isSearchSet = $request->query->get('search');
         $isTipoPagoSet = $request->query->get('tipoPago');
         $isPerPageSet = $request->query->get('perPage');
-        return array($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet);
+        $isOrderBySet = $request->query->get('orderBy');
+        return array($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet, $isOrderBySet);
     }
 
     /**
@@ -451,18 +455,30 @@ class SolicitudController extends DIEControllerController
         $search = $request->query->get('search', null);
         $tipoPago = $request->query->get('tipoPago', null);
         $perPage = $request->query->get('perPage', 1);
-        return array($offset, $search, $tipoPago, $perPage);
+        $orderBY = $request->query->get('orderBy', null);
+        return array($offset, $search, $tipoPago, $perPage, $orderBY);
     }
 
     /**
      * @param $isOffsetSet
      * @param $isSearchSet
      * @param $isTipoPagoSet
+     * @param $isPerPageSet
+     * @param $isOrderBySet
      * @return bool
      */
-    private function isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet)
-    {
-        return isset($isOffsetSet) || isset($isSearchSet) || isset($isTipoPagoSet) || isset($isPerPageSet);
+    private function isRequestedToFilter(
+        $isOffsetSet,
+        $isSearchSet,
+        $isTipoPagoSet,
+        $isPerPageSet,
+        $isOrderBySet
+    ) {
+        return isset($isOffsetSet) ||
+            isset($isSearchSet) ||
+            isset($isTipoPagoSet) ||
+            isset($isPerPageSet) ||
+            isset($isOrderBySet);
     }
 
     private function getNormalizeSolicitud($solicitud)

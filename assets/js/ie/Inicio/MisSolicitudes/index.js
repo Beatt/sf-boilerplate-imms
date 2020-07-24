@@ -9,16 +9,24 @@ import {
 import GestionPagoModal from "../../components/GestionPagoModal";
 const DEFAULT_PAGE = 1;
 const DEFAULT_STRING_VALUE = '';
+
 const PER_PAGE_DEFAULT_SELECT_VALUES = [];
 PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION = 2;
 PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION = 3;
 PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION = 5;
+
+const FILTERS_FOR_ORDERING = [];
+FILTERS_FOR_ORDERING.NO_SOLICITUD_MENOR_A_MAYOR = 'order_by_no_solicitud_menor_a_mayor';
+FILTERS_FOR_ORDERING.NO_SOLICITUD_MAYOR_A_MENOR = 'order_by_no_solicitud_mayor_a_menor';
+FILTERS_FOR_ORDERING.FECHA_DE_SOLICITUD_MAS_RECIENTE = 'order_by_fecha_de_solicitud_mas_reciente';
+FILTERS_FOR_ORDERING.FECHA_DE_SOLICITUD_MAS_ANTIGUA = 'order_by_fecha_de_solicitud_mas_antigua';
 
 const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
   const { useState, useEffect } = React
   const [ camposClinicos, setCamposClinicos ] = useState([])
   const [ search, setSearch ] = useState(DEFAULT_STRING_VALUE)
   const [ tipoPago, setTipoPago ] = useState(DEFAULT_STRING_VALUE)
+  const [ orderBy, setOrderBy ] = useState(DEFAULT_STRING_VALUE)
   const [ total, setTotal ] = useState(totalInit)
   const [ currentPage, setCurrentPage ] = useState(DEFAULT_PAGE)
   const [ perPage, setPerPage ] = useState(PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION)
@@ -32,12 +40,13 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
     return currentPage !== null ||
       tipoPago !== DEFAULT_STRING_VALUE ||
       search !== DEFAULT_STRING_VALUE ||
-      PER_PAGE_DEFAULT_SELECT_VALUES.includes(perPage)
+      PER_PAGE_DEFAULT_SELECT_VALUES.includes(perPage) ||
+      orderBy !== DEFAULT_STRING_VALUE
   }
 
   useEffect(() => {
     if(isRequestAllowed()) getCamposClinicos();
-  }, [currentPage, tipoPago, search, perPage])
+  }, [currentPage, tipoPago, search, perPage, orderBy])
 
   function handleSearch() {
     if(!search) return;
@@ -51,6 +60,7 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
       tipoPago,
       currentPage,
       perPage,
+      orderBy,
       search
     ).then((res) => {
         setCamposClinicos(res.camposClinicos)
@@ -113,14 +123,6 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
       `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
   }
 
-  function getTotalByPage() {
-
-    let first = (PAGINATOR_TOTAL_PER_PAGE_PROPS - currentPage);
-    let second = first * PAGINATOR_TOTAL_PER_PAGE_PROPS;
-
-    return <>{first}-{second}</>;
-  }
-
   return(
     <div className='row'>
       <div className="col-md-3">
@@ -138,7 +140,23 @@ const MisSolicitudes = ({ totalInit, paginatorTotalPerPage }) => {
           </select>
         </div>
       </div>
-      <div className="col-md-3"/>
+      <div className="col-md-3">
+        <div className="form-group">
+          <label htmlFor="solicitud_tipoPago">Ordenar por</label>
+          <select
+            id="solicitud_tipoPago"
+            className='form-control'
+            onChange={({ target }) => setOrderBy(target.value)}
+            value={orderBy}
+          >
+            <option value=''>Ver todos</option>
+            <option value={FILTERS_FOR_ORDERING.NO_SOLICITUD_MAYOR_A_MENOR}>No. de solicitud. de mayor a menor</option>
+            <option value={FILTERS_FOR_ORDERING.NO_SOLICITUD_MENOR_A_MAYOR}>No. de solicitud. de menor a mayor</option>
+            <option value={FILTERS_FOR_ORDERING.FECHA_DE_SOLICITUD_MAS_RECIENTE}>Fecha de solicitud. más reciente</option>
+            <option value={FILTERS_FOR_ORDERING.FECHA_DE_SOLICITUD_MAS_ANTIGUA}>Fecha de solicitud. más antigua</option>
+          </select>
+        </div>
+      </div>
       <div className='col-md-6 mb-10 text-right'>
         <div className='navbar-form navbar-right'>
           <div className="form-group">
