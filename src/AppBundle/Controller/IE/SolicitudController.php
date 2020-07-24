@@ -21,6 +21,7 @@ use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,39 +47,50 @@ class SolicitudController extends DIEControllerController
      * @IsGranted("ROLE_IE")
      * @param Request $request
      * @param NormalizerInterface $normalizer
+     * @param PaginatorInterface $paginator
      * @return Response
      */
     public function inicioAction(
         Request $request,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer,
+        PaginatorInterface $paginator
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
 
-        list($isOffsetSet, $isSearchSet, $isTipoPagoSet) = $this->setFilters($request);
-        list($offset, $search, $tipoPago) = $this->initializeFiltersWithDefaultValues($request);
+        list($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet, $isOrderBySet) = $this->setFilters($request);
+        list($offset, $search, $tipoPago, $perPage, $orderBy) = $this->initializeFiltersWithDefaultValues($request);
 
         $solicitudes = $this->solicitudRepository->getAllSolicitudesByInstitucion(
             $institucion->getId(),
+            $perPage,
             $tipoPago,
             $offset,
+            $orderBy,
             $search
         );
 
         $collection = new ArrayCollection();
         /** @var Solicitud $solicitud */
-        foreach($solicitudes as $solicitud) {
-            $collection->add(new InicioDTO($solicitud));
-        }
+        foreach($solicitudes as $solicitud) $collection->add(new InicioDTO($solicitud));
 
-        $totalSolicitudes = round(
-            count($solicitudes) / SolicitudRepositoryInterface::PAGINATOR_PER_PAGE
-        );
+        if ($this->isRequestedToFilter(
+            $isOffsetSet,
+            $isSearchSet,
+            $isTipoPagoSet,
+            $isPerPageSet,
+            $isOrderBySet
+        )) {
 
-        if ($this->isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)) {
+            $paginatorData = $paginator->paginate(
+                $solicitudes,
+                $offset,
+                $perPage
+            );
+
             return new JsonResponse([
-                'camposClinicos' => $normalizer->normalize($collection, 'json', [
+                'camposClinicos' => $normalizer->normalize($paginatorData->getItems(), 'json', [
                     'attributes' => [
                         'id',
                         'estatus',
@@ -90,15 +102,11 @@ class SolicitudController extends DIEControllerController
                         'ultimoPago'
                     ]
                 ]),
-                'total' => $totalSolicitudes,
-                'paginatorTotalPerPage' => SolicitudRepositoryInterface::PAGINATOR_PER_PAGE
+                'paginationData' => $paginatorData->getPaginationData()
             ]);
         }
 
-        return $this->render('ie/solicitud/inicio.html.twig', [
-            'total' => $totalSolicitudes,
-            'paginatorTotalPerPage' => SolicitudRepositoryInterface::PAGINATOR_PER_PAGE
-        ]);
+        return $this->render('ie/solicitud/inicio.html.twig');
     }
 
     /**
@@ -436,7 +444,9 @@ class SolicitudController extends DIEControllerController
         $isOffsetSet = $request->query->get('offset');
         $isSearchSet = $request->query->get('search');
         $isTipoPagoSet = $request->query->get('tipoPago');
-        return array($isOffsetSet, $isSearchSet, $isTipoPagoSet);
+        $isPerPageSet = $request->query->get('perPage');
+        $isOrderBySet = $request->query->get('orderBy');
+        return array($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet, $isOrderBySet);
     }
 
     /**
@@ -448,18 +458,31 @@ class SolicitudController extends DIEControllerController
         $offset = $request->query->getInt('offset', 1);
         $search = $request->query->get('search', null);
         $tipoPago = $request->query->get('tipoPago', null);
-        return array($offset, $search, $tipoPago);
+        $perPage = $request->query->get('perPage', 1);
+        $orderBY = $request->query->get('orderBy', null);
+        return array($offset, $search, $tipoPago, $perPage, $orderBY);
     }
 
     /**
      * @param $isOffsetSet
      * @param $isSearchSet
      * @param $isTipoPagoSet
+     * @param $isPerPageSet
+     * @param $isOrderBySet
      * @return bool
      */
-    private function isRequestedToFilter($isOffsetSet, $isSearchSet, $isTipoPagoSet)
-    {
-        return isset($isOffsetSet) || isset($isSearchSet) || isset($isTipoPagoSet);
+    private function isRequestedToFilter(
+        $isOffsetSet,
+        $isSearchSet,
+        $isTipoPagoSet,
+        $isPerPageSet,
+        $isOrderBySet
+    ) {
+        return isset($isOffsetSet) ||
+            isset($isSearchSet) ||
+            isset($isTipoPagoSet) ||
+            isset($isPerPageSet) ||
+            isset($isOrderBySet);
     }
 
     private function getNormalizeSolicitud($solicitud)

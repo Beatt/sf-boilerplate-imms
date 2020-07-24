@@ -4,11 +4,10 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\SolicitudInterface;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class SolicitudRepository extends EntityRepository implements SolicitudRepositoryInterface
 {
-    public function getAllSolicitudesByInstitucion($id, $tipoPago, $offset, $search = null)
+    public function getAllSolicitudesByInstitucion($id, $perPage, $tipoPago, $offset, $orderBy, $search = null)
     {
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
@@ -27,17 +26,39 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
                 ->setParameter('search', '%' . $search . '%');
         }
 
-        $query = $queryBuilder
+        $queryBuilder = $queryBuilder
             ->andWhere('convenio.institucion = :id')
             ->andWhere('solicitud.estatus != :estatus')
             ->setParameter('id', $id)
             ->setParameter('estatus', SolicitudInterface::CREADA)
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
-            ->setFirstResult(($offset - 1) * self::PAGINATOR_PER_PAGE)
-            ->orderBy('solicitud.fecha', 'DESC')
-            ->getQuery();
+            ->orderBy('solicitud.fecha', 'DESC');
 
-        return new Paginator($query);
+        if(
+            $orderBy === self::FILTER_FOR_ORDERING_NO_SOLICITUD_MAYOR_A_MENOR ||
+            $orderBy === self::FILTER_FOR_ORDERING_NO_SOLICITUD_MENOR_A_MAYOR
+        ) {
+
+            $order = $orderBy === self::FILTER_FOR_ORDERING_NO_SOLICITUD_MAYOR_A_MENOR ?
+                'DESC' : 'ASC';
+
+            $queryBuilder = $queryBuilder
+                ->orderBy('solicitud.noSolicitud', $order);
+        }
+
+        if(
+            $orderBy === self::FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_ANTIGUA ||
+            $orderBy === self::FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_RECIENTE
+        ) {
+
+            $order = $orderBy === self::FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_ANTIGUA ?
+                'ASC' : 'DESC';
+
+            $queryBuilder = $queryBuilder
+                ->orderBy('solicitud.fecha', $order);
+        }
+
+        $query = $queryBuilder->getQuery();
+        return $query->getResult();
     }
 
     public function getAllSolicitudesByDelegacion($delegacion_id = null, $perPage = 10, $offset = 1, $filters = [])

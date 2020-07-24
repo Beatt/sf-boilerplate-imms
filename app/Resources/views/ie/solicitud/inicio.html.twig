@@ -23,9 +23,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        window.CAMPOS_CLINICOS_TOTAL_PROPS = {{ total|json_encode|raw }}
-        window.PAGINATOR_TOTAL_PER_PAGE_PROPS = {{ paginatorTotalPerPage|json_encode|raw }}
-    </script>
     <script src="{{ asset('build/ie.inicio.js') }}"></script>
 {% endblock %}
