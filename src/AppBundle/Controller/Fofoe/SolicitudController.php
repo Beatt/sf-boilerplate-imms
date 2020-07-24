@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Repository\InstitucionRepositoryInterface;
+use AppBundle\Repository\PagoRepositoryInterface;
 
 /**
  * @Route("/fofoe")
@@ -21,7 +22,7 @@ use AppBundle\Repository\InstitucionRepositoryInterface;
 class SolicitudController extends DIEControllerController
 {
     /**
-     * @Route("/solicitudes/{id}/registrar-factura", name="fofoe#registrar_factura", methods={"POST", "GET"})
+     * @Route("/pagos/{id}/registrar-factura", name="fofoe#registrar_factura", methods={"POST", "GET"})
      * @param int $id
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -31,14 +32,19 @@ class SolicitudController extends DIEControllerController
         $id,
         Request $request,
         EntityManagerInterface $entityManager,
-        InstitucionRepositoryInterface $institucionRepository
+        InstitucionRepositoryInterface $institucionRepository,
+        PagoRepositoryInterface $pagoRepository
     ) {
 
-        $institucion = $institucionRepository->getInstitucionBySolicitudId($id);
+        $pago = $pagoRepository->find($id);
+
+        $institucion = $institucionRepository->getInstitucionBySolicitudId($pago->getSolicitud()->getId());
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
-            ->find($id);
+            ->find($pago->getSolicitud()->getId());
+        
+        $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 
         //$factura = new Factura();
         $form = $this->createForm(SolicitudFacturaType::class, $solicitud, [
@@ -79,7 +85,8 @@ class SolicitudController extends DIEControllerController
 
         return $this->render('fofoe/registrar_factura.html.twig', [
             'institucion' => $this->getNormalizeInstitucion($institucion),
-            'solicitud' => $this->getNormalizeSolicitud($solicitud)
+            'solicitud' => $this->getNormalizeSolicitud($solicitud),
+            'pagos' => $this->getNormalizePago($pagos)
         ]);
     }
 
@@ -107,14 +114,7 @@ class SolicitudController extends DIEControllerController
                 'attributes' => [
                     'id',
                     'noSolicitud',
-                    'estatus',
                     'fecha',
-                    'montosCarrera' => [
-                        'montoInscripcion',
-                        'montoColegiatura',
-                        'carrera'
-                    ],
-                    'observaciones',
                     'referenciaBancaria',
                     'monto',
                     'pagos' => [
@@ -132,6 +132,32 @@ class SolicitudController extends DIEControllerController
                             'zip',
                             'monto'
                         ]
+                    ]
+                ]
+            ]
+        );
+    }
+
+    private function getNormalizePago($pago)
+    {
+        return $this->get('serializer')->normalize(
+            $pago,
+            'json',
+            [
+                'attributes' => [
+                    'id',
+                    'monto',
+                    'fechaPago',
+                    'comprobantePago',
+                    'requiereFactura',
+                    'facturaGenerada',
+                    'validado',
+                    'referenciaBancaria',
+                    'factura' => [
+                        'fechaFacturacion',
+                        'folio',
+                        'zip',
+                        'monto'
                     ]
                 ]
             ]
@@ -199,8 +225,11 @@ class SolicitudController extends DIEControllerController
         
 
         $file = $pago->getZipFile();
+        dump($pago);
         $pago->setZipFile(null);
+        dump($pago);
         $entityManager->persist($pago);
+        dump($pago);
 
         $pago->setZipFile($file);
         $entityManager->flush();
