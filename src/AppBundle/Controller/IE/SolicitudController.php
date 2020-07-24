@@ -21,6 +21,7 @@ use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,11 +47,13 @@ class SolicitudController extends DIEControllerController
      * @IsGranted("ROLE_IE")
      * @param Request $request
      * @param NormalizerInterface $normalizer
+     * @param PaginatorInterface $paginator
      * @return Response
      */
     public function inicioAction(
         Request $request,
-        NormalizerInterface $normalizer
+        NormalizerInterface $normalizer,
+        PaginatorInterface $paginator
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -72,8 +75,6 @@ class SolicitudController extends DIEControllerController
         /** @var Solicitud $solicitud */
         foreach($solicitudes as $solicitud) $collection->add(new InicioDTO($solicitud));
 
-        $totalSolicitudes = round(count($solicitudes) / $perPage);
-
         if ($this->isRequestedToFilter(
             $isOffsetSet,
             $isSearchSet,
@@ -81,8 +82,15 @@ class SolicitudController extends DIEControllerController
             $isPerPageSet,
             $isOrderBySet
         )) {
+
+            $paginatorData = $paginator->paginate(
+                $solicitudes,
+                $offset,
+                $perPage
+            );
+
             return new JsonResponse([
-                'camposClinicos' => $normalizer->normalize($collection, 'json', [
+                'camposClinicos' => $normalizer->normalize($paginatorData->getItems(), 'json', [
                     'attributes' => [
                         'id',
                         'estatus',
@@ -94,15 +102,11 @@ class SolicitudController extends DIEControllerController
                         'ultimoPago'
                     ]
                 ]),
-                'total' => $totalSolicitudes,
-                'paginatorTotalPerPage' => $perPage
+                'paginationData' => $paginatorData->getPaginationData()
             ]);
         }
 
-        return $this->render('ie/solicitud/inicio.html.twig', [
-            'total' => $totalSolicitudes,
-            'paginatorTotalPerPage' => $perPage
-        ]);
+        return $this->render('ie/solicitud/inicio.html.twig');
     }
 
     /**

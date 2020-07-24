@@ -4,7 +4,6 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\SolicitudInterface;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class SolicitudRepository extends EntityRepository implements SolicitudRepositoryInterface
 {
@@ -32,8 +31,6 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
             ->andWhere('solicitud.estatus != :estatus')
             ->setParameter('id', $id)
             ->setParameter('estatus', SolicitudInterface::CREADA)
-            ->setMaxResults($perPage)
-            ->setFirstResult(($offset - 1) * $perPage)
             ->orderBy('solicitud.fecha', 'DESC');
 
         if(
@@ -61,9 +58,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         }
 
         $query = $queryBuilder->getQuery();
-
-
-        return new Paginator($query);
+        return $query->getResult();
     }
 
     public function getAllSolicitudesByDelegacion($delegacion_id = null, $perPage = 10, $offset = 1, $filters = [])

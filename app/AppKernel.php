@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             new Vich\UploaderBundle\VichUploaderBundle(),
             new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
             new Endroid\QrCode\Bundle\EndroidQrCodeBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
