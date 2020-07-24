@@ -99,7 +99,8 @@ class SolicitudController extends DIEControllerController
                 'attributes' => [
                     'id',
                     'nombre',
-                    'rfc'
+                    'rfc',
+                    'cedulaIdentificacion'
                 ]
             ]
         );

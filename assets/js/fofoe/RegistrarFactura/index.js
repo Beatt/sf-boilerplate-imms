@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {dateFormat} from "../../utils";
+import Cleave from 'cleave.js/react';
+
 
 const Registrar = (
   {
@@ -30,6 +32,15 @@ const Registrar = (
             <p className="mt-10 mb-10">Pago por solicitud de Campo(s) Clínico(s)</p>
             <p className="mt-10 mb-10">Institución educativa: {institucion.nombre}</p>
             <p className="mt-10 mb-10">RFC: {institucion.rfc}</p>
+            <p className="mt-10 mb-10">Cédula de identificación fiscal: {
+                institucion.cedulaIdentificacion &&
+                <a
+                  href={`/fofoe/${institucion.id}/descargar-cedula-de-identificacion`}
+                  download
+                >
+                  Descargar cédula
+                </a>
+            }</p>
             <p className="mt-10 mb-10">Delegación: </p>
             <p className="mt-10 mb-10">Referencia de pago: {solicitud.referenciaBancaria}</p>
             <p className="mt-10 mb-10">Monto total a pagar: ${solicitud.monto}</p>
@@ -174,7 +185,7 @@ const Registrar = (
                       <tr key={index}>
                         <td>{dateFormat(item.factura.fechaFacturacion)}</td>
                         <td>{item.factura.monto}</td>
-                        <td>{item.comprobantePago && <a href={item.comprobantePago} download>{item.comprobantePago}</a>}</td>
+                        <td>{item.comprobantePago && <a href={`/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a>}</td>
                         <td>{item.factura.zip && <a href={item.factura.zip} download>{item.factura.zip}</a>}</td>
                         <td>{item.factura.folio}</td>
                       </tr>
