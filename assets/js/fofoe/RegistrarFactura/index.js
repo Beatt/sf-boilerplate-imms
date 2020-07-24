@@ -5,15 +5,16 @@ import {dateFormat} from "../../utils";
 const Registrar = (
   {
     institucion,
-    solicitud
+    solicitud,
+    pagos
   }) => {
 
   const [total, setTotal] = React.useState(0);
 
   const handleChecked = (event) => {
     let subtotal = total;
-    if (event.checked) subtotal += parseFloat(solicitud.pagos[event.id].monto);
-    else subtotal -= parseFloat(solicitud.pagos[event.id].monto);
+    if (event.checked) subtotal += parseFloat(pagos[event.id].monto);
+    else subtotal -= parseFloat(pagos[event.id].monto);
     setTotal(subtotal);
   }
 
@@ -55,7 +56,6 @@ const Registrar = (
                     readOnly={true}
                     value={total}
                     name={`solicitud_factura[pagos][0][factura][monto]`}
-                    
                   />
                 </div>
               </div>
@@ -92,7 +92,7 @@ const Registrar = (
                 </thead>
                 <tbody>
                 {
-                  solicitud.pagos.map((item, index) =>
+                  pagos.map((item, index) =>
                     (item.facturaGenerada != true && item.validado == true) ?
                       <tr key={index}>
                         <td>
@@ -124,13 +124,6 @@ const Registrar = (
                 name={`solicitud_factura[pagos][0][factura][zipFile]`}
                 required={true}
               />
-
-              <button
-                type="submit"
-                className='btn btn-success btn-block'
-              >
-                Guardar
-              </button>
             </div>
           </div>
         </div>
@@ -176,7 +169,7 @@ const Registrar = (
                 </thead>
                 <tbody>
                 {
-                  solicitud.pagos.map((item, index) =>
+                  pagos.map((item, index) =>
                   (item.factura) ?
                       <tr key={index}>
                         <td>{dateFormat(item.factura.fechaFacturacion)}</td>
@@ -193,6 +186,17 @@ const Registrar = (
               </table>
           </div>
         </div>
+        <div className='row'>
+          <div className='col-md-10'></div>
+          <div className='col-md-2'>
+              <button
+                type="submit"
+                className='btn btn-success btn-block'
+              >
+                Guardar
+              </button>
+          </div>
+        </div>
       </div>
     </form>
   )
@@ -203,6 +207,7 @@ ReactDOM.render(
   <Registrar
     institucion={window.INSTITUCION_PROP}
     solicitud={window.SOLICITUD_PROP}
+    pagos={window.PAGOS_PROP}
   />,
   document.getElementById('registrar-factura-component')
 );
