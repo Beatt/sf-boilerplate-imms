@@ -33,12 +33,36 @@ final class DocumentController extends DIEControllerController
         if(!$pago) throw $this->createNotFindPagoException($id);
 
         $institucion = $institucionRepository->getInstitucionByPagoId($pago->getId());
-
+        dump($institucion);
         return $this->pdfResponse(
             sprintf(
                 '../uploads/instituciones/%s/%s',
                 $institucion->getId(),
                 $pago->getComprobantePago()
+            )
+        );
+    }
+
+    /**
+     * @Route("/{id}/descargar-cedula-de-identificacion", name="fofoe#descargar_Cedula_Identificacion")
+     * @param $id
+     * @param InstitucionRepositoryInterface $institucionRepository
+     * @return Response
+     */
+    public function descargarCedulaIdentificacionFiscal(
+        $id,
+        InstitucionRepositoryInterface $institucionRepository
+    ) {
+        /** @var Institucion $institucion */
+        $institucion = $institucionRepository->findBy([
+            'id' => $id
+        ]);
+
+        return $this->pdfResponse(
+            sprintf(
+                '../uploads/instituciones/%s/%s',
+                $institucion[0]->getId(),
+                $institucion[0]->getCedulaIdentificacion()
             )
         );
     }
