@@ -251,11 +251,11 @@ class SolicitudManager implements SolicitudManagerInterface
             }else{
                 $total_campo = $campoClinico->getSubTotal();
             }
-            $campoClinico->setMonto($total_campo);
+            $campoClinico->setMonto(round($total_campo,2));
             $monto_solicitud+=$total_campo;
             $this->entityManager->persist($campoClinico);
         }
-        $solicitud->setMonto($monto_solicitud);
+        $solicitud->setMonto(round($monto_solicitud, 2));
         $this->entityManager->persist($solicitud);
         $this->entityManager->flush();
     }

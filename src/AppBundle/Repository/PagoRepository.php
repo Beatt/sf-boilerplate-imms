@@ -55,6 +55,7 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
     public function paginate($perPage = 10, $offset = 1, $filters = [])
     {
         $queryBuilder = $this->createQueryBuilder('pago')
+            ->select(['pago', 'solicitud'])
             ->join('pago.solicitud', 'solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
             ->join('campos_clinicos.convenio', 'convenio')
@@ -86,6 +87,11 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         if(isset($filters['no_solicitud']) && $filters['no_solicitud']){
             $queryBuilder->andWhere('upper(unaccent(solicitud.noSolicitud)) like UPPER(unaccent(:no_solicitud))')
                 ->setParameter('no_solicitud', '%'.$filters['no_solicitud'].'%');
+        }
+
+        if(isset($filters['monto']) && $filters['monto'] && is_numeric($filters['monto'])){
+            $queryBuilder->andWhere('pago.monto = :monto')
+                ->setParameter('monto', $filters['monto']);
         }
 
         if(isset($filters['estado']) && $filters['estado']){
