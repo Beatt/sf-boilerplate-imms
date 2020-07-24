@@ -33,7 +33,7 @@ class PagoController extends \AppBundle\Controller\DIEControllerController
                 'json',
                 [
                     'attributes' => [
-                        'id', 'referenciaBancaria', 'validado', 'requiereFactura', 'fechaPagoFormatted',
+                        'id', 'referenciaBancaria', 'validado', 'requiereFactura', 'fechaPagoFormatted', 'monto',
                         'factura' => ['id', 'folio'], 'solicitud' => ['id', 'noSolicitud', 'estatus', 'tipoPago',
                             'delegacion' => ['id', 'nombre'],
                             'institucion' => ['id', 'nombre']]
@@ -71,7 +71,7 @@ class PagoController extends \AppBundle\Controller\DIEControllerController
                 'json',
                 [
                     'attributes' => [
-                        'id', 'referenciaBancaria', 'validado', 'requiereFactura', 'fechaPagoFormatted',
+                        'id', 'referenciaBancaria', 'validado', 'requiereFactura', 'fechaPagoFormatted', 'monto',
                         'factura' => ['id', 'folio'], 'solicitud' => ['id', 'noSolicitud', 'estatus', 'tipoPago',
                             'delegacion' => ['id', 'nombre'],
                             'institucion' => ['id', 'nombre']]

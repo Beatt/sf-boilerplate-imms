@@ -456,9 +456,9 @@ class CampoClinico implements ReferenciaBancariaInterface
     public function getImporteAlumno()
     {
         if($this->getConvenio()->getCicloAcademico()->getId() === 1){
-            return $this->getImporteColegiaturaAnualIntegrada() * $this->getFactorSemanalAutorizado();
+            return round($this->getImporteColegiaturaAnualIntegrada() * $this->getFactorSemanalAutorizado(), 2);
         }
-        return $this->getImporteColegiaturaAnualIntegrada() * .50;
+        return round($this->getImporteColegiaturaAnualIntegrada() * .50, 2);
     }
 
     /**

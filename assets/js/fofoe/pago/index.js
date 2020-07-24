@@ -128,6 +128,7 @@ const PagoIndex = (props) => {
                                     No. de Referencia
 
                                 </th>
+                                <th>Monto</th>
                                 <th>
                                     Factura
                                 </th>
@@ -152,7 +153,9 @@ const PagoIndex = (props) => {
                                            onChange={e => {setQuery(Object.assign(query,{no_solicitud: e.target.value})); handleSearchEvent()}}/></th>
                                 <th><input type="text" placeholder={'No. de Referencia'}
                                            onChange={e => {setQuery(Object.assign(query,{referencia: e.target.value})); handleSearchEvent()}}/></th>
-                                <th><input type="text" placeholder={'Factura'}
+                                <th><input type="number" placeholder={'Monto'}
+                                           onChange={e => {setQuery(Object.assign(query,{monto: e.target.value})); handleSearchEvent()}}/></th>
+                                <th><input type="text" placeholder={'Folio Factura'}
                                            onChange={e => {setQuery(Object.assign(query,{factura: e.target.value})); handleSearchEvent()}}/></th>
                                 <th> </th>
                                 <th>
@@ -176,6 +179,7 @@ const PagoIndex = (props) => {
                                         <td>{pago.solicitud.institucion.nombre}</td>
                                         <td>{pago.solicitud.noSolicitud}</td>
                                         <td>{pago.referenciaBancaria}</td>
+                                        <td>$ {Number.parseFloat(pago.monto.toString()).toFixed(2)}</td>
                                         <td><Facturas pago={pago}/></td>
                                         <td>{pago.fechaPagoFormatted}</td>
                                         <td><EstadosPago pago={pago}/></td>
