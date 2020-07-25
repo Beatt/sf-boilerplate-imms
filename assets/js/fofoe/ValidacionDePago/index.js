@@ -68,9 +68,12 @@ const ValidacionDePago = ({ pago }) => {
               <p className='mb-5'>Carrera: <strong>{pago.solicitud.campoClinico.carrera}</strong></p>
             </div>
           }
-          <p className='mb-5'><strong>Institución</strong></p>
-          <p className='mb-5'>Nombre: <strong><a href={`/fofoe/detalle-ie/${pago.institucion.id}`}>{pago.institucion.nombre}</a></strong></p>
-          <p className='mb-5'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
+          <div className="col-md-4">
+            <p className='mb-5'><strong>Institución</strong></p>
+            <p className='mb-5'>Nombre: <strong><a href={`/fofoe/detalle-ie/${pago.institucion.id}`}>{pago.institucion.nombre}</a></strong></p>
+            <p className='mb-5'>RFC: <strong>{pago.institucion.rfc}</strong></p>
+            <p className='mb-5'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
+          </div>
         </div>
       </div>
       <div className="col-md-12 mb-20">
@@ -108,6 +111,7 @@ const ValidacionDePago = ({ pago }) => {
       </div>
       <div className="col-md-12">
         <h3 className='mb-20'>Validar comprobante de pago</h3>
+        <p className='mb-5'>Referencia bancaria: <strong>{pago.referenciaBancaria}</strong></p>
         <p className='mb-5'>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
         <p className='mb-5'>Comprobante de pago a validar:&nbsp;&nbsp;
           <a
