@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import './index.scss';
 
 const AccionFofoe = ({pago}) => {
-    const RegistroFactura  = () => (<a href={`/fofoe/registrar-factura/${pago.id}`}>Registrar Factura</a>);
+    const RegistroFactura  = () => (<a href={`/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
     const ValidarPago = () => (<a href={`/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
     if(pago.validado != null && pago.validado && pago.requiereFactura && !pago.factura){
         return (<RegistroFactura/>);
