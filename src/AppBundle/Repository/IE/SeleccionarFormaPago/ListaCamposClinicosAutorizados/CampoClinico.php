@@ -70,7 +70,7 @@ final class CampoClinico
      */
     public function getFechaInicial()
     {
-        return (new \DateTime($this->fechaInicial))->format('d-m-Y');
+        return (new \DateTime($this->fechaInicial))->format('d/m/Y');
     }
 
     /**
@@ -127,6 +127,6 @@ final class CampoClinico
      */
     public function getFechaFinal()
     {
-        return (new \DateTime($this->fechaFinal))->format('d-m-Y');
+        return (new \DateTime($this->fechaFinal))->format('d/m/Y');
     }
 }

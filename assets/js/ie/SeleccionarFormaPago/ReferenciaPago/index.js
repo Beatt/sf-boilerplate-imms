@@ -41,7 +41,7 @@ const ReferenciaPago = (
 
     Swal.fire({
       title: title,
-      text: "Tenga en cuenta que esta opción es inamovible durante el resto del proceso y que será la forma en la que se realizará la facturación de tu pago.",
+      text: "Tenga en cuenta que esta opción es inamovible durante el resto del proceso y que será la forma en la que se realizará la facturación de su pago.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
