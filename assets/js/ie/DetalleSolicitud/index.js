@@ -6,6 +6,7 @@ import {
 } from "../../utils"
 import { SOLICITUD } from "../../constants"
 const DEFAULT_DOCUMENT_VALUE = '-'
+const DEFAULT_DOCUMENT = 'Archivo pendiente de carga'
 
 const ListaCampos = ({ solicitud }) => {
 
@@ -118,8 +119,8 @@ const ListaCampos = ({ solicitud }) => {
               <tbody>
               <tr>
                 <td>{solicitud.expediente.oficioMontos.nombre}</td>
-                <td>{solicitud.expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
-                <td>{solicitud.expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
+                <td>{solicitud.expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT}</td>
+                <td>{solicitud.expediente.oficioMontos.descripcion ? solicitud.expediente.oficioMontos.fecha : DEFAULT_DOCUMENT_VALUE}</td>
                 <td>
                   {
                     solicitud.expediente.oficioMontos.urlArchivo ?
