@@ -17,4 +17,4 @@ easy_admin:
         fields:
           - { property: nombre, label: 'Nombre' }
           - { property: rol, label: 'Rol', type: entity}
-          - { property: Clave, label: 'Clave' }
+          - { property: clave, label: 'Clave' }
