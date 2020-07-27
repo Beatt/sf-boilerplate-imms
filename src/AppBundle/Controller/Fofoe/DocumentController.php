@@ -44,7 +44,7 @@ final class DocumentController extends DIEControllerController
     }
 
     /**
-     * @Route("/{id}/descargar-cedula-de-identificacion", name="fofoe#descargar_Cedula_Identificacion")
+     * @Route("/instituciones/{id}/descargar-cedula-de-identificacion", name="fofoe#descargar_Cedula_Identificacion")
      * @param $id
      * @param InstitucionRepositoryInterface $institucionRepository
      * @return Response

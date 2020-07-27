@@ -79,7 +79,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
     {
         $items = array_map(function (array $record) {
             return sprintf(
-                "%s %s: Inscripción $%s, Colegiatura: $%s",
+                "%s %s: Inscripción $%s, Colegiatura: $%s\n",
                 $record['nombre_nivel_academico'],
                 $record['nombre_carrera'],
                 $record['monto_inscripcion'],

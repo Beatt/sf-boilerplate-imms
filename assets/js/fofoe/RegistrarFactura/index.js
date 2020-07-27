@@ -35,7 +35,7 @@ const Registrar = (
             <p className="mt-10 mb-10">Cédula de identificación fiscal: {
                 institucion.cedulaIdentificacion &&
                 <a
-                  href={`/fofoe/${institucion.id}/descargar-cedula-de-identificacion`}
+                  href={`/fofoe/instituciones/${institucion.id}/descargar-cedula-de-identificacion`}
                   download
                 >
                   Descargar cédula
