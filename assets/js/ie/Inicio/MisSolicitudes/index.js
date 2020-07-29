@@ -11,7 +11,7 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_STRING_VALUE = '';
 
 const PER_PAGE_DEFAULT_SELECT_VALUES = [];
-PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION = 5;
+PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION = 2;
 PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION = 10;
 PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION = 15;
 
@@ -247,7 +247,10 @@ const MisSolicitudes = () => {
                 name=""
                 id=""
                 className='form-control'
-                onChange={({ target }) => setPerPage(parseInt(target.value))}
+                onChange={({ target }) => {
+                  setCurrentPage(DEFAULT_PAGE)
+                  setPerPage(parseInt(target.value))
+                }}
                 value={perPage}
               >
                 <option value={PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION}>
