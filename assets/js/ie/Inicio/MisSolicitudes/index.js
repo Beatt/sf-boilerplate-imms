@@ -38,7 +38,7 @@ const MisSolicitudes = () => {
     pageCount: 0,
     totalCount: 0,
     firstItemNumber: 0,
-    lastItemNumber: 0,
+    lastItemNumber: 0
   })
 
   function isRequestAllowed() {
@@ -73,7 +73,7 @@ const MisSolicitudes = () => {
           pageCount: res.paginationData.pageCount,
           totalCount: res.paginationData.totalCount,
           firstItemNumber: res.paginationData.firstItemNumber,
-          lastItemNumber: res.paginationData.lastItemNumber,
+          lastItemNumber: res.paginationData.lastItemNumber
         })
       })
       .finally(() => toggleLoading(false))
@@ -302,7 +302,7 @@ const MisSolicitudes = () => {
               pagoId={campoClinicoSelected.pago.id}
             />
           }
-          <p className='text-center'>{pagination.firstItemNumber}-{pagination.lastItemNumber} de {pagination.pageCount}</p>
+          <p className='text-center'>Mostrando {pagination.firstItemNumber}-{pagination.lastItemNumber} de {pagination.totalCount}</p>
         </div>
       </div>
     </div>
