@@ -84,7 +84,7 @@ class SolicitudController extends DIEControllerController
         )) {
 
             $paginatorData = $paginator->paginate(
-                $solicitudes,
+                $collection,
                 $offset,
                 $perPage
             );
