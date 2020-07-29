@@ -34,7 +34,7 @@ class ReporteOportunidadPagoController extends DIEControllerController
           $this->generarCVS($datos)
         );
         $today = date('Y-m-d');
-        $filename = "exportReporteOportunidadPago\_$today.csv";
+        $filename = "ReporteOportunidadPago\_$today.csv";
 
         $responseCVS->headers->set('Content-Type', 'text/csv; charset=UTF-8');
         $responseCVS->headers->set("Content-Disposition", "attachment; filename=\"$filename\"");

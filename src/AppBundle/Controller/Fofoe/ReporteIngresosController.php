@@ -34,7 +34,7 @@ class ReporteIngresosController extends DIEControllerController
             $this->getNormalizeReporteIngresos($ingresos)
           ) );
         $today = date('Y-m-d');
-        $filename = "exportReporteIngresosMes$anio\_$today.csv";
+        $filename = "ReporteIngresosMes$anio\_$today.csv";
 
         $responseCVS->headers->set('Content-Type', 'text/csv; charset=UTF-8');
         $responseCVS->headers->set("Content-Disposition", "attachment; filename=\"$filename\"");

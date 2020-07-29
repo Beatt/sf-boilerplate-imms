@@ -11,4 +11,8 @@ INSERT INTO permiso (nombre, clave, rol_id) VALUES ('Super admin', 'SUPER', (sel
 INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte de Ingresos', 'FOFOE_REPORTE_INGS', (select id from rol where rol.clave = 'FOFOE' limit 1));
 INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte Oportunidad de Pago', 'FOFOE_REPORTE_OP', (select id from rol where rol.clave = 'FOFOE' limit 1));
 INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte Detallado de CCS', 'REPORTE_CCS_DET', (select id from rol where rol.clave = 'FOFOE' limit 1));
-INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte de CCS [Enfermeria]', 'REPORTE_CCS_ENF', (select id from rol where rol.clave = 'FOFOE' limit 1));
+INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte de CCS por Unidad', 'REPORTE_CCS_ENF', (select id from rol where rol.clave = 'FOFOE' limit 1));
+
+INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte Detallado de CCS [Pregrado]', 'REPORTE_CCS_DET', (select id from rol where rol.clave = 'PREGRADO' limit 1));
+INSERT INTO permiso(nombre, clave, rol_id) VALUES ('Consultar Reporte de CCS por Unidad [Enfermería]', 'REPORTE_CCS_ENF', (select id from rol where rol.clave = 'ENF' limit 1));
+
