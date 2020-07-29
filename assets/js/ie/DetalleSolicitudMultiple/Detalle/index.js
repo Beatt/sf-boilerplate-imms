@@ -1,15 +1,8 @@
 import * as React from 'react'
-import GestionPagoModal from "../../components/GestionPagoModal";
-import {CAMPO_CLINICO, SOLICITUD} from "../../../constants";
+import { CAMPO_CLINICO, SOLICITUD } from "../../../constants";
 import { getActionNameByInstitucionEducativa } from "../../../utils";
 
 const DetalleSolicitudMultiple = ({ solicitud }) => {
-  const { useState } = React
-  const [modalIsOpen, setModalIsOpen] = React.useState(false);
-  const [campoClinicoSelected, setCampoClinicoSelected] = useState({
-    pago: { id: null }
-  })
-
   function getFactura(urlArchivo, requiereFactura) {
     if(requiereFactura === false) return 'No solicitada';
     if(!urlArchivo) return 'Pendiente';
@@ -20,10 +13,6 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
         target='_blank'
       >Descargar</a>
     )
-  }
-
-  function closeModal() {
-    setModalIsOpen(false)
   }
 
   function isCampoClinicoAutorizado(lugaresAutorizados) {
@@ -40,28 +29,22 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
     }
     else if(campoClinico.estatus === CAMPO_CLINICO.PAGO_NO_VALIDO) {
       return(
-        <button
+        <a
+          href={`/ie/pagos/${campoClinico.pago.id}/carga-de-comprobante-de-pago`}
           className='btn btn-default'
-          onClick={() => {
-            setCampoClinicoSelected(campoClinico)
-            setModalIsOpen(true)
-          }}
         >
           Corregir comprobante
-        </button>
+        </a>
       );
     }
 
     return solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES ?
-      <button
+      <a
+        href={`/ie/pagos/${campoClinico.pago.id}/carga-de-comprobante-de-pago`}
         className="btn btn-success"
-        onClick={() => {
-          setCampoClinicoSelected(campoClinico)
-          setModalIsOpen(true)
-        }}
       >
         Cargar comprobante
-      </button> : 'Pendiente';
+      </a> : 'Pendiente';
   }
 
   return(
@@ -136,14 +119,6 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
               }
               </tbody>
             </table>
-            {
-              modalIsOpen &&
-              <GestionPagoModal
-                modalIsOpen={modalIsOpen}
-                closeModal={closeModal}
-                pagoId={campoClinicoSelected.pago.id}
-              />
-            }
           </div>
         </div>
       </div>

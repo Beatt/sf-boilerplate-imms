@@ -102,13 +102,7 @@ const MisSolicitudes = () => {
         break
       case SOLICITUD.CARGANDO_COMPROBANTES:
         if(TIPO_PAGO.MULTIPLE === solicitud.tipoPago) redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
-        else {
-          setModalIsOpen(true)
-          setCampoClinicoSelected({
-            pago: { id: solicitud.ultimoPago }
-          })
-          return
-        }
+        else redirectRoute = `/ie/pagos/${solicitud.ultimoPago}/carga-de-comprobante-de-pago`
     }
 
     window.location.href = redirectRoute

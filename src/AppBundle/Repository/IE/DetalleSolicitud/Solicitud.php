@@ -18,13 +18,16 @@ final class Solicitud
 
     private $expediente;
 
+    private $ultimoPago;
+
     public function __construct(
         $id,
         $estatus,
         $noSolicitud,
         array $camposClinicos,
         $totalCamposClinicosAutorizados,
-        Documents $expediente
+        Documents $expediente,
+        UltimoPago $ultimoPago
     ) {
         $this->id = $id;
         $this->estatus = $estatus;
@@ -32,6 +35,7 @@ final class Solicitud
         $this->camposClinicos = $camposClinicos;
         $this->noSolicitud = $noSolicitud;
         $this->expediente = $expediente;
+        $this->ultimoPago = $ultimoPago;
     }
 
     /**
@@ -80,5 +84,13 @@ final class Solicitud
     public function getExpediente()
     {
         return $this->expediente;
+    }
+
+    /**
+     * @return UltimoPago
+     */
+    public function getUltimoPago()
+    {
+        return $this->ultimoPago;
     }
 }
