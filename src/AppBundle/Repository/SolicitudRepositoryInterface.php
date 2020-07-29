@@ -11,7 +11,7 @@ interface SolicitudRepositoryInterface extends ObjectRepository
     const FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_RECIENTE = 'order_by_fecha_de_solicitud_mas_reciente';
     const FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_ANTIGUA = 'order_by_fecha_de_solicitud_mas_antigua';
 
-    public function getAllSolicitudesByInstitucion($id, $perPage, $tipoPago, $offset, $orderBy, $search = null);
+    public function getAllSolicitudesByInstitucion($id, $tipoPago, $estatus, $orderBy, $search = null);
 
     public function getSolicitudesPagadas($perPage = 10, $offset = 1, $filters = []);
 }
