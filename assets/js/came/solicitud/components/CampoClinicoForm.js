@@ -206,13 +206,23 @@ const CampoClinicoForm = (props) => {
 
             <div className="row">
                 <div className="col-md-12">
-                    <h3>Seleccione la información correspondiente a la carrera solicitada para campo clínico</h3>
+                    <h3>Ingrese la información del campo clínico</h3>
                 </div>
             </div>
+
+
+            <div className="row">
+                <div className="col-md-12">
+                </div>
+            </div>
+
+            <br/><br/>
+
 
             <div className="row">
                 <div className="col-md-12">
                     <div className={`form-group ${errores.convenio ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="fecha_final">Carrera</label>
                         <select name="convenio" id="campo_convenio" className={'form-control'}
                                 value={convenio ? convenio.id : ''}
                                 form="campo-clinico-form"
