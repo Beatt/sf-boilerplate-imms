@@ -101,7 +101,9 @@ const SolicitudIndex = (props) => {
         setIsLoading(true);
         let querystring = '';
         for (const i in query) {
-            querystring += `${i}=${query[i]}&`;
+            if(query[i].trim()!== '') {
+                querystring += `${i}=${query[i]}&`;
+            }
         }
 
         fetch(`/came/api/solicitud?${querystring}page=${meta.page}&perPage=${meta.perPage}`)

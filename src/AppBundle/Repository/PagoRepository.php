@@ -90,8 +90,8 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
         }
 
         if(isset($filters['monto']) && $filters['monto'] && is_numeric($filters['monto'])){
-            $queryBuilder->andWhere('pago.monto = :monto')
-                ->setParameter('monto', $filters['monto']);
+            $queryBuilder->andWhere("concat(pago.monto,'')  like :monto")
+                ->setParameter('monto', '%'.$filters['monto'].'%');
         }
 
         if(isset($filters['estado']) && $filters['estado']){

@@ -49,7 +49,7 @@ class PagoController extends \AppBundle\Controller\DIEControllerController
     private function getYears()
     {
         $em = $this->getDoctrine()->getManager();
-        $RAW_QUERY = 'select extract(YEAR from fecha_pago) as year from pago group by 1 order by 1 desc;';
+        $RAW_QUERY = 'select extract(YEAR from fecha_pago) as year from pago where fecha_pago is not null group by 1 order by 1 desc;';
         $statement = $em->getConnection()->prepare($RAW_QUERY);
         $statement->execute();
         return $statement->fetchAll();
