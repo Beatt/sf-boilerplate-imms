@@ -70,3 +70,7 @@ a {
   border-radius: 0;
   outline: none;
 }
+
+.ReactModal__Overlay {
+  z-index: 10;
+}
