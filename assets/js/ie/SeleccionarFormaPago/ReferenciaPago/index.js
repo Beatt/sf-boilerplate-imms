@@ -72,6 +72,7 @@ const ReferenciaPago = (
                 type="radio"
                 name='forma_pago[tipoPago]'
                 value={TIPO_PAGO.UNICO}
+                required={true}
               />Generar un único formato para pagar todos los campos clínicos autorizados en esta solicitud.
             </label>
           </div>
@@ -87,6 +88,7 @@ const ReferenciaPago = (
                 type="radio"
                 name='forma_pago[tipoPago]'
                 value={TIPO_PAGO.MULTIPLE}
+                required={true}
               />Generar un formato para pagar de manera individual cada uno de los campos clínicos autorizados en esta
               solicitud.
             </label>
