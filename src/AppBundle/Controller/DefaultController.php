@@ -26,9 +26,9 @@ class DefaultController extends Controller
             return $this->redirectToRoute('came.solicitud.index');
           case 'ROLE_IE':
             return $this->redirectToRoute('ie#perfil');
-          case 'ROLE_ENF':
+          case 'ROLE_REPORTE_CCS_ENF':
             return $this->redirectToRoute('enfermeria.reporte_ciclos');
-          case 'ROLE_PREGRADO':
+          case 'ROLE_REPORTE_CCS_DET':
             return $this->redirectToRoute('pregrado.reporte.show');
           default:
             throw new \Exception('El usuario no tiene un rol asignado.');
