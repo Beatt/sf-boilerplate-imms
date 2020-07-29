@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityRepository;
 
 class SolicitudRepository extends EntityRepository implements SolicitudRepositoryInterface
 {
-    public function getAllSolicitudesByInstitucion($id, $perPage, $tipoPago, $offset, $orderBy, $search = null)
+    public function getAllSolicitudesByInstitucion($id, $tipoPago, $estatus, $orderBy, $search = null)
     {
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
@@ -26,11 +26,20 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
                 ->setParameter('search', '%' . $search . '%');
         }
 
+        if($estatus !== 'null' && $estatus !== '') {
+            $queryBuilder = $queryBuilder
+                ->andWhere("solicitud.estatus = :estatus AND solicitud.estatus != :estatusCreada")
+                ->setParameter('estatusCreada', SolicitudInterface::CREADA)
+                ->setParameter('estatus', $estatus);
+        } else {
+            $queryBuilder = $queryBuilder
+                ->andWhere("solicitud.estatus != :estatusCreada")
+                ->setParameter('estatusCreada', SolicitudInterface::CREADA);
+        }
+
         $queryBuilder = $queryBuilder
             ->andWhere('convenio.institucion = :id')
-            ->andWhere('solicitud.estatus != :estatus')
             ->setParameter('id', $id)
-            ->setParameter('estatus', SolicitudInterface::CREADA)
             ->orderBy('solicitud.fecha', 'DESC');
 
         if(

@@ -11,7 +11,7 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_STRING_VALUE = '';
 
 const PER_PAGE_DEFAULT_SELECT_VALUES = [];
-PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION = 5;
+PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION = 2;
 PER_PAGE_DEFAULT_SELECT_VALUES.SECOND_OPTION = 10;
 PER_PAGE_DEFAULT_SELECT_VALUES.THIRD_OPTION = 15;
 
@@ -26,6 +26,7 @@ const MisSolicitudes = () => {
   const [ camposClinicos, setCamposClinicos ] = useState([])
   const [ search, setSearch ] = useState(DEFAULT_STRING_VALUE)
   const [ tipoPago, setTipoPago ] = useState(DEFAULT_STRING_VALUE)
+  const [ estatus, setEstatus ] = useState(DEFAULT_STRING_VALUE)
   const [ orderBy, setOrderBy ] = useState(DEFAULT_STRING_VALUE)
   const [ currentPage, setCurrentPage ] = useState(DEFAULT_PAGE)
   const [ perPage, setPerPage ] = useState(PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION)
@@ -38,7 +39,7 @@ const MisSolicitudes = () => {
     pageCount: 0,
     totalCount: 0,
     firstItemNumber: 0,
-    lastItemNumber: 0,
+    lastItemNumber: 0
   })
 
   function isRequestAllowed() {
@@ -46,12 +47,13 @@ const MisSolicitudes = () => {
       tipoPago !== DEFAULT_STRING_VALUE ||
       search !== DEFAULT_STRING_VALUE ||
       PER_PAGE_DEFAULT_SELECT_VALUES.includes(perPage) ||
-      orderBy !== DEFAULT_STRING_VALUE
+      orderBy !== DEFAULT_STRING_VALUE ||
+      estatus !== DEFAULT_STRING_VALUE
   }
 
   useEffect(() => {
     if(isRequestAllowed()) getCamposClinicos();
-  }, [currentPage, tipoPago, search, perPage, orderBy])
+  }, [currentPage, tipoPago, search, perPage, orderBy, estatus])
 
   function handleSearch() {
     if(!search) return;
@@ -63,6 +65,7 @@ const MisSolicitudes = () => {
 
     solicitudesGet(
       tipoPago,
+      estatus,
       currentPage,
       perPage,
       orderBy,
@@ -73,7 +76,7 @@ const MisSolicitudes = () => {
           pageCount: res.paginationData.pageCount,
           totalCount: res.paginationData.totalCount,
           firstItemNumber: res.paginationData.firstItemNumber,
-          lastItemNumber: res.paginationData.lastItemNumber,
+          lastItemNumber: res.paginationData.lastItemNumber
         })
       })
       .finally(() => toggleLoading(false))
@@ -118,6 +121,7 @@ const MisSolicitudes = () => {
   function cleanFilters() {
     setTipoPago(DEFAULT_STRING_VALUE)
     setSearch(DEFAULT_STRING_VALUE)
+    setEstatus(DEFAULT_STRING_VALUE)
     setCurrentPage(DEFAULT_PAGE)
     setPerPage(parseInt(PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION))
   }
@@ -132,7 +136,7 @@ const MisSolicitudes = () => {
 
   return(
     <div className='row'>
-      <div className="col-md-3">
+      <div className="col-md-2">
         <div className="form-group">
           <label htmlFor="solicitud_tipoPago">Tipo de pago</label>
           <select
@@ -144,6 +148,25 @@ const MisSolicitudes = () => {
             <option value=''>Ver todos</option>
             <option value={TIPO_PAGO.UNICO}>Pago único</option>
             <option value={TIPO_PAGO.MULTIPLE}>Pago multiple</option>
+          </select>
+        </div>
+      </div>
+      <div className="col-md-3">
+        <div className="form-group">
+          <label htmlFor="solicitud_estado">Estado de la solicitud</label>
+          <select
+            id="solicitud_estado"
+            className='form-control'
+            onChange={({ target }) => setEstatus(target.value)}
+            value={estatus}
+          >
+            <option value=''>Ver todos</option>
+            {
+              Object.values(SOLICITUD).map(item => {
+                if(item === SOLICITUD.CREADA) return;
+                return <option value={item}>{item}</option>;
+              })
+            }
           </select>
         </div>
       </div>
@@ -164,7 +187,7 @@ const MisSolicitudes = () => {
           </select>
         </div>
       </div>
-      <div className='col-md-6 mb-10 text-right'>
+      <div className='col-md-4 mt-20 text-right'>
         <div className='navbar-form navbar-right'>
           <div className="form-group">
             <input
@@ -224,7 +247,10 @@ const MisSolicitudes = () => {
                 name=""
                 id=""
                 className='form-control'
-                onChange={({ target }) => setPerPage(parseInt(target.value))}
+                onChange={({ target }) => {
+                  setCurrentPage(DEFAULT_PAGE)
+                  setPerPage(parseInt(target.value))
+                }}
                 value={perPage}
               >
                 <option value={PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION}>
@@ -302,7 +328,7 @@ const MisSolicitudes = () => {
               pagoId={campoClinicoSelected.pago.id}
             />
           }
-          <p className='text-center'>{pagination.firstItemNumber}-{pagination.lastItemNumber} de {pagination.pageCount}</p>
+          <p className='text-center'>Mostrando {pagination.firstItemNumber}-{pagination.lastItemNumber} de {pagination.totalCount}</p>
         </div>
       </div>
     </div>
