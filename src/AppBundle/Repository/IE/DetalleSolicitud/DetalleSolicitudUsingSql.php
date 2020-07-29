@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud;
 
+use AppBundle\Entity\Pago;
 use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\Expediente;
 use AppBundle\Repository\IE\DetalleSolicitud\ListaCamposClinicos\CamposClinicos;
@@ -37,6 +38,7 @@ final class DetalleSolicitudUsingSql implements DetalleSolicitud
         $camposClinicos = $this->camposClinicos->listaCamposClinicosBySolicitud($solicitudId);
         $totalCamposAutorizados = $this->totalCamposClinicos->totalCamposClinicosAutorizados($solicitudId);
         $documents = $this->expediente->expedienteBySolicitud($solicitudId);
+        $ultimoPago = $this->getLastPago($solicitud);
 
         return new Solicitud(
             $solicitud->getId(),
@@ -44,7 +46,23 @@ final class DetalleSolicitudUsingSql implements DetalleSolicitud
             $solicitud->getNoSolicitud(),
             $camposClinicos,
             $totalCamposAutorizados->getTotal(),
-            $documents
+            $documents,
+            $ultimoPago
         );
+    }
+
+    /**
+     * @param \AppBundle\Entity\Solicitud $solicitud
+     * @return UltimoPago
+     */
+    private function getLastPago(\AppBundle\Entity\Solicitud $solicitud)
+    {
+        $ultimoPago = new UltimoPago();
+        /** @var Pago $lastPago */
+        $lastPago = $solicitud->getPagos()->last();
+        if ($lastPago !== null) {
+            $ultimoPago = new UltimoPago($lastPago->getId());
+        }
+        return $ultimoPago;
     }
 }

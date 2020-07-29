@@ -18,6 +18,7 @@ Encore
     .addEntry('ie.seleccionar.forma.pago', './assets/js/ie/SeleccionarFormaPago/index.js')
     .addEntry('ie.correccion.pago.fofoe', './assets/js/ie/EditarPagoFofoe/index.js')
     .addEntry('ie.detalle.ie', './assets/js/fofoe/DetalleIE/index.js')
+    .addEntry('ie.carga.comprobante.pago', './assets/js/ie/CargaDeComprobanteDePago/index.js')
 
     // CAME
     .addEntry('came_solicitud_index', './assets/js/came/solicitud/index.js')

@@ -6,7 +6,6 @@ import {
   getActionNameByInstitucionEducativa,
   isActionDisabledByInstitucionEducativa
 } from "../../../utils";
-import GestionPagoModal from "../../components/GestionPagoModal";
 const DEFAULT_PAGE = 1;
 const DEFAULT_STRING_VALUE = '';
 
@@ -31,10 +30,6 @@ const MisSolicitudes = () => {
   const [ currentPage, setCurrentPage ] = useState(DEFAULT_PAGE)
   const [ perPage, setPerPage ] = useState(PER_PAGE_DEFAULT_SELECT_VALUES.FIRST_OPTION)
   const [ isLoading, toggleLoading ] = useState(false)
-  const [ modalIsOpen, setModalIsOpen ] = React.useState(false);
-  const [ campoClinicoSelected, setCampoClinicoSelected ] = useState({
-    pago: { id: null }
-  })
   const [ pagination, setPagination ] = useState({
     pageCount: 0,
     totalCount: 0,
@@ -102,20 +97,10 @@ const MisSolicitudes = () => {
         break
       case SOLICITUD.CARGANDO_COMPROBANTES:
         if(TIPO_PAGO.MULTIPLE === solicitud.tipoPago) redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
-        else {
-          setModalIsOpen(true)
-          setCampoClinicoSelected({
-            pago: { id: solicitud.ultimoPago }
-          })
-          return
-        }
+        else redirectRoute = `/ie/pagos/${solicitud.ultimoPago}/carga-de-comprobante-de-pago`
     }
 
     window.location.href = redirectRoute
-  }
-
-  function closeModal() {
-    setModalIsOpen(false)
   }
 
   function cleanFilters() {
@@ -320,14 +305,6 @@ const MisSolicitudes = () => {
               </tbody>
             </table>
           </div>
-          {
-            modalIsOpen &&
-            <GestionPagoModal
-              modalIsOpen={modalIsOpen}
-              closeModal={closeModal}
-              pagoId={campoClinicoSelected.pago.id}
-            />
-          }
           <p className='text-center'>Mostrando {pagination.firstItemNumber}-{pagination.lastItemNumber} de {pagination.totalCount}</p>
         </div>
       </div>
