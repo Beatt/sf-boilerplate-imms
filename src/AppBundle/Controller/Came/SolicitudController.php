@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SolicitudController extends DIEControllerController
 {
-    const DEFAULT_PERPAGE = 2;
+    const DEFAULT_PERPAGE = 10;
     /**
      * @Route("/came/solicitud", methods={"GET"}, name="came.solicitud.index")
      */

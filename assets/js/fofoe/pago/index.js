@@ -111,7 +111,6 @@ const PagoIndex = (props) => {
             </div>
             <div className="col-md-12">
                 <div className="panel panel-default">
-                    <div style={{textAlign: 'center', display: (props.pagos.length <= 0 ? 'block': 'none'), padding:'80px 0px'}}><h3>No hay ningún comprobante de solicitud registrado</h3></div>
                     <div className={'table-responsive'} style={{display: (props.pagos.length > 0 ? 'block': 'none')}}>
                         <table className="table table-striped table-fofoe">
                             <thead>
@@ -174,6 +173,11 @@ const PagoIndex = (props) => {
                             </tr>
                             </thead>
                             <tbody>
+                            <tr style={{textAlign: 'center', display: (pagos.length <= 0 ? 'table-row': 'none'), padding:'80px 0px'}}>
+                                <td colSpan={9}>
+                                    <h3>No se encontró ningún registro.</h3>
+                                </td>
+                            </tr>
                             {pagos.map(pago => {
                                 return (
                                     <tr key={pago.id}>
