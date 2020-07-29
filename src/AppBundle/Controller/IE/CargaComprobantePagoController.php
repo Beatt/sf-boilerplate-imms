@@ -58,7 +58,7 @@ final class CargaComprobantePagoController extends DIEControllerController
         $this->denyAccessUnlessGranted(SolicitudVoter::OBTENER_GESTION_DE_PAGOS, $pago->getSolicitud());
 
         $form = $this->createForm(ComprobantePagoType::class, $pago, [
-            'action' => $this->generateUrl('ie#cargar_comprobante_de_pago', [
+            'action' => $this->generateUrl('ie#carga_de_comprobante_de_pago', [
                 'id' => $id
             ]),
             'method' => 'POST'

@@ -104,7 +104,7 @@ const CargaDeComprobanteDePago = (
         <h3 className='mb-5'>Registrar comprobante de pago</h3>
         <p className='mb-20'>Monto total a pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
         <form
-          action={`/ie/pagos/${pagoId}/cargar-comprobante-de-pago`}
+          action={`/ie/pagos/${pagoId}/carga-de-comprobante-de-pago`}
           method='post'
           className='form-horizontal'
           encType='multipart/form-data'
