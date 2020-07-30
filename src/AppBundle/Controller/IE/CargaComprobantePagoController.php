@@ -13,6 +13,7 @@ use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\UploaderComprobantePagoInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,7 +78,8 @@ final class CargaComprobantePagoController extends DIEControllerController
                 $this->getSuccessFlashMessage($pago)
             );
 
-            return $this->redirectToRoute('ie#inicio');
+            $solicitud = $pago->getSolicitud();
+            return new RedirectResponse($this->getRedirectRoute($solicitud));
         }
 
         return $this->render('ie/solicitud/carga_de_comprobante_de_pago.html.twig', [
@@ -135,5 +137,20 @@ final class CargaComprobantePagoController extends DIEControllerController
         $this->logger->critical(sprintf('Se esta tratando de cargar un comprobante de pago sin haber asignado el tipo de pago a la solicitud'), [
             'id' => $solicitud->getId()
         ]);
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return string
+     */
+    private function getRedirectRoute(Solicitud $solicitud)
+    {
+        return $solicitud->isPagoUnico() ?
+            $this->generateUrl('ie#detalle_de_solicitud', [
+                'id' => $solicitud->getId()
+            ]) :
+            $this->generateUrl('ie#detalle_de_solicitud_multiple', [
+                'id' => $solicitud->getId()
+            ]);
     }
 }
