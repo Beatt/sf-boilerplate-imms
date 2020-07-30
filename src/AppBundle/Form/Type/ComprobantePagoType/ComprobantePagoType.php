@@ -32,7 +32,7 @@ class ComprobantePagoType extends AbstractType
             $form = $event->getForm();
 
             $pago->setRequiereFactura(
-                $form->get('requiereFactura')->getViewData() === '1' ? 1 : 0
+                $form->get('requiereFactura')->getViewData() === '1'
             );
         });
     }
