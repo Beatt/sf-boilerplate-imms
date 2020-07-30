@@ -33,6 +33,7 @@ final class CamposClinicosUsingSql implements CamposClinicos
                    ciclo_academico.nombre AS nombre_ciclo_academico,
                    unidad.nombre          AS nombre_unidad,
                    estatus_campo.nombre   AS estatus,
+                   campo_clinico.referencia_bancaria AS referencia_bancaria,
                    (
                        SELECT pago.id
                        FROM pago
@@ -111,7 +112,8 @@ final class CamposClinicosUsingSql implements CamposClinicos
                     $record['fecha_final']
                 ),
                 $pago,
-                $record['estatus']
+                $record['estatus'],
+                $record['referencia_bancaria']
             );
         }, $records);
     }
