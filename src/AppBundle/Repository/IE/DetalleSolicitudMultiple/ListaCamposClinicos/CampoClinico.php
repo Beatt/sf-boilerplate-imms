@@ -12,6 +12,8 @@ final class CampoClinico extends CampoClinicoBase
 
     private $estatus;
 
+    private $referenciaBancaria;
+
     public function __construct(
         $id,
         Convenio $convenio,
@@ -22,7 +24,8 @@ final class CampoClinico extends CampoClinicoBase
         Unidad $unidad,
         $noSemanas,
         Pago $pago,
-        $estatus
+        $estatus,
+        $referenciaBancaria
     ) {
         parent::__construct(
             $id,
@@ -37,6 +40,7 @@ final class CampoClinico extends CampoClinicoBase
 
         $this->pago = $pago;
         $this->estatus = $estatus;
+        $this->referenciaBancaria = $referenciaBancaria;
     }
 
     /**
@@ -53,5 +57,13 @@ final class CampoClinico extends CampoClinicoBase
     public function getEstatus()
     {
         return $this->estatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferenciaBancaria()
+    {
+        return $this->referenciaBancaria;
     }
 }

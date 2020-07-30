@@ -85,6 +85,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                 <th>No. de lugares <br/>autorizados</th>
                 <th className='col-md-2'>Periodo</th>
                 <th>Estado</th>
+                <th>Referencia</th>
                 <th>Comprobante</th>
                 <th>Factura</th>
               </tr>
@@ -105,6 +106,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                         campoClinico.estatus
                       }
                     </td>
+                    <td>{campoClinico.referenciaBancaria}</td>
                     <td>
                       {getActionButton(campoClinico)}
                     </td>
