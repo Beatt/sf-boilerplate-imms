@@ -314,7 +314,7 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
     {
         return $this->createQueryBuilder('pago')
             ->where('pago.referenciaBancaria = :referenciaBancaria')
-            ->andWhere('pago.validado = TRUE')
+            ->andWhere('pago.validado IS NOT NULL')
             ->setParameter('referenciaBancaria', $referenciaBancaria)
             ->getQuery()
             ->getResult()
