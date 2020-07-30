@@ -36,21 +36,15 @@ function isMultipleTipoPago(tipoPago) {
 export const isActionDisabledByInstitucionEducativa = (estatus) => {
   switch(estatus) {
     case SOLICITUD.CONFIRMADA:
-      return false
-    case SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME:
-      return true
     case SOLICITUD.MONTOS_INCORRECTOS_CAME:
-      return false
     case SOLICITUD.MONTOS_VALIDADOS_CAME:
-      return false
     case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-      return false
     case SOLICITUD.CARGANDO_COMPROBANTES:
-      return false
-    case SOLICITUD.EN_VALIDACION_FOFOE:
-      return true
     case SOLICITUD.CREDENCIALES_GENERADAS:
       return false
+    case SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME:
+    case SOLICITUD.EN_VALIDACION_FOFOE:
+      return true
     default:
       console.error(`Is action disabled del estatus ${estatus} no existe.`)
       return true

@@ -78,7 +78,7 @@ const MisSolicitudes = () => {
   }
 
   function handleStatusAction(solicitud) {
-    if(isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
+    if(isActionDisabledByInstitucionEducativa(solicitud.estatus) && !isSolicitudMultipleYDentroDeLosEstatus(solicitud)) return;
 
     let redirectRoute = ''
 
@@ -96,7 +96,8 @@ const MisSolicitudes = () => {
         redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
         break
       case SOLICITUD.CARGANDO_COMPROBANTES:
-        if(TIPO_PAGO.MULTIPLE === solicitud.tipoPago) redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
+      case SOLICITUD.EN_VALIDACION_FOFOE:
+        if(isPagoMultiple(solicitud)) redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
         else redirectRoute = `/ie/pagos/${solicitud.ultimoPago}/carga-de-comprobante-de-pago`
     }
 
@@ -114,10 +115,27 @@ const MisSolicitudes = () => {
   function handleNoSolicitud(event, solicitud) {
     event.preventDefault();
 
-    window.location = solicitud.tipoPago === TIPO_PAGO.MULTIPLE ?
+    window.location = isPagoMultiple(solicitud) ?
       `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :
       `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
   }
+
+  function isPagoMultiple(solicitud) {
+    return solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
+  }
+
+  function isSolicitudMultipleYDentroDeLosEstatus(solicitud) {
+    return isPagoMultiple(solicitud) && (
+      solicitud.estatus === SOLICITUD.EN_VALIDACION_FOFOE ||
+      solicitud.estatus === SOLICITUD.CREDENCIALES_GENERADAS
+    );
+  }
+
+  function handleDisabledActionBySolicitudMultiple(solicitud) {
+    if(isSolicitudMultipleYDentroDeLosEstatus(solicitud)) return false;
+    return isActionDisabledByInstitucionEducativa(solicitud.estatus);
+  }
+
 
   return(
     <div className='row'>
@@ -290,7 +308,7 @@ const MisSolicitudes = () => {
                         <th>
                           <button
                             className='btn btn-default'
-                            disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
+                            disabled={handleDisabledActionBySolicitudMultiple(solicitud)}
                             onClick={() => handleStatusAction(solicitud)}
                           >
                             {getActionNameByInstitucionEducativa(solicitud.estatus, solicitud.tipoPago)}
