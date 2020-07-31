@@ -11,7 +11,22 @@ const Registrar = (
     pagos
   }) => {
 
-  const [total, setTotal] = React.useState(0);
+
+  let monto = 0;
+
+  let factura = false;
+
+  pagos.forEach(element => {
+    if(element.facturaGenerada != true)
+      monto += parseFloat(element.monto);
+
+    if(element.factura)
+      factura = true; 
+  });
+
+  console.log(factura);
+
+  const [total, setTotal] = React.useState(monto);
 
   const handleChecked = (event) => {
     let subtotal = total;
@@ -19,15 +34,6 @@ const Registrar = (
     else subtotal -= parseFloat(pagos[event.id].monto);
     setTotal(subtotal);
   }
-
-  let factura = false;
-
-  pagos.forEach(element => {
-    if(element.factura)
-      factura = true;
-  });
-
-  {{console.log(factura)}}
 
   return (
     <form
@@ -51,10 +57,10 @@ const Registrar = (
                 </a>
             }</p>
             <p className="mt-10 mb-10">Delegación: {solicitud.camposClinicos[0].convenio.delegacion.nombre}</p>
-            <p className="mt-10 mb-10">Referencia de pago: {solicitud.referenciaBancaria}</p>
+            <p className="mt-10 mb-10">Referencia de pago: {pagos[0].referenciaBancaria}</p>
             <div className="form-inline mt-10 mb-10">
               <div className="form-group">
-                <label>Monto total a facturar &nbsp;</label>
+                <label>Monto total a pagar &nbsp;</label>
                   <div className={`input-group`}>
                     <div className="input-group-addon">$</div>
                     <Cleave
@@ -134,14 +140,15 @@ const Registrar = (
                 <tbody>
                 {
                   pagos.map((item, index) =>
-                    (item.facturaGenerada != true && item.validado == true) ?
+                    //(item.facturaGenerada != true && item.validado == true) ?
+                    (item.facturaGenerada != true) ?
                       <tr key={index}>
                         <td>
                           <input
                             type="checkbox"
-                            onChange={e => handleChecked(e.target)}
+                            //onChange={e => handleChecked(e.target)}
                             id={index}
-                            disabled={!item.requiereFactura}
+                            checked={true}
                             name={`solicitud_factura[pagos][${index}][facturaGenerada]`}
                           />
                         </td>
