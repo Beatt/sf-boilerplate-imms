@@ -24,8 +24,11 @@ final class Pago
 
     private $requiereFactura;
 
+    private $referenciaBancaria;
+
     public function __construct(
         $id,
+        $referenciaBancaria,
         Solicitud $solicitud,
         $montoTotal,
         $montoPendienteValidar,
@@ -46,6 +49,7 @@ final class Pago
         $this->historial = $historial;
         $this->institucion = $institucion;
         $this->requiereFactura = $requiereFactura;
+        $this->referenciaBancaria = $referenciaBancaria;
     }
 
     /**
@@ -126,5 +130,13 @@ final class Pago
     public function getRequiereFactura()
     {
         return $this->requiereFactura;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferenciaBancaria()
+    {
+        return $this->referenciaBancaria;
     }
 }

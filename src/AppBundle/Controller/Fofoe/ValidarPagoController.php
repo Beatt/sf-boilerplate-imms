@@ -79,7 +79,7 @@ final class ValidarPagoController extends DIEControllerController
      */
     private function getSuccessFlashMessage(Pago $pago)
     {
-        return sprintf('¡El comprobante con referencia %s de la solicitud %s se ha cargado correctamente!',
+        return sprintf('¡El comprobante con referencia %s de la solicitud %s se ha validado correctamente!',
             $pago->getReferenciaBancaria(),
             $pago->getSolicitud()->getNoSolicitud()
         );

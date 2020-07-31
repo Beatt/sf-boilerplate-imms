@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import './index.scss';
 
 const AccionFofoe = ({pago}) => {
-    const RegistroFactura  = () => (<a href={`/fofoe/registrar-factura/${pago.id}`}>Registrar Factura</a>);
+    const RegistroFactura  = () => (<a href={`/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
     const ValidarPago = () => (<a href={`/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
     if(pago.validado != null && pago.validado && pago.requiereFactura && !pago.factura){
         return (<RegistroFactura/>);
@@ -48,7 +48,9 @@ const PagoIndex = (props) => {
         setIsLoading(true);
         let querystring = '';
         for (const i in query) {
-            querystring += `${i}=${query[i]}&`;
+            if(query[i].trim()!== ''){
+                querystring += `${i}=${query[i]}&`;
+            }
         }
 
         fetch(`/fofoe/api/pago?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
@@ -109,7 +111,6 @@ const PagoIndex = (props) => {
             </div>
             <div className="col-md-12">
                 <div className="panel panel-default">
-                    <div style={{textAlign: 'center', display: (props.pagos.length <= 0 ? 'block': 'none'), padding:'80px 0px'}}><h3>No hay ningún comprobante de solicitud registrado</h3></div>
                     <div className={'table-responsive'} style={{display: (props.pagos.length > 0 ? 'block': 'none')}}>
                         <table className="table table-striped table-fofoe">
                             <thead>
@@ -128,6 +129,7 @@ const PagoIndex = (props) => {
                                     No. de Referencia
 
                                 </th>
+                                <th>Monto</th>
                                 <th>
                                     Factura
                                 </th>
@@ -152,7 +154,9 @@ const PagoIndex = (props) => {
                                            onChange={e => {setQuery(Object.assign(query,{no_solicitud: e.target.value})); handleSearchEvent()}}/></th>
                                 <th><input type="text" placeholder={'No. de Referencia'}
                                            onChange={e => {setQuery(Object.assign(query,{referencia: e.target.value})); handleSearchEvent()}}/></th>
-                                <th><input type="text" placeholder={'Factura'}
+                                <th><input type="number" placeholder={'Monto'}
+                                           onChange={e => {setQuery(Object.assign(query,{monto: e.target.value})); handleSearchEvent()}}/></th>
+                                <th><input type="text" placeholder={'Folio Factura'}
                                            onChange={e => {setQuery(Object.assign(query,{factura: e.target.value})); handleSearchEvent()}}/></th>
                                 <th> </th>
                                 <th>
@@ -169,6 +173,11 @@ const PagoIndex = (props) => {
                             </tr>
                             </thead>
                             <tbody>
+                            <tr style={{textAlign: 'center', display: (pagos.length <= 0 ? 'table-row': 'none'), padding:'80px 0px'}}>
+                                <td colSpan={9}>
+                                    <h3>No se encontró ningún registro.</h3>
+                                </td>
+                            </tr>
                             {pagos.map(pago => {
                                 return (
                                     <tr key={pago.id}>
@@ -176,6 +185,7 @@ const PagoIndex = (props) => {
                                         <td>{pago.solicitud.institucion.nombre}</td>
                                         <td>{pago.solicitud.noSolicitud}</td>
                                         <td>{pago.referenciaBancaria}</td>
+                                        <td>$ {Number.parseFloat(pago.monto.toString()).toFixed(2)}</td>
                                         <td><Facturas pago={pago}/></td>
                                         <td>{pago.fechaPagoFormatted}</td>
                                         <td><EstadosPago pago={pago}/></td>

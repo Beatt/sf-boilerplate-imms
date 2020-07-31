@@ -13,7 +13,7 @@ class AdminRepository extends EntityRepository
     {
         return $permissionRepository
             ->createQueryBuilder('permission')
-            ->orderBy('permission.rolSeguridad', 'ASC');
+            ->orderBy('permission.nombre', 'ASC');
     }
 
     public static function getAllRoles(RoleRepository $roleRepository)

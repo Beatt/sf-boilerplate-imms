@@ -8,6 +8,6 @@ class AdminUtil
 {
     public static function getPermissionName(Permiso $permiso)
     {
-        return "{$permiso->getNombre()} ({$permiso->getDescripcion()})";
+        return "{$permiso->getClave()} ({$permiso->getNombre()})";
     }
 }

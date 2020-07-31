@@ -1,0 +1,29 @@
+{# app/Resources/TwigBundle/views/Exception/error404.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class="container" >
+    <div class="row">
+      <div class="col-md-12">
+        <h1 style="text-align: center; padding: 40px">Página no encontrada</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <p style="padding: 40px">
+          La página que ha solicitada no se ha encontrado.
+          Por favor verifique la dirección o de click en el siguiente
+          enlace para regresar a la página de inicio.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <p style="padding: 40px">
+          <a href="{{ path('homepage') }}">Regresar a la página de Inicio</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

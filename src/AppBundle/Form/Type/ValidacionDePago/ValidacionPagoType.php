@@ -30,8 +30,8 @@ class ValidacionPagoType extends AbstractType
             $pago = $event->getData();
             $form = $event->getForm();
 
-            $pago->setRequiereFactura(
-                $form->get('validado')->getViewData() === '1' ? 1 : 0
+            $pago->setValidado(
+                $form->get('validado')->getViewData() === '1'
             );
         });
     }

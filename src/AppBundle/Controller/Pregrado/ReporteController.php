@@ -27,15 +27,13 @@ class ReporteController extends DIEControllerController
         $campos = $result[0];
 
         if (isset($filtros['export']) && $filtros['export']) {
-          /* $responseCVS = $this->render('pregrado/reporte/export.csv.twig', array(
-            'entities' => $campos)); */
           $responseCVS = new Response(
             "\xEF\xBB\xBF".
             $this->generarCVS(
               $this->getNormalizeCampos($campos)
             ) );
           $today = date('Y-m-d');
-          $filename = "exportReportePregrado_$today.csv";
+          $filename = "ReporteDetallado_$today.csv";
 
           $responseCVS->headers->set('Content-Type', 'text/csv; charset=UTF-8');
           $responseCVS->headers->set("Content-Disposition", "attachment; filename=\"$filename\"");

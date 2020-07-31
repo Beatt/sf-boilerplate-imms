@@ -6,8 +6,8 @@ const CampoClinicoForm = (props) => {
     const [isLoading, setIsLoading] = React.useState(true);
     const [solicitud, setSolicitud] = React.useState(props.solicitud ? props.solicitud : null);
     const [convenio, setConvenio] = React.useState(null);
-    const [fechaInicial, setFechaInicial] = React.useState(new Date());
-    const [fechaFinal, setFechaFinal] = React.useState(new Date());
+    const [fechaInicial, setFechaInicial] = React.useState('');
+    const [fechaFinal, setFechaFinal] = React.useState('');
     const [horario, setHorario] = React.useState('');
     const [lugaresAutorizados, setLugaresAutorizados] = React.useState(0);
     const [lugaresSolicitados, setLugaresSolicitados] = React.useState(0);
@@ -88,6 +88,21 @@ const CampoClinicoForm = (props) => {
         const fechaI = new Date(fechaInicial);
         const fechaF = new Date(fechaFinal);
         let errores = {};
+
+        const regEx = /^\d{4}-\d{2}-\d{2}$/;
+        if(!fechaInicial.match(regEx)){
+            errores = Object.assign(errores, {
+                fechaInicial: ['El formato de la fecha debe ser año-mes-día'],
+            });
+            result = false;
+        }
+        if(!fechaFinal.match(regEx)){
+            errores = Object.assign(errores, {
+                fechaFinal: ['El formato de la fecha debe ser año-mes-día'],
+            });
+            result = false;
+        }
+
         if (fechaI > fechaF) {
             errores = Object.assign(errores, {
                 fechaInicial: ['Fecha Inicial debe ser menor a Fecha Final'],
@@ -111,20 +126,20 @@ const CampoClinicoForm = (props) => {
     const storeCampoClinico = (solicitud) => {
 
         let data = new FormData();
-        const fechaI = new Date(fechaInicial);
-        const fechaF = new Date(fechaFinal);
+        const fechaI = fechaInicial.split('-');
+        const fechaF = fechaFinal.split('-');
         data.append('campo_clinico[solicitud]', solicitud.id);
         data.append('campo_clinico[convenio]', convenio.id);
         data.append('campo_clinico[unidad]', unidad.id);
-        data.append('campo_clinico[fechaInicial][year]', fechaI.getFullYear());
-        data.append('campo_clinico[fechaInicial][month]', fechaI.getMonth() + 1);
-        data.append('campo_clinico[fechaInicial][day]', fechaI.getDate());
+        data.append('campo_clinico[fechaInicial][year]', Number.parseInt(fechaI[0]));
+        data.append('campo_clinico[fechaInicial][month]', Number.parseInt(fechaI[1]));
+        data.append('campo_clinico[fechaInicial][day]', Number.parseInt(fechaI[2]));
         data.append('campo_clinico[horario]', horario);
         data.append('campo_clinico[lugaresSolicitados]', lugaresSolicitados);
         data.append('campo_clinico[lugaresAutorizados]', lugaresAutorizados);
-        data.append('campo_clinico[fechaFinal][year]', fechaF.getFullYear());
-        data.append('campo_clinico[fechaFinal][month]', fechaF.getMonth() + 1);
-        data.append('campo_clinico[fechaFinal][day]', fechaF.getDate());
+        data.append('campo_clinico[fechaFinal][year]', Number.parseInt(fechaF[0]));
+        data.append('campo_clinico[fechaFinal][month]', Number.parseInt(fechaF[1]));
+        data.append('campo_clinico[fechaFinal][day]', Number.parseInt(fechaF[2]));
         data.append('campo_clinico[asignatura]', asignatura);
         data.append('campo_clinico[promocion]', promocion);
 
@@ -191,13 +206,23 @@ const CampoClinicoForm = (props) => {
 
             <div className="row">
                 <div className="col-md-12">
-                    <h3>Seleccione la información correspondiente a la carrera solicitada para campo clínico</h3>
+                    <h3>Ingrese la información del campo clínico</h3>
                 </div>
             </div>
+
+
+            <div className="row">
+                <div className="col-md-12">
+                </div>
+            </div>
+
+            <br/><br/>
+
 
             <div className="row">
                 <div className="col-md-12">
                     <div className={`form-group ${errores.convenio ? 'has-error has-feedback' : ''}`}>
+                        <label htmlFor="fecha_final">Carrera</label>
                         <select name="convenio" id="campo_convenio" className={'form-control'}
                                 value={convenio ? convenio.id : ''}
                                 form="campo-clinico-form"
@@ -224,8 +249,10 @@ const CampoClinicoForm = (props) => {
                 <div className="col-md-3">
                     <div className={`form-group ${errores.fechaInicial ? 'has-error has-feedback' : ''}`}>
                         <label htmlFor="fecha_inicial">Inicio <br/>  &#160;</label>
-                        <input id="fecha_inicial" type="date" value={fechaInicial} className={'form-control'}
+                        <input id="fecha_inicial" type="date" className={'form-control'}
+                               value={fechaInicial}
                                form="campo-clinico-form"
+                               placeholder={'año-mes-día'}
                                onChange={e => setFechaInicial(e.target.value)} required={true}/>
                         <span className="help-block">{errores.fechaInicial ? errores.fechaInicial[0] : ''}</span>
                     </div>
@@ -233,15 +260,17 @@ const CampoClinicoForm = (props) => {
                 <div className="col-md-3">
                     <div className={`form-group ${errores.fechaFinal ? 'has-error has-feedback' : ''}`}>
                         <label htmlFor="fecha_final">Fin <br/>&#160;</label>
-                        <input id="fecha_final" type="date" value={fechaFinal} className={'form-control'}
+                        <input id="fecha_final" type="date" className={'form-control'}
+                               value={fechaFinal}
                                form="campo-clinico-form"
+                               placeholder={'año-mes-día'}
                                onChange={e => setFechaFinal(e.target.value)} required={true}/>
                         <span className="help-block">{errores.fechaFinal ? errores.fechaFinal[0] : ''}</span>
                     </div>
                 </div>
                 <div className="col-md-3">
                     <div className={`form-group ${errores.horario ? 'has-error has-feedback' : ''}`}>
-                        <label htmlFor="horario">Horario del campo clínico (Opcional)</label>
+                        <label htmlFor="horario">Horario del campo clínico (Opcional) <br/>&#160;</label>
                         <input id="horario" className={'form-control'}
                                form="campo-clinico-form"
                                type="text" value={horario} onChange={e => setHorario(e.target.value)}/>

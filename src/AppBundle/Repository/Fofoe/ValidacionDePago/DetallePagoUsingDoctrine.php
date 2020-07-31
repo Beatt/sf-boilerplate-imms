@@ -45,6 +45,7 @@ final class DetallePagoUsingDoctrine implements DetallePago
 
         return new Pago(
             $pago->getId(),
+            $pago->getReferenciaBancaria(),
             new Solicitud(
                 $solicitud->getNoSolicitud(),
                 $solicitud->getTipoPago(),
@@ -72,7 +73,8 @@ final class DetallePagoUsingDoctrine implements DetallePago
                 $institucion->getConvenios()
                     ->first()
                     ->getDelegacion()
-                    ->getNombre()
+                    ->getNombre(),
+                $institucion->getRfc()
             ),
             $pago->isRequiereFactura()
         );

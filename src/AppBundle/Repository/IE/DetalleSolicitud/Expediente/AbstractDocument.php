@@ -36,7 +36,7 @@ abstract class AbstractDocument implements DocumentInterface
      */
     public function getFecha()
     {
-        return (new \DateTime($this->fecha))->format('d-m-Y');
+        return (new \DateTime($this->fecha))->format('d/m/Y');
     }
 
     /**

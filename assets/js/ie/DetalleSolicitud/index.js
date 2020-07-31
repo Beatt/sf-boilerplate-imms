@@ -9,8 +9,7 @@ const DEFAULT_DOCUMENT_VALUE = '-'
 const DEFAULT_DOCUMENT = 'Archivo pendiente de carga'
 
 const ListaCampos = ({ solicitud }) => {
-
-  function handleStatusAction(solicitud) {
+  function handleStatusAction() {
     if (isActionDisabledByInstitucionEducativa(solicitud.estatus)) return;
 
     let redirectRoute = ''
@@ -22,7 +21,7 @@ const ListaCampos = ({ solicitud }) => {
         redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
         break
       case SOLICITUD.CARGANDO_COMPROBANTES:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/campos-clinicos`
+        redirectRoute = `/ie/pagos/${solicitud.ultimoPago.id}/carga-de-comprobante-de-pago`
         break
       case SOLICITUD.MONTOS_VALIDADOS_CAME:
         redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
@@ -59,7 +58,7 @@ const ListaCampos = ({ solicitud }) => {
             <button
               className='btn btn-default'
               disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
-              onClick={() => handleStatusAction(solicitud)}
+              onClick={() => handleStatusAction()}
             >
               {getActionNameByInstitucionEducativa(solicitud.estatus, false)}
             </button>

@@ -24,6 +24,7 @@ const ReporteOportunidad = () => {
     }, [])
 
   function getDatosReporte(pag=1, limit=pageSize) {
+    pag = Number.isInteger(pag) ? pag : 1;
     toggleLoading(true);
     getReportePagos( desdeSel, hastaSel, search, pag, limit)
       .then( (res) => {
@@ -108,9 +109,9 @@ const ReporteOportunidad = () => {
             <th>Inicio</th>
             <th>Fin</th>
             <th>Importe</th>
-            <th>Folio Host o Referencia de Transferencia</th>
+            <th>Referencia de Pago</th>
             <th>Fecha de depósito</th>
-            <th>Fecha de Facturación</th>
+            <th>Fecha de <Facturaci></Facturaci>ón</th>
           </tr>
           </thead>
           <tbody>

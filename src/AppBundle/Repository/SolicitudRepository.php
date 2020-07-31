@@ -4,11 +4,10 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\SolicitudInterface;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class SolicitudRepository extends EntityRepository implements SolicitudRepositoryInterface
 {
-    public function getAllSolicitudesByInstitucion($id, $tipoPago, $offset, $search = null)
+    public function getAllSolicitudesByInstitucion($id, $tipoPago, $estatus, $orderBy, $search = null)
     {
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
@@ -27,17 +26,48 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
                 ->setParameter('search', '%' . $search . '%');
         }
 
-        $query = $queryBuilder
-            ->andWhere('convenio.institucion = :id')
-            ->andWhere('solicitud.estatus != :estatus')
-            ->setParameter('id', $id)
-            ->setParameter('estatus', SolicitudInterface::CREADA)
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
-            ->setFirstResult(($offset - 1) * self::PAGINATOR_PER_PAGE)
-            ->orderBy('solicitud.fecha', 'DESC')
-            ->getQuery();
+        if($estatus !== 'null' && $estatus !== '') {
+            $queryBuilder = $queryBuilder
+                ->andWhere("solicitud.estatus = :estatus AND solicitud.estatus != :estatusCreada")
+                ->setParameter('estatusCreada', SolicitudInterface::CREADA)
+                ->setParameter('estatus', $estatus);
+        } else {
+            $queryBuilder = $queryBuilder
+                ->andWhere("solicitud.estatus != :estatusCreada")
+                ->setParameter('estatusCreada', SolicitudInterface::CREADA);
+        }
 
-        return new Paginator($query);
+        $queryBuilder = $queryBuilder
+            ->andWhere('convenio.institucion = :id')
+            ->setParameter('id', $id)
+            ->orderBy('solicitud.fecha', 'DESC');
+
+        if(
+            $orderBy === self::FILTER_FOR_ORDERING_NO_SOLICITUD_MAYOR_A_MENOR ||
+            $orderBy === self::FILTER_FOR_ORDERING_NO_SOLICITUD_MENOR_A_MAYOR
+        ) {
+
+            $order = $orderBy === self::FILTER_FOR_ORDERING_NO_SOLICITUD_MAYOR_A_MENOR ?
+                'DESC' : 'ASC';
+
+            $queryBuilder = $queryBuilder
+                ->orderBy('solicitud.noSolicitud', $order);
+        }
+
+        if(
+            $orderBy === self::FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_ANTIGUA ||
+            $orderBy === self::FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_RECIENTE
+        ) {
+
+            $order = $orderBy === self::FILTER_FOR_ORDERING_FECHA_DE_SOLICITUD_MAS_ANTIGUA ?
+                'ASC' : 'DESC';
+
+            $queryBuilder = $queryBuilder
+                ->orderBy('solicitud.fecha', $order);
+        }
+
+        $query = $queryBuilder->getQuery();
+        return $query->getResult();
     }
 
     public function getAllSolicitudesByDelegacion($delegacion_id = null, $perPage = 10, $offset = 1, $filters = [])
@@ -69,7 +99,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
 
         $qb2 = clone $queryBuilder;
 
-        return ['data' => $queryBuilder->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
+        return ['data' => $queryBuilder->distinct()->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
             'total' => $qb2->select('COUNT(distinct solicitud.id)')->getQuery()->getSingleScalarResult()
@@ -115,7 +145,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         $queryBuilder->distinct();
         $qb2 = clone $queryBuilder;
 
-        return ['data' => $queryBuilder->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
+        return ['data' => $queryBuilder->distinct()->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
             'total' => $qb2->select('COUNT(distinct solicitud.id)')->getQuery()->getSingleScalarResult()

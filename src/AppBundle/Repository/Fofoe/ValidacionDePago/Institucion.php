@@ -10,11 +10,18 @@ final class Institucion
 
     private $id;
 
-    public function __construct($id, $nombre, $delegacion)
-    {
+    private $rfc;
+
+    public function __construct(
+        $id,
+        $nombre,
+        $delegacion,
+        $rfc
+    ) {
         $this->nombre = $nombre;
         $this->delegacion = $delegacion;
         $this->id = $id;
+        $this->rfc = $rfc;
     }
 
     /**
@@ -39,5 +46,13 @@ final class Institucion
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRfc()
+    {
+        return $this->rfc;
     }
 }

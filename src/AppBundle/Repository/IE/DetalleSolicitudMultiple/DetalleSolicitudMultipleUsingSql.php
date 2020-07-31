@@ -5,6 +5,7 @@ namespace AppBundle\Repository\IE\DetalleSolicitudMultiple;
 use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\IE\DetalleSolicitud\Solicitud;
 use AppBundle\Repository\IE\DetalleSolicitud\TotalCamposClinicosAutorizados\TotalCamposClinicos;
+use AppBundle\Repository\IE\DetalleSolicitud\UltimoPago;
 use AppBundle\Repository\IE\DetalleSolicitudMultiple\Expediente\Expediente;
 use AppBundle\Repository\IE\DetalleSolicitudMultiple\ListaCamposClinicos\CamposClinicos;
 use AppBundle\Repository\SolicitudRepositoryInterface;
@@ -45,7 +46,8 @@ final class DetalleSolicitudMultipleUsingSql implements DetalleSolicitudMultiple
             $solicitud->getNoSolicitud(),
             $camposClinicos,
             $totalCamposAutorizados->getTotal(),
-            $documents
+            $documents,
+            new UltimoPago()
         );
     }
 }

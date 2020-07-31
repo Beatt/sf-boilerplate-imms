@@ -2,8 +2,8 @@ import * as React from 'react'
 import ReactDOM, { render } from "react-dom";
 import ReporteIngresos from '../reporte_ingresos/index'
 import ReporteOportunidad from '../reporte_oportunidad/index'
-import ReporteDetalle from '../../pregrado/reporte/index'
-import ReporteUnidad from '../../enfermeria/reporte_ciclos/index'
+import ReporteDetalle from "../../pregrado/components/ReporteDetalle";
+import ReporteUnidad from "../../enfermeria/components/ReporteUnidad";
 
 const ReportesInicio = () => {
 

@@ -36,7 +36,7 @@ class ReporteCiclosClinicosController extends DIEControllerController
             $this->getNormalizeCampos($campos)
           ) );
         $today = date('Y-m-d');
-        $filename = "exportReportePregrado_$today.csv";
+        $filename = "ReportePorUnidad_$today.csv";
 
         $responseCVS->headers->set('Content-Type', 'text/csv; charset=UTF-8');
         $responseCVS->headers->set("Content-Disposition", "attachment; filename=\"$filename\"");
