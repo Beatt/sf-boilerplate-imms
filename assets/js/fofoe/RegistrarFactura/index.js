@@ -20,9 +20,18 @@ const Registrar = (
     setTotal(subtotal);
   }
 
+  let factura = false;
+
+  pagos.forEach(element => {
+    if(element.factura)
+      factura = true;
+  });
+
+  {{console.log(factura)}}
+
   return (
     <form
-      action={`/fofoe/solicitudes/${solicitud.id}/registrar-factura`}
+      action={`/fofoe/pagos/${pagos[0].id}/registrar-factura`}
       method="post"
       encType='multipart/form-data'
     >
@@ -41,9 +50,23 @@ const Registrar = (
                   Descargar cédula
                 </a>
             }</p>
-            <p className="mt-10 mb-10">Delegación: </p>
+            <p className="mt-10 mb-10">Delegación: {solicitud.camposClinicos[0].convenio.delegacion.nombre}</p>
             <p className="mt-10 mb-10">Referencia de pago: {solicitud.referenciaBancaria}</p>
-            <p className="mt-10 mb-10">Monto total a pagar: ${solicitud.monto}</p>
+            <div className="form-inline mt-10 mb-10">
+              <div className="form-group">
+                <label>Monto total a facturar &nbsp;</label>
+                  <div className={`input-group`}>
+                    <div className="input-group-addon">$</div>
+                    <Cleave
+                      options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
+                      className='mt-10 mb-10 form-control col-md-1'
+                      value={"$ " + solicitud.monto}
+                      disabled={true}
+                    />
+                  </div>
+            </div>
+          </div>
+            
 
           </div>
           <div className="col-md-4">
@@ -61,9 +84,15 @@ const Registrar = (
                 <label>Monto total a facturar &nbsp;</label>
                 <div className="input-group">
                   <div className="input-group-addon">$</div>
+                  <Cleave
+                      options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
+                      className='mt-10 mb-10 form-control col-md-1'
+                      value={total}
+                      disabled={true}
+                    />
                   <input
                     className='form-control'
-                    type="text"
+                    type="hidden"
                     readOnly={true}
                     value={total}
                     name={`solicitud_factura[pagos][0][factura][monto]`}
@@ -99,6 +128,7 @@ const Registrar = (
                   <th>Comprobante de pago</th>
                   <th>Fecha</th>
                   <th>Monto validado</th>
+                  <th>Referencia Bancaria</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -115,7 +145,7 @@ const Registrar = (
                             name={`solicitud_factura[pagos][${index}][facturaGenerada]`}
                           />
                         </td>
-                        <td>{item.comprobantePago}</td>
+                        <td><a href={`/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a></td>
                         <td>{dateFormat(item.fechaPago)}</td>
                         <td>{item.monto}</td>
                         <td>{item.referenciaBancaria}</td>
@@ -123,6 +153,7 @@ const Registrar = (
                       :
                       <div></div>
                   )
+
                 }
                 </tbody>
               </table>
@@ -142,7 +173,7 @@ const Registrar = (
         <div className="row">
           <div className="col-md-6">
             <div className="form-group col-md-12">
-              <label>Folio de facturar &nbsp;</label>
+              <label>Folio de la factura &nbsp;</label>
                 <input
                   className='form-control'
                   type="text"
@@ -180,18 +211,24 @@ const Registrar = (
                 </thead>
                 <tbody>
                 {
-                  pagos.map((item, index) =>
-                  (item.factura) ?
-                      <tr key={index}>
-                        <td>{dateFormat(item.factura.fechaFacturacion)}</td>
-                        <td>{item.factura.monto}</td>
-                        <td>{item.comprobantePago && <a href={`/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a>}</td>
-                        <td>{item.factura.zip && <a href={item.factura.zip} download>{item.factura.zip}</a>}</td>
-                        <td>{item.factura.folio}</td>
-                      </tr>
-                      :
-                      ''
-                  )
+                  factura ? 
+
+                    pagos.map((item, index) =>
+                    (item.factura) ?
+                        <tr key={index}>
+                          <td>{dateFormat(item.factura.fechaFacturacion)}</td>
+                          <td>{item.factura.monto}</td>
+                          <td>{item.comprobantePago && <a href={`/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a>}</td>
+                          <td>{item.factura.zip && <a href={item.factura.zip} download>{item.factura.zip}</a>}</td>
+                          <td>{item.factura.folio}</td>
+                        </tr>
+                        :
+                        ''
+                    )
+                    :
+                    <tr>
+                      <td className='text-center text-info' colSpan={5} ><strong>No hay registros disponibles</strong></td>
+                    </tr>
                 }
                 </tbody>
               </table>

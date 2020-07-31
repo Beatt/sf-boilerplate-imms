@@ -10,6 +10,7 @@ use AppBundle\Normalizer\DetalleInstitucionNormalizerInterface;
 use AppBundle\Normalizer\InstitucionPerfilNormalizerInterface;
 use AppBundle\Repository\ConvenioRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Service\InstitucionManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +31,7 @@ class InstitucionController extends DIEControllerController
      * @param ConvenioRepositoryInterface $convenioRepository
      * @param InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer
      * @param InstitucionRepositoryInterface $institucionRepository
-     * @param PagoRepositoryInterface $pagoRepository
+     * @param SolicitudRepositoryInterfac $solicitudRepository
      * @return Response
      */
     public function detalleIEAction(
@@ -40,7 +41,7 @@ class InstitucionController extends DIEControllerController
         ConvenioRepositoryInterface $convenioRepository,
         InstitucionPerfilNormalizerInterface $institucionPerfilNormalizer,
         InstitucionRepositoryInterface $institucionRepository,
-        PagoRepositoryInterface $pagoRepository
+        SolicitudRepositoryInterface $solicitudRepository
     ) {
         /** @var Institucion $institucion */
 
@@ -54,7 +55,7 @@ class InstitucionController extends DIEControllerController
             ]),
         ]);
 
-        $pagos = $pagoRepository->getAllPagosByInstitucion($institucion->getId());
+        $solicitud = $solicitudRepository->getSolicitudesByInstitucion($id);
 
         $convenios = $convenioRepository->getConveniosUnicosByInstitucionId(
             $institucion->getId()
@@ -64,7 +65,7 @@ class InstitucionController extends DIEControllerController
             'convenios' => $institucionPerfilNormalizer->normalizeConvenios($convenios),
             'institucion' => $institucionPerfilNormalizer->normalizeInstitucion($institucion),
             'errores' => $this->getFormErrors($form),
-            'pagos' => $this->getNormalizePagos($pagos)
+            'pagos' => $this->getNormalizePagos($solicitud)
         ]);
     }
 
@@ -86,17 +87,16 @@ class InstitucionController extends DIEControllerController
             [
                 'attributes' => [
                     'id',
-                    'fechaPago',
-                    'monto',
-                    'requiereFactura',
-                    'validado',
-                    'factura' => [
-                        'zip',
-                        'monto'
-                    ],
-                    'solicitud' => [
-                        'noSolicitud',
-                        'fecha'
+                    'noSolicitud',
+                    'fecha',
+                    'pagos' => [
+                        'fechaPago',
+                        'monto',
+                        'requiereFactura',
+                        'validado',
+                        'factura' => [
+                            'zip'
+                        ]
                     ]
                 ]
             ]
