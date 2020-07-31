@@ -33,7 +33,7 @@ final class DocumentController extends DIEControllerController
         if(!$pago) throw $this->createNotFindPagoException($id);
 
         $institucion = $institucionRepository->getInstitucionByPagoId($pago->getId());
-
+        
         return $this->pdfResponse(
             sprintf(
                 '../uploads/instituciones/%s/%s',
