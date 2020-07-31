@@ -170,12 +170,24 @@ const ValidarInfo = (
                     {
                       pagos.map((item) => (
                         <tr>
-                          <td>{item.solicitud.noSolicitud}</td>
-                          <td>{item.solicitud.fecha ? item.solicitud.fecha : 'No asignada'}</td>
-                          <td>{item.fechaPago ? dateFormat(item.fechaPago) : 'No asignada'}</td>
-                          <td>{item.monto ? item.monto : 'No asingado'}</td>
-                          <td>{item.requiereFactura ? item.factura ? item.factura.zip : 'Pendiente de factura' : 'No solicito'}</td>
-                          <td>{item.validado ? (item.validado == true ? 'Pagada' : 'Pendiente de validación') : 'Pendiente de validación'}</td>
+                          <td>{item.noSolicitud}</td>
+                          <td>{item.fecha ? item.fecha : 'No asignada'}</td>
+                          <td><ul>{item.pagos.map(pagos => {
+                            return (<li>{pagos.fechaPago ? pagos.fechaPago : 'No asignada'}</li>);
+                          })}</ul></td>
+
+                          <td><ul>{item.pagos.map(pagos => {
+                            return (<li>{pagos.monto ? parseFloat(pagos.monto).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 'No asignada'}</li>);
+                          })}</ul></td>
+
+                          <td><ul>{item.pagos.map(pagos => {
+                            return (<li>{pagos.requiereFactura ? pagos.factura ? pagos.factura.zip : 'Pendiente de factura' : 'No solicito'}</li>);
+                          })}</ul></td>
+
+                          <td><ul>{item.pagos.map(pagos => {
+                            return (<li>{pagos.validado ? (pagos.validado == true ? 'Pagada' : 'Pendiente de validación') : 'Pendiente de validación'}</li>);
+                          })}</ul></td>
+
                         </tr>
                       ))
                     }

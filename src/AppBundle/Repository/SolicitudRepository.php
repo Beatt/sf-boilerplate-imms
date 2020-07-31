@@ -122,4 +122,16 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         ];
 
     }
+
+    public function getSolicitudesByInstitucion($id)
+    {
+        return $this->createQueryBuilder('solicitud')
+            ->join('solicitud.camposClinicos', 'campos_clinicos')
+            ->join('campos_clinicos.convenio', 'convenio')
+            ->Where('convenio.institucion = :id')
+            ->setParameter('id', $id)
+            ->orderBy('solicitud.fecha', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
