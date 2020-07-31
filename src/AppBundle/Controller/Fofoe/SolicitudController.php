@@ -67,10 +67,8 @@ class SolicitudController extends DIEControllerController
 
             //$this->update($factura, $entityManager);
             foreach($solicitud->getPagos() as $pago){
-                if($pago->isFacturaGenerada())
-                    $pago->setFactura($factura);
-                else
-                    $pago->setFactura(null);
+                $pago->setFacturaGenerada(true);
+                $pago->setFactura($factura);
             }
 
             $entityManager->persist($solicitud);
