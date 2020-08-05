@@ -10,7 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @Route("/fofoe")
+ * @Route("/fofoe-old")
  */
 class PagoController extends \AppBundle\Controller\DIEControllerController
 {
