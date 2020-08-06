@@ -3,7 +3,7 @@ import ReactPaginate from 'react-paginate';
 import { solicitudesGet } from "../../api/solicitud";
 import { TIPO_PAGO, SOLICITUD } from "../../../constants";
 import {
-  getActionNameByInstitucionEducativa,
+  getActionNameByInstitucionEducativa, getSchemeAndHttpHost,
   isActionDisabledByInstitucionEducativa
 } from "../../../utils";
 const DEFAULT_PAGE = 1;
@@ -84,21 +84,21 @@ const MisSolicitudes = () => {
 
     switch(solicitud.estatus) {
       case SOLICITUD.CONFIRMADA:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/registrar-montos`
         break
       case SOLICITUD.MONTOS_INCORRECTOS_CAME:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/corregir-montos`
         break
       case SOLICITUD.MONTOS_VALIDADOS_CAME:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
         break
       case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
         break
       case SOLICITUD.CARGANDO_COMPROBANTES:
       case SOLICITUD.EN_VALIDACION_FOFOE:
-        if(isPagoMultiple(solicitud)) redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
-        else redirectRoute = `/ie/pagos/${solicitud.ultimoPago}/carga-de-comprobante-de-pago`
+        if(isPagoMultiple(solicitud)) redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
+        else redirectRoute = `${getSchemeAndHttpHost()}/ie/pagos/${solicitud.ultimoPago}/carga-de-comprobante-de-pago`
     }
 
     window.location.href = redirectRoute
