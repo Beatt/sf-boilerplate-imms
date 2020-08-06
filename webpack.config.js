@@ -1,10 +1,18 @@
 var Encore = require('@symfony/webpack-encore');
+const SUBFOLDER_NAME = 'fofoe';
+
+if(Encore.isProduction()) {
+  Encore
+    .setPublicPath(`/${SUBFOLDER_NAME}/build`)
+    .setManifestKeyPrefix('build')
+} else {
+  Encore
+    .setPublicPath('/build')
+}
 
 Encore
     // directory where compiled assets will be stored
     .setOutputPath('web/build/')
-    // public path used by the web server to access the output path
-    .setPublicPath('/build')
     .copyFiles({from: './assets/images', to: 'images/[path][name].[ext]'})
     .addStyleEntry('layout', './assets/css/layout.scss')
     // IE
