@@ -44,7 +44,7 @@
         window.INSTITUCION_PROP = {{ institucion|json_encode|raw }}
         window.CONVENIOS_PROP = {{ convenios|json_encode|raw }}
         window.ERRORS = {{ errores|json_encode|raw }}
-        window.ACTION = {{ path('ie#perfil')|json_encode|raw }}
+        window.ACTION = {{ absolute_url(path('ie#perfil'))|json_encode|raw }}
     </script>
     <script src="{{ asset('build/ie.perfil.js') }}"></script>
 {% endblock %}

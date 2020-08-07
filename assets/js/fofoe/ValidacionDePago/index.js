@@ -2,7 +2,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import Cleave from "cleave.js/react";
 import { TIPO_PAGO } from "../../constants";
-import { moneyFormat } from "../../utils";
+import {getSchemeAndHttpHost, moneyFormat} from "../../utils";
 import Swal from "sweetalert2";
 const SI_ES_PAGO_CORRECTO_DEFAULT = 1
 const NO_ES_PAGO_CORRECTO_DEFAULT = 0
@@ -70,7 +70,7 @@ const ValidacionDePago = ({ pago }) => {
           }
           <div className="col-md-4">
             <p className='mb-5'><strong>Institución</strong></p>
-            <p className='mb-5'>Nombre: <strong><a href={`/fofoe/detalle-ie/${pago.institucion.id}`}>{pago.institucion.nombre}</a></strong></p>
+            <p className='mb-5'>Nombre: <strong><a href={`${getSchemeAndHttpHost()}/fofoe/detalle-ie/${pago.institucion.id}`}>{pago.institucion.nombre}</a></strong></p>
             <p className='mb-5'>RFC: <strong>{pago.institucion.rfc}</strong></p>
             <p className='mb-5'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
           </div>
@@ -92,7 +92,7 @@ const ValidacionDePago = ({ pago }) => {
               pago.historial.map((pago, index) =>
                 <tr key={index}>
                   <td>{pago.referenciaBancaria}</td>
-                  <td><a href={`/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}>Descargar</a></td>
+                  <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}>Descargar</a></td>
                   <td>{pago.fechaPago}</td>
                   <td>{moneyFormat(pago.monto)}</td>
                 </tr>
@@ -115,7 +115,7 @@ const ValidacionDePago = ({ pago }) => {
         <p className='mb-5'>Monto pendiente a validar: <strong>{moneyFormat(pago.montoPendienteValidar)}</strong></p>
         <p className='mb-5'>Comprobante de pago a validar:&nbsp;&nbsp;
           <a
-            href={`/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}
+            href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}
             target='_blank'
           >
             Descargar
@@ -123,7 +123,7 @@ const ValidacionDePago = ({ pago }) => {
         </p>
         <p className='mb-20'>Factura: <strong>{pago.requiereFactura ? 'Solicitada' : 'No solicitada'}</strong></p>
         <form
-          action={`/fofoe/pagos/${pago.id}/validacion-de-pago`}
+          action={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/validacion-de-pago`}
           method='post'
           className='form-horizontal'
           encType='multipart/form-data'
@@ -228,7 +228,7 @@ const ValidacionDePago = ({ pago }) => {
             <div className="col-md-4"/>
             <div className="col-md-2">
               <a
-                href='/fofoe/inicio'
+                href={`${getSchemeAndHttpHost()}/fofoe/inicio`}
                 className='btn btn-default btn-block'
               >
                 Cancelar

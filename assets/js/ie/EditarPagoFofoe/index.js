@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import camelcaseKeys from 'camelcase-keys'
 import { SOLICITUD } from "../../constants";
+import {getSchemeAndHttpHost} from "../../utils";
 
 const Registrar = (
   {
@@ -15,16 +16,16 @@ const Registrar = (
     function validate(amount) {
 
         const errors = [];
-    
+
         if (amount < parseInt(solicitud.monto) - parseInt(solicitud.pagos.reduce(function(a,b){ return parseInt(a) + parseInt(b.monto); }, 0))) {
             errors.push("El monto ingresado no puede ser menor al faltante");
         }
-    
+
         return errors;
     }
 
     const formSubmit = (e) =>{
-    
+
         try{
             setErrores({});
 
@@ -48,7 +49,7 @@ const Registrar = (
 
   return (
     <form
-      action={`/ie/solicitudes/${solicitud.id}/correccion-de-pago-fofoe`}
+      action={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/correccion-de-pago-fofoe`}
       method="post"
       encType='multipart/form-data'
       onSubmit= {formSubmit}
@@ -122,7 +123,7 @@ const Registrar = (
                         required={true}
                         name={`solicitud_comprobante_pago[pagos][${solicitud.pagos.length}][fechaPago]`}
                         />
-                        
+
                     </div>
                 </div>
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { moneyFormat } from "../../../utils";
+import {getSchemeAndHttpHost, moneyFormat} from "../../../utils";
 
 const DetalleCamposClinicos = ({ camposClinicos }) => {
 
@@ -44,7 +44,7 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
                 <td>{campoClinico.numeroSemanas}</td>
                 <td>
                   <a
-                    href={campoClinico.enlaceCalculoCuotas}
+                    href={`${getSchemeAndHttpHost()}${campoClinico.enlaceCalculoCuotas}`}
                     target='_blank'
                   >
                     Descargar

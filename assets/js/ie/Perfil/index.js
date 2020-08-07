@@ -2,6 +2,7 @@ import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ListConvenios from "../../components/ListConvenios";
 import Swal from "sweetalert2";
+import {getSchemeAndHttpHost} from "../../utils";
 
 const ValidarInfo = (
   {
@@ -178,7 +179,7 @@ const ValidarInfo = (
           {
             institucion.cedulaIdentificacion &&
             <a
-              href={`/ie/descargar-cedula-de-identificacion-fiscal`}
+              href={`${getSchemeAndHttpHost()}/ie/descargar-cedula-de-identificacion-fiscal`}
               download
             >
               Descargar cédula

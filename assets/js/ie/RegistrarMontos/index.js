@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom'
 import camelcaseKeys from 'camelcase-keys'
 import { SOLICITUD } from "../../constants";
+import {getSchemeAndHttpHost} from "../../utils";
 
 const Registrar = (
   {
@@ -26,7 +27,7 @@ const Registrar = (
   };
 
   const formSubmit = (e) =>{
-    
+
     try{
       var tag = document.getElementsByClassName('solicitud_validacion_montos_inscripcion');
 
@@ -47,7 +48,7 @@ const Registrar = (
       {
         acceso ?
           <form
-            action={`/ie/solicitudes/${solicitudId.id}/registrar-montos`}
+            action={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitudId.id}/registrar-montos`}
             method="post"
             encType='multipart/form-data'
             onSubmit= {formSubmit}
@@ -60,8 +61,8 @@ const Registrar = (
               </div>
 
               {
-                editar ? 
-                
+                editar ?
+
                 <div>
                   <div className="col-md-12 bm-10 tm-10">
                     <span className="error-message mb-10 mt-10"><strong>Por favor, ingrese la información correcta correspondiente a los montos de inscripción y de colegiaturas</strong></span>
@@ -78,7 +79,7 @@ const Registrar = (
                 ''
               }
 
-              
+
 
               <div className="col-md-12 mb-10 mt-10">
                 <div className="row">
