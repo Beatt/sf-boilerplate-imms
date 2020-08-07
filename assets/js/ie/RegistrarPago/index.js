@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
+import {getSchemeAndHttpHost} from "../../utils";
 
 const Registrar = (
   {
@@ -43,7 +44,7 @@ const Registrar = (
 
   return (
     <form
-      action={`/ie/solicitudes/${solicitud.id}/cargar-comprobante`}
+      action={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/cargar-comprobante`}
       method="post"
       encType='multipart/form-data'
       onSubmit= {handleSubmit}

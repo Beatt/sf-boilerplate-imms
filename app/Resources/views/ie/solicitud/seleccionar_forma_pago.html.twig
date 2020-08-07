@@ -39,9 +39,9 @@
     {{ parent() }}
     <script>
         window.CAMPOS_CLINICOS_PROPS = {{ camposClinicos|json_encode|raw }}
-        window.ACTION = {{ path('ie#seleccionar_forma_de_pago', {
+        window.ACTION = {{ absolute_url(path('ie#seleccionar_forma_de_pago', {
             'id': solicitud.id
-        })|json_encode|raw }}
+        }))|json_encode|raw }}
     </script>
     <script src="{{ asset('build/ie.seleccionar.forma.pago.js') }}"></script>
 {% endblock %}

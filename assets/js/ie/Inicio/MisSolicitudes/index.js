@@ -116,8 +116,8 @@ const MisSolicitudes = () => {
     event.preventDefault();
 
     window.location = isPagoMultiple(solicitud) ?
-      `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :
-      `/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
+      `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :
+      `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-solicitud`
   }
 
   function isPagoMultiple(solicitud) {

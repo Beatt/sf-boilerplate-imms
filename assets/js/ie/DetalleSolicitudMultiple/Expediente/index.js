@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {getSchemeAndHttpHost} from "../../../utils";
 const DEFAULT_DOCUMENT_VALUE = '-'
 
 const Expediente = ({ expediente }) => {
@@ -28,7 +29,7 @@ const Expediente = ({ expediente }) => {
               {
                 expediente.oficioMontos.urlArchivo ?
                   <a
-                    href={expediente.oficioMontos.urlArchivo}
+                    href={`${getSchemeAndHttpHost()}${expediente.oficioMontos.urlArchivo}`}
                     target='_blank'
                   >
                     Descargar
@@ -80,7 +81,7 @@ const Expediente = ({ expediente }) => {
                         return(
                           <a
                             key={key}
-                            href={`/ie/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
+                            href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
                             target='_blank'
                           >
                             Descargar <br/>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-import { moneyFormat } from "../../utils";
+import {getSchemeAndHttpHost, moneyFormat} from "../../utils";
 import Cleave from "cleave.js/react";
 import { TIPO_PAGO } from "../../constants";
 const SI_REQUIERE_FACTURA_DEFAULT = 1;
@@ -74,7 +74,7 @@ const CargaDeComprobanteDePago = (
               gestionPago.pagos.map((pago, index) =>
                 <tr key={index}>
                   <td>{pago.referenciaBancaria}</td>
-                  <td><a href={`/ie/pagos/${pago.id}/descargar-comprobante-de-pago`}>Descargar</a></td>
+                  <td><a href={`${getSchemeAndHttpHost()}/ie/pagos/${pago.id}/descargar-comprobante-de-pago`}>Descargar</a></td>
                   <td>{pago.fechaPago}</td>
                   <td>{moneyFormat(pago.monto)}</td>
                 </tr>
@@ -104,7 +104,7 @@ const CargaDeComprobanteDePago = (
         <h3 className='mb-5'>Registrar comprobante de pago</h3>
         <p className='mb-20'>Monto total a pagar: <strong>{moneyFormat(gestionPago.montoTotalPorPagar)}</strong></p>
         <form
-          action={`/ie/pagos/${pagoId}/carga-de-comprobante-de-pago`}
+          action={`${getSchemeAndHttpHost()}/ie/pagos/${pagoId}/carga-de-comprobante-de-pago`}
           method='post'
           className='form-horizontal'
           encType='multipart/form-data'

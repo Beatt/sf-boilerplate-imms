@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { CAMPO_CLINICO, SOLICITUD } from "../../../constants";
-import { getActionNameByInstitucionEducativa } from "../../../utils";
+import {getActionNameByInstitucionEducativa, getSchemeAndHttpHost} from "../../../utils";
 
 const DetalleSolicitudMultiple = ({ solicitud }) => {
   function getFactura(urlArchivo, requiereFactura) {
@@ -9,7 +9,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
 
     return(
       <a
-        href={`${urlArchivo}`}
+        href={`${getSchemeAndHttpHost()}${urlArchivo}`}
         target='_blank'
       >Descargar</a>
     )
@@ -30,7 +30,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
     else if(campoClinico.estatus === CAMPO_CLINICO.PAGO_NO_VALIDO) {
       return(
         <a
-          href={`/ie/pagos/${campoClinico.pago.id}/carga-de-comprobante-de-pago`}
+          href={`${getSchemeAndHttpHost()}/ie/pagos/${campoClinico.pago.id}/carga-de-comprobante-de-pago`}
           className='btn btn-default'
         >
           Corregir comprobante
@@ -40,7 +40,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
 
     return solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES ?
       <a
-        href={`/ie/pagos/${campoClinico.pago.id}/carga-de-comprobante-de-pago`}
+        href={`${getSchemeAndHttpHost()}/ie/pagos/${campoClinico.pago.id}/carga-de-comprobante-de-pago`}
         className="btn btn-success"
       >
         Cargar comprobante
@@ -60,7 +60,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
             <div className="col-md-6">
               <strong>Acción</strong>&nbsp;
               <a
-                href={`/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`}
+                href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`}
                 className='btn btn-default'
               >
                 {getActionNameByInstitucionEducativa(solicitud.estatus, false)}

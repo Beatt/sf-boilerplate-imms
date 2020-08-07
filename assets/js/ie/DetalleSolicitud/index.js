@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import {
-  getActionNameByInstitucionEducativa,
+  getActionNameByInstitucionEducativa, getSchemeAndHttpHost,
   isActionDisabledByInstitucionEducativa
 } from "../../utils"
 import { SOLICITUD } from "../../constants"
@@ -15,19 +15,19 @@ const ListaCampos = ({ solicitud }) => {
     let redirectRoute = ''
     switch (solicitud.estatus) {
       case SOLICITUD.CONFIRMADA:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/registrar-montos`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/registrar-montos`
         break
       case SOLICITUD.MONTOS_INCORRECTOS_CAME:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/corregir-montos`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/corregir-montos`
         break
       case SOLICITUD.CARGANDO_COMPROBANTES:
-        redirectRoute = `/ie/pagos/${solicitud.ultimoPago.id}/carga-de-comprobante-de-pago`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/pagos/${solicitud.ultimoPago.id}/carga-de-comprobante-de-pago`
         break
       case SOLICITUD.MONTOS_VALIDADOS_CAME:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
         break
       case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-        redirectRoute = `/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
+        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
         break
     }
 
@@ -145,7 +145,7 @@ const ListaCampos = ({ solicitud }) => {
                       solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
                         <p key={index}>
                           <a
-                            href={`/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
+                            href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
                             target='_blank'
                           >
                             Descargar
