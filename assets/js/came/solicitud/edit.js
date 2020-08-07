@@ -4,6 +4,7 @@ import Convenios from './components/Convenios';
 import CampoClinicoForm from './components/CampoClinicoForm';
 import CamposClinicos from './components/CamposClinicos';
 import Loader from '../../components/Loader/Loader'
+import {getSchemeAndHttpHost} from "../../utils";
 
 const SolicitudEdit = (props) => {
 
@@ -23,7 +24,7 @@ const SolicitudEdit = (props) => {
     const handleSolicitudSubmit = (event) => {
         event.preventDefault();
         setIsLoading(true);
-        fetch('/came/api/solicitud/terminar/' + props.solicitud.id, {
+        fetch(`${getSchemeAndHttpHost()}/came/api/solicitud/terminar/${props.solicitud.id}`, {
             method: 'post'
         }).then(response => {
             return response.json()
@@ -36,7 +37,7 @@ const SolicitudEdit = (props) => {
                         resolve()
                     }, 250)
                 }).then(() => {
-                    document.location.href = '/came/solicitud';
+                    document.location.href = `${getSchemeAndHttpHost()}/came/solicitud`;
                 });
             }
         }).finally(() => {
@@ -58,7 +59,7 @@ const SolicitudEdit = (props) => {
 
     const handleDeleteEvent = (campo) => {
         setIsLoading(true);
-        fetch(`/came/api/campo_clinico/${campo}`, {
+        fetch(`${getSchemeAndHttpHost()}/came/api/campo_clinico/${campo}`, {
             method: 'delete'
         }).then(response => {
             return response.json()

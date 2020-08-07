@@ -1,6 +1,7 @@
 import * as React from 'react'
 import SelectSearch from "react-select-search";
 import './Institucion.scss';
+import {getSchemeAndHttpHost} from "../../../utils";
 
 const Institucion = (props) => {
 
@@ -36,7 +37,7 @@ const Institucion = (props) => {
         setRepresentante(institucion.representante ? institucion.representante : '');
         if(institucion.id){
             props.callbackIsLoading(true);
-            fetch('/came/api/convenio/' + institucion.id)
+            fetch(`${getSchemeAndHttpHost()}/came/api/convenio/${institucion.id}`)
                 .then(response => {
                     return response.json()}, error => {
                     console.error(error)})

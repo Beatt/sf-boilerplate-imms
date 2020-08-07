@@ -1,5 +1,6 @@
 import * as React from 'react'
 import SelectSearch from "react-select-search";
+import {getSchemeAndHttpHost} from "../../../utils";
 
 const CampoClinicoForm = (props) => {
 
@@ -61,7 +62,7 @@ const CampoClinicoForm = (props) => {
 
     const storeSolicitud = () => {
         return new Promise((resolve, reject) => {
-            fetch('/came/api/solicitud', {
+            fetch(`${getSchemeAndHttpHost()}/came/api/solicitud`, {
                 method: 'post'
             }).then(response => {
                 return response.json();
@@ -143,7 +144,7 @@ const CampoClinicoForm = (props) => {
         data.append('campo_clinico[asignatura]', asignatura);
         data.append('campo_clinico[promocion]', promocion);
 
-        fetch('/came/api/campo_clinico', {
+        fetch(`${getSchemeAndHttpHost()}/came/api/campo_clinico`, {
             method: 'post',
             body: data
         }).then(response => {

@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom'
 import Loader from "../../components/Loader/Loader";
 import ReactPaginate from "react-paginate";
 import './index.scss';
+import {getSchemeAndHttpHost} from "../../utils";
 
 const AccionFofoe = ({solicitud}) => {
-    const RegistroFactura  = () => (<a href="/fofoe/registrar-factura">Registrar Factura</a>);
-    const ValidarPagoUnico = () => (<a href="/fofoe/validar-pago">Validar Pago</a>);
-    const ValidarPagoMultiple = () =>  (<a href="/fofoe/validar-pago-multiple">Validar Pagos</a>);
+    const RegistroFactura  = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/registrar-factura`}>Registrar Factura</a>);
+    const ValidarPagoUnico = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/validar-pago`}>Validar Pago</a>);
+    const ValidarPagoMultiple = () =>  (<a href={`${getSchemeAndHttpHost()}/fofoe/validar-pago-multiple`}>Validar Pagos</a>);
     let Result1 = () => (<></>);
 
     if(solicitud.estatus === 'En validación FOFOE' && solicitud.tipoPago === 'Único'){
@@ -71,7 +72,7 @@ const SolicitudIndex = (props) => {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/fofoe/api/solicitud?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
+        fetch(`${getSchemeAndHttpHost()}/fofoe/api/solicitud?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
             .then(response => { return response.json()}, error => {console.error(error)})
             .then(json => {setSolicitudes(json.data); setMeta(json.meta)})
             .finally(() => { setIsLoading(false)});
