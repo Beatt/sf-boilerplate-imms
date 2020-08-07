@@ -8,11 +8,12 @@ import SolicitudValidaMontos from "./validaMontos";
 import Loader from "../../components/Loader/Loader";
 import ReactPaginate from 'react-paginate';
 import './styles/tables.scss';
+import {getSchemeAndHttpHost} from "../../utils";
 
 const CameTableExample = (props) => {
     return (
         <>
-            <form action="/solicitud" method="get">
+            <form action={`${getSchemeAndHttpHost()}/solicitud`} method="get">
                 <label htmlFor="">Filtro</label><input name={'solicitudNo'} type="text"/>
                 <button type={'submit'}>Enviar</button>
             </form>
@@ -106,7 +107,7 @@ const SolicitudIndex = (props) => {
             }
         }
 
-        fetch(`/came/api/solicitud?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
+        fetch(`${getSchemeAndHttpHost()}/came/api/solicitud?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
             .then(response => { return response.json()}, error => {console.error(error)})
             .then(json => {setSolicitudes(json.data); setMeta(json.meta)})
             .finally(() => { setIsLoading(false)});
@@ -122,7 +123,7 @@ const SolicitudIndex = (props) => {
             <Loader show={isLoading}/>
             <div className="col-md-3">
                 <label> &#160;</label>
-                <a href={'/came/solicitud/create'} id="btn_solicitud" className={'form-control btn btn-default'}>Agregar
+                <a href={`${getSchemeAndHttpHost()}/came/solicitud/create`} id="btn_solicitud" className={'form-control btn btn-default'}>Agregar
                     Solicitud</a>
             </div>
             <div className="col-md-2"/>

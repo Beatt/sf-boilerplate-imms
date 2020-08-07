@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
+import {getSchemeAndHttpHost} from "../../utils";
 
 const SolicitudValidaMontos = (props) => {
 
@@ -27,7 +28,7 @@ const SolicitudValidaMontos = (props) => {
             data.append('solicitud[validado]', validos);
         }
 
-        fetch('/came/api/solicitud/validar_montos/' + props.solicitud.id , {
+        fetch(`${getSchemeAndHttpHost()}/came/api/solicitud/validar_montos/${props.solicitud.id}` , {
             method: 'post',
             body: data
         }).then(response => {
@@ -48,7 +49,7 @@ const SolicitudValidaMontos = (props) => {
                        resolve()
                    }, 250)
                 }).then(() => {
-                    document.location.href = '/came/solicitud';
+                    document.location.href = `${getSchemeAndHttpHost()}/came/solicitud`;
                 });
             }
         }).finally(() => {

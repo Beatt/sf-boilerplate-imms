@@ -1,11 +1,12 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
 import './show.scss';
+import {getSchemeAndHttpHost} from "../../utils";
 
 const LinkCredenciales = (props) => {
     const status = [4,7];
     if(status.indexOf(props.campoClinico.estatus.id)>-1){
-        return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/credenciales/download`} target={'_blank'}>Credenciales</a>);
+        return (<a href={`${getSchemeAndHttpHost()}/formato/campo_clinico/${props.campoClinico.id}/credenciales/download`} target={'_blank'}>Credenciales</a>);
     }
     return (<></>);
 }
@@ -13,7 +14,7 @@ const LinkCredenciales = (props) => {
 const LinkFormatoFofoe = (props) => {
     const status = [2, 3, 4, 5, 6, 7];
     if ( (props.campoClinico.lugaresAutorizados > 0) && ((status.indexOf(props.campoClinico.estatus.id) > -1) || props.showFormatoFofoe) ) {
-        return (<a href={`/formato/campo_clinico/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
+        return (<a href={`${getSchemeAndHttpHost()}/formato/campo_clinico/${props.campoClinico.id}/formato_fofoe/download`} target={'_blank'}>Formato
             FOFOE</a>);
     }
     return (<></>);
@@ -21,19 +22,19 @@ const LinkFormatoFofoe = (props) => {
 
 const ComprobanteOficio = (props) => {
     if(props.solicitud.fechaComprobante)
-        return (<a href={`/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
+        return (<a href={`${getSchemeAndHttpHost()}/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>Descargar</a>);
     return (<></>);
 }
 
 const LinkPago = (props) => {
     if(props.pago && props.pago.comprobantePago)
-        return (<a href={`/pago/${props.pago.id}/download`} target={'_blank'}>Comprobante de pago</a>)
+        return (<a href={`${getSchemeAndHttpHost()}/pago/${props.pago.id}/download`} target={'_blank'}>Comprobante de pago</a>)
     return (<></>);
 }
 
 const LinkFactura = (props) => {
     if(props.factura)
-        return (<a href={`/factura/${props.factura.id}/download`} target={'_blank'}>Factura</a>)
+        return (<a href={`${getSchemeAndHttpHost()}/factura/${props.factura.id}/download`} target={'_blank'}>Factura</a>)
     return (<></>);
 }
 
@@ -61,7 +62,7 @@ const DetalleSolicitudDetallado = (props) => {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`${getSchemeAndHttpHost()}/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {
@@ -192,7 +193,7 @@ const DetalleSolicitudUnico = (props) => {
             querystring += `${i}=${query[i]}&`;
         }
 
-        fetch(`/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
+        fetch(`${getSchemeAndHttpHost()}/came/api/solicitud/${props.solicitud.id}/campos_clinicos?${querystring}`)
             .then(response => {
                 return response.json()
             }, error => {

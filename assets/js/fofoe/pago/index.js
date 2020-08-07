@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom'
 import Loader from "../../components/Loader/Loader";
 import ReactPaginate from "react-paginate";
 import './index.scss';
+import {getSchemeAndHttpHost} from "../../utils";
 
 const AccionFofoe = ({pago}) => {
-    const RegistroFactura  = () => (<a href={`/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
-    const ValidarPago = () => (<a href={`/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
+    const RegistroFactura  = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
+    const ValidarPago = () => (<a href={`${getSchemeAndHttpHost()}fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
     if(pago.validado != null && pago.validado && pago.requiereFactura && !pago.factura){
         return (<RegistroFactura/>);
     }else if(pago.validado == null){
@@ -32,7 +33,7 @@ const Facturas = ({pago}) => {
     if(pago.requiereFactura && !pago.factura){
         return (<span>Pendiente</span>);
     }else if(pago.factura){
-        return (<a href={`/factura/${pago.factura.id}/download`}>{pago.factura.folio}</a>);
+        return (<a href={`${getSchemeAndHttpHost()}/factura/${pago.factura.id}/download`}>{pago.factura.folio}</a>);
     }else{
         return (<span>No Requerida</span>);
     }
@@ -53,7 +54,7 @@ const PagoIndex = (props) => {
             }
         }
 
-        fetch(`/fofoe/api/pago?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
+        fetch(`${getSchemeAndHttpHost()}/fofoe/api/pago?${querystring}page=${meta.page}&perPage=${meta.perPage}`)
             .then(response => { return response.json()}, error => {console.error(error)})
             .then(json => {setPagos(json.data); setMeta(json.meta)})
             .finally(() => { setIsLoading(false)});
