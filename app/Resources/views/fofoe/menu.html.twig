@@ -121,7 +121,7 @@
         <div class="submenu">
             <a href="{{ path('fofoe/inicio') }}">Pagos Recibidos</a>
             <a href="{{ path('fofoe.reportes') }}">Reportes</a>
-            <a href="/logout">Cerrar sesión</a>
+            <a href="{{ app.request.getSchemeAndHttpHost() }}/logout">Cerrar sesión</a>
         </div>
         <div class="col-md-12 page-cut">
             <div class="menu">
