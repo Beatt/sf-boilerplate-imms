@@ -64,7 +64,7 @@ const Institucion = (props) => {
             data.append('institucion[telefono]', phone);
             data.append('institucion[extension]', extension);
             data.append('institucion[representante]', representante);
-            fetch('/came/api/institucion/' + selectedInstitution.id, {
+            fetch(`${getSchemeAndHttpHost()}/came/api/institucion/` + selectedInstitution.id, {
                 method: 'post',
                 body: data
             }).then(response => response.json(), error => {

@@ -81,7 +81,7 @@ const SolicitudValidaMontos = (props) => {
                 <p><strong>Por favor valide los montos que se muestran a continuación coincidan con los reportados en el oficio</strong></p>
             </div>
             <div className="col-md-12">
-                <p>Oficio: <a href={`/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>{props.solicitud.urlArchivo}</a></p>
+                <p>Oficio: <a href={`${getSchemeAndHttpHost()}/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>{props.solicitud.urlArchivo}</a></p>
             </div>
             <div className="col-md-12">
                 <p>Valide los montos correspondientes a cada carrera de su solicitud</p>
