@@ -87,7 +87,7 @@
 
 {% block javascripts %}
     <script>
-      window.SCHEMA_AND_HTTP_HOST = {{ app.request.getSchemeAndHttpHost()|json_encode|raw }}
+      window.SCHEMA_AND_HTTP_HOST = {{ url('homepage')|trim('/',side='right')|json_encode|raw }}
     </script>
     <script src="{{ asset('build/runtime.js') }}"></script>
 {% endblock %}

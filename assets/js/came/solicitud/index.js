@@ -167,7 +167,7 @@ const SolicitudIndex = (props) => {
                             {solicitudes.map(solicitud => {
                                 return (
                                     <tr key={solicitud.id}>
-                                        <td><a href={`/came/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
+                                        <td><a href={ `${getSchemeAndHttpHost()}/came/solicitud/${solicitud.id}`}>{solicitud.noSolicitud}</a></td>
                                         <td>{solicitud.institucion.nombre}</td>
                                         <td className={'date-col'}>{solicitud.fecha}</td>
                                         <td>

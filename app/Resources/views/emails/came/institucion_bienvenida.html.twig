@@ -12,7 +12,7 @@
                 en el  <strong>Sistema de Administración del FOFOE</strong>.</p>
             <p>Puede consultar el estado y autorización de los campos clínicos asociados a la solicitud accediendo mediante la siguiente liga:</p>
 
-            <p class="text-center"><a href="{{ app.request.getSchemeAndHttpHost()  }}">{{ app.request.getSchemeAndHttpHost() }}</a></p>
+            <p class="text-center"><a href="{{ app.request.getSchemeAndHttpHost() ~ path('homepage')  }}">{{ app.request.getSchemeAndHttpHost() ~ path('homepage') }}</a></p>
 
             {% if password %}
             <p>Sus credenciales de acceso son:</p>
