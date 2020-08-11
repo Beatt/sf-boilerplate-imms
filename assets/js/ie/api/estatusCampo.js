@@ -1,5 +1,5 @@
 const getEstatusCampoClinico = () => {
-  return fetch('/estatus-campos-clinicos')
+  return fetch(`${getSchemeAndHttpHost()}/estatus-campos-clinicos`)
     .then(function(response) {
       return response.json();
     })
