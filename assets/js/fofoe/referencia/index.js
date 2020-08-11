@@ -186,7 +186,7 @@ const PagoIndex = (props) => {
                                         <td>{pago.delegacion}</td>
                                         <td>{pago.institucion}</td>
                                         <td>{pago.no_solicitud}</td>
-                                        <td><a href={`/fofoe/pago/${pago.referencia_bancaria}/referencia`}>{pago.referencia_bancaria}</a></td>
+                                        <td><a href={`${getSchemeAndHttpHost()}/fofoe/pago/${pago.referencia_bancaria}/referencia`}>{pago.referencia_bancaria}</a></td>
                                         <td>$ {Number.parseFloat(pago.monto.toString()).toFixed(2)}</td>
                                         <td><Facturas pago={pago}/></td>
                                         <td>{pago.fecha_pago}</td>

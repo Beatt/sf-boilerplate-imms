@@ -1,8 +1,9 @@
 import {clickAction} from "../../pregrado/utils";
+import {getSchemeAndHttpHost} from "../../utils";
 
 const getReportePagos = (desde, hasta,
   search, page, limit) => {
-  let urlQuery = `/fofoe/reporte_oportunidad_pago?desde=${desde}`
+  let urlQuery = `${getSchemeAndHttpHost()}/fofoe/reporte_oportunidad_pago?desde=${desde}`
     + `&hasta=${hasta}&search=${search}`
     + `&page=${page}&limit=${limit}`;
 
@@ -14,7 +15,7 @@ const getReportePagos = (desde, hasta,
 
 const getReportePagosCSV = (desde, hasta, search) => {
 
-  let urlQuery = `/fofoe/reporte_oportunidad_pago?desde=${desde}`
+  let urlQuery = `${getSchemeAndHttpHost()}/fofoe/reporte_oportunidad_pago?desde=${desde}`
     + `&hasta=${hasta}&search=${search}`
     + `&export=1`;
 

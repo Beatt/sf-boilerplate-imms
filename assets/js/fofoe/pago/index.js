@@ -7,7 +7,7 @@ import {getSchemeAndHttpHost} from "../../utils";
 
 const AccionFofoe = ({pago}) => {
     const RegistroFactura  = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
-    const ValidarPago = () => (<a href={`${getSchemeAndHttpHost()}fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
+    const ValidarPago = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
     if(pago.validado != null && pago.validado && pago.requiereFactura && !pago.factura){
         return (<RegistroFactura/>);
     }else if(pago.validado == null){

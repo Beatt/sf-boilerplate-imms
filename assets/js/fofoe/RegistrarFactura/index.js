@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {dateFormat} from "../../utils";
+import {dateFormat, getSchemeAndHttpHost} from "../../utils";
 import Cleave from 'cleave.js/react';
 
 
@@ -37,7 +37,7 @@ const Registrar = (
 
   return (
     <form
-      action={`/fofoe/pagos/${pagos[0].id}/registrar-factura`}
+      action={`${getSchemeAndHttpHost()}/fofoe/pagos/${pagos[0].id}/registrar-factura`}
       method="post"
       encType='multipart/form-data'
     >
@@ -50,7 +50,7 @@ const Registrar = (
             <p className="mt-10 mb-10">Cédula de identificación fiscal: {
                 institucion.cedulaIdentificacion &&
                 <a
-                  href={`/fofoe/instituciones/${institucion.id}/descargar-cedula-de-identificacion`}
+                  href={`${getSchemeAndHttpHost()}/fofoe/instituciones/${institucion.id}/descargar-cedula-de-identificacion`}
                   download
                 >
                   Descargar cédula
@@ -152,7 +152,7 @@ const Registrar = (
                             name={`solicitud_factura[pagos][${index}][facturaGenerada]`}
                           />
                         </td>
-                        <td><a href={`/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a></td>
+                        <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a></td>
                         <td>{dateFormat(item.fechaPago)}</td>
                         <td>{item.monto}</td>
                         <td>{item.referenciaBancaria}</td>
@@ -225,7 +225,7 @@ const Registrar = (
                         <tr key={index}>
                           <td>{dateFormat(item.factura.fechaFacturacion)}</td>
                           <td>{item.factura.monto}</td>
-                          <td>{item.comprobantePago && <a href={`/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a>}</td>
+                          <td>{item.comprobantePago && <a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a>}</td>
                           <td>{item.factura.zip && <a href={item.factura.zip} download>{item.factura.zip}</a>}</td>
                           <td>{item.factura.folio}</td>
                         </tr>

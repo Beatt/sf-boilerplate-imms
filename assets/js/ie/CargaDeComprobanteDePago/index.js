@@ -201,12 +201,10 @@ const CargaDeComprobanteDePago = (
           <div className="row mt-30">
             <div className="col-md-4"/>
             <div className="col-md-2">
-              <button
-                type='button'
+              <a
+                href={`${getSchemeAndHttpHost()}/ie/inicio`}
                 className='btn btn-default btn-block'
-              >
-                Cancelar
-              </button>
+              >Cancelar</a>
             </div>
             <div className="col-md-2">
               <button

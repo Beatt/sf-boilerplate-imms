@@ -92,7 +92,7 @@ const ValidacionDePago = ({ pago }) => {
               pago.historial.map((pago, index) =>
                 <tr key={index}>
                   <td>{pago.referenciaBancaria}</td>
-                  <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}>Descargar</a></td>
+                  <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`} download>Descargar</a></td>
                   <td>{pago.fechaPago}</td>
                   <td>{moneyFormat(pago.monto)}</td>
                 </tr>

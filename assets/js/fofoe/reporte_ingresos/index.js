@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {getReporteIngresos} from "./reporteIngresos";
+import {getSchemeAndHttpHost} from "../../utils";
 
 const ReporteIngresos = () => {
 
@@ -30,7 +31,7 @@ const ReporteIngresos = () => {
     getDatosReporte();
   }
 
-  let urlExport = `/fofoe/reporte_ingresos?anio=${anioSel}&export=1`
+  let urlExport = `${getSchemeAndHttpHost()}/fofoe/reporte_ingresos?anio=${anioSel}&export=1`
   let totalIngsVal = 0
   let totalIngsPend = 0
   let anios = ['2020', '2021']

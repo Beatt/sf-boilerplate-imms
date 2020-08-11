@@ -144,7 +144,7 @@ const ValidarInfo = (
             {
                 institucion.cedulaIdentificacion &&
                 <a
-                  href={`/fofoe/${institucion.id}/descargar-cedula-de-identificacion`}
+                  href={`${getSchemeAndHttpHost()}/fofoe/${institucion.id}/descargar-cedula-de-identificacion`}
                   download
                 >
                   Descargar cédula
