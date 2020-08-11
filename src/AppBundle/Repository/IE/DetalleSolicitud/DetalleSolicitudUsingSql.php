@@ -59,9 +59,9 @@ final class DetalleSolicitudUsingSql implements DetalleSolicitud
     {
         $ultimoPago = new UltimoPago();
         /** @var Pago $lastPago */
-        $lastPago = $solicitud->getPagos()->last();
-        if ($lastPago !== null) {
-            $ultimoPago = new UltimoPago($lastPago->getId());
+        if (!$solicitud->getPagos()->isEmpty()) {
+          $lastPago = $solicitud->getPagos()->last();
+          $ultimoPago = new UltimoPago($lastPago->getId());
         }
         return $ultimoPago;
     }
