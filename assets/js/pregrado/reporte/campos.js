@@ -1,9 +1,10 @@
 import {clickAction} from "../utils"
+import {getSchemeAndHttpHost} from "../../utils";
 
 const getCamposClinicos = ( tipoCASel, delegacionSel, carreraSel, estadoSolSel,
                             fechaIniSel, fechaFinSel,
                             search, page, limit) => {
-  return fetch(`/pregrado/reporte/?page=${page}&limit=${limit}&search=${search}`
+  return fetch(`${getSchemeAndHttpHost()}/pregrado/reporte/?page=${page}&limit=${limit}&search=${search}`
     + `&cicloAcademico=${tipoCASel}&estatus=${estadoSolSel}`
     + `&fechaIni=${fechaIniSel}&fechaFin=${fechaFinSel}`
     + `&delegacion=${delegacionSel}&carrera=${carreraSel}`)
@@ -14,7 +15,7 @@ const getCamposClinicos = ( tipoCASel, delegacionSel, carreraSel, estadoSolSel,
 
 const getCamposClinicosCSV = ( tipoCASel, delegacionSel, carreraSel, estadoSolSel,
                                fechaIniSel, fechaFinSel, search) => {
-  return clickAction(`/pregrado/reporte/?search=${search}`
+  return clickAction(`${getSchemeAndHttpHost()}/pregrado/reporte/?search=${search}`
     + `&cicloAcademico=${tipoCASel}&estatus=${estadoSolSel}`
     + `&fechaIni=${fechaIniSel}&fechaFin=${fechaFinSel}`
     + `&delegacion=${delegacionSel}&carrera=${carreraSel}`

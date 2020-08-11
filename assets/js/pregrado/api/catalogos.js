@@ -1,3 +1,5 @@
+import {getSchemeAndHttpHost} from "../../utils";
+
 const getCarreras = () => {
   return fetch(`${getSchemeAndHttpHost()}/api/pregrado/carrera`)
     .then(function (response) {

@@ -113,7 +113,7 @@
 <div class='container-fluid'>
     <div class='row'>
         <div class="submenu">
-            <a href="{{ app.request.getSchemeAndHttpHost() ~ path('logout') }}">Cerrar sesión</a>
+            <a href="{{ absolute_url(path('logout')) }}">Cerrar sesión</a>
         </div>
         <div class="col-md-12 page-cut">
             <div class="menu">
