@@ -116,7 +116,7 @@ const ValidacionDePago = ({ pago }) => {
         <p className='mb-5'>Comprobante de pago a validar:&nbsp;&nbsp;
           <a
             href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}
-            target='_blank'
+            download
           >
             Descargar
           </a>

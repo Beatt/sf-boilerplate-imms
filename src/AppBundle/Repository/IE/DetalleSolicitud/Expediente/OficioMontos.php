@@ -6,7 +6,7 @@ use AppBundle\Normalizer\OficioMontosFileInterfaces;
 
 final class OficioMontos extends AbstractDocument implements DocumentInterface, OficioMontosFileInterfaces
 {
-    const NAME = "Oficio de Montos de Colgiatura e inscripción";
+    const NAME = "Oficio de Montos de Colegiatura e inscripción";
 
     public function __construct($fecha, $descripcion, $urlArchivo)
     {

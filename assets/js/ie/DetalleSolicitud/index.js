@@ -123,7 +123,7 @@ const ListaCampos = ({ solicitud }) => {
                 <td>
                   {
                     solicitud.expediente.oficioMontos.urlArchivo ?
-                      <a href={solicitud.expediente.oficioMontos.urlArchivo}>Descargar</a> :
+                      <a href={`${getSchemeAndHttpHost()}${solicitud.expediente.oficioMontos.urlArchivo}`}>Descargar</a> :
                       DEFAULT_DOCUMENT_VALUE
                   }
                 </td>
@@ -171,7 +171,7 @@ const ListaCampos = ({ solicitud }) => {
                   <td>
                     {
                       solicitud.expediente.facturas.map((factura, index) =>
-                        <p key={index}><a href={factura.urlArchivo}>Descargar</a></p>
+                        <p key={index}><a href={`${getSchemeAndHttpHost()}${factura.urlArchivo}`}>Descargar</a></p>
                       )
                     }
                   </td>
