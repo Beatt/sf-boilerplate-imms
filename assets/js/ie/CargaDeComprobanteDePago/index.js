@@ -74,7 +74,8 @@ const CargaDeComprobanteDePago = (
               gestionPago.pagos.map((pago, index) =>
                 <tr key={index}>
                   <td>{pago.referenciaBancaria}</td>
-                  <td><a href={`${getSchemeAndHttpHost()}/ie/pagos/${pago.id}/descargar-comprobante-de-pago`}>Descargar</a></td>
+                  <td><a href={`${getSchemeAndHttpHost()}/ie/pagos/${pago.id}/descargar-comprobante-de-pago`}
+                         target='_blank' download >Descargar</a></td>
                   <td>{pago.fechaPago}</td>
                   <td>{moneyFormat(pago.monto)}</td>
                 </tr>

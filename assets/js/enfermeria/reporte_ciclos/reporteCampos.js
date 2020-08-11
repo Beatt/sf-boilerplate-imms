@@ -1,10 +1,11 @@
 import {clickAction} from "../../pregrado/utils";
+import {getSchemeAndHttpHost} from "../../utils";
 
 const getReporteCampos = (
   desde, hasta, delegacion, unidad, carrera, ciclo,
   search, page, limit
 ) => {
-  let urlQuery = `/enfermeria/reporte_ciclos?search=${search}`
+  let urlQuery = `${getSchemeAndHttpHost()}/enfermeria/reporte_ciclos?search=${search}`
     + `&fechaIni=${desde}&fechaFin=${hasta}`
     + `&delegacion=${delegacion}&unidad=${unidad}`
     + `&carrera=${carrera}&cicloAcademico=${ciclo}`
@@ -21,7 +22,7 @@ const getReporteCamposCSV = (
   carrera, ciclo, search
 ) => {
 
-  let urlQuery = `/enfermeria/reporte_ciclos?search=${search}`
+  let urlQuery = `${getSchemeAndHttpHost()}/enfermeria/reporte_ciclos?search=${search}`
     + `&fechaIni=${desde}&fechaFin=${hasta}`
     + `&delegacion=${delegacion}&unidad=${unidad}`
     + `&carrera=${carrera}&cicloAcademico=${ciclo}`

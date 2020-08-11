@@ -111,7 +111,7 @@ const ReporteOportunidad = () => {
             <th>Importe</th>
             <th>Referencia de Pago</th>
             <th>Fecha de depósito</th>
-            <th>Fecha de <Facturaci></Facturaci>ón</th>
+            <th>Fecha de Facturación</th>
           </tr>
           </thead>
           <tbody>
