@@ -40,8 +40,6 @@ monolog:
 #swiftmailer:
 #    delivery_addresses: ['me@example.com']
 swiftmailer:
-    port: '%mailer_port%'
-    host: '%mailer_host%'
     spool: { type: memory }
 
 hautelook_alice:
