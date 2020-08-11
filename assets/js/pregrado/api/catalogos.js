@@ -1,5 +1,5 @@
 const getCarreras = () => {
-  return fetch('/api/pregrado/carrera')
+  return fetch(`${getSchemeAndHttpHost()}/api/pregrado/carrera`)
     .then(function (response) {
       return response.json();
     }).then(function (json) {
@@ -11,28 +11,28 @@ const getCarreras = () => {
 }
 
 const getCiclosAcademicos = () => {
-  return fetch('/api/pregrado/ciclo_academico')
+  return fetch(`${getSchemeAndHttpHost()}/api/pregrado/ciclo_academico`)
     .then(function (response) {
       return response.json()
     })
 }
 
 const getDelegaciones = () => {
-  return fetch('/api/pregrado/delegacion')
+  return fetch(`${getSchemeAndHttpHost()}/api/pregrado/delegacion`)
     .then(function (response) {
       return response.json()
     })
 }
 
 const getEstatusCampoClinico = () => {
-  return fetch('/estatus-campos-clinicos')
+  return fetch(`${getSchemeAndHttpHost()}/estatus-campos-clinicos`)
     .then(function (response) {
       return response.json();
     })
 }
 
 const getUnidades = (delegacion) => {
-  return fetch(`/api/pregrado/unidad/${delegacion}`)
+  return fetch(`${getSchemeAndHttpHost()}/api/pregrado/unidad/${delegacion}`)
     .then(function(response) {
       return response.json();
     })
