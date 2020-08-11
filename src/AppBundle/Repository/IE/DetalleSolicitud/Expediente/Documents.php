@@ -10,14 +10,18 @@ final class Documents
 
     private $facturas;
 
+    private $formatosFofoe;
+
     public function __construct(
         OficioMontos $oficioMontos,
         array $comprobantesPago,
-        array $facturas
+        array $facturas,
+        FormatosFofoe $formatosFofoe = null
     ) {
         $this->oficioMontos = $oficioMontos;
         $this->comprobantesPago = $comprobantesPago;
         $this->facturas = $facturas;
+        $this->formatosFofoe = $formatosFofoe;
     }
 
     /**
@@ -42,5 +46,13 @@ final class Documents
     public function getFacturas()
     {
         return $this->facturas;
+    }
+
+    /**
+     * @return FormatosFofoe
+     */
+    public function getFormatosFofoe()
+    {
+        return $this->formatosFofoe;
     }
 }

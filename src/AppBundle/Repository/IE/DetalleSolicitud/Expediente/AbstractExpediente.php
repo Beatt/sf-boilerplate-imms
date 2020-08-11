@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud\Expediente;
 
+use AppBundle\ObjectValues\SolicitudId;
+
 abstract class AbstractExpediente implements Expediente
 {
     /**
@@ -21,5 +23,28 @@ abstract class AbstractExpediente implements Expediente
         );
 
         return implode(', ', $descripcion);
+    }
+
+    /**
+     * @param $estatus
+     * @return FormatosFofoe|null
+     */
+    protected function createFormatosFofoe($estatus)
+    {
+        $estatusParaMostrarFormatosFofoe = [
+            'Montos validados CAME',
+            'Formatos de pago generados',
+            'Cargando comprobantes',
+            'En validación FOFOE',
+            'Credenciales generadas'
+        ];
+
+        if(!in_array($estatus, $estatusParaMostrarFormatosFofoe)) return null;
+
+        return new FormatosFofoe(
+            null,
+            'Formatos de pago FOFOE',
+            ''
+        );
     }
 }

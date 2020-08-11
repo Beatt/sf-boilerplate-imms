@@ -6,6 +6,7 @@ use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\AbstractExpediente;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\ComprobantePago;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\Documents;
+use AppBundle\Repository\IE\DetalleSolicitud\Expediente\FormatosFofoe;
 use AppBundle\Repository\IE\DetalleSolicitud\Expediente\OficioMontos;
 use Doctrine\DBAL\Driver\Connection;
 
@@ -22,11 +23,13 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
     {
         $oficioMonto = $this->getOficioMonto($solicitudId);
         $comprobantesPago = $this->getComprobantesPago($solicitudId);
+        $formatosFOFOE = $this->getFormatosFofoe($solicitudId);
 
         return new Documents(
             $oficioMonto,
             $comprobantesPago,
-            []
+            [],
+            $formatosFOFOE
         );
     }
 
@@ -134,5 +137,25 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                 ]
             );
         }, $records);
+    }
+
+    /**
+     * @param SolicitudId $solicitudId
+     * @return FormatosFofoe
+     */
+    private function getFormatosFofoe(SolicitudId $solicitudId)
+    {
+        $statement = $this->connection->prepare('
+            SELECT estatus
+            FROM solicitud
+            WHERE solicitud.id = :id;
+        ');
+
+        $statement->execute([
+            'id' => $solicitudId->asInt()
+        ]);
+
+        $estatus = $statement->fetchColumn();
+        return $this->createFormatosFofoe($estatus);
     }
 }
