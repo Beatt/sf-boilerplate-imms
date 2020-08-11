@@ -30,7 +30,7 @@ const Expediente = ({ expediente }) => {
                 expediente.oficioMontos.urlArchivo ?
                   <a
                     href={`${getSchemeAndHttpHost()}${expediente.oficioMontos.urlArchivo}`}
-                    target='_blank'
+                    target='_blank' download
                   >
                     Descargar
                   </a> :
@@ -82,7 +82,7 @@ const Expediente = ({ expediente }) => {
                           <a
                             key={key}
                             href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
-                            target='_blank'
+                            target='_blank' download
                           >
                             Descargar <br/>
                           </a>

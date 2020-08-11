@@ -123,7 +123,8 @@ const ListaCampos = ({ solicitud }) => {
                 <td>
                   {
                     solicitud.expediente.oficioMontos.urlArchivo ?
-                      <a href={`${getSchemeAndHttpHost()}${solicitud.expediente.oficioMontos.urlArchivo}`}>Descargar</a> :
+                      <a href={`${getSchemeAndHttpHost()}${solicitud.expediente.oficioMontos.urlArchivo}`}
+                         target='_blank' download>Descargar</a> :
                       DEFAULT_DOCUMENT_VALUE
                   }
                 </td>
@@ -146,7 +147,7 @@ const ListaCampos = ({ solicitud }) => {
                         <p key={index}>
                           <a
                             href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
-                            target='_blank'
+                            target='_blank' download
                           >
                             Descargar
                           </a>
@@ -171,7 +172,10 @@ const ListaCampos = ({ solicitud }) => {
                   <td>
                     {
                       solicitud.expediente.facturas.map((factura, index) =>
-                        <p key={index}><a href={`${getSchemeAndHttpHost()}${factura.urlArchivo}`}>Descargar</a></p>
+                        <p key={index}>
+                          <a href={`${getSchemeAndHttpHost()}${factura.urlArchivo}`}
+                            target='_blank' download>Descargar</a>
+                        </p>
                       )
                     }
                   </td>

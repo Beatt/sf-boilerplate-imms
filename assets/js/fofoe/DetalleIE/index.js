@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ListConvenios from "../../components/ListConvenios";
-import {dateFormat} from "../../utils";
+import {dateFormat, getSchemeAndHttpHost} from "../../utils";
 
 const ValidarInfo = (
   {
@@ -145,6 +145,7 @@ const ValidarInfo = (
                 institucion.cedulaIdentificacion &&
                 <a
                   href={`${getSchemeAndHttpHost()}/fofoe/${institucion.id}/descargar-cedula-de-identificacion`}
+                  target='_blank' download
                   download
                 >
                   Descargar cédula
