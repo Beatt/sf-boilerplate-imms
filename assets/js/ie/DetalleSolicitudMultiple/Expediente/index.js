@@ -2,7 +2,7 @@ import * as React from 'react'
 import {getSchemeAndHttpHost} from "../../../utils";
 const DEFAULT_DOCUMENT_VALUE = '-'
 
-const Expediente = ({ expediente }) => {
+const Expediente = ({ solicitud }) => {
 
   function getUniqCamposClinicos(comprobantesPago) {
     return [...new Set(comprobantesPago.map(item => item.options.unidad))];
@@ -22,14 +22,14 @@ const Expediente = ({ expediente }) => {
           </thead>
           <tbody>
           <tr>
-            <td>{expediente.oficioMontos.nombre}</td>
-            <td>{expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
-            <td>{expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
+            <td>{solicitud.expediente.oficioMontos.nombre}</td>
+            <td>{solicitud.expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT_VALUE}</td>
+            <td>{solicitud.expediente.oficioMontos.fecha || DEFAULT_DOCUMENT_VALUE}</td>
             <td>
               {
-                expediente.oficioMontos.urlArchivo ?
+                solicitud.expediente.oficioMontos.urlArchivo ?
                   <a
-                    href={`${getSchemeAndHttpHost()}${expediente.oficioMontos.urlArchivo}`}
+                    href={`${getSchemeAndHttpHost()}${solicitud.expediente.oficioMontos.urlArchivo}`}
                     target='_blank' download
                   >
                     Descargar
@@ -39,12 +39,28 @@ const Expediente = ({ expediente }) => {
             </td>
           </tr>
           {
-            getUniqCamposClinicos(expediente.comprobantesPago).map((item, index) => (
+            solicitud.expediente.formatosFofoe &&
+            <tr>
+              <td>{solicitud.expediente.formatosFofoe.nombre}</td>
+              <td>{solicitud.expediente.formatosFofoe.descripcion}</td>
+              <td>{solicitud.expediente.formatosFofoe.fecha}</td>
+              <td>
+                <a
+                  href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
+                  target='_blank'
+                >
+                  Descargar
+                </a>
+              </td>
+            </tr>
+          }
+          {
+            getUniqCamposClinicos(solicitud.expediente.comprobantesPago).map((item, index) => (
               <tr key={index}>
                 <td>Comprobante de pago del campo clínico {item}</td>
                 <td>
                   {
-                    expediente.comprobantesPago.map((comprobante, key) => {
+                    solicitud.expediente.comprobantesPago.map((comprobante, key) => {
                       if(comprobante.options.unidad === item) {
                         return(
                           <span
@@ -60,7 +76,7 @@ const Expediente = ({ expediente }) => {
                 </td>
                 <td>
                   {
-                    expediente.comprobantesPago.map((comprobante, key) => {
+                    solicitud.expediente.comprobantesPago.map((comprobante, key) => {
                       if(comprobante.options.unidad === item) {
                         return(
                           <span
@@ -76,7 +92,7 @@ const Expediente = ({ expediente }) => {
                 </td>
                 <td>
                   {
-                    expediente.comprobantesPago.map((comprobante, key) => {
+                    solicitud.expediente.comprobantesPago.map((comprobante, key) => {
                       if(comprobante.options.unidad === item) {
                         return(
                           <a

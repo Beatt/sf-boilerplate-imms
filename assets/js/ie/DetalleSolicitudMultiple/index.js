@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded',  () => {
   )
   ReactDOM.render(
     <Expediente
-      expediente={window.SOLICITUD_PROP.expediente}
+      solicitud={window.SOLICITUD_PROP}
     />,
     document.getElementById('expediente-solicitud-multiple-component')
   )
