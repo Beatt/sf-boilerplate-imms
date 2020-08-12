@@ -27,6 +27,7 @@ final class SolicitudVoter extends Voter
     const OBTENER_GESTION_DE_PAGOS = 'obtener_gestion_de_pagos';
     const CARGAR_COMPROBANTE_DE_PAGO = 'cargar_comprobante_de_pago';
     const DESCARGAR_COMPROBANTE_DE_PAGO = 'descargar_comprobante_de_pago';
+    const DESCARGAR_FORMATOS_FOFOE = 'descargar_formatos_fofoe';
 
     private $getExistSolicitud;
 
@@ -86,7 +87,8 @@ final class SolicitudVoter extends Voter
             self::DETALLE_DE_SOLICITUD_MULTIPLE,
             self::OBTENER_GESTION_DE_PAGOS,
             self::CARGAR_COMPROBANTE_DE_PAGO,
-            self::DESCARGAR_COMPROBANTE_DE_PAGO
+            self::DESCARGAR_COMPROBANTE_DE_PAGO,
+            self::DESCARGAR_FORMATOS_FOFOE
         ];
     }
 }
