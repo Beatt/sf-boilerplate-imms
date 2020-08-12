@@ -19,11 +19,13 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
         $oficioMonto = $this->getOficioMonto($solicitudId);
         $comprobantesPago = $this->getComprobantesPago($solicitudId);
         $facturas = $this->getFacturas($solicitudId);
+        $formatosFofoe = $this->getFormatosFofoe($solicitudId);
 
         return new Documents(
             $oficioMonto,
             $comprobantesPago,
-            $facturas
+            $facturas,
+            $formatosFofoe
         );
     }
 
@@ -31,7 +33,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
      * @param SolicitudId $solicitudId
      * @return OficioMontos
      */
-    protected function getOficioMonto(SolicitudId $solicitudId)
+    private function getOficioMonto(SolicitudId $solicitudId)
     {
         $statement = $this->connection->prepare('
             SELECT documento,
@@ -155,5 +157,25 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                 $record['zip']
             );
         }, $records);
+    }
+
+    /**
+     * @param SolicitudId $solicitudId
+     * @return FormatosFofoe
+     */
+    private function getFormatosFofoe(SolicitudId $solicitudId)
+    {
+        $statement = $this->connection->prepare('
+            SELECT estatus
+            FROM solicitud
+            WHERE solicitud.id = :id;
+        ');
+
+        $statement->execute([
+            'id' => $solicitudId->asInt()
+        ]);
+
+        $estatus = $statement->fetchColumn();
+        return $this->createFormatosFofoe($estatus);
     }
 }

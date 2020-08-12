@@ -3,6 +3,7 @@
 parameters:
     referencias_bancarias_dir: '%kernel.root_dir%/../var/referencias_bancarias'
     zip_referencias_bancarias_dir: '%kernel.root_dir%/../var/Referenciasbancarias.zip'
+    zip_formatos_fofoe_dir: '%kernel.root_dir%/../var/FormatosFOFOE.zip'
     formato_fofoe_dir: '%kernel.root_dir%/../var/formato_fofoe'
     credenciales_dir: '%kernel.root_dir%/../var/credenciales'
     private_dir: '%kernel.root_dir%/../uploads'
@@ -141,3 +142,12 @@ services:
     AppBundle\Calculator\ComprobantePagoCalculatorInterface:
         class: AppBundle\Calculator\ComprobantePagoCalculator
         public: true
+
+    AppBundle\Service\GeneradorFormatosFofoeZIPInterface:
+        class: AppBundle\Service\GeneradorFormatosFofoeZIP
+        public: true
+        arguments:
+            - '@AppBundle\Repository\CampoClinicoRepositoryInterface'
+            - '@AppBundle\Service\GeneradorFormatoFofoeInterface'
+            - '%formato_fofoe_dir%'
+            - '%zip_formatos_fofoe_dir%'

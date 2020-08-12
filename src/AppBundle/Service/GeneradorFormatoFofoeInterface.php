@@ -1,15 +1,12 @@
 <?php
 
-
 namespace AppBundle\Service;
 
-
 use AppBundle\Entity\CampoClinico;
-use AppBundle\Entity\Usuario;
 
 interface GeneradorFormatoFofoeInterface
 {
+    public function responsePdf($path, CampoClinico $campoClinico, $overwrite = false);
 
-    public function responsePdf($path, CampoClinico $campoClinico, Usuario $user = null, $overwrite = false);
-
+    public function getFileName(CampoClinico $campoClinico);
 }

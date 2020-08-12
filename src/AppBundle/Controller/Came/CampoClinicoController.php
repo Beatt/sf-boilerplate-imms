@@ -163,8 +163,21 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         }
 
         $overwrite = $request->query->get('overwrite', false);
-        return $generadorFormatoFofoe->responsePdf($this->container->getParameter('formato_fofoe_dir'), $campo_clinico, $this->getUser(), $overwrite);
+        $formatoFofoeFile = $generadorFormatoFofoe->responsePdf(
+            $this->container->getParameter('formato_fofoe_dir'),
+            $campo_clinico,
+            $overwrite
+        );
 
+        $filesize = filesize($formatoFofoeFile);
+        $fileContent = file_get_contents($formatoFofoeFile);
+        unlink($formatoFofoeFile);
+
+        $response = new Response($fileContent);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $generadorFormatoFofoe->getFileName($campo_clinico));
+        $response->headers->set('Content-length', $filesize);
+        return $response;
     }
 
     /**

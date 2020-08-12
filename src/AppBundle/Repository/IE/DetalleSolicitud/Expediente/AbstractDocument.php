@@ -36,6 +36,7 @@ abstract class AbstractDocument implements DocumentInterface
      */
     public function getFecha()
     {
+        if($this->fecha === null) return 'No Aplica';
         return (new \DateTime($this->fecha))->format('d/m/Y');
     }
 

@@ -158,6 +158,22 @@ const ListaCampos = ({ solicitud }) => {
                 </tr>
               }
               {
+                solicitud.expediente.formatosFofoe &&
+                <tr>
+                  <td>{solicitud.expediente.formatosFofoe.nombre}</td>
+                  <td>{solicitud.expediente.formatosFofoe.descripcion}</td>
+                  <td>{solicitud.expediente.formatosFofoe.fecha}</td>
+                  <td>
+                    <a
+                      href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
+                      target='_blank'
+                    >
+                      Descargar
+                    </a>
+                  </td>
+                </tr>
+              }
+              {
                 !isFacturasEmpty() &&
                 <tr>
                   <td>{solicitud.expediente.facturas[0].nombre}</td>
