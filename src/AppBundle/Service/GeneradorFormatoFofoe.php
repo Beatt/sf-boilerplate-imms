@@ -4,6 +4,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampo;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Usuario;
 use Carbon\Carbon;
@@ -57,9 +58,10 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
                 $user = $this->tokenStorage->getToken()->getUser();
                 $permiso_came = $this->entityManager->getRepository(Permiso::class)->findOneBy(['clave' => 'CAME']);
                 if($user && !$user->getPermisos()->contains($permiso_came)){
-                    //2 es el estado de pendiente de pago
-                    if(is_null($campoClinico->getEstatus()) || $campoClinico->getEstatus()->getId() === 1){
-                        $estatus = $this->entityManager->getRepository(EstatusCampo::class)->find(2);
+                    if(is_null($campoClinico->getEstatus()) || $campoClinico->getEstatus()->getNombre() === EstatusCampoInterface::NUEVO){
+                        $estatus = $this->entityManager->getRepository(EstatusCampo::class)->findOneBy([
+                            'nombre' => EstatusCampoInterface::PENDIENTE_DE_PAGO
+                        ]);
                         $campoClinico->setEstatus($estatus);
                         $this->entityManager->persist($campoClinico);
                         $this->entityManager->flush();
