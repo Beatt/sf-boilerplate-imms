@@ -44,7 +44,7 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
                 <td>{campoClinico.numeroSemanas}</td>
                 <td>
                   <a
-                    href={`${campoClinico.enlaceCalculoCuotas}`}
+                    href={`${getSchemeAndHttpHost()}${campoClinico.enlaceCalculoCuotas}`}
                     target='_blank'
                   >
                     Descargar
