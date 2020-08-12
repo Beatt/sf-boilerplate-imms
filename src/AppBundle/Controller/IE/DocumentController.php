@@ -10,6 +10,7 @@ use AppBundle\Exception\CouldNotFoundCedulaIdentificacionFiscal;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
+use AppBundle\Service\GeneradorFormatosFofoeZIPInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -80,9 +81,12 @@ final class DocumentController extends DIEControllerController
     /**
      * @Route("/solicitudes/{id}/descargar-formatos-fofoe", name="ie#descargar_formatos_fofoe")
      * @param $id
+     * @param GeneradorFormatosFofoeZIPInterface $generadorFormatosFofoeZIP
      */
-    public function descargarFormatosFofoe($id)
-    {
+    public function descargarFormatosFofoe(
+        $id,
+        GeneradorFormatosFofoeZIPInterface $generadorFormatosFofoeZIP
+    ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
         if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
@@ -93,7 +97,7 @@ final class DocumentController extends DIEControllerController
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_FORMATOS_FOFOE, $solicitud);
 
-
+        return $generadorFormatosFofoeZIP->generarPDF($solicitud);
     }
 
     private function pdfResponse($fileName, $contentDisposition = 'attachment')

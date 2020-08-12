@@ -164,7 +164,7 @@ const ListaCampos = ({ solicitud }) => {
                   <td>{solicitud.expediente.formatosFofoe.fecha}</td>
                   <td>
                     <a
-                      href={`${getSchemeAndHttpHost()}/ie/pagos/${solicitud.id}/descargar-formatos-fofoe`}
+                      href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
                       target='_blank'
                     >
                       Descargar
