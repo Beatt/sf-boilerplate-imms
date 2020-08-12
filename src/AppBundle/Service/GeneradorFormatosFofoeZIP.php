@@ -30,7 +30,7 @@ class GeneradorFormatosFofoeZIP implements GeneradorFormatosFofoeZIPInterface
         $this->zipFormatosFofoeDir = $zipFormatosFofoeDir;
     }
 
-    public function generarPDF(Solicitud $solicitud)
+    public function generarZipResponse(Solicitud $solicitud)
     {
         $camposClinicosAutorizados = $this->getCamposClinicosAutorizados($solicitud);
 

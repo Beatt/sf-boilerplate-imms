@@ -6,5 +6,5 @@ use AppBundle\Entity\Solicitud;
 
 interface GeneradorFormatosFofoeZIPInterface
 {
-    public function generarPDF(Solicitud $solicitud);
+    public function generarZipResponse(Solicitud $solicitud);
 }

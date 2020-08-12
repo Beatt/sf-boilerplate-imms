@@ -97,7 +97,7 @@ final class DocumentController extends DIEControllerController
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_FORMATOS_FOFOE, $solicitud);
 
-        return $generadorFormatosFofoeZIP->generarPDF($solicitud);
+        return $generadorFormatosFofoeZIP->generarZipResponse($solicitud);
     }
 
     private function pdfResponse($fileName, $contentDisposition = 'attachment')
