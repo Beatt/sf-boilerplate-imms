@@ -26,6 +26,6 @@ class FacturaController extends Controller
             );
         }
         $downloadHandler = $this->get('vich_uploader.download_handler');
-        return $downloadHandler->downloadObject($factura, '??');
+        return $downloadHandler->downloadObject($factura, 'zipFile');
     }
 }
