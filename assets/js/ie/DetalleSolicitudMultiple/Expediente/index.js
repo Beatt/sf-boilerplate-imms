@@ -76,7 +76,7 @@ const Expediente = ({ solicitud }) => {
               <tr key={index}>
                 <td>Comprobante de pago del campo clínico {item.unidad} con <strong>No. de referencia {item.referenciaBancaria}</strong></td>
                 <td colSpan="3">
-                  <table className='table table-bordered-not'>
+                  <table className='table table-nested'>
                     <tbody>
                     {
                       solicitud.expediente.comprobantesPago.map((comprobante, key) => {

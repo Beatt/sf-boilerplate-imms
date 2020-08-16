@@ -75,11 +75,16 @@ a {
   z-index: 10;
 }
 
-.table-bordered-not > thead > tr > th, .table-bordered-not > tbody > tr > th, .table-bordered-not > tfoot > tr > th, .table-bordered-not > thead > tr > td, .table-bordered-not > tbody > tr > td, .table-bordered-not > tfoot > tr > td {
+.table-nested > thead > tr > th,
+.table-nested > tbody > tr > th,
+.table-nested > tfoot > tr > th,
+.table-nested > thead > tr > td,
+.table-nested > tbody > tr > td,
+.table-nested > tfoot > tr > td {
   border-top: none;
 }
 
-.table-bordered-not {
+.table-nested {
   tr {
    & > *:first-child {
      padding-left: 2px;
