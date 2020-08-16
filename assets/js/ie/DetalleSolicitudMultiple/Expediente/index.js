@@ -5,7 +5,24 @@ const DEFAULT_DOCUMENT_VALUE = '-'
 const Expediente = ({ solicitud }) => {
 
   function getUniqCamposClinicos(comprobantesPago) {
-    return [...new Set(comprobantesPago.map(item => item.options.unidad))];
+    const result = [];
+    const map = new Map();
+    for (const item of comprobantesPago) {
+      if(!map.has(item.options.campoClinicoId)){
+        map.set(item.options.campoClinicoId, true);
+        result.push({
+          campoClinicoId: item.options.campoClinicoId,
+          referenciaBancaria: item.options.referenciaBancaria,
+          unidad: item.options.unidad
+        });
+      }
+    }
+
+    return result;
+  }
+
+  function isPagoDelCampoClinico(comprobante, item) {
+    return comprobante.options.campoClinicoId === item.campoClinicoId;
   }
 
   return(
@@ -57,55 +74,50 @@ const Expediente = ({ solicitud }) => {
           {
             getUniqCamposClinicos(solicitud.expediente.comprobantesPago).map((item, index) => (
               <tr key={index}>
-                <td>Comprobante de pago del campo clínico {item}</td>
-                <td>
-                  {
-                    solicitud.expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.options.unidad === item) {
+                <td>Comprobante de pago del campo clínico {item.unidad} con <strong>No. de referencia {item.referenciaBancaria}</strong></td>
+                <td colSpan="3">
+                  <table className='table table-nested'>
+                    <tbody>
+                    {
+                      solicitud.expediente.comprobantesPago.map((comprobante, key) => {
                         return(
-                          <span
-                            key={key}
-                          >
-                            {comprobante.descripcion}
-                            <br/>
-                          </span>
-                        );
-                      }
-                    })
-                  }
-                </td>
-                <td>
-                  {
-                    solicitud.expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.options.unidad === item) {
-                        return(
-                          <span
-                            key={key}
-                          >
-                            {comprobante.fecha}
-                            <br/>
-                          </span>
-                        );
-                      }
-                    })
-                  }
-                </td>
-                <td>
-                  {
-                    solicitud.expediente.comprobantesPago.map((comprobante, key) => {
-                      if(comprobante.options.unidad === item) {
-                        return(
-                          <a
-                            key={key}
-                            href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
-                            target='_blank' download
-                          >
-                            Descargar <br/>
-                          </a>
-                        );
-                      }
-                    })
-                  }
+                          <tr key={key}>
+                            {
+                              isPagoDelCampoClinico(comprobante, item) &&
+                              <>
+                                <td className='col-md-10'>
+                                  <span
+                                    key={key}
+                                  >
+                                    {comprobante.descripcion}
+                                    <br/>
+                                  </span>
+                                </td>
+                                <td>
+                                  <span
+                                    key={key}
+                                  >
+                                    {comprobante.fecha}
+                                    <br/>
+                                  </span>
+                                </td>
+                                <td>
+                                  <a
+                                    key={key}
+                                    href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobante.options.pagoId}/descargar-comprobante-de-pago`}
+                                    target='_blank' download
+                                  >
+                                    Descargar <br/>
+                                  </a>
+                                </td>
+                              </>
+                            }
+                          </tr>
+                        )
+                      })
+                    }
+                    </tbody>
+                  </table>
                 </td>
               </tr>
             ))

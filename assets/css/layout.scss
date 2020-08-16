@@ -74,3 +74,20 @@ a {
 .ReactModal__Overlay {
   z-index: 10;
 }
+
+.table-nested > thead > tr > th,
+.table-nested > tbody > tr > th,
+.table-nested > tfoot > tr > th,
+.table-nested > thead > tr > td,
+.table-nested > tbody > tr > td,
+.table-nested > tfoot > tr > td {
+  border-top: none;
+}
+
+.table-nested {
+  tr {
+   & > *:first-child {
+     padding-left: 2px;
+   }
+  }
+}
