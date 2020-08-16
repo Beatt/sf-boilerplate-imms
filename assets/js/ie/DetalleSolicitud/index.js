@@ -130,9 +130,25 @@ const ListaCampos = ({ solicitud }) => {
                 </td>
               </tr>
               {
+                solicitud.expediente.formatosFofoe &&
+                <tr>
+                  <td>{solicitud.expediente.formatosFofoe.nombre}</td>
+                  <td>{solicitud.expediente.formatosFofoe.descripcion}</td>
+                  <td>{solicitud.expediente.formatosFofoe.fecha}</td>
+                  <td>
+                    <a
+                      href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
+                      target='_blank'
+                    >
+                      Descargar
+                    </a>
+                  </td>
+                </tr>
+              }
+              {
                 !isComprobantesPagoEmpty() &&
                 <tr>
-                  <td>{solicitud.expediente.comprobantesPago[0].nombre}</td>
+                  <td>{solicitud.expediente.comprobantesPago[0].nombre} con <strong>No. de referencia {solicitud.expediente.comprobantesPago[0].options.referenciaBancaria}</strong></td>
                   <td>{solicitud.expediente.comprobantesPago[0].descripcion || DEFAULT_DOCUMENT_VALUE}</td>
                   <td>
                     {
@@ -147,29 +163,14 @@ const ListaCampos = ({ solicitud }) => {
                         <p key={index}>
                           <a
                             href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
-                            target='_blank' download
+                            target='_blank'
+                            download
                           >
                             Descargar
                           </a>
                         </p>
                       )
                     }
-                  </td>
-                </tr>
-              }
-              {
-                solicitud.expediente.formatosFofoe &&
-                <tr>
-                  <td>{solicitud.expediente.formatosFofoe.nombre}</td>
-                  <td>{solicitud.expediente.formatosFofoe.descripcion}</td>
-                  <td>{solicitud.expediente.formatosFofoe.fecha}</td>
-                  <td>
-                    <a
-                      href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
-                      target='_blank'
-                    >
-                      Descargar
-                    </a>
                   </td>
                 </tr>
               }

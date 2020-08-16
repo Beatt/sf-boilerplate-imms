@@ -123,7 +123,8 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                 $this->getDescripcion($record),
                 $record['comprobante_pago'],
                 [
-                    'pagoId' => $record['pago_id']
+                    'pagoId' => $record['pago_id'],
+                    'referenciaBancaria' => $record['referencia_bancaria']
                 ]
             );
         }, $records);
