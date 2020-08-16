@@ -74,3 +74,15 @@ a {
 .ReactModal__Overlay {
   z-index: 10;
 }
+
+.table-bordered-not > thead > tr > th, .table-bordered-not > tbody > tr > th, .table-bordered-not > tfoot > tr > th, .table-bordered-not > thead > tr > td, .table-bordered-not > tbody > tr > td, .table-bordered-not > tfoot > tr > td {
+  border-top: none;
+}
+
+.table-bordered-not {
+  tr {
+   & > *:first-child {
+     padding-left: 2px;
+   }
+  }
+}

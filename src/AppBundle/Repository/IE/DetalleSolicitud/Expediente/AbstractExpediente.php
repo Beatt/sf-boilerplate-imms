@@ -2,8 +2,6 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitud\Expediente;
 
-use AppBundle\ObjectValues\SolicitudId;
-
 abstract class AbstractExpediente implements Expediente
 {
     /**
@@ -17,11 +15,6 @@ abstract class AbstractExpediente implements Expediente
             $descripcion,
             sprintf('Monto: $%s', $record['monto'])
         );
-        array_push(
-            $descripcion,
-            sprintf('Número de referencia: %s', $record['referencia_bancaria'])
-        );
-
         return implode(', ', $descripcion);
     }
 
