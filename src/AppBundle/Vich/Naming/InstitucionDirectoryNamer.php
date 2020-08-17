@@ -42,7 +42,7 @@ class InstitucionDirectoryNamer implements DirectoryNamerInterface
 
         if($object instanceof Pago) $id = $object->getSolicitud()->getId();
         elseif($object instanceof Solicitud) $id = $object->getId();
-        elseif($object instanceof Factura) $id = $object->getAux();
+        elseif($object instanceof Factura) $id = $object->getPago()->last()->getSolicitud()->getId();
 
         /** @var Institucion $institucion */
         $institucion = $this->institucionRepository->getInstitucionBySolicitudId($id);
