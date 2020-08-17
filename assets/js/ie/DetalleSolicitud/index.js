@@ -130,34 +130,6 @@ const ListaCampos = ({ solicitud }) => {
                 </td>
               </tr>
               {
-                !isComprobantesPagoEmpty() &&
-                <tr>
-                  <td>{solicitud.expediente.comprobantesPago[0].nombre}</td>
-                  <td>{solicitud.expediente.comprobantesPago[0].descripcion || DEFAULT_DOCUMENT_VALUE}</td>
-                  <td>
-                    {
-                      solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
-                        <p key={index}>{comprobantePago.fecha}</p>
-                      )
-                    }
-                  </td>
-                  <td>
-                    {
-                      solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
-                        <p key={index}>
-                          <a
-                            href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
-                            target='_blank' download
-                          >
-                            Descargar
-                          </a>
-                        </p>
-                      )
-                    }
-                  </td>
-                </tr>
-              }
-              {
                 solicitud.expediente.formatosFofoe &&
                 <tr>
                   <td>{solicitud.expediente.formatosFofoe.nombre}</td>
@@ -170,6 +142,39 @@ const ListaCampos = ({ solicitud }) => {
                     >
                       Descargar
                     </a>
+                  </td>
+                </tr>
+              }
+              {
+                !isComprobantesPagoEmpty() &&
+                <tr>
+                  <td>{solicitud.expediente.comprobantesPago[0].nombre} con <strong>No. de referencia {solicitud.expediente.comprobantesPago[0].options.referenciaBancaria}</strong></td>
+                  <td colSpan='3'>
+                    <table className='table table-nested'>
+                      <tbody>
+                      {
+                        solicitud.expediente.comprobantesPago.map((comprobantePago, index) =>
+                          <tr key={index}>
+                            <td className='col-md-10'>
+                              {solicitud.expediente.comprobantesPago[0].descripcion || DEFAULT_DOCUMENT_VALUE}
+                            </td>
+                            <td>
+                              <p key={index}>{comprobantePago.fecha}</p>
+                            </td>
+                            <td>
+                              <a
+                                href={`${getSchemeAndHttpHost()}/ie/pagos/${comprobantePago.options.pagoId}/descargar-comprobante-de-pago`}
+                                target='_blank'
+                                download
+                              >
+                                Descargar
+                              </a>
+                            </td>
+                          </tr>
+                        )
+                      }
+                      </tbody>
+                    </table>
                   </td>
                 </tr>
               }
