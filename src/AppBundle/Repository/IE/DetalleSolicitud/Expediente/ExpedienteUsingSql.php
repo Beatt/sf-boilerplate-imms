@@ -137,7 +137,8 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
             SELECT fecha_facturacion,
                    zip,
                    folio,
-                   factura.monto AS factura_monto
+                   factura.monto AS factura_monto,
+                   factura.id AS factura_id
             FROM solicitud
               JOIN pago
                 ON solicitud.id = pago.solicitud_id
@@ -160,7 +161,10 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                     $record['folio'],
                     $record['factura_monto']
                 ),
-                $record['zip']
+                $record['zip'],
+                [
+                    'facturaId' => $record['factura_id']
+                ]
             );
         }, $records);
     }
