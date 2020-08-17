@@ -115,6 +115,14 @@ class GestionPagoDTO implements GestionPagoDTOInterface
         return new CampoClinicoDTO($this->campoClinico);
     }
 
+    public function getReferenciaBancaria()
+    {
+        return $this->solicitud->isPagoUnico() ?
+            $this->solicitud->getReferenciaBancaria() :
+            $this->campoClinico->getReferenciaBancaria()
+        ;
+    }
+
     /**
      * @return float
      */

@@ -45,8 +45,9 @@ const CargaDeComprobanteDePago = (
         <div className="row">
           <div className="col-md-6">
             <p className='mb-5'>No. de Solicitud <strong>{gestionPago.noSolicitud}</strong></p>
+            <p className='mb-20'>No. de referencia bancaría <strong>{gestionPago.referenciaBancaria}</strong></p>
             <p className='mb-5'>Tipo de pago <strong>{gestionPago.tipoPago}</strong></p>
-            <p className='mb-20'>Monto total: <strong>{moneyFormat(gestionPago.montoTotal)}</strong></p>
+            <p className='mb-5'>Monto total: <strong>{moneyFormat(gestionPago.montoTotal)}</strong></p>
           </div>
           {
             isPagoMultiple() &&
@@ -62,7 +63,6 @@ const CargaDeComprobanteDePago = (
         <table className='table table-condensed'>
           <thead>
           <tr>
-            <th>No de referencia</th>
             <th>Comprobante registrado</th>
             <th>Fecha</th>
             <th>Monto validado</th>
@@ -73,7 +73,6 @@ const CargaDeComprobanteDePago = (
             gestionPago.pagos.length !== 0 ?
               gestionPago.pagos.map((pago, index) =>
                 <tr key={index}>
-                  <td>{pago.referenciaBancaria}</td>
                   <td><a href={`${getSchemeAndHttpHost()}/ie/pagos/${pago.id}/descargar-comprobante-de-pago`}
                          target='_blank' download >Descargar</a></td>
                   <td>{pago.fechaPago}</td>
