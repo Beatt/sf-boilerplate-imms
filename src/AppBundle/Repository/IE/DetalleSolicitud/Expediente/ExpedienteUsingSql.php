@@ -135,7 +135,9 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
         $statement = $this->connection->prepare(
             '
             SELECT fecha_facturacion,
-                   zip
+                   zip,
+                   folio,
+                   factura.monto AS factura_monto
             FROM solicitud
               JOIN pago
                 ON solicitud.id = pago.solicitud_id
@@ -154,7 +156,10 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
         return array_map(function (array $record) {
             return new Factura(
                 $record['fecha_facturacion'],
-                '',
+                sprintf('Folio: %s, Monto: $%s',
+                    $record['folio'],
+                    $record['factura_monto']
+                ),
                 $record['zip']
             );
         }, $records);
