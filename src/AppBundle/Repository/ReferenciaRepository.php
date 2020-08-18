@@ -21,7 +21,6 @@ class ReferenciaRepository
     public function paginate($perPage = 10, $offset = 1, $filters = [])
     {
         $query = $this->createQuery($perPage, $offset, $filters);
-//        echo "{$query}\n";
         $queryTotal = $this->createTotalQuery($filters);
         /** @var Statement $statement */
         $statement = $this->entityManager->getConnection()->prepare($query);
@@ -68,7 +67,7 @@ class ReferenciaRepository
             $this->addRelations();
 
         $sql=$this->addFilters($sql, $filters);
-        $sql.=" group by pago.referencia_bancaria, delegacion.nombre, solicitud.no_solicitud, 4,institucion.nombre, pago.referencia_bancaria, factura.id, factura.folio, solicitud.tipo_pago ";
+        $sql.=" group by pago.referencia_bancaria, delegacion.nombre, solicitud.no_solicitud, institucion.nombre, pago.referencia_bancaria, factura.id, factura.folio, solicitud.tipo_pago ";
         $sql.=$this->addOrders($filters);
         $sql.="LIMIT :limit OFFSET :offset ";
         return $sql;
@@ -181,6 +180,8 @@ class ReferenciaRepository
         return  "from pago " .
             "inner join solicitud  on pago.solicitud_id = solicitud.id " .
             "inner join campo_clinico  on solicitud.id = campo_clinico.solicitud_id " .
+                "AND (solicitud.tipo_pago = 'Único' ".
+                    "OR campo_clinico.referencia_bancaria = pago.referencia_bancaria)".
             "inner join convenio on campo_clinico.convenio_id = convenio.id " .
             "inner join delegacion on convenio.delegacion_id = delegacion.id " .
             "inner join institucion on convenio.institucion_id = institucion.id " .

@@ -98,16 +98,16 @@ final class CargaComprobantePagoController extends DIEControllerController
         $solicitud = $pago->getSolicitud();
         if($solicitud->isPagoUnico()) {
             return sprintf(
-                '¡El comprobante de la solicitud %s se ha cargado correctamente!',
-                $solicitud->getNoSolicitud()
+                '¡El comprobante de la solicitud %s, con referencia %s, se ha cargado correctamente!',
+                $solicitud->getNoSolicitud(), $solicitud->getReferenciaBancaria()
             );
         }
         elseif(!$solicitud->isPagoUnico()) {
             $campoClinico = $this->getCampoClinico($solicitud, $pago->getReferenciaBancaria());
 
             return sprintf(
-                '¡El comprobante del campo clínico %s se ha cargado correctamente!',
-                $campoClinico->getUnidad()->getNombre()
+                '¡El comprobante del campo clínico %s, con referencia %s, se ha cargado correctamente!',
+                $campoClinico->getUnidad()->getNombre(), $campoClinico->getReferenciaBancaria()
             );
         }
 
