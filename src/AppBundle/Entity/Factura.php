@@ -3,10 +3,11 @@
 namespace AppBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Carbon\Carbon;
 
 /**
  * @ORM\Table(name="factura")
@@ -64,6 +65,15 @@ class Factura
      */
     private $aux;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="factura")
+     */
+    private $pagos;
+
+    public function __construct()
+    {
+      $this->pagos = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -197,4 +207,31 @@ class Factura
  
           return $this;
       }
+
+  /**
+   * @param Pago $pago
+   * @return Solicitud
+   */
+    public function addPago(Pago $pago)
+    {
+      $this->pagos[] = $pago;
+
+      return $this;
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    public function removePago(Pago $pago)
+    {
+      $this->pagos->removeElement($pago);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPagos()
+    {
+      return $this->pagos;
+    }
 }

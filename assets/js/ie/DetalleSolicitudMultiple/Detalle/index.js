@@ -44,7 +44,12 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
         className="btn btn-success"
       >
         Cargar comprobante
-      </a> : 'Pendiente';
+      </a> :
+      campoClinico.estatus === CAMPO_CLINICO.CREDENCIALES_GENERADAS ||
+      campoClinico.estatus === CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE ?
+      'Pago validado' :
+        'Pendiente'
+      ;
   }
 
   return(

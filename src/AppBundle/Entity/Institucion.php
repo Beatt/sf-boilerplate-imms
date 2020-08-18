@@ -117,7 +117,7 @@ class Institucion
     /**
      * @var string
      * @Assert\NotNull
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=250, nullable=true)
      */
     protected $representante;
 

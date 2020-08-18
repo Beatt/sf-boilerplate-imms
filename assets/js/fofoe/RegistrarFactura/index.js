@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {dateFormat, getSchemeAndHttpHost} from "../../utils";
+import {dateFormat, getSchemeAndHttpHost, moneyFormat} from "../../utils";
 import Cleave from 'cleave.js/react';
 
 
@@ -25,6 +25,7 @@ const Registrar = (
   });
 
   console.log(factura);
+  console.log(pagos);
 
   const [total, setTotal] = React.useState(monto);
 
@@ -56,7 +57,7 @@ const Registrar = (
                   Descargar cédula
                 </a>
             }</p>
-            <p className="mt-10 mb-10">Delegación: {solicitud.camposClinicos[0].convenio.delegacion.nombre}</p>
+            <p className="mt-10 mb-10">Delegación: {solicitud.delegacion.nombre}</p>
             <p className="mt-10 mb-10">Referencia de pago: {pagos[0].referenciaBancaria}</p>
             <div className="form-inline mt-10 mb-10">
               <div className="form-group">
@@ -66,7 +67,8 @@ const Registrar = (
                     <Cleave
                       options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
                       className='mb-10 form-control col-md-1'
-                      value={"$ " + solicitud.monto}
+                      value={"$ " + pagos[0].camposPagados.campos.map(campo =>  campo.monto)
+                        .reduce((acc, monto) => acc + monto , 0) }
                       disabled={true}
                     />
                   </div>
@@ -154,7 +156,7 @@ const Registrar = (
                         </td>
                         <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a></td>
                         <td>{dateFormat(item.fechaPago)}</td>
-                        <td>{item.monto}</td>
+                        <td>{ moneyFormat(item.monto) }</td>
                         <td>{item.referenciaBancaria}</td>
                       </tr>
                       :

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\Fofoe;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Factura;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudFacturaType as ComprobantePagoTypeSolicitudFacturaType;
@@ -46,7 +47,6 @@ class SolicitudController extends DIEControllerController
         
         $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 
-        //$factura = new Factura();
         $form = $this->createForm(SolicitudFacturaType::class, $solicitud, [
             'action' => $this->generateUrl('fofoe#registrar_factura', [
                 'id' => $id,
@@ -65,16 +65,25 @@ class SolicitudController extends DIEControllerController
 
             $factura = $pagos[0]->getFactura();
 
-            //$this->update($factura, $entityManager);
-            foreach($solicitud->getPagos() as $pago){
+            foreach($solicitud->getPagos() as $pago) {
                 $pago->setFacturaGenerada(true);
                 $pago->setFactura($factura);
             }
 
+            /* $campos = $pago[0]->getCamposPagados();
+            foreach($campos['campos'] as $campo) {
+              $campos->setEstatus(EstatusCampoInterface::);
+            } */
+
             $entityManager->persist($solicitud);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Se ha guardado correctamente la factura');
+            $this->addFlash('success',
+              sprintf('Se ha guardado correctamente la factura con folio %s 
+              para la solicitud %s con número de referencia %s',
+                $factura->getFolio(),
+                $solicitud->getNoSolicitud(),
+                $pago->getReferenciaBancaria()));
 
             return $this->redirectToRoute('fofoe/inicio', [
                 'id' => $solicitud->getId()
@@ -116,6 +125,7 @@ class SolicitudController extends DIEControllerController
                     'fecha',
                     'referenciaBancaria',
                     'monto',
+                    'delegacion' => ['nombre'],
                     'pagos' => [
                         'id',
                         'monto',
@@ -131,15 +141,7 @@ class SolicitudController extends DIEControllerController
                             'zip',
                             'monto'
                         ]
-                    ],
-                    'camposClinicos' => [
-                        'convenio' => [
-                            'delegacion' => [
-                                'nombre'
-                            ]
-                        ]
                     ]
-
                 ]
             ]
         );
@@ -165,6 +167,13 @@ class SolicitudController extends DIEControllerController
                         'folio',
                         'zip',
                         'monto'
+                    ],
+                    'camposPagados' => [
+                      'monto',
+                      'convenio' => [
+                        'delegacion' => [
+                          'nombre'
+                        ]],
                     ]
                 ]
             ]
