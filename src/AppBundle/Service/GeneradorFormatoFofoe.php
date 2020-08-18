@@ -40,7 +40,7 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
     public function responsePdf($path, CampoClinico $campoClinico, $overwrite = false)
     {
         $came = $this->entityManager->getRepository(Usuario::class)->getCamebyDelegacion($campoClinico->getSolicitud()->getDelegacion()->getId());
-        $file = "$path/{$campoClinico->getSolicitud()->getNoSolicitud()}/cc_{$campoClinico->getId()}/".self::PDF_NAME;
+        $file = "$path/{$campoClinico->getSolicitud()->getNoSolicitud()}/cc_{$campoClinico->getId()}/".$this->getFileName($campoClinico);
         if (!file_exists($file) || $overwrite) {
             $this->pdf->generateFromHtml(
                 $this->templating->render(
@@ -75,9 +75,9 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
 
     public function getFileName(CampoClinico $campoClinico)
     {
-        $date = Carbon::now()->format('Ymd');
+        //$date = Carbon::now()->format('Ymd');
         $type = $campoClinico->getConvenio()->getCicloAcademico()->getId()  === 1? 'CCS' : 'INT';
 
-        return "{$date}_{$campoClinico->getSolicitud()->getNoSolicitud()}-{$type}_{$campoClinico->getId()}_FormatoFOFOE.pdf" . '"';
+        return "{$campoClinico->getSolicitud()->getNoSolicitud()}-{$type}_{$campoClinico->getId()}_FormatoFOFOE.pdf";
     }
 }

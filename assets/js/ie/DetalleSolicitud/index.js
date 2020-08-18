@@ -139,6 +139,7 @@ const ListaCampos = ({ solicitud }) => {
                     <a
                       href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
                       target='_blank'
+                      download
                     >
                       Descargar
                     </a>

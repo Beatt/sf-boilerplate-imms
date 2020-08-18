@@ -3,9 +3,11 @@
 namespace AppBundle\Normalizer;
 
 use AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutorizados\CampoClinico;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 
 class FormatoFOFOENormalizer implements NormalizerInterface
 {
@@ -33,7 +35,7 @@ class FormatoFOFOENormalizer implements NormalizerInterface
 
         $data['enlaceCalculoCuotas'] = $this->router->generate('campo_clinico.formato_fofoe.download', [
             'campo_clinico_id' => $camposClinico->getId()
-        ]);
+        ],  UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $data;
     }

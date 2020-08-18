@@ -175,7 +175,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
 
         $response = new Response($fileContent);
         $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set('Content-Disposition', 'attachment;filename="' . $generadorFormatoFofoe->getFileName($campo_clinico));
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $generadorFormatoFofoe->getFileName($campo_clinico).'"');
         $response->headers->set('Content-length', $filesize);
         return $response;
     }

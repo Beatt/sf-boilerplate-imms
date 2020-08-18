@@ -45,7 +45,7 @@ const CargaDeComprobanteDePago = (
         <div className="row">
           <div className="col-md-6">
             <p className='mb-5'>No. de Solicitud <strong>{gestionPago.noSolicitud}</strong></p>
-            <p className='mb-20'>No. de referencia bancaría <strong>{gestionPago.referenciaBancaria}</strong></p>
+            <p className='mb-20'>No. de referencia bancaria <strong>{gestionPago.referenciaBancaria}</strong></p>
             <p className='mb-5'>Tipo de pago <strong>{gestionPago.tipoPago}</strong></p>
             <p className='mb-5'>Monto total: <strong>{moneyFormat(gestionPago.montoTotal)}</strong></p>
           </div>

@@ -65,7 +65,7 @@ const Registrar = (
                     <div className="input-group-addon">$</div>
                     <Cleave
                       options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
-                      className='mt-10 mb-10 form-control col-md-1'
+                      className='mb-10 form-control col-md-1'
                       value={"$ " + solicitud.monto}
                       disabled={true}
                     />

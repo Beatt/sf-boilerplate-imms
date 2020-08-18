@@ -127,7 +127,7 @@
                 </div>
                 <div class="delegacion">
                     <h3>CAME</h3>
-                    <form action="/came/usuario/delegacion" method="post">
+                    <form action="{{ absolute_url(path('came.usuario.delegacion')) }}" method="post">
                         <label for="delegacion_came">Delegación: </label>
                         <select name="delegacion_came" id="delegacion_came" onchange="this.form.submit()">
                             {% for delegacion in usuario.delegaciones %}
