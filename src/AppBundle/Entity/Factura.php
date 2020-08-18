@@ -64,6 +64,11 @@ class Factura
      */
     private $aux;
 
+    /**
+     * @var Pago
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="factura")
+     */
+    private $pago;
 
     /**
      * @return int
@@ -185,8 +190,8 @@ class Factura
       {
           return $this->aux;
       }
- 
- 
+
+
       /**
       * @param string $aux
       * @return Factura
@@ -194,7 +199,15 @@ class Factura
       public function setAux($aux)
       {
           $this->aux = $aux;
- 
+
           return $this;
       }
+
+    /**
+     * @return Pago
+     */
+    public function getPago()
+    {
+        return $this->pago;
+    }
 }

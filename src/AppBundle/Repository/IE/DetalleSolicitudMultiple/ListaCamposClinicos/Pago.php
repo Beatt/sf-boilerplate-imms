@@ -2,20 +2,18 @@
 
 namespace AppBundle\Repository\IE\DetalleSolicitudMultiple\ListaCamposClinicos;
 
-use AppBundle\Normalizer\FacturaFileInterface;
-
-final class Pago implements FacturaFileInterface
+final class Pago
 {
     private $id;
 
-    private $urlArchivo;
+    private $facturaId;
 
     private $requiereFactura;
 
-    public function __construct($id, $factura, $requiereFactura)
+    public function __construct($id, $facturaId, $requiereFactura)
     {
         $this->id = $id;
-        $this->urlArchivo = $factura;
+        $this->facturaId = $facturaId;
         $this->requiereFactura = $requiereFactura;
     }
 
@@ -27,9 +25,12 @@ final class Pago implements FacturaFileInterface
         return $this->id;
     }
 
-    public function getUrlArchivo()
+    /**
+     * @return string
+     */
+    public function getFacturaId()
     {
-        return $this->urlArchivo;
+        return $this->facturaId;
     }
 
     /**

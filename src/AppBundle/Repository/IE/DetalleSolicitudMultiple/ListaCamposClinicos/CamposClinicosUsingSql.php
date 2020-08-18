@@ -43,14 +43,14 @@ final class CamposClinicosUsingSql implements CamposClinicos
                        LIMIT 1
                    )                      AS id_pago,
                    (
-                       SELECT factura.zip
+                       SELECT factura.id
                        FROM pago
                                 JOIN factura
                                      ON pago.factura_id = factura.id
                        WHERE pago.solicitud_id = solicitud.id
                          AND pago.referencia_bancaria = campo_clinico.referencia_bancaria
                        LIMIT 1
-                   )                      AS factura,
+                   )                      AS factura_id,
                    (
                        SELECT pago.requiere_factura
                        FROM pago
@@ -95,7 +95,7 @@ final class CamposClinicosUsingSql implements CamposClinicos
             $unidad = new Unidad($record['nombre_unidad']);
             $pago = new Pago(
                 $record['id_pago'],
-                $record['factura'],
+                $record['factura_id'],
                 $record['requiere_factura']
             );
 
