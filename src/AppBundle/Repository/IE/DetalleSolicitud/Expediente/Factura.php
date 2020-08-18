@@ -8,8 +8,8 @@ final class Factura extends AbstractDocument implements DocumentInterface, Factu
 {
     const NAME = "Factura (CFDI)";
 
-    public function __construct($fecha, $descripcion, $urlArchivo)
+    public function __construct($fecha, $descripcion, $urlArchivo, $options = null)
     {
-        parent::__construct(self::NAME, $fecha, $descripcion, $urlArchivo);
+        parent::__construct(self::NAME, $fecha, $descripcion, $urlArchivo, $options);
     }
 }

@@ -3,14 +3,16 @@ import { CAMPO_CLINICO, SOLICITUD } from "../../../constants";
 import {getActionNameByInstitucionEducativa, getSchemeAndHttpHost} from "../../../utils";
 
 const DetalleSolicitudMultiple = ({ solicitud }) => {
-  function getFactura(urlArchivo, requiereFactura) {
+
+  function getFactura(facturaId, requiereFactura) {
     if(requiereFactura === false) return 'No solicitada';
-    if(!urlArchivo) return 'Pendiente';
+    if(!facturaId) return 'Pendiente';
 
     return(
       <a
-        href={`${getSchemeAndHttpHost()}${urlArchivo}`}
-        target='_blank' download
+        href={`${getSchemeAndHttpHost()}/factura/${facturaId}/download`}
+        target='_blank'
+        download
       >Descargar</a>
     )
   }
@@ -118,7 +120,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
                     <td>
                       {
                         isCampoClinicoAutorizado(campoClinico.lugaresAutorizados) &&
-                        getFactura(campoClinico.pago.urlArchivo, campoClinico.pago.requiereFactura)
+                        getFactura(campoClinico.pago.facturaId, campoClinico.pago.requiereFactura)
                       }
                     </td>
                   </tr>
