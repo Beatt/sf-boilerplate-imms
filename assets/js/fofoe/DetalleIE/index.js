@@ -195,7 +195,10 @@ const ValidarInfo = (
                 </table>
             </div>
         </div>
-
+      
+      <div className="row">
+        <a href=""></a>
+      </div>
     </div>
   )
 }

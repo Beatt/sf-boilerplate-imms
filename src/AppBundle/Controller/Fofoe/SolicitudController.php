@@ -84,7 +84,8 @@ class SolicitudController extends DIEControllerController
         return $this->render('fofoe/registrar_factura.html.twig', [
             'institucion' => $this->getNormalizeInstitucion($institucion),
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
-            'pagos' => $this->getNormalizePago($pagos)
+            'pagos' => $this->getNormalizePago($pagos),
+            'id' => $id
         ]);
     }
 

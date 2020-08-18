@@ -8,7 +8,8 @@ const Registrar = (
   {
     institucion,
     solicitud,
-    pagos
+    pagos,
+    action
   }) => {
 
 
@@ -37,7 +38,7 @@ const Registrar = (
 
   return (
     <form
-      action={`/fofoe/pagos/${pagos[0].id}/registrar-factura`}
+      action={action}
       method="post"
       encType='multipart/form-data'
     >
@@ -263,6 +264,7 @@ ReactDOM.render(
     institucion={window.INSTITUCION_PROP}
     solicitud={window.SOLICITUD_PROP}
     pagos={window.PAGOS_PROP}
+    action={window.ACTION}
   />,
   document.getElementById('registrar-factura-component')
 );

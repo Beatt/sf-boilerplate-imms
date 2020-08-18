@@ -28,6 +28,9 @@
       window.INSTITUCION_PROP = {{ institucion |json_encode|raw }}
       window.SOLICITUD_PROP = {{ solicitud|json_encode|raw }}
       window.PAGOS_PROP = {{ pagos|json_encode|raw }}
+      window.ACTION = {{path('fofoe#registrar_factura', {
+          id: id
+      })|json_encode|raw}}
     </script>
     <script src="{{ asset('build/fofoe.registrar.factura.js') }}"></script>
 {% endblock %}
