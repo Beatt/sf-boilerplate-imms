@@ -88,14 +88,19 @@ class InstitucionController extends DIEControllerController
                 'attributes' => [
                     'id',
                     'noSolicitud',
+                    'referenciaBancaria',
+                    'estatus',
+                    'tipoPago',
                     'fecha',
                     'pagos' => [
-                        'fechaPago',
+                        'id',
+                        'fechaPagoFormatted',
+                        'referenciaBancaria',
                         'monto',
                         'requiereFactura',
                         'validado',
                         'factura' => [
-                            'zip'
+                          'zip'
                         ]
                     ]
                 ]

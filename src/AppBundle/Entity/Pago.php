@@ -310,7 +310,7 @@ class Pago implements ComprobantePagoInterface
      public function getFechaPagoFormatted()
      {
          if($this->getFechaPago()){
-             return $this->getFechaPago()->format('d-m-Y');
+             return $this->getFechaPago()->format('d/m/Y');
          }
          return '';
      }

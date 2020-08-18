@@ -181,7 +181,7 @@ class ReferenciaRepository
             "inner join solicitud  on pago.solicitud_id = solicitud.id " .
             "inner join campo_clinico  on solicitud.id = campo_clinico.solicitud_id " .
                 "AND (solicitud.tipo_pago = 'Único' ".
-                    "OR campo_clinico.referencia_bancaria = pago.referencia_bancaria)".
+                    "OR campo_clinico.referencia_bancaria = pago.referencia_bancaria) ".
             "inner join convenio on campo_clinico.convenio_id = convenio.id " .
             "inner join delegacion on convenio.delegacion_id = delegacion.id " .
             "inner join institucion on convenio.institucion_id = institucion.id " .
