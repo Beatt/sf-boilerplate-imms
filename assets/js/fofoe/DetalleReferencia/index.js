@@ -1,0 +1,179 @@
+import * as React from 'react'
+import ReactDOM from 'react-dom'
+import {dateFormat, getSchemeAndHttpHost, moneyFormat} from "../../utils";
+import {TIPO_PAGO} from "../../constants";
+
+const DatosSolicitud = ({solicitud, montoTotal, campos}) => {
+
+  function isPagoMultiple() {
+    return solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
+  }
+
+  function getMontoTotalTitle() {
+    return isPagoMultiple() ?
+      'Monto total del campo clínico:' :
+      'Monto total de la solicitud:';
+  }
+
+  return (
+    <div className="col-md-12 mb-20">
+      <div className="row">
+        <div className="col-md-4">
+          <p className='mb-5'><strong>Solicitud</strong></p>
+          <p className='mb-5'>No. de Solicitud: <strong>{solicitud.noSolicitud}</strong></p>
+          <p className='mb-5'>Tipo de pago: <strong>{solicitud.tipoPago}</strong></p>
+          <p className='mb-20'>{getMontoTotalTitle()} <strong>{moneyFormat(montoTotal)}</strong></p>
+        </div>
+        {
+          campos.map((item, key) => <DatosCampo campo={item} key={item.id} />)
+        }
+        <div className="col-md-4">
+          <p className='mb-5'><strong>Institución</strong></p>
+          <p className='mb-5'>Nombre: <strong><a href={`${getSchemeAndHttpHost()}/fofoe/detalle-ie/${solicitud.institucion.id}`}>{solicitud.institucion.nombre}</a></strong></p>
+          <p className='mb-5'>RFC: <strong>{solicitud.institucion.rfc}</strong></p>
+          <p className='mb-5'>Delegación: <strong>{solicitud.delegacion.nombre}</strong></p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const DatosCampo = ({campo}) => {
+  return (
+    <div className="col-md-4" >
+      <p className='mb-5'><strong>Campo clínico</strong></p>
+      <p className='mb-5'>Sede: <strong>{campo.unidad.nombre}</strong></p>
+      <p className='mb-5'>Carrera: <strong>{campo.displayCarrera}</strong></p>
+    </div>
+  )
+}
+
+const HistorialPagos = ({pagos}) => {
+  return (
+    <div className="col-md-12 mb-20">
+      <table className='table table-condensed'>
+        <thead>
+        <tr>
+          <th>Comprobante registrado</th>
+          <th>Fecha</th>
+          <th>Monto validado</th>
+          <th>Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {
+          pagos.length !== 0 ?
+            pagos.map((pago, index) =>
+              <tr key={index}>
+                <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`} download>Descargar</a></td>
+                <td>{pago.fechaPagoFormatted}</td>
+                <td>{moneyFormat(pago.monto)}</td>
+                <td>{pago.observaciones}</td>
+              </tr>
+            ) :
+            <tr>
+              <td
+                className='text-center text-info'
+                colSpan={4}
+              >
+                Aún no se ha registrado ningún comprobante de pago
+              </td>
+            </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const HistorialFacturas = ({facturas}) => {
+  return (
+    <div className="row">
+      <div className="col-md-12">
+        <p className="mt-10 mb-10"><strong>Facturas generadas</strong></p>
+        <table className='table'>
+          <thead className='headers'>
+          <tr>
+            <th>Fecha Facturación</th>
+            <th>Monto Facturado</th>
+            <th>Archivo Factura</th>
+            <th>Folio Factura</th>
+          </tr>
+          </thead>
+          <tbody>
+          {
+            facturas.length > 0 ?
+
+              facturas.map((factura, index) =>
+                  <tr key={index}>
+                    <td>{dateFormat(factura.fechaFacturacion)}</td>
+                    <td>{factura.monto}</td>
+                    <td>{factura.zip && <a href={factura.zip} download>{factura.zip}</a>}</td>
+                    <td>{factura.folio}</td>
+                  </tr>
+              )
+              :
+              <tr>
+                <td className='text-center text-info' colSpan={4} ><strong>No hay registros disponibles</strong></td>
+              </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+const DetalleReferencia = ({ pagos, solicitud, campos }) => {
+
+  console.log(pagos);
+  console.log(solicitud);
+  console.log(campos);
+
+  function getMontoTotal() {
+    if (solicitud.tipoPago === TIPO_PAGO.UNICO) {
+      return solicitud.monto;
+    }
+    return campos[0].monto;
+  }
+
+  function getFacturas() {
+    let facturas =pagos.map((pago)=> pago.factura );
+    return facturas.filter((factura, idx) =>
+      factura &&
+        facturas.findIndex( item =>
+          item &&  item.folio === factura.folio) === idx
+    );
+  }
+
+  return(
+    <div className='row mt-20'>
+      <DatosSolicitud
+        solicitud={solicitud}
+        montoTotal={getMontoTotal()}
+        campos={campos}
+      />
+      <HistorialPagos
+        pagos={pagos}
+      />
+
+      <HistorialFacturas
+        facturas={getFacturas()}
+      />
+    </div>
+  )
+
+}
+
+export default DetalleReferencia;
+
+document.addEventListener('DOMContentLoaded', () => {
+  ReactDOM.render(
+    <DetalleReferencia
+      pagos={window.PAGOS}
+      solicitud={window.SOLICITUD}
+      campos={window.CAMPOS}
+    />,
+    document.getElementById('detalle-referencia-component')
+  )
+});

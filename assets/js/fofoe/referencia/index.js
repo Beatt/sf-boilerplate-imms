@@ -8,7 +8,7 @@ import {getSchemeAndHttpHost} from "../../utils";
 const AccionFofoe = ({pago}) => {
     const RegistroFactura  = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
     const ValidarPago = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
-    const DetalleReferencia = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/${pago.referencia_bancaria}/referencia`}>Ver Detalle</a>)
+    const DetalleReferencia = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/referencia/${pago.referencia_bancaria}`}>Ver Detalle</a>)
     if(pago.validado != null && pago.validado && pago.requiere_factura && !pago.factura){
         return (<RegistroFactura/>);
     }else if(pago.validado == null){
@@ -186,7 +186,7 @@ const PagoIndex = (props) => {
                                         <td>{pago.delegacion}</td>
                                         <td>{pago.institucion}</td>
                                         <td>{pago.no_solicitud}</td>
-                                        <td><a href={`${getSchemeAndHttpHost()}/fofoe/pago/${pago.referencia_bancaria}/referencia`}>{pago.referencia_bancaria}</a></td>
+                                        <td><a href={`${getSchemeAndHttpHost()}/fofoe/referencia/${pago.referencia_bancaria}`}>{pago.referencia_bancaria}</a></td>
                                         <td>$ {Number.parseFloat(pago.monto.toString()).toFixed(2)}</td>
                                         <td><Facturas pago={pago}/></td>
                                         <td>{pago.fecha_pago}</td>

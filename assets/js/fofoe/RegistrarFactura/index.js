@@ -24,9 +24,6 @@ const Registrar = (
       factura = true; 
   });
 
-  console.log(factura);
-  console.log(pagos);
-
   const [total, setTotal] = React.useState(monto);
 
   const handleChecked = (event) => {

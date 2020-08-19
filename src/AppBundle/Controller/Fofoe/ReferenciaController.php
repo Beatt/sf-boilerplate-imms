@@ -3,6 +3,7 @@
 
 namespace AppBundle\Controller\Fofoe;
 
+use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Repository\ReferenciaRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,4 +46,94 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
             'meta' => ['total' => $referencias['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
     }
+
+  /**
+   * @Route("/referencia/{referencia}", methods={"GET"}, name="fofoe.referencia.show")
+   * @param string $referencia
+   * @param Request $request
+   * @param PagoRepositoryInterface $pagoRepository
+   * @return Response
+   */
+    public function showAction(
+      $referencia,
+      Request $request,
+      PagoRepositoryInterface $pagoRepository)
+    {
+      $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($referencia);
+
+      if ( empty($pagos) ) throw $this->createNotFoundException(
+        'Not found for referencia ' . $referencia
+      );
+
+      $campos = $pagos[0]->getCamposPagados()['campos'];
+      $solicitud = $pagos[0]->getSolicitud();
+
+      return $this->render('fofoe/detalle_referencia/index.html.twig', [
+        'pagos' => $this->getNormalizePago($pagos),
+        'solicitud' => $this->getNormalizeSolicitud($solicitud),
+        'campos' => $this->getNormalizeCampo($campos)
+      ]);
+    }
+
+  private function getNormalizePago($pago)
+  {
+    return $this->get('serializer')->normalize(
+      $pago,
+      'json',
+      [
+        'attributes' => [
+          'id',
+          'monto',
+          'fechaPago',
+          'fechaPagoFormatted',
+          'comprobantePago',
+          'observaciones',
+          'requiereFactura',
+          'facturaGenerada',
+          'validado',
+          'referenciaBancaria',
+          'factura' => [
+            'fechaFacturacion',
+            'folio',
+            'zip',
+            'monto'
+          ]
+        ]
+      ]
+    );
+  }
+
+  private function getNormalizeCampo($campo) {
+    return $this->get('serializer')->normalize(
+      $campo,
+      'json',
+      [
+        'attributes' => [
+          'id',
+          'monto',
+          'displayCarrera',
+          'unidad' => ['nombre']
+          ]
+      ]
+    );
+  }
+
+  private function getNormalizeSolicitud($solicitud)
+  {
+    return $this->get('serializer')->normalize(
+      $solicitud,
+      'json',
+      [
+        'attributes' => [
+          'id',
+          'noSolicitud',
+          'fecha',
+          'referenciaBancaria',
+          'monto',
+          'delegacion' => ['nombre'],
+          'institucion' => ['id', 'nombre', 'rfc']
+        ]
+      ]
+    );
+  }
 }

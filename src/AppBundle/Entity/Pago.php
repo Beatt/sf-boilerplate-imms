@@ -311,7 +311,7 @@ class Pago implements ComprobantePagoInterface
      {
          if($this->getFechaPago()){
              return $this->getFechaPago()->format('d/m/Y');
-         }  
+         }
          return '';
      }
 
