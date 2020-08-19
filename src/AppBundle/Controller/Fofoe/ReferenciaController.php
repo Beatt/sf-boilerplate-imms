@@ -59,7 +59,7 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
       Request $request,
       PagoRepositoryInterface $pagoRepository)
     {
-      $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($referencia);
+      $pagos = $pagoRepository->findBy(array('referenciaBancaria' => $referencia));
 
       if ( empty($pagos) ) throw $this->createNotFoundException(
         'Not found for referencia ' . $referencia
@@ -113,7 +113,9 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
           'monto',
           'estatus' => ['nombre'],
           'displayCarrera',
-          'unidad' => ['nombre']
+          'unidad' => ['nombre'],
+          'displayFechaInicial',
+          'displayFechaFinal'
           ]
       ]
     );

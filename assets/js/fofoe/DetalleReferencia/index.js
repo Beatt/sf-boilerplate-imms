@@ -16,14 +16,15 @@ const AccionFofoe = ({pago}) => {
     <div className="col-md-6">
     {
       pago.validado || pago.validado == null ?
-      <strong>Acción</strong>  : null
-
-      (pago.validado && pago.requiere_factura && !pago.factura) ?
-        <RegistroFactura />
-        : pago.validado == null ?
-        <ValidarPago />
-        : null
+        <strong>Acción</strong> : null
     }
+    {
+      (pago.validado && pago.requiere_factura && !pago.factura_generada) ?
+      <RegistroFactura />
+      : pago.validado == null ?
+      <ValidarPago />
+      : null
+      }
     </div>
   )
 }
@@ -41,7 +42,7 @@ const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
   }
 
   function getEstado() {
-    return isPagoMultiple() ?
+    return !isPagoMultiple() ?
       solicitud.estatus
       : (campos >0 ?
         campos[0].estatus.nombre
@@ -54,10 +55,12 @@ const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
         <div className="col-md-4">
           <p className='mb-5'><strong>Solicitud</strong></p>
           <p className='mb-5'>No. de Solicitud: <strong>{solicitud.noSolicitud}</strong></p>
+          <p className='mb-5'>Fecha de registro: <strong>{solicitud.fecha}</strong></p>
           <p className='mb-5'>Tipo de pago: <strong>{solicitud.tipoPago}</strong></p>
           <p className='mb-20'>{getMontoTotalTitle()} <strong>{moneyFormat(montoTotal)}</strong></p>
         </div>
         {
+          isPagoMultiple() &&
           campos.map((item, key) => <DatosCampo campo={item} key={item.id} />)
         }
         <div className="col-md-4">
@@ -83,6 +86,7 @@ const DatosCampo = ({campo}) => {
       <p className='mb-5'><strong>Campo clínico</strong></p>
       <p className='mb-5'>Sede: <strong>{campo.unidad.nombre}</strong></p>
       <p className='mb-5'>Carrera: <strong>{campo.displayCarrera}</strong></p>
+      <p className='mb-5'>Período: <strong>{campo.displayFechaInicial} - {campo.displayFechaFinal}</strong></p>
     </div>
   )
 }
@@ -106,8 +110,8 @@ const HistorialPagos = ({pagos}) => {
               <tr key={index}>
                 <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`} download>Descargar</a></td>
                 <td>{pago.fechaPagoFormatted}</td>
-                <td>{moneyFormat(pago.monto)}</td>
-                <td>{pago.observaciones}</td>
+                <td>{ pago.validado != null ?  moneyFormat(pago.monto) : '-'}</td>
+                <td>{ pago.validado != null ? pago.observaciones : 'Pendiente de Validar'}</td>
               </tr>
             ) :
             <tr>
@@ -181,13 +185,20 @@ const DetalleReferencia = ({ pagos, solicitud, campos }) => {
     );
   }
 
+  function getLastPago() {
+    return pagos.length > 0 ?
+      pagos.reduce(
+        (acc, pago) =>
+          pago.id > acc.id ? pago : acc, pagos[0]) : null;
+  }
+
   return(
     <div className='row mt-20'>
       <DatosSolicitud
         solicitud={solicitud}
         montoTotal={getMontoTotal()}
         campos={campos}
-        pago={campos ? campos[0] : null}
+        pago={getLastPago()}
       />
       <HistorialPagos
         pagos={pagos}
