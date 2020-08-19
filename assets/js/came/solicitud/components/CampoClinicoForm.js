@@ -33,8 +33,12 @@ const CampoClinicoForm = (props) => {
 
     const getConveniosActivos = (convenios) => {
         let data = [];
+        let today = Date.now();
         for (const i of convenios) {
-            if (i.carrera && i.cicloAcademico && i.label.toString() !== 'red' && ciclosAutorizados.indexOf(i.cicloAcademico.id) > -1) {
+            if (i.carrera && i.cicloAcademico
+              //&& i.label.toString() !== 'red'
+              && (new Date(i.vigencia)) > today
+              && ciclosAutorizados.indexOf(i.cicloAcademico.id) > -1) {
                 data.push(i);
             }
         }
