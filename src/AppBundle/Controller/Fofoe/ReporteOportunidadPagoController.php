@@ -81,7 +81,7 @@ class ReporteOportunidadPagoController extends DIEControllerController
           $campo['monto'],
           $pago['referenciaBancaria'],
           $pago['fechaPagoFormatted'],
-          "",
+          $pago['factura'] ? $pago['factura']['fechaFacturacionFormatted'] : '',
           $pago['camposPagados']['tiempos'][$campo['id']] >= 14 ?
             'CUMPLE' : 'NO CUMPLE',
           $pago['camposPagados']['tiempos'][$campo['id']],
@@ -132,7 +132,8 @@ class ReporteOportunidadPagoController extends DIEControllerController
             'displayDelegacion',
             'monto',
             'displayCarrera'
-          ]
+          ],
+          'factura' => ['id', 'folio', 'fechaFacturacionFormatted'],
         ]
       ]);
   }

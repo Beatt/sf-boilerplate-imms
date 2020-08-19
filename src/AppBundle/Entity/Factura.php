@@ -161,7 +161,7 @@ class Factura
      public function getFechaFacturacionFormatted()
      {
          if($this->getFechaFacturacion()){
-             return $this->getFechaFacturacion()->format('d-m-Y');
+             return $this->getFechaFacturacion()->format('d/m/Y');
          }
          return '';
      }

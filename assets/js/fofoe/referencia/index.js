@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import Loader from "../../components/Loader/Loader";
 import ReactPaginate from "react-paginate";
 import './index.scss';
-import {getSchemeAndHttpHost} from "../../utils";
+import {dateFormat, getSchemeAndHttpHost} from "../../utils";
 
 const AccionFofoe = ({pago}) => {
     const RegistroFactura  = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
@@ -210,7 +210,7 @@ const PagoIndex = (props) => {
                                 nextLabel={'Siguiente'}
                                 breakLabel={'...'}
                                 breakClassName={'break-me'}
-                                pageCount={meta.total / meta.perPage}
+                                pageCount={Math.ceil(meta.total / meta.perPage)}
                                 marginPagesDisplayed={2}
                                 pageRangeDisplayed={parseInt(meta.perPage)}
                                 onPageChange={value => { setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}

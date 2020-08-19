@@ -350,8 +350,8 @@ class Pago implements ComprobantePagoInterface
          if ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
          || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
             && $this->referenciaBancaria == $campo->getReferenciaBancaria()) ) {
-           $final = Carbon::instance($this->getFechaPago());
-           $tiempos[$campo->getId()] = $final->diffInDays($inicial);
+           $final = $this->getFechaPago() ? Carbon::instance($this->getFechaPago()) : '';
+           $tiempos[$campo->getId()] = $this->getFechaPago() ? $final->diffInDays($inicial) : '';
            $camposPagados[] = $campo;
          }
        }

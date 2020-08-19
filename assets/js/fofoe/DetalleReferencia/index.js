@@ -173,7 +173,7 @@ const DetalleReferencia = ({ pagos, solicitud, campos }) => {
     if (solicitud.tipoPago === TIPO_PAGO.UNICO) {
       return solicitud.monto;
     }
-    return campos[0].monto;
+    return campos.length > 0 ? campos[0].monto : 0;
   }
 
   function getFacturas() {
