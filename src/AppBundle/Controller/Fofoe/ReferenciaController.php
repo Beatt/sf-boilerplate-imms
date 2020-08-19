@@ -111,6 +111,7 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
         'attributes' => [
           'id',
           'monto',
+          'estatus' => ['nombre'],
           'displayCarrera',
           'unidad' => ['nombre']
           ]
@@ -128,6 +129,8 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
           'id',
           'noSolicitud',
           'fecha',
+          'tipoPago',
+          'estatus',
           'referenciaBancaria',
           'monto',
           'delegacion' => ['nombre'],

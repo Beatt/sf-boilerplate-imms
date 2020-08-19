@@ -59,13 +59,10 @@ class SolicitudController extends DIEControllerController
             /** @var Solicitud $solicitud */
             $solicitud = $form->getData();
 
-            $factura = new Factura();
-            
-            $pagos = $solicitud->getPagos();
-
+            $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
             $factura = $pagos[0]->getFactura();
 
-            foreach($solicitud->getPagos() as $pago) {
+            foreach($pagos as $pago) {
                 $pago->setFacturaGenerada(true);
                 $pago->setFactura($factura);
             }

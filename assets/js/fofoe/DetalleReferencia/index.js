@@ -1,9 +1,34 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
-import {dateFormat, getSchemeAndHttpHost, moneyFormat} from "../../utils";
+import {
+  dateFormat,
+  getSchemeAndHttpHost,
+  moneyFormat
+} from "../../utils";
 import {TIPO_PAGO} from "../../constants";
 
-const DatosSolicitud = ({solicitud, montoTotal, campos}) => {
+const AccionFofoe = ({pago}) => {
+  if (!pago) return null;
+  const RegistroFactura  = () => (<a className="btn btn-default" href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
+  const ValidarPago = () => (<a className="btn btn-default" href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
+
+  return (
+    <div className="col-md-6">
+    {
+      pago.validado || pago.validado == null ?
+      <strong>Acción</strong>  : null
+
+      (pago.validado && pago.requiere_factura && !pago.factura) ?
+        <RegistroFactura />
+        : pago.validado == null ?
+        <ValidarPago />
+        : null
+    }
+    </div>
+  )
+}
+
+const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
 
   function isPagoMultiple() {
     return solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
@@ -11,8 +36,16 @@ const DatosSolicitud = ({solicitud, montoTotal, campos}) => {
 
   function getMontoTotalTitle() {
     return isPagoMultiple() ?
-      'Monto total del campo clínico:' :
-      'Monto total de la solicitud:';
+      'Monto total del campo clínico:'
+      : 'Monto total de la solicitud:';
+  }
+
+  function getEstado() {
+    return isPagoMultiple() ?
+      solicitud.estatus
+      : (campos >0 ?
+        campos[0].estatus.nombre
+        : '' )
   }
 
   return (
@@ -33,6 +66,12 @@ const DatosSolicitud = ({solicitud, montoTotal, campos}) => {
           <p className='mb-5'>RFC: <strong>{solicitud.institucion.rfc}</strong></p>
           <p className='mb-5'>Delegación: <strong>{solicitud.delegacion.nombre}</strong></p>
         </div>
+      </div>
+      <div className="row">
+        <div className="col-md-6 mt-10">
+          <p><strong>Estado de la referencia:</strong> {getEstado()}</p>
+        </div>
+        <AccionFofoe pago={pago} />
       </div>
     </div>
   )
@@ -126,10 +165,6 @@ const HistorialFacturas = ({facturas}) => {
 
 const DetalleReferencia = ({ pagos, solicitud, campos }) => {
 
-  console.log(pagos);
-  console.log(solicitud);
-  console.log(campos);
-
   function getMontoTotal() {
     if (solicitud.tipoPago === TIPO_PAGO.UNICO) {
       return solicitud.monto;
@@ -152,6 +187,7 @@ const DetalleReferencia = ({ pagos, solicitud, campos }) => {
         solicitud={solicitud}
         montoTotal={getMontoTotal()}
         campos={campos}
+        pago={campos ? campos[0] : null}
       />
       <HistorialPagos
         pagos={pagos}
