@@ -195,7 +195,7 @@ const ListaCampos = ({ solicitud }) => {
                     {
                       solicitud.expediente.facturas.map((factura, index) =>
                         <p key={index}>
-                          <a href={`${getSchemeAndHttpHost()}/factura/${factura.options.facturaId}/download`}
+                          <a href={`${getSchemeAndHttpHost()}/ie/factura/${factura.options.facturaId}/download`}
                              target='_blank'
                              download
                           >

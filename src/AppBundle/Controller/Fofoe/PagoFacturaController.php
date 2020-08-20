@@ -61,8 +61,6 @@ class PagoFacturaController extends DIEControllerController
             'method' => 'POST'
         ]);
         $form->handleRequest($request);
-        var_dump($form->isSubmitted());
-        var_dump($form->isValid());
         if ($form->isSubmitted() && $form->isValid()) {
             $pago = $form->getData();
             $factura = $pago->getFactura();

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\Factura;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
@@ -101,4 +102,24 @@ final class DocumentController extends DIEControllerController
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         return $response;
     }
+
+  /**
+   * @Route("/factura/{factura_id}/download", methods={"GET"}, name="ie.descargar.factura.download")
+   * @param $factura_id
+   * @return mixed
+   */
+  public function descargarFacturaAction($factura_id)
+  {
+    $factura = $this->getDoctrine()
+      ->getRepository(Factura::class)
+      ->find($factura_id);
+
+    if (!$factura) {
+      throw $this->createNotFoundException(
+        'Not found for id ' . $factura_id
+      );
+    }
+    $downloadHandler = $this->get('vich_uploader.download_handler');
+    return $downloadHandler->downloadObject($factura, 'zipFile');
+  }
 }

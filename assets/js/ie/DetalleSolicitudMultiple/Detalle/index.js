@@ -10,7 +10,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
 
     return(
       <a
-        href={`${getSchemeAndHttpHost()}/factura/${facturaId}/download`}
+        href={`${getSchemeAndHttpHost()}/ie/factura/${facturaId}/download`}
         target='_blank'
         download
       >Descargar</a>
