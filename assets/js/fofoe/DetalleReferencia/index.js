@@ -16,10 +16,10 @@ const AccionFofoe = ({pago}) => {
     <div className="col-md-6">
     {
       pago.validado || pago.validado == null ?
-        <strong>Acción</strong> : null
+        <strong>Acción </strong> : null
     }
     {
-      (pago.validado && pago.requiere_factura && !pago.factura_generada) ?
+      (pago.validado && pago.requiereFactura && !pago.facturaGenerada) ?
       <RegistroFactura />
       : pago.validado == null ?
       <ValidarPago />
@@ -42,9 +42,10 @@ const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
   }
 
   function getEstado() {
+    console.log(campos[0]);
     return !isPagoMultiple() ?
       solicitud.estatus
-      : (campos >0 ?
+      : (campos.length > 0 ?
         campos[0].estatus.nombre
         : '' )
   }
@@ -72,6 +73,7 @@ const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
       </div>
       <div className="row">
         <div className="col-md-6 mt-10">
+          <p>Referencia Bancaria: <strong>{pago.referenciaBancaria}</strong></p>
           <p><strong>Estado de la referencia:</strong> {getEstado()}</p>
         </div>
         <AccionFofoe pago={pago} />

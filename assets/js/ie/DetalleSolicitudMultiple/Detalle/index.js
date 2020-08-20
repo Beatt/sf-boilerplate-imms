@@ -39,6 +39,10 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
         </a>
       );
     }
+    else if(campoClinico.estatus  === CAMPO_CLINICO.CREDENCIALES_GENERADAS
+    || campoClinico.estatus  === CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE ) {
+      return('Pago validado')
+    }
 
     return solicitud.estatus === SOLICITUD.CARGANDO_COMPROBANTES ?
       <a
@@ -47,9 +51,6 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
       >
         Cargar comprobante
       </a> :
-      campoClinico.estatus === CAMPO_CLINICO.CREDENCIALES_GENERADAS ||
-      campoClinico.estatus === CAMPO_CLINICO.PENDIENTE_FACTURA_FOFOE ?
-      'Pago validado' :
         'Pendiente'
       ;
   }
