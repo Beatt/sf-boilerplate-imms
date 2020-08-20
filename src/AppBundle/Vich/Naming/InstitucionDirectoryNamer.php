@@ -34,7 +34,8 @@ class InstitucionDirectoryNamer implements DirectoryNamerInterface
     {
         if($object instanceof Institucion) {
             /** @var Institucion $institucion */
-            $institucion = $this->tokenStorage->getToken()->getUser()->getInstitucion();
+            //$institucion = $this->tokenStorage->getToken()->getUser()->getInstitucion();
+          $institucion = $object;
             return $institucion->getId();
         }
 

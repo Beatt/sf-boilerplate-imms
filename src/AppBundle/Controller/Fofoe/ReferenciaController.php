@@ -93,6 +93,7 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
           'validado',
           'referenciaBancaria',
           'factura' => [
+            'id',
             'fechaFacturacion',
             'folio',
             'zip',

@@ -35,7 +35,7 @@ const Facturas = ({pago}) => {
     if(pago.requiere_factura && !pago.factura_generada) {
         return (<span>Pendiente</span>);
     }else if(pago.factura_generada){
-        return (<a href={`${getSchemeAndHttpHost()}/factura/${pago.factura_id}/download`}>{pago.factura_folio}</a>);
+        return (<a href={`${getSchemeAndHttpHost()}/fofoe/factura/${pago.factura_id}/download`}>{pago.factura_folio}</a>);
     }else{
         return (<span>No Requerida</span>);
     }

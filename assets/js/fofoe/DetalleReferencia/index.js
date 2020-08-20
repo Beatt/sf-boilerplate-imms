@@ -151,7 +151,7 @@ const HistorialFacturas = ({facturas}) => {
                   <tr key={index}>
                     <td>{dateFormat(factura.fechaFacturacion)}</td>
                     <td>{factura.monto}</td>
-                    <td>{factura.zip && <a href={factura.zip} download>{factura.zip}</a>}</td>
+                    <td>{factura.zip && <a href={`${getSchemeAndHttpHost()}/fofoe/factura/${factura.id}/download`}>{factura.zip}</a>}</td>
                     <td>{factura.folio}</td>
                   </tr>
               )

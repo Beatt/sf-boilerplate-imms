@@ -3,7 +3,9 @@
 namespace AppBundle\Controller\Fofoe;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\Factura;
 use AppBundle\Entity\Pago;
+use AppBundle\Exception\CouldNotFoundCedulaIdentificacionFiscal;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -32,15 +34,8 @@ final class DocumentController extends DIEControllerController
         $pago = $pagoRepository->find($id);
         if(!$pago) throw $this->createNotFindPagoException($id);
 
-        $institucion = $institucionRepository->getInstitucionByPagoId($pago->getId());
-        
-        return $this->pdfResponse(
-            sprintf(
-                '../uploads/instituciones/%s/%s',
-                $institucion->getId(),
-                $pago->getComprobantePago()
-            )
-        );
+      $downloadHandler = $this->get('vich_uploader.download_handler');
+      return $downloadHandler->downloadObject($pago, 'comprobantePagoFile');
     }
 
     /**
@@ -54,18 +49,42 @@ final class DocumentController extends DIEControllerController
         InstitucionRepositoryInterface $institucionRepository
     ) {
         /** @var Institucion $institucion */
-        $institucion = $institucionRepository->findBy([
+        $institucion = $institucionRepository->findOneBy([
             'id' => $id
         ]);
 
-        return $this->pdfResponse(
-            sprintf(
-                '../uploads/instituciones/%s/%s',
-                $institucion[0]->getId(),
-                $institucion[0]->getCedulaIdentificacion()
-            )
+
+      if (!$institucion)
+        throw $this->createNotFoundException(
+          'Not found for id ' . $id
         );
+
+      if(!$institucion->getCedulaIdentificacion())
+        throw CouldNotFoundCedulaIdentificacionFiscal::withInstitucionId($institucion->getId());
+
+      $downloadHandler = $this->get('vich_uploader.download_handler');
+      return $downloadHandler->downloadObject($institucion, 'cedulaFile');
     }
+
+  /**
+   * @Route("/factura/{factura_id}/download", methods={"GET"}, name="factura.download")
+   * @param $factura_id
+   * @return mixed
+   */
+  public function downloadFileAction($factura_id)
+  {
+    $factura = $this->getDoctrine()
+      ->getRepository(Factura::class)
+      ->find($factura_id);
+
+    if (!$factura) {
+      throw $this->createNotFoundException(
+        'Not found for id ' . $factura_id
+      );
+    }
+    $downloadHandler = $this->get('vich_uploader.download_handler');
+    return $downloadHandler->downloadObject($factura, 'zipFile');
+  }
 
     private function pdfResponse($fileName, $contentDisposition = 'attachment')
     {
