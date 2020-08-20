@@ -8,7 +8,7 @@ import ReporteUnidad from "../../enfermeria/components/ReporteUnidad";
 const ReportesInicio = () => {
 
   const {useState, useEffect} = React
-  const [reporteActivo, setReporteActivo] = useState('')
+  const [reporteActivo, setReporteActivo] = useState('ingresos')
   const [isLoading, toggleLoading] = useState(false)
 
   function cambiaReporte(tipoReporte) {
@@ -22,31 +22,30 @@ const ReportesInicio = () => {
       <div><h1>Reportes</h1></div>
       <div>
         <ul className="nav nav-pills nav-fill">
-          <li className="nav-item">
+          <li className={(reporteActivo == 'ingresos') ? 'nav-item active' : 'nav-item'} >
             <a className="nav-link" href="#" onClick={()=>cambiaReporte('ingresos')} >Ingresos</a>
           </li>
-          <li className="nav-item">
+          <li className={(reporteActivo == 'oportunidad') ? 'nav-item active' : 'nav-item'} >
             <a className="nav-link" href="#" onClick={()=>cambiaReporte('oportunidad')}>Oportunidad de Pago</a>
           </li>
-          <li className="nav-item">
+          <li className={(reporteActivo == 'detalle') ? 'nav-item active' : 'nav-item'}>
             <a className="nav-link" href="#" onClick={()=>cambiaReporte('detalle')} >Detalle CCS/INT</a>
           </li>
-          <li className="nav-item">
+          <li className={(reporteActivo == 'unidad') ? 'nav-item active' : 'nav-item'}>
             <a className="nav-link" href="#" onClick={()=>cambiaReporte('unidad')}>CCS/INT por Unidad</a>
           </li>
         </ul>
       </div>
       <div className="tab-content" id="myTabContent">
-        { (reporteActivo == 'oportunidad') ?
+        { (reporteActivo == 'ingresos') ?
+            <ReporteIngresos />
+            : (reporteActivo == 'oportunidad') ?
               <ReporteOportunidad />
             : (reporteActivo == 'unidad') ?
               <ReporteUnidad />
            :  (reporteActivo == 'detalle') ?
               <ReporteDetalle />
-           : (reporteActivo == 'ingresos')
-//                ?
-                <ReporteIngresos />
-  /*        : <h2> Seleccione una de las opciones </h2> */
+          : <h2> Seleccione una de las opciones </h2>
         }
       </div>
     </div>
