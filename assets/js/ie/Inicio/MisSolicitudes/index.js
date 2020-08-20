@@ -126,8 +126,8 @@ const MisSolicitudes = () => {
 
   function isSolicitudMultipleYDentroDeLosEstatus(solicitud) {
     return isPagoMultiple(solicitud) && (
-      solicitud.estatus === SOLICITUD.EN_VALIDACION_FOFOE ||
-      solicitud.estatus === SOLICITUD.CREDENCIALES_GENERADAS
+      solicitud.estatus === SOLICITUD.EN_VALIDACION_FOFOE
+//      || solicitud.estatus === SOLICITUD.CREDENCIALES_GENERADAS
     );
   }
 

@@ -83,8 +83,8 @@ const ReporteIngresos = () => {
             </tr>
             : reporteIngresos.length > 0 ?
               reporteIngresos.map( (ingresos, index) => {
-                totalIngsPend += parseInt(ingresos.ingPend);
-                totalIngsVal += parseInt(ingresos.ingVal);
+                totalIngsPend += parseFloat(ingresos.ingPend);
+                totalIngsVal += parseFloat(ingresos.ingVal);
                   return (
                     <tr key={index}>
                       <td> {ingresos.Mes} / { ingresos.Anio}</td>
