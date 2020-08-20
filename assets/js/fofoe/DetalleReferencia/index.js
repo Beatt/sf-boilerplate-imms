@@ -7,7 +7,7 @@ import {
 } from "../../utils";
 import {TIPO_PAGO} from "../../constants";
 
-const AccionFofoe = ({pago}) => {
+  const AccionFofoe = ({pago}) => {
   if (!pago) return null;
   const RegistroFactura  = () => (<a className="btn btn-default" href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
   const ValidarPago = () => (<a className="btn btn-default" href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);

@@ -213,7 +213,7 @@ class Factura
      */
     public function getPago()
     {
-      return $this->getPagos()->last();
+      return $this->getPagos()->first();
     }
 
     /**

@@ -340,7 +340,8 @@ class Pago implements ComprobantePagoInterface
     {
         return GestionPagoDTO::create($this);
     }
-     public function getCamposPagados() {
+
+    public function getCamposPagados() {
        $campos = $this->solicitud->getCamposClinicos();
        $tiempos = [];
        $camposPagados = [];

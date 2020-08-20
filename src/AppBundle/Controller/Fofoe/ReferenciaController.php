@@ -48,22 +48,23 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
     }
 
   /**
-   * @Route("/referencia/{referencia}", methods={"GET"}, name="fofoe.referencia.show")
-   * @param string $referencia
+   * @Route("/referencia/{id}", methods={"GET"}, name="fofoe.referencia.show")
+   * @param string $id
    * @param Request $request
    * @param PagoRepositoryInterface $pagoRepository
    * @return Response
    */
     public function showAction(
-      $referencia,
+      $id,
       Request $request,
       PagoRepositoryInterface $pagoRepository)
     {
-      $pagos = $pagoRepository->findBy(array('referenciaBancaria' => $referencia));
-
-      if ( empty($pagos) ) throw $this->createNotFoundException(
-        'Not found for referencia ' . $referencia
+      $pago = $pagoRepository->findOneBy(['id' => $id]);
+      if ( empty($pago) ) throw $this->createNotFoundException(
+        'Not found for id ' . $id
       );
+
+      $pagos = $pagoRepository->findBy(['referenciaBancaria' => $pago->getReferenciaBancaria() ]);
 
       $campos = $pagos[0]->getCamposPagados()['campos'];
       $solicitud = $pagos[0]->getSolicitud();

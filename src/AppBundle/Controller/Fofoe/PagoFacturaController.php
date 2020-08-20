@@ -14,17 +14,19 @@ use AppBundle\Form\Type\FacturaType\SolicitudFacturaType;
 use AppBundle\Form\Type\PagoType;
 use AppBundle\Repository\EstatusCampoRepository;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
+use ClassesWithParents\F;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @Route("/fofoe")
  */
-class SolicitudController extends DIEControllerController
+class PagoFacturaController extends DIEControllerController
 {
     /**
      * @Route("/pagos/{id}/registrar-factura", name="fofoe#registrar_factura", methods={"POST", "GET"})
@@ -52,30 +54,30 @@ class SolicitudController extends DIEControllerController
 
         $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 
-        $form = $this->createForm(SolicitudFacturaType::class, $solicitud, [
+        $form = $this->createForm(PagoFacturaType::class, $pago, [
             'action' => $this->generateUrl('fofoe#registrar_factura', [
                 'id' => $id,
             ]),
             'method' => 'POST'
         ]);
-
         $form->handleRequest($request);
+        var_dump($form->isSubmitted());
+        var_dump($form->isValid());
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Solicitud $solicitud */
-            $solicitud = $form->getData();
+            $pago = $form->getData();
+            $factura = $pago->getFactura();
 
             $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
-            $factura = $pagos[0]->getFactura();
 
-            foreach($pagos as $pago) {
-                $pago->setFacturaGenerada(true);
-                $pago->setFactura($factura);
-                $factura->addPago($pago);
+            foreach($pagos as $pagoV) {
+                $pagoV->setFacturaGenerada(true);
+                $factura->addPago($pagoV);
+                $pagoV->setFactura($factura);
             }
 
             $campos = $pago->getCamposPagados();
-            foreach($campos['campos'] as $campo) {
-              $campo->setEstatus(
+            foreach($campos['campos'] as $campoV) {
+              $campoV->setEstatus(
                 $campoRepository->findOneBy(
                   ['nombre' => EstatusCampoInterface::CREDENCIALES_GENERADAS])
               );
@@ -91,7 +93,7 @@ class SolicitudController extends DIEControllerController
             $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
           }
 
-            $entityManager->persist($solicitud);
+          $entityManager->persist($factura);
             $entityManager->flush();
 
             $this->addFlash('success',
@@ -144,6 +146,7 @@ class SolicitudController extends DIEControllerController
                         'id',
                         'monto',
                         'fechaPago',
+                        'fechaPagoFormatted',
                         'comprobantePago',
                         'requiereFactura',
                         'facturaGenerada',
@@ -171,6 +174,7 @@ class SolicitudController extends DIEControllerController
                     'id',
                     'monto',
                     'fechaPago',
+                    'fechaPagoFormatted',
                     'comprobantePago',
                     'requiereFactura',
                     'facturaGenerada',
@@ -255,11 +259,8 @@ class SolicitudController extends DIEControllerController
         
 
         $file = $pago->getZipFile();
-        dump($pago);
         $pago->setZipFile(null);
-        dump($pago);
         $entityManager->persist($pago);
-        dump($pago);
 
         $pago->setZipFile($file);
         $entityManager->flush();
