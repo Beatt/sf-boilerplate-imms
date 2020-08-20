@@ -37,15 +37,16 @@ const ReportesInicio = () => {
         </ul>
       </div>
       <div className="tab-content" id="myTabContent">
-        { (reporteActivo == 'ingresos') ?
-              <ReporteIngresos />
-           : (reporteActivo == 'oportunidad') ?
+        { (reporteActivo == 'oportunidad') ?
               <ReporteOportunidad />
             : (reporteActivo == 'unidad') ?
               <ReporteUnidad />
            :  (reporteActivo == 'detalle') ?
               <ReporteDetalle />
-           : <h2> Seleccione una de las opciones </h2>
+           : (reporteActivo == 'ingresos')
+//                ?
+                <ReporteIngresos />
+  /*        : <h2> Seleccione una de las opciones </h2> */
         }
       </div>
     </div>
