@@ -3,10 +3,10 @@
 namespace AppBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Carbon\Carbon;
 
 /**
  * @ORM\Table(name="factura")
@@ -65,10 +65,15 @@ class Factura
     private $aux;
 
     /**
-     * @var Pago
+     * @var Collecction
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pago", mappedBy="factura")
      */
-    private $pago;
+    private $pagos;
+
+  public function __construct()
+  {
+    $this->pagos = new ArrayCollection();
+  }
 
     /**
      * @return int
@@ -161,7 +166,7 @@ class Factura
      public function getFechaFacturacionFormatted()
      {
          if($this->getFechaFacturacion()){
-             return $this->getFechaFacturacion()->format('d-m-Y');
+             return $this->getFechaFacturacion()->format('d/m/Y');
          }
          return '';
      }
@@ -208,6 +213,33 @@ class Factura
      */
     public function getPago()
     {
-        return $this->pago;
+      return $this->getPagos()->first();
+    }
+
+    /**
+     * @return Colecction
+     */
+    public function getPagos()
+    {
+        return $this->pagos;
+    }
+
+    /**
+     * @param Pago $pago
+     * @return Solicitud
+     */
+    public function addPago(Pago $pago)
+    {
+      $this->pagos[] = $pago;
+
+      return $this;
+    }
+
+    /**
+     * @param Pago $pago
+     */
+    public function removePago(Pago $pago)
+    {
+      $this->pagos->removeElement($pago);
     }
 }

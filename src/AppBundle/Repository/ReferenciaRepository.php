@@ -212,8 +212,9 @@ class ReferenciaRepository
                     break;
             }
         }else{
-            $sql .= '1 DESC '; //es el numero de la columna
+            $sql .= '9 DESC '; //es el numero de la columna
         }
+        $sql .= ', 1 DESC ';
         return $sql;
     }
 }

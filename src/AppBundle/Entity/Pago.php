@@ -93,7 +93,7 @@ class Pago implements ComprobantePagoInterface
     /**
      * @var Factura
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="factura", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="pagos", cascade={"persist"})
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */
      private $factura;
@@ -311,7 +311,7 @@ class Pago implements ComprobantePagoInterface
      {
          if($this->getFechaPago()){
              return $this->getFechaPago()->format('d/m/Y');
-         }  
+         }
          return '';
      }
 
@@ -340,7 +340,8 @@ class Pago implements ComprobantePagoInterface
     {
         return GestionPagoDTO::create($this);
     }
-     public function getCamposPagados() {
+
+    public function getCamposPagados() {
        $campos = $this->solicitud->getCamposClinicos();
        $tiempos = [];
        $camposPagados = [];
@@ -350,8 +351,8 @@ class Pago implements ComprobantePagoInterface
          if ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO
          || ($this->solicitud->getTipoPago() == Solicitud::TIPO_PAGO_MULTIPLE
             && $this->referenciaBancaria == $campo->getReferenciaBancaria()) ) {
-           $final = Carbon::instance($this->getFechaPago());
-           $tiempos[$campo->getId()] = $final->diffInDays($inicial);
+           $final = $this->getFechaPago() ? Carbon::instance($this->getFechaPago()) : '';
+           $tiempos[$campo->getId()] = $this->getFechaPago() ? $final->diffInDays($inicial) : '';
            $camposPagados[] = $campo;
          }
        }

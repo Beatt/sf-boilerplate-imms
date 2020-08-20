@@ -24,9 +24,6 @@ const Registrar = (
       factura = true; 
   });
 
-  console.log(factura);
-  console.log(pagos);
-
   const [total, setTotal] = React.useState(monto);
 
   const handleChecked = (event) => {
@@ -103,28 +100,19 @@ const Registrar = (
                     type="hidden"
                     readOnly={true}
                     value={total}
-                    name={`solicitud_factura[pagos][0][factura][monto]`}
+                    name={`pago_factura[factura][monto]`}
                   />
                 </div>
               </div>
             </div>
+
             <div className='hidden'>
               <div className="form-group">
                 <input
                   className='form-control'
                   defaultValue={solicitud.id}
                   required={true}
-                  name={`solicitud_factura[pagos][0][solicitud]`}
-                />
-              </div>
-            </div>
-            <div className='hidden'>
-              <div className="form-group">
-                <input
-                  className='form-control'
-                  defaultValue={solicitud.id}
-                  required={true}
-                  name={`solicitud_factura[pagos][0][factura][aux]`}
+                  name={`pago_factura[factura][aux]`}
                 />
               </div>
             </div>
@@ -151,11 +139,12 @@ const Registrar = (
                             //onChange={e => handleChecked(e.target)}
                             id={index}
                             checked={true}
-                            name={`solicitud_factura[pagos][${index}][facturaGenerada]`}
+                            readOnly={true}
+                            name={`pago_factura[facturaGenerada]`}
                           />
                         </td>
                         <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a></td>
-                        <td>{dateFormat(item.fechaPago)}</td>
+                        <td>{item.fechaPagoFormatted}</td>
                         <td>{ moneyFormat(item.monto) }</td>
                         <td>{item.referenciaBancaria}</td>
                       </tr>
@@ -172,7 +161,7 @@ const Registrar = (
               <p className="mb-10">Subir factura</p>
               <input
                 type="file"
-                name={`solicitud_factura[pagos][0][factura][zipFile]`}
+                name={`pago_factura[factura][zipFile]`}
                 required={true}
               />
             </div>
@@ -186,7 +175,7 @@ const Registrar = (
                 <input
                   className='form-control'
                   type="text"
-                  name={`solicitud_factura[pagos][0][factura][folio]`}
+                  name={`pago_factura[factura][folio]`}
                 />
             </div>
           </div>
@@ -198,7 +187,7 @@ const Registrar = (
                 className='form-control col-md-12'
                 type="date"
                 required={true}
-                name={`solicitud_factura[pagos][0][factura][fechaFacturacion]`}
+                name={`pago_factura[factura][fechaFacturacion]`}
                 />
                 
             </div>

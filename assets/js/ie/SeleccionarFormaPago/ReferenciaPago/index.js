@@ -76,8 +76,8 @@ const ReferenciaPago = (
               />Generar un único formato para pagar todos los campos clínicos autorizados en esta solicitud.
             </label>
           </div>
-          <p className='text-danger'>Considere que el pago se realizará de manera individual por cada uno de los campos
-            clínicos solicitados.</p>
+          <p className='text-danger'>Considere que el pago deberá realizarse en una sola exhibición y por el monto total
+            de la solicitud.</p>
         </div>
         <div className="col-md-2"/>
         <div className="col-md-5">
@@ -93,8 +93,8 @@ const ReferenciaPago = (
               solicitud.
             </label>
           </div>
-          <p className='text-danger'>Considere que el pago deberá realizarce en una sola exhibición y por el monto total
-            de la solicitud.</p>
+          <p className='text-danger'>Considere que el pago se realizará de manera independiente por cada uno de los campos
+            clínicos solicitados.</p>
         </div>
         <div className="col-md-12 mt-20">
           <p><strong>NOTA: Seleccione la opción que más le convenga, ya que una vez seleccionada la modalidad de pago, esta es inamovible durante el resto del procedimiento.</strong></p>

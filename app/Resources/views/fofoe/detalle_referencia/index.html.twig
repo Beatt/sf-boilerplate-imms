@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+{% endblock %}
+
+{% block body %}
+  {{ render(controller('AppBundle:Fofoe\\Fofoe:menu')) }}
+
+  <div class="section-md">
+    <div class='container-fluid'>
+      <div class='container'>
+        <h1 class="text-bold text-center">Detalle de la Referencia de Pago </h1>
+        <div style="display: flex;">
+          <div id="noReferencia"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div id="detalle-referencia-component"></div>
+          </div>
+        </div>
+        <div class='row'>
+          <div class="col-md-12">
+            <a href="{{ path('fofoe/inicio') }}"> Regresar a la lista de pagos recibidos </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    window.PAGOS = {{ pagos | json_encode | raw }};
+    window.SOLICITUD = {{ solicitud | json_encode | raw }};
+    window.CAMPOS = {{ campos | json_encode | raw }};
+  </script>
+  <script src="{{ asset('build/fofoe_detalle_referencia.js') }}"></script>
+
+{% endblock %}

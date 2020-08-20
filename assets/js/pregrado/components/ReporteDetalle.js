@@ -227,7 +227,7 @@ const TablaCampos = (props) => {
                       <td>{campoClinico.lugaresAutorizados}</td>
                       <td>{ campoClinico.displayFechaInicial}
                         - { campoClinico.displayFechaFinal } </td>
-                      <td>{campoClinico.estatus.nombre}</td>
+                      <td>{campoClinico.estatus ? campoClinico.estatus.nombre : '?'}</td>
                     </tr>
                   ))
                   : <tr>

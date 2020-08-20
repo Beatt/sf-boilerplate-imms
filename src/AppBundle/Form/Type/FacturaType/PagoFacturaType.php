@@ -19,7 +19,7 @@ class PagoFacturaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('solicitud')
+            //->add('solicitud')
             ->add('facturaGenerada')
             ->add('factura', FacturaType::class)
         ;

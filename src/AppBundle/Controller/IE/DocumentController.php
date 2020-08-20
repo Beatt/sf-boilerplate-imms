@@ -49,13 +49,8 @@ final class DocumentController extends DIEControllerController
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_COMPROBANTE_DE_PAGO, $pago->getSolicitud());
 
-        return $this->pdfResponse(
-            sprintf(
-                '../uploads/instituciones/%s/%s',
-                $institucion->getId(),
-                $pago->getComprobantePago()
-            )
-        );
+      $downloadHandler = $this->get('vich_uploader.download_handler');
+      return $downloadHandler->downloadObject($pago, 'comprobantePagoFile');
     }
 
     /**
@@ -69,13 +64,8 @@ final class DocumentController extends DIEControllerController
 
         if(!$institucion->getCedulaIdentificacion()) throw CouldNotFoundCedulaIdentificacionFiscal::withInstitucionId($institucion->getId());
 
-        return $this->pdfResponse(
-            sprintf(
-                '../uploads/instituciones/%s/%s',
-                $institucion->getId(),
-                $institucion->getCedulaIdentificacion()
-            )
-        );
+        $downloadHandler = $this->get('vich_uploader.download_handler');
+        return $downloadHandler->downloadObject($institucion, 'cedulaFile');
     }
 
     /**

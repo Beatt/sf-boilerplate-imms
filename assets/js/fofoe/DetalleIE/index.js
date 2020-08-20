@@ -138,21 +138,24 @@ const ValidarInfo = (
         </div>
       </div>
 
-      <div className="row">
-        <div className="col-md-8">
+      {
+        institucion.cedulaIdentificacion &&
+        <div className="row">
+          <div className="col-md-8">
             <label>Constancia de Situación Fiscal:&nbsp; </label>
             {
-                institucion.cedulaIdentificacion &&
-                <a
-                  href={`${getSchemeAndHttpHost()}/fofoe/${institucion.id}/descargar-cedula-de-identificacion`}
-                  target='_blank' download
-                  download
-                >
-                  Descargar cédula
-                </a>
+              institucion.cedulaIdentificacion &&
+              <a
+                href={`${getSchemeAndHttpHost()}/fofoe/instituciones/${institucion.id}/descargar-cedula-de-identificacion`}
+                target='_blank' download
+                download
+              >
+                Descargar cédula
+              </a>
             }
+          </div>
         </div>
-      </div>
+      }
 
         <div className="row mt-10">
             <div className="col-md-12">

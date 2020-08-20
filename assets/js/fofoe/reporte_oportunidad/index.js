@@ -4,6 +4,7 @@ import ContenedorFiltro from "../../pregrado/components/ContenedorFiltro";
 import Buscador from "../../pregrado/components/Buscador";
 import OpcionesPageSize from "../../pregrado/components/OpcionesPageSize";
 import {getReportePagos, getReportePagosCSV} from "./reportePagos";
+import {moneyFormat} from "../../utils";
 
 const ReporteOportunidad = () => {
 
@@ -132,10 +133,10 @@ const ReporteOportunidad = () => {
                   <td> {campo.fechaFinalFormatted} </td>
                   <td> {pago.solicitud.institucion.nombre} </td>
                   <td> {campo.lugaresAutorizados} </td>
-                  <td> {campo.monto} </td>
+                  <td> { moneyFormat(campo.monto) } </td>
                   <td> {pago.referenciaBancaria} </td>
                   <td> {pago.fechaPagoFormatted} </td>
-                  <td></td>
+                  <td>  { pago.factura ? pago.factura.fechaFacturacionFormatted : ''}  </td>
                   <td> {pago.camposPagados.tiempos[campo.id] >= 14 ? 'CUMPLE' : 'NO CUMPLE'} </td>
                   <td> {pago.camposPagados.tiempos[campo.id]}</td>
                 </tr>

@@ -3,24 +3,30 @@
 namespace AppBundle\Controller\Fofoe;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Factura;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudFacturaType as ComprobantePagoTypeSolicitudFacturaType;
 use AppBundle\Form\Type\FacturaType\PagoFacturaType;
 use AppBundle\Form\Type\FacturaType\SolicitudFacturaType;
 use AppBundle\Form\Type\PagoType;
+use AppBundle\Repository\EstatusCampoRepository;
+use AppBundle\Repository\EstatusCampoRepositoryInterface;
+use ClassesWithParents\F;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @Route("/fofoe")
  */
-class SolicitudController extends DIEControllerController
+class PagoFacturaController extends DIEControllerController
 {
     /**
      * @Route("/pagos/{id}/registrar-factura", name="fofoe#registrar_factura", methods={"POST", "GET"})
@@ -34,6 +40,7 @@ class SolicitudController extends DIEControllerController
         Request $request,
         EntityManagerInterface $entityManager,
         InstitucionRepositoryInterface $institucionRepository,
+        EstatusCampoRepositoryInterface $campoRepository,
         PagoRepositoryInterface $pagoRepository
     ) {
 
@@ -44,38 +51,49 @@ class SolicitudController extends DIEControllerController
         /** @var Solicitud $solicitud */
         $solicitud = $this->get('doctrine')->getRepository(Solicitud::class)
             ->find($pago->getSolicitud()->getId());
-        
+
         $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 
-        $form = $this->createForm(SolicitudFacturaType::class, $solicitud, [
+        $form = $this->createForm(PagoFacturaType::class, $pago, [
             'action' => $this->generateUrl('fofoe#registrar_factura', [
                 'id' => $id,
             ]),
             'method' => 'POST'
         ]);
-
         $form->handleRequest($request);
+        var_dump($form->isSubmitted());
+        var_dump($form->isValid());
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Solicitud $solicitud */
-            $solicitud = $form->getData();
+            $pago = $form->getData();
+            $factura = $pago->getFactura();
 
-            $factura = new Factura();
-            
-            $pagos = $solicitud->getPagos();
+            $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 
-            $factura = $pagos[0]->getFactura();
-
-            foreach($solicitud->getPagos() as $pago) {
-                $pago->setFacturaGenerada(true);
-                $pago->setFactura($factura);
+            foreach($pagos as $pagoV) {
+                $pagoV->setFacturaGenerada(true);
+                $factura->addPago($pagoV);
+                $pagoV->setFactura($factura);
             }
 
-            /* $campos = $pago[0]->getCamposPagados();
-            foreach($campos['campos'] as $campo) {
-              $campos->setEstatus(EstatusCampoInterface::);
-            } */
+            $campos = $pago->getCamposPagados();
+            foreach($campos['campos'] as $campoV) {
+              $campoV->setEstatus(
+                $campoRepository->findOneBy(
+                  ['nombre' => EstatusCampoInterface::CREDENCIALES_GENERADAS])
+              );
+            }
 
-            $entityManager->persist($solicitud);
+            $solicitud = $pago->getSolicitud();
+          if($solicitud->isPagoUnico() ||
+            (count(array_filter($solicitud->getCamposClinicos()->toArray(),
+                function (CampoClinico $campoClinico) {
+                    $estatus =$campoClinico->getEstatus();
+                    return $estatus && $estatus->getNombre() !== EstatusCampoInterface::CREDENCIALES_GENERADAS;
+              })) === 0 ) ) {
+            $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
+          }
+
+          $entityManager->persist($factura);
             $entityManager->flush();
 
             $this->addFlash('success',
@@ -85,9 +103,7 @@ class SolicitudController extends DIEControllerController
                 $solicitud->getNoSolicitud(),
                 $pago->getReferenciaBancaria()));
 
-            return $this->redirectToRoute('fofoe/inicio', [
-                'id' => $solicitud->getId()
-            ]);
+            return $this->redirectToRoute('fofoe/inicio');
         }
 
         return $this->render('fofoe/registrar_factura.html.twig', [
@@ -130,6 +146,7 @@ class SolicitudController extends DIEControllerController
                         'id',
                         'monto',
                         'fechaPago',
+                        'fechaPagoFormatted',
                         'comprobantePago',
                         'requiereFactura',
                         'facturaGenerada',
@@ -157,6 +174,7 @@ class SolicitudController extends DIEControllerController
                     'id',
                     'monto',
                     'fechaPago',
+                    'fechaPagoFormatted',
                     'comprobantePago',
                     'requiereFactura',
                     'facturaGenerada',
@@ -241,11 +259,8 @@ class SolicitudController extends DIEControllerController
         
 
         $file = $pago->getZipFile();
-        dump($pago);
         $pago->setZipFile(null);
-        dump($pago);
         $entityManager->persist($pago);
-        dump($pago);
 
         $pago->setZipFile($file);
         $entityManager->flush();

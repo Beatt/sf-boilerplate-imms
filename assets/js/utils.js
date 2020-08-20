@@ -21,8 +21,8 @@ export const getActionNameByInstitucionEducativa = (estatus, tipoPago) => {
     case SOLICITUD.EN_VALIDACION_FOFOE:
       if(isMultipleTipoPago(tipoPago)) return 'Ver detalle'
       return 'En validación FOFOE'
-    case SOLICITUD.CREDENCIALES_GENERADAS:
-      return 'Descargar credenciales'
+    case SOLICITUD.CREDENCIALES_GENERADAS: /* Solicitud Pagada */
+      return 'Solicitud Pagada'
     default:
       console.error(`El action name del eetatus ${estatus} no existe.`)
       return 'Estatus no definido'
@@ -40,8 +40,8 @@ export const isActionDisabledByInstitucionEducativa = (estatus) => {
     case SOLICITUD.MONTOS_VALIDADOS_CAME:
     case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
     case SOLICITUD.CARGANDO_COMPROBANTES:
-    case SOLICITUD.CREDENCIALES_GENERADAS:
       return false
+    case SOLICITUD.CREDENCIALES_GENERADAS:
     case SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME:
     case SOLICITUD.EN_VALIDACION_FOFOE:
       return true

@@ -3,13 +3,14 @@ import ReactDOM from 'react-dom'
 import Loader from "../../components/Loader/Loader";
 import ReactPaginate from "react-paginate";
 import './index.scss';
-import {getSchemeAndHttpHost} from "../../utils";
+import {dateFormat, getSchemeAndHttpHost} from "../../utils";
 
 const AccionFofoe = ({pago}) => {
     const RegistroFactura  = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
     const ValidarPago = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
-    const DetalleReferencia = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/${pago.referencia_bancaria}/referencia`}>Ver Detalle</a>)
-    if(pago.validado != null && pago.validado && pago.requiere_factura && !pago.factura){
+    const DetalleReferencia = () => (<a href={`${getSchemeAndHttpHost()}/fofoe/referencia/${pago.id}`}>Ver Detalle</a>)
+
+    if(pago.validado != null && pago.validado && pago.requiere_factura && !pago.factura_generada){
         return (<RegistroFactura/>);
     }else if(pago.validado == null){
         return (<ValidarPago/>);
@@ -31,10 +32,10 @@ const EstadosPago = ({pago}) => {
 }
 
 const Facturas = ({pago}) => {
-    if(pago.requiere_factura && !pago.factura){
+    if(pago.requiere_factura && !pago.factura_generada) {
         return (<span>Pendiente</span>);
-    }else if(pago.factura){
-        return (<a href={`${getSchemeAndHttpHost()}/factura/${pago.factura.id}/download`}>{pago.factura.folio}</a>);
+    }else if(pago.factura_generada){
+        return (<a href={`${getSchemeAndHttpHost()}/fofoe/factura/${pago.factura_id}/download`}>{pago.factura_folio}</a>);
     }else{
         return (<span>No Requerida</span>);
     }
@@ -163,7 +164,7 @@ const PagoIndex = (props) => {
                                 <th> </th>
                                 <th>
                                     <select className="form-control"
-                                            onChange={e => {console.log(e.target.value); setQuery(Object.assign(query, {estado: e.target.value}));  handleSearchEvent(); }}>>
+                                            onChange={e => { setQuery(Object.assign(query, {estado: e.target.value}));  handleSearchEvent(); }}>>
                                         <option value="">Seleccionar ...</option>
                                         <option value="a">Pendiente Validación</option>
                                         <option value="b">Solicitud Pagada</option>
@@ -186,7 +187,7 @@ const PagoIndex = (props) => {
                                         <td>{pago.delegacion}</td>
                                         <td>{pago.institucion}</td>
                                         <td>{pago.no_solicitud}</td>
-                                        <td><a href={`${getSchemeAndHttpHost()}/fofoe/pago/${pago.referencia_bancaria}/referencia`}>{pago.referencia_bancaria}</a></td>
+                                        <td><a href={`${getSchemeAndHttpHost()}/fofoe/referencia/${pago.id}`}>{pago.referencia_bancaria}</a></td>
                                         <td>$ {Number.parseFloat(pago.monto.toString()).toFixed(2)}</td>
                                         <td><Facturas pago={pago}/></td>
                                         <td>{pago.fecha_pago}</td>
@@ -209,10 +210,10 @@ const PagoIndex = (props) => {
                                 nextLabel={'Siguiente'}
                                 breakLabel={'...'}
                                 breakClassName={'break-me'}
-                                pageCount={meta.total / meta.perPage}
+                                pageCount={Math.ceil(meta.total / meta.perPage)}
                                 marginPagesDisplayed={2}
                                 pageRangeDisplayed={parseInt(meta.perPage)}
-                                onPageChange={value => {console.log(value); setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
+                                onPageChange={value => { setMeta(Object.assign(meta, {page:value.selected + 1})); handleSearchEvent(query)}}
                                 containerClassName={'pagination'}
                                 subContainerClassName={'pages pagination'}
                                 activeClassName={'active'}
