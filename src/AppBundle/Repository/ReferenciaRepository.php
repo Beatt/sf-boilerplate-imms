@@ -51,23 +51,23 @@ class ReferenciaRepository
      */
     private function createQuery($perPage, $offset, $filters)
     {
-        $sql = "select " .
-            "max(pago.id) id," .
+        $sql = "select distinct " .
+            "pago.id id," .
             "delegacion.nombre delegacion," .
             "institucion.nombre institucion," .
             "solicitud.no_solicitud," .
-            "(CASE  when solicitud.tipo_pago = 'Único' then max(solicitud.monto) else max(campo_clinico.monto) end) monto," .
+            "(CASE  when solicitud.tipo_pago = 'Único' then solicitud.monto else campo_clinico.monto end) monto," .
             "pago.referencia_bancaria," .
             "factura.id factura_id," .
             "factura.folio factura_folio," .
-            "(select fecha_pago from pago paux where paux.id = max(pago.id) ) as fecha_pago, " .
-            "(select validado from pago paux where paux.id = max(pago.id) ) as validado, ".
-            "(select factura_generada from pago  paux where paux.id = max(pago.id) ) as factura_generada,  ".
-            "(select requiere_factura from pago  paux where paux.id = max(pago.id) ) as requiere_factura ".
+            "pago.fecha_pago, " .
+            "pago.validado, ".
+            "pago.factura_generada,  ".
+            "pago.requiere_factura ".
             $this->addRelations();
 
         $sql=$this->addFilters($sql, $filters);
-        $sql.=" group by pago.referencia_bancaria, delegacion.nombre, solicitud.no_solicitud, institucion.nombre, pago.referencia_bancaria, factura.id, factura.folio, solicitud.tipo_pago ";
+     //   $sql.=" group by pago.referencia_bancaria, delegacion.nombre, solicitud.no_solicitud, institucion.nombre, pago.referencia_bancaria, factura.id, factura.folio, solicitud.tipo_pago ";
         $sql.=$this->addOrders($filters);
         $sql.="LIMIT :limit OFFSET :offset ";
         return $sql;
@@ -169,7 +169,7 @@ class ReferenciaRepository
     private function createTotalQuery(array $filters)
     {
         $sql = "select " .
-            "count(distinct pago.referencia_bancaria) total " .
+            "count(distinct pago.id) total " .
             $this->addRelations();
         $sql=$this->addFilters($sql, $filters);
         return $sql;
@@ -178,6 +178,7 @@ class ReferenciaRepository
     private function addRelations()
     {
         return  "from pago " .
+            "inner join referencias on referencias.id = pago.id " .
             "inner join solicitud  on pago.solicitud_id = solicitud.id " .
             "inner join campo_clinico  on solicitud.id = campo_clinico.solicitud_id " .
                 "AND (solicitud.tipo_pago = 'Único' ".
