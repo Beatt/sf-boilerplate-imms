@@ -1,8 +1,10 @@
 imports:
   - { resource: user.yml }
+  - { resource: bitacora.yml }
   - { resource: permission.yml }
   - { resource: role.yml }
   - { resource: translate.yml }
+  - { resource: role.yml }
   - { resource: catalogs/region.yml }
   - { resource: catalogs/career.yml }
   - { resource: catalogs/graduate_school.yml }

@@ -115,6 +115,7 @@ services:
             - '@Swift_Mailer'
             - '@Twig_Environment'
             - '@Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface'
+            - '@event_dispatcher'
             - '%mailer_sender%'
 
     app.bank_references_created.event:
