@@ -8,7 +8,7 @@ import {
 import {TIPO_PAGO} from "../../constants";
 
   const AccionFofoe = ({pago}) => {
-  if (!pago) return null;
+  if (!pago || !pago.comprobantePago) return null;
   const RegistroFactura  = () => (<a className="btn btn-default" href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/registrar-factura`}>Registrar Factura</a>);
   const ValidarPago = () => (<a className="btn btn-default" href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/validacion-de-pago`}>Validar Pago</a>);
 
@@ -42,7 +42,6 @@ const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
   }
 
   function getEstado() {
-    console.log(campos[0]);
     return !isPagoMultiple() ?
       solicitud.estatus
       : (campos.length > 0 ?
@@ -110,10 +109,18 @@ const HistorialPagos = ({pagos}) => {
           pagos.length !== 0 ?
             pagos.map((pago, index) =>
               <tr key={index}>
-                <td><a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`} download>Descargar</a></td>
+                <td>
+                  {
+                    pago.comprobantePago ?
+                    <a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${pago.id}/descargar-comprobante-de-pago`}
+                       download>Descargar</a>
+                    : 'Pendiente de cargar'
+                  }
+                </td>
+
                 <td>{pago.fechaPagoFormatted}</td>
                 <td>{ pago.validado != null ?  moneyFormat(pago.monto) : '-'}</td>
-                <td>{ pago.validado != null ? pago.observaciones : 'Pendiente de Validar'}</td>
+                <td>{ pago.validado != null ? pago.observaciones : 'Pendiente de validar'}</td>
               </tr>
             ) :
             <tr>
