@@ -151,3 +151,8 @@ services:
             - '@AppBundle\Service\GeneradorFormatoFofoeInterface'
             - '%formato_fofoe_dir%'
             - '%zip_formatos_fofoe_dir%'
+
+    monolog.db_handler:
+        class: AppBundle\Util\MonologDBHandler
+        tag:
+        arguments: ['@doctrine.orm.entity_manager', '@Symfony\Component\Security\Core\Security']
