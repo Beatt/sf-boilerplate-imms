@@ -46,15 +46,12 @@ class SecuritySubscriber implements EventSubscriberInterface
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event) {
       $user = $event->getAuthenticationToken()->getUser();
-      $this->container->get('monolog.logger.db')->info(
-        'Inicio de Sesión de Usuario',
-        $this->processRequest()
-      );
 
       if ($user instanceof  Usuario ) {
-        $this->logger->info('Inicio de Sesión de Usuario',
-          ["username" => $user->getUsername(),
-            "id" => $user->getId()]);
+        $this->container->get('monolog.logger.db')->info(
+          'Inicio de Sesión de Usuario',
+          $this->processRequest()
+        );
       }
     }
 

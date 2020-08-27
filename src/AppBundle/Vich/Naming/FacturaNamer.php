@@ -16,7 +16,8 @@ class FacturaNamer implements NamerInterface
     public function name($object, PropertyMapping $mapping)
     {
         return  sprintf(
-            '%s-factura.%s',
+            '%s_%s-factura.%s',
+            $object->getReferenciaBancaria(),
             Carbon::now()->format('dmY:His'),
             $object->getZipFile()->guessExtension()
         );

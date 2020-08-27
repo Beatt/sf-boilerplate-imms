@@ -123,8 +123,14 @@ const ListaCampos = ({ solicitud }) => {
                 <td>
                   {
                     solicitud.expediente.oficioMontos.urlArchivo ?
-                      <a href={`${getSchemeAndHttpHost()}${solicitud.expediente.oficioMontos.urlArchivo}`}
-                         target='_blank' download>Descargar</a> :
+                      <a
+                        href={`${getSchemeAndHttpHost()}/ie/solicitud/${solicitud.id}/descargar-comprobante-inscripcion`}
+                        target='_blank'
+                        download
+                      >
+                        Descargar
+                      </a>
+                      :
                       DEFAULT_DOCUMENT_VALUE
                   }
                 </td>

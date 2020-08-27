@@ -8,7 +8,7 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: es
-    app.path.instituciones: /uploads/files/instituciones
+    app.path.instituciones: /uploads/instituciones
 
 framework:
     #esi: ~
@@ -107,7 +107,7 @@ vich_uploader:
             directory_namer: app.directory_namer.institucion
         comprobantes_inscripcion:
             uri_prefix: '%app.path.instituciones%'
-            upload_destination: '%kernel.root_dir%/../web/uploads/files/instituciones'
+            upload_destination: '%kernel.root_dir%/../uploads/instituciones'
             namer: AppBundle\Vich\Naming\ComprobanteInscripcionNamer
             directory_namer: app.directory_namer.institucion
         facturas:
