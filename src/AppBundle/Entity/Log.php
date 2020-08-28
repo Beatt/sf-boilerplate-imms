@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Usuario;
+use AppBundle\Repository\SolicitudRepository;
+use AppBundle\Repository\PagoRepository;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\LogRepository")
@@ -240,4 +242,15 @@ class Log
     {
         return $this->user;
     }
+
+    public function getContextDisplay() {
+    $record = [];
+    if ($this->getContext())
+        $record = array_merge($record, $this->getContext());
+
+    if ($this->getExtra())
+        $record = array_merge($record, $this->getExtra());
+        return json_encode(array_filter($record));
+    }
+
 }

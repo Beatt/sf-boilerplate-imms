@@ -23,6 +23,7 @@ easy_admin:
       - 'vertical'
     menu:
       - User
+      - Log
       - Permission
       - Role
       - label: 'Catálogos'
