@@ -13,18 +13,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 * Class SolicitudSubscriber
 * @package AppBundle\EventSubscriber
 */
-class SolicitudSubscriber implements EventSubscriberInterface
+class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberInterface
 {
-
-  /**
-   * @var ContainerInterface
-   */
-  protected $container;
-
-  public function __construct(ContainerInterface $container)
-  {
-    $this->container = $container;
-  }
 
   public static function getSubscribedEvents()
   {
@@ -120,12 +110,4 @@ class SolicitudSubscriber implements EventSubscriberInterface
     ]);
   }
 
-  /**
-   * @param string $msg
-   * @param array $context
-   */
-  protected function logDB($msg , array $context)
-  {
-    $this->container->get('monolog.logger.db')->info($msg, $context);
-  }
 }

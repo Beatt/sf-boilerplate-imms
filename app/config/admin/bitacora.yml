@@ -6,11 +6,12 @@ easy_admin:
       show:
         fields:
           - id
-          - { property: message, label: 'Mensaje' }
-          - {property: contextDisplay, type: 'raw'}
-          - {property: levelName, label: 'Tipo'}
           - user
           - { property: createdAt, label: 'Fecha' }
+          - { property: message, label: 'Mensaje' }
+          - {property: contextDisplay, type: 'raw'}
+          - {property: extraDisplay, type: 'raw'}
+          - {property: levelName, label: 'Tipo'}
         actions:
           - '-edit'
           - '-delete'

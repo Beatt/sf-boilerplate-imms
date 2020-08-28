@@ -47,7 +47,7 @@ class InstitucionController extends DIEControllerController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
-            $institucionManager->create($form->getData());
+            $institucionManager->update($form->getData());
 
             $this->addFlash(
                 'success',

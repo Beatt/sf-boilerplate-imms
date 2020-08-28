@@ -10,18 +10,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Class SolicitudSubscriber
  * @package AppBundle\EventSubscriber
  */
-class InstitucionSubscriber implements EventSubscriberInterface
+class InstitucionSubscriber extends AbstractSubscriber implements EventSubscriberInterface
 {
-
-  /**
-   * @var ContainerInterface
-   */
-  protected $container;
-
-  public function __construct(ContainerInterface $container)
-  {
-    $this->container = $container;
-  }
 
   public static function getSubscribedEvents()
   {
@@ -33,7 +23,7 @@ class InstitucionSubscriber implements EventSubscriberInterface
   public function onDatosActualizados(InstitucionEvent $event)
   {
     $institucion = $event->getInstitucion();
-    $this->logDB(SolicitudInterface::MONTOS_VALIDADOS_CAME, [
+    $this->logDB('Actualización de datos de institución educativa', [
       'institucion_id' => $institucion->getId()
     ]);
   }

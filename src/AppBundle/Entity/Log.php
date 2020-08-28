@@ -244,13 +244,15 @@ class Log
     }
 
     public function getContextDisplay() {
-    $record = [];
-    if ($this->getContext())
-        $record = array_merge($record, $this->getContext());
+        return json_encode(
+            array_filter($this->getContext()),
+            JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+    }
 
-    if ($this->getExtra())
-        $record = array_merge($record, $this->getExtra());
-        return json_encode(array_filter($record));
+    public function getExtraDisplay() {
+        return json_encode(
+            array_filter($this->getExtra()),
+            JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
     }
 
 }

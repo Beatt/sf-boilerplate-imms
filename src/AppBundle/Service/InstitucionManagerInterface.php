@@ -6,5 +6,5 @@ use AppBundle\Entity\Institucion;
 
 interface InstitucionManagerInterface
 {
-    public function create(Institucion $institucion);
+    public function update(Institucion $institucion);
 }
