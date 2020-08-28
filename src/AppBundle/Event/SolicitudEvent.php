@@ -3,6 +3,7 @@
 namespace AppBundle\Event;
 
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

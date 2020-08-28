@@ -6,6 +6,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Entity\Usuario;
 use AppBundle\Event\SolicitudEvent;
 use Carbon\Carbon;
@@ -137,6 +138,16 @@ class SolicitudManager implements SolicitudManagerInterface
         ];
     }
 
+    public function registrarMontos(Solicitud $solicitud) {
+      $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
+      $this->update($solicitud);
+
+      $this->dispatcher->dispatch(
+        SolicitudEvent::MONTOS_REGISTRADOS,
+        new SolicitudEvent($solicitud)
+      );
+    }
+
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null)
     {
         $solicitud->setValidado($is_valid);
@@ -148,7 +159,7 @@ class SolicitudManager implements SolicitudManagerInterface
                         $this->entityManager->persist($monto);
                         $this->entityManager->flush();
                     } else {
-                        throw new \Exception("Montos no puedes ser vacios");
+                        throw new \Exception("Montos no puede estar vacío");
                     }
                 }
                 $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);

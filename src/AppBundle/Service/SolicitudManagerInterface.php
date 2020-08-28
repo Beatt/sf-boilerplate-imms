@@ -16,6 +16,8 @@ interface SolicitudManagerInterface
 
     public function finalizar(Solicitud $solicitud, Usuario $came_usuario = null);
 
+    public function registrarMontos(Solicitud $solicitud);
+
     public function validarMontos(Solicitud $solicitud, $montos, $is_valid, Usuario $came_usuario = null);
 
     public function generateUser(Solicitud $solicitud, Usuario $came_usuario = null);

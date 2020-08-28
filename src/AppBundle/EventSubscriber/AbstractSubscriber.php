@@ -38,8 +38,16 @@ abstract class AbstractSubscriber
   * @param array $context
   */
   protected function logDB($action = self::UNKNOWN_ACTION,
-                               array $context) {
-  $this->container->get('monolog.logger.db')->info($action, $context);
+                               array $context, $type='info') {
+    switch ($type) {
+      case 'error':
+        $this->container->get('monolog.logger.db')->error($action, $context);
+      case 'info':
+      default:
+        $this->container->get('monolog.logger.db')->info($action, $context);
+
+
+    }
   }
 
 }

@@ -19,6 +19,7 @@ use AppBundle\Repository\SolicitudRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
 use AppBundle\Service\GeneradorReferenciaBancariaZIPInterface;
 use AppBundle\Service\ProcesadorFormaPagoInterface;
+use AppBundle\Service\SolicitudManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -144,14 +145,14 @@ class SolicitudController extends DIEControllerController
      * @param integer $id
      * @param Request $request
      * @param CampoClinicoRepositoryInterface $campoClinicoRepository
-     * @param EntityManagerInterface $entityManager
+     * @param SolicitudManagerInterface $solicitudManager
      * @return Response
      */
     public function registrarMontosAction(
         $id,
         Request $request,
         CampoClinicoRepositoryInterface $campoClinicoRepository,
-        EntityManagerInterface $entityManager
+        SolicitudManagerInterface $solicitudManager
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
@@ -191,10 +192,8 @@ class SolicitudController extends DIEControllerController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $data = $form->getData();
-            $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
-            $entityManager->persist($data);
-            $entityManager->flush();
+            $solicitud = $form->getData();
+            $solicitudManager->registrarMontos($solicitud);
 
             $this->addFlash('success', 'Se han guardado correctamente los montos para la solicitud ' . $solicitud->getNoSolicitud());
 

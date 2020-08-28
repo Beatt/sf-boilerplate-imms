@@ -2,12 +2,14 @@
 
 namespace AppBundle\EventSubscriber;
 
+use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Event\BankReferencesCreatedEvent;
 use AppBundle\Event\SolicitudEvent;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Vich\UploaderBundle\Event\Event;
+use Vich\UploaderBundle\Event\Events;
 
 /**
 * Class SolicitudSubscriber
@@ -25,18 +27,9 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
       SolicitudEvent::MONTOS_INCORRECTOS => 'onMontosIncorrectos',
       SolicitudEvent::MONTOS_VALIDADOS => 'onMontosValidados',
       SolicitudEvent::FORMATOS_GENERADOS => 'onFormatosGenerados',
-      SolicitudEvent::COMPROBANTE_CARGADO => 'onComprobanteCargado',
-      SolicitudEvent::COMPROBANTE_VALIDADO => 'onComprobanteValidado',
+      Events::POST_UPLOAD => 'onOficioCargado',
       BankReferencesCreatedEvent::NAME => 'onReferenciaCreada'
     ];
-  }
-
-  public function onComprobanteCargado(SolicitudEvent $event)
-  {
-  }
-
-  public function onComprobanteValidado(SolicitudEvent $event)
-  {
   }
 
   public function onFormatosGenerados(SolicitudEvent $event)
@@ -55,7 +48,10 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
   public function onMontosRegistrados(SolicitudEvent $event)
   {
     $solicitud = $event->getSolicitud();
-    $this->logDB(SolicitudInterface::MONTOS_VALIDADOS_CAME, [
+
+    $this->logDB(
+      'Se han registrado los montos de inscripción y colegiatura de la IE',
+      [
       'solicitud_id' => $solicitud->getId(),
       'file_name' => $solicitud->getUrlArchivo()
     ]);
@@ -67,6 +63,32 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
     $this->logDB(SolicitudInterface::MONTOS_VALIDADOS_CAME, [
       'solicitud_id' => $solicitud->getId()
     ]);
+  }
+
+  public function onOficioCargado(Event $event)
+  {
+    if (! $event->getObject() instanceof Solicitud) return;
+    $solicitud = $event->getObject();
+    $file = $solicitud->getUrlArchivoFile();
+
+    if (!$file) {
+      $this->logDB(
+        'Ocurrió un error al intentar cargar el oficio de montos de inscripción y colegiatura de la IE.',
+        [
+          'solicitud_id' => $solicitud->getId(),
+          'oficio' => $solicitud->getUrlArchivo()
+        ], 'error'
+      );
+      return;
+    }
+
+    $this->logDB('Archivo cargado. Oficio de montos de inscripción y colegiatura actualizado', [
+      'solicitud_id' => $solicitud->getId(),
+      'oficio' => $solicitud->getUrlArchivo(),
+      'type' => $file->getMimeType(),
+      'size' => number_format($file->getSize()/1024.0, 2)." Kb"
+    ]);
+
   }
 
   public function onReferenciaCreada(BankReferencesCreatedEvent $event)
