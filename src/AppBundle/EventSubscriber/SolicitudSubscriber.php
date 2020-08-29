@@ -39,7 +39,7 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
   public function onMontosIncorrectos(SolicitudEvent $event)
   {
     $solicitud = $event->getSolicitud();
-    $this->logDB(SolicitudInterface::MONTOS_VALIDADOS_CAME, [
+    $this->logDB('Se ha registrado que los montos o el oficio registrado NO son válidos', [
       'solicitud_id' => $solicitud->getId(),
       'observaciones' => $solicitud->getObservaciones()
     ]);
@@ -53,14 +53,15 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
       'Se han registrado los montos de inscripción y colegiatura de la IE',
       [
       'solicitud_id' => $solicitud->getId(),
-      'file_name' => $solicitud->getUrlArchivo()
+      'file_name' => $solicitud->getUrlArchivo(),
+        'estatus' => $solicitud->getEstatus()
     ]);
   }
 
   public function onMontosValidados(SolicitudEvent $event)
   {
     $solicitud = $event->getSolicitud();
-    $this->logDB(SolicitudInterface::MONTOS_VALIDADOS_CAME, [
+    $this->logDB('Se ha confirmado que los montos y el oficio registrado son válidos', [
       'solicitud_id' => $solicitud->getId()
     ]);
   }

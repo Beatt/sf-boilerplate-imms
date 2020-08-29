@@ -4,6 +4,7 @@
 namespace AppBundle\Service;
 
 
+use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
@@ -138,9 +139,14 @@ class SolicitudManager implements SolicitudManagerInterface
         ];
     }
 
-    public function registrarMontos(Solicitud $solicitud) {
+    public function registrarMontos(Solicitud $solicitud)  {
+      foreach ($solicitud->getMontosCarreras() as $monto) {
+        $this->entityManager->persist($monto);
+        $this->entityManager->flush();
+      }
       $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
-      $this->update($solicitud);
+      $this->entityManager->persist($solicitud);
+      $this->entityManager->flush();
 
       $this->dispatcher->dispatch(
         SolicitudEvent::MONTOS_REGISTRADOS,

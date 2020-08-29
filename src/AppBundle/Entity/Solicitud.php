@@ -203,7 +203,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         $this->estatus = $estatus;
 
         return $this;
-        //}
     }
 
 
