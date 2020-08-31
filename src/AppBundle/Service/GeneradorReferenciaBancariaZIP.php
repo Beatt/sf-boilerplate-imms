@@ -4,6 +4,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Solicitud;
 use AppBundle\Event\BankReferencesCreatedEvent;
+use AppBundle\Event\ReferenciaBancariaDownloadedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -49,8 +50,8 @@ class GeneradorReferenciaBancariaZIP implements GeneradorReferenciaBancariaZIPIn
         $this->removeFiles();
 
         $this->dispatcher->dispatch(
-            BankReferencesCreatedEvent::NAME,
-            new BankReferencesCreatedEvent($solicitud)
+          ReferenciaBancariaDownloadedEvent::NAME,
+            new ReferenciaBancariaDownloadedEvent($solicitud, '')
         );
 
         return $response;

@@ -119,15 +119,10 @@ services:
             - '@event_dispatcher'
             - '%mailer_sender%'
 
-    app.bank_references_created.event:
-        class: AppBundle\EventListener\BankReferencesCreatedListener
+    app.bank_references_downloaded.event:
+        class: AppBundle\EventListener\ReferenciaBancariaDownloadedListener
         tags:
-            - { name: kernel.event_listener, event: bank_references.created, method: handleBankReferencesCreated }
-
-    app.bank_references_unloaded.event:
-        class: AppBundle\EventListener\ReferenciaBancariaZipUnloadedListener
-        tags:
-            - { name: kernel.event_listener, event: referencia_bancaria_zip.unloaded, method: referenciaBancariaZipUnloaded }
+            - { name: kernel.event_listener, event: referencia_bancaria.downloaded, method: handleReferenciaBancariaDownloaded }
 
     app.institucion_voter:
         class: AppBundle\Security\Voter\SolicitudVoter

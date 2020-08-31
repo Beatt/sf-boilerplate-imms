@@ -5,7 +5,7 @@ namespace AppBundle\EventSubscriber;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Entity\SolicitudTipoPagoInterface;
-use AppBundle\Event\BankReferencesCreatedEvent;
+use AppBundle\Event\ReferenciaBancariaDownloadedEvent;
 use AppBundle\Event\SolicitudEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Vich\UploaderBundle\Event\Event;
@@ -26,22 +26,26 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
       SolicitudEvent::MONTOS_REGISTRADOS => 'onMontosRegistrados',
       SolicitudEvent::MONTOS_INCORRECTOS => 'onMontosIncorrectos',
       SolicitudEvent::MONTOS_VALIDADOS => 'onMontosValidados',
-      SolicitudEvent::FORMATOS_GENERADOS => 'onFormatosGenerados',
       Events::POST_UPLOAD => 'onOficioCargado',
-      BankReferencesCreatedEvent::NAME => 'onReferenciaCreada'
+      SolicitudEvent::FORMATOS_GENERADOS => 'onFormatosGenerados',
+      ReferenciaBancariaDownloadedEvent::NAME => 'onReferenciaDownloaded',
     ];
   }
 
-  public function onFormatosGenerados(SolicitudEvent $event)
+  public function onSolicitudCreada(SolicitudEvent $event)
   {
+    $this->logDB(SolicitudInterface::CREADA, [
+      'solicitud_id' => $event->getSolicitud()->getId()
+    ]);
   }
 
-  public function onMontosIncorrectos(SolicitudEvent $event)
+  public function onSolicitudTerminada(SolicitudEvent $event)
   {
     $solicitud = $event->getSolicitud();
-    $this->logDB('Se ha registrado que los montos o el oficio registrado NO son válidos', [
+    $this->logDB(SolicitudInterface::CONFIRMADA, [
       'solicitud_id' => $solicitud->getId(),
-      'observaciones' => $solicitud->getObservaciones()
+      'numCamposSolicitados' => $solicitud->getNoCamposSolicitados(),
+      'numCamposAutorizados' => $solicitud->getNoCamposAutorizados()
     ]);
   }
 
@@ -55,6 +59,15 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
       'solicitud_id' => $solicitud->getId(),
       'file_name' => $solicitud->getUrlArchivo(),
         'estatus' => $solicitud->getEstatus()
+    ]);
+  }
+
+  public function onMontosIncorrectos(SolicitudEvent $event)
+  {
+    $solicitud = $event->getSolicitud();
+    $this->logDB('Se ha registrado que los montos o el oficio registrado NO son válidos', [
+      'solicitud_id' => $solicitud->getId(),
+      'observaciones' => $solicitud->getObservaciones()
     ]);
   }
 
@@ -89,15 +102,24 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
       'type' => $file->getMimeType(),
       'size' => number_format($file->getSize()/1024.0, 2)." Kb"
     ]);
-
   }
 
-  public function onReferenciaCreada(BankReferencesCreatedEvent $event)
+  public function onFormatosGenerados(SolicitudEvent $event)
+  {
+    $solicitud = $event->getSolicitud();
+    $this->logDB('Se ha seleccionado la modalidad de pago. Formatos de pago generados.', [
+      'solicitud_id' => $solicitud->getId(),
+      'tipo_pago' => $solicitud->getTipoPago()
+    ]);
+  }
+
+  public function onReferenciaDownloaded(ReferenciaBancariaDownloadedEvent $event)
   {
     $solicitud = $event->getSolicitud();
     $esPagoUnico =$solicitud->getTipoPago() == SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
-    $msg = 'Referencia de Pago Generada';
+    $msg = 'Referencia(s) de pago descargada(s). ';
     if ($esPagoUnico) {
+      var_dump($solicitud->getPago()->getId());
       $this->logDB($msg, [
         'solicitud_id' => $solicitud->getId(),
         'tipo_pago' => $solicitud->getTipoPago(),
@@ -114,23 +136,6 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
         ]);
       }
     }
-  }
-
-  public function onSolicitudCreada(SolicitudEvent $event)
-  {
-    $this->logDB(SolicitudInterface::CREADA, [
-      'solicitud_id' => $event->getSolicitud()->getId()
-    ]);
-  }
-
-  public function onSolicitudTerminada(SolicitudEvent $event)
-  {
-    $solicitud = $event->getSolicitud();
-    $this->logDB(SolicitudInterface::CONFIRMADA, [
-      'solicitud_id' => $solicitud->getId(),
-      'numCamposSolicitados' => $solicitud->getNoCamposSolicitados(),
-      'numCamposAutorizados' => $solicitud->getNoCamposAutorizados()
-    ]);
   }
 
 }

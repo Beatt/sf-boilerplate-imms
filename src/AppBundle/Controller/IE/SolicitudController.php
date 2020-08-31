@@ -329,11 +329,6 @@ class SolicitudController extends DIEControllerController
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_REFERENCIAS_BANCARIAS, $solicitud);
 
-        $dispatcher->dispatch(
-            ReferenciaBancariaZipUnloadedEvent::NAME,
-            new ReferenciaBancariaZipUnloadedEvent($solicitud)
-        );
-
         return $generadorReferenciaBancariaZIP->generarZipResponse($solicitud);
     }
 
