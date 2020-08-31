@@ -164,8 +164,8 @@ const PagoIndex = (props) => {
                                 <th> </th>
                                 <th>
                                     <select className="form-control"
-                                            onChange={e => { setQuery(Object.assign(query, {estado: e.target.value}));  handleSearchEvent(); }}>>
-                                        <option value="">Seleccionar ...</option>
+                                            onChange={e => { setMeta(Object.assign(meta, {page: 1})); setQuery(Object.assign(query, {estado: e.target.value}));  handleSearchEvent(); }}>>
+                                        <option value="">Todos</option>
                                         <option value="a">Pendiente Validación</option>
                                         <option value="b">Solicitud Pagada</option>
                                         <option value="d">Pago no Válido</option>

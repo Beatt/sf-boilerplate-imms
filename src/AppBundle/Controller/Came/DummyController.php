@@ -240,4 +240,28 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
             'sender' => $sender
         ]);
     }
+
+    /**
+     * @Route("/came/dummy/credentials/{campo_clinico_id}", methods={"GET"})
+     * @param $campo_clinico_id
+     */
+    public function credentialsJsAction(Request $request, $campo_clinico_id)
+    {
+        $request->headers->add(array('X-Requested-With' => 'XMLHttpRequest'));
+        $campo_clinico = $this->getDoctrine()
+            ->getRepository(CampoClinico::class)
+            ->find($campo_clinico_id);
+
+        if (!$campo_clinico) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $campo_clinico
+            );
+        }
+        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+            $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
+            return $this->redirectToRoute('came.solicitud.index');
+        }
+        return  $this->render('formatos/credenciales_dummy.html.twig', ['campo_clinico' => $campo_clinico, 'total' => $campo_clinico->getLugaresAutorizados()]);
+
+    }
 }

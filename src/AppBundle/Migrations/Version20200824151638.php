@@ -16,7 +16,7 @@ class Version20200824151638 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-        $this->addSql('create view referencias as (select max(pago.id) id, referencia_bancaria from pago group by pago.referencia_bancaria);');
+        $this->addSql('create view referencias as (select max(pago.id) id, referencia_bancaria from pago WHERE pago.fecha_pago IS NOT NULL group by pago.referencia_bancaria);');
     }
 
     /**
