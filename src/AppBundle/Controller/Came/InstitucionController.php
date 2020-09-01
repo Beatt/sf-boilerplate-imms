@@ -35,7 +35,7 @@ class InstitucionController extends \AppBundle\Controller\DIEControllerControlle
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try{
-                $institucionManager->Create($form->getData());
+                $institucionManager->update($form->getData());
                 $result = [
                     'status' => true
                 ];

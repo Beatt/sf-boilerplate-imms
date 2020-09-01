@@ -1,0 +1,32 @@
+easy_admin:
+  entities:
+    Log:
+      class: AppBundle\Entity\Log
+      label: Bitácora
+      show:
+        fields:
+          - id
+          - user
+          - user.institucion
+          - { property: createdAt, label: 'Fecha' }
+          - { property: message, label: 'Mensaje' }
+          - {property: contextDisplay, label: 'Contexto', type: 'raw'}
+          - {property: extraDisplay, label: 'Extra', type: 'raw'}
+          - {property: levelName, label: 'Tipo'}
+        actions:
+          - '-edit'
+          - '-delete'
+      list:
+        title: Bitácora
+        actions:
+          - '-delete'
+          - { name: 'show', label: 'Detalle' }
+          - '-new'
+          - '-edit'
+        fields:
+          - id
+          - { property: message, label: 'Mensaje' }
+          - { property: user}
+          - { property: user.institucion, label: 'Institución'}
+          - { property: resumenDisplay, label: 'Contexto', type: 'raw' }
+          - { property: createdAt, label: 'Fecha', format: 'd/m/Y H:i:s' }

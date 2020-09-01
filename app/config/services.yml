@@ -55,6 +55,7 @@ services:
         class: AppBundle\Service\InstitucionManager
         arguments:
             - '@doctrine.orm.entity_manager'
+            - '@event_dispatcher'
             - '@logger'
         public: true
 
@@ -115,17 +116,13 @@ services:
             - '@Swift_Mailer'
             - '@Twig_Environment'
             - '@Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface'
+            - '@event_dispatcher'
             - '%mailer_sender%'
 
-    app.bank_references_created.event:
-        class: AppBundle\EventListener\BankReferencesCreatedListener
+    app.bank_references_downloaded.event:
+        class: AppBundle\EventListener\ReferenciaBancariaDownloadedListener
         tags:
-            - { name: kernel.event_listener, event: bank_references.created, method: handleBankReferencesCreated }
-
-    app.bank_references_unloaded.event:
-        class: AppBundle\EventListener\ReferenciaBancariaZipUnloadedListener
-        tags:
-            - { name: kernel.event_listener, event: referencia_bancaria_zip.unloaded, method: referenciaBancariaZipUnloaded }
+            - { name: kernel.event_listener, event: referencia_bancaria.downloaded, method: handleReferenciaBancariaDownloaded }
 
     app.institucion_voter:
         class: AppBundle\Security\Voter\SolicitudVoter
@@ -151,3 +148,14 @@ services:
             - '@AppBundle\Service\GeneradorFormatoFofoeInterface'
             - '%formato_fofoe_dir%'
             - '%zip_formatos_fofoe_dir%'
+
+    monolog.db_handler:
+        class: AppBundle\Util\MonologDBHandler
+        tag:
+        arguments: ['@doctrine.orm.entity_manager', '@Symfony\Component\Security\Core\Security']
+
+    monolog.processor.request:
+        class: AppBundle\Util\RequestProcessor
+        arguments: ['@request_stack', '@service_container']
+        tags:
+            - { name: monolog.processor, method: processRecord, handler: db }

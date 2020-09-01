@@ -16,8 +16,9 @@ class ComprobantePagoNamer implements NamerInterface
     public function name($object, PropertyMapping $mapping)
     {
         return  sprintf(
-            '%s-comprobantepago.%s',
-            Carbon::now()->format('dmY:His'),
+            '%s_%s-comprobantepago.%s',
+            $object->getReferenciaBancaria(),
+            ($object->getId().""),
             $object->getComprobantePagoFile()->guessExtension()
         );
     }

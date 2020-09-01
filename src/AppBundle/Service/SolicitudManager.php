@@ -4,20 +4,18 @@
 namespace AppBundle\Service;
 
 
-use AppBundle\Entity\Institucion;
+use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Permiso;
-use AppBundle\Entity\Rol;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Entity\Usuario;
+use AppBundle\Event\SolicitudEvent;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Swift_Mailer;
 
 class SolicitudManager implements SolicitudManagerInterface
@@ -48,8 +46,14 @@ class SolicitudManager implements SolicitudManagerInterface
     private $templating;
     private $sender;
 
+  /**
+   * @var EventDispatcherInterface
+   */
+    private $dispatcher;
+
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
         Swift_Mailer $mailer, \Twig_Environment $templating, EncoderFactoryInterface $encoderFactory,
+        EventDispatcherInterface $dispatcher,
         $sender
     )
     {
@@ -59,6 +63,7 @@ class SolicitudManager implements SolicitudManagerInterface
         $this->templating = $templating;
         $this->encoderFactory = $encoderFactory;
         $this->sender = $sender;
+        $this->dispatcher = $dispatcher;
     }
 
     public function update(Solicitud $solicitud)
@@ -88,6 +93,11 @@ class SolicitudManager implements SolicitudManagerInterface
             $solicitud->setNoSolicitud("NS_" . str_pad($solicitud->getId(), 6, '0', STR_PAD_LEFT));
             $this->entityManager->persist($solicitud);
             $this->entityManager->flush();
+
+            $this->dispatcher->dispatch(
+              SolicitudEvent::SOLICITUD_CREADA,
+              new SolicitudEvent($solicitud)
+            );
         } catch (OptimisticLockException $exception) {
             $this->logger->critical($exception->getMessage());
             return [
@@ -95,6 +105,7 @@ class SolicitudManager implements SolicitudManagerInterface
                 'error' => $exception->getMessage()
             ];
         }
+
         return [
             'status' => true,
             'message' => 'Solicitud almacenada con éxito',
@@ -116,11 +127,31 @@ class SolicitudManager implements SolicitudManagerInterface
             ];
         }
 
+        $this->dispatcher->dispatch(
+          SolicitudEvent::SOLICITUD_TERMINADA,
+          new SolicitudEvent($solicitud)
+        );
+
         $this->generateUser($solicitud, $came_user);
 
         return [
             'status' => true
         ];
+    }
+
+    public function registrarMontos(Solicitud $solicitud)  {
+      foreach ($solicitud->getMontosCarreras() as $monto) {
+        $this->entityManager->persist($monto);
+        $this->entityManager->flush();
+      }
+      $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
+      $this->entityManager->persist($solicitud);
+      $this->entityManager->flush();
+
+      $this->dispatcher->dispatch(
+        SolicitudEvent::MONTOS_REGISTRADOS,
+        new SolicitudEvent($solicitud)
+      );
     }
 
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null)
@@ -134,7 +165,7 @@ class SolicitudManager implements SolicitudManagerInterface
                         $this->entityManager->persist($monto);
                         $this->entityManager->flush();
                     } else {
-                        throw new \Exception("Montos no puedes ser vacios");
+                        throw new \Exception("Montos no puede estar vacío");
                     }
                 }
                 $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
@@ -152,6 +183,13 @@ class SolicitudManager implements SolicitudManagerInterface
                 'error' => $exception->getMessage()
             ];
         }
+
+      $this->dispatcher->dispatch(
+        $is_valid ? SolicitudEvent::MONTOS_VALIDADOS
+          : SolicitudEvent::MONTOS_INCORRECTOS,
+        new SolicitudEvent($solicitud)
+      );
+
         return [
             'status' => true
         ];

@@ -15,7 +15,8 @@ class ComprobanteInscripcionNamer implements NamerInterface
     public function name($object, PropertyMapping $mapping)
     {
         return  sprintf(
-            'comprobante-inscripcion.%s',
+            '%s_comprobante-inscripcion.%s',
+            $object->getNoSolicitud(),
             $object->getUrlArchivoFile()->guessExtension()
         );
     }

@@ -203,7 +203,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         $this->estatus = $estatus;
 
         return $this;
-        //}
     }
 
 
@@ -509,7 +508,7 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
 
     public function __toString()
     {
-        return '' . $this->getId();
+        return '' . $this->getNoSolicitud();
     }
 
     public function getPagosIndividuales()
@@ -688,4 +687,5 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         $criteria = PagoRepository::getPagosCargadosByReferenciaBancaria($referenciaBancaria);
         return $this->getPagos()->matching($criteria);
     }
+
 }

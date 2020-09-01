@@ -46,11 +46,13 @@ const Expediente = ({ solicitud }) => {
               {
                 solicitud.expediente.oficioMontos.urlArchivo ?
                   <a
-                    href={`${getSchemeAndHttpHost()}${solicitud.expediente.oficioMontos.urlArchivo}`}
-                    target='_blank' download
+                    href={`${getSchemeAndHttpHost()}/ie/solicitud/${solicitud.id}/descargar-comprobante-inscripcion`}
+                    target='_blank'
+                    download
                   >
                     Descargar
-                  </a> :
+                  </a>
+                  :
                   DEFAULT_DOCUMENT_VALUE
               }
             </td>

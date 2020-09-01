@@ -30,6 +30,26 @@ final class DocumentController extends DIEControllerController
         $this->solicitudRepository = $solicitudRepository;
     }
 
+  /**
+   * @Route("/solicitud/{id}/descargar-comprobante-inscripcion", name="ie#descargar_comprobante_inscripcion")
+   * @param int $id
+   * @return Response
+   */
+  public function descargarComprobanteInscripcion(
+    $id
+  ) {
+    /** @var Institucion $institucion */
+    $institucion = $this->getUser()->getInstitucion();
+    if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+
+    /** @var Solicitud $pago */
+    $solicitud = $this->solicitudRepository->find($id);
+    if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+
+    $downloadHandler = $this->get('vich_uploader.download_handler');
+    return $downloadHandler->downloadObject($solicitud, 'urlArchivoFile');
+  }
+
     /**
      * @Route("/pagos/{id}/descargar-comprobante-de-pago", name="ie#descargar_comprobante_de_pago")
      * @param int $id

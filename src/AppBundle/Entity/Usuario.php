@@ -623,4 +623,10 @@ class Usuario implements UserInterface, \Serializable
             $this->contrasena
         ) = unserialize($serialized);
     }
+
+  public function __toString()
+  {
+    return "[".$this->getUsername()."] "
+      .$this->getFullName();
+  }
 }

@@ -7,8 +7,10 @@ use AppBundle\Entity\Pago;
 use AppBundle\Entity\ReferenciaBancariaInterface;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Event\SolicitudEvent;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
 {
@@ -16,12 +18,19 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
 
     private $generadorReferenciaBancaria;
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
     public function __construct(
         EntityManagerInterface $entityManager,
-        GeneradorReferenciaBancariaInterface $generadorReferenciaBancaria
+        GeneradorReferenciaBancariaInterface $generadorReferenciaBancaria,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->entityManager = $entityManager;
         $this->generadorReferenciaBancaria = $generadorReferenciaBancaria;
+      $this->dispatcher = $dispatcher;
     }
 
     public function procesar(Solicitud $solicitud)
@@ -57,6 +66,11 @@ class ProcesadorFormaPago implements ProcesadorFormaPagoInterface
 
         $solicitud->setEstatus(SolicitudInterface::FORMATOS_DE_PAGO_GENERADOS);
         $this->entityManager->flush();
+
+        $this->dispatcher->dispatch(
+          SolicitudEvent::FORMATOS_GENERADOS,
+          new SolicitudEvent($solicitud)
+        );
     }
 
     /**
