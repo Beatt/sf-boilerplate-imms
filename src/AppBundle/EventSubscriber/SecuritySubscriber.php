@@ -28,9 +28,9 @@ class SecuritySubscriber  extends AbstractSubscriber implements EventSubscriberI
       $user = $event->getAuthenticationToken()->getUser();
 
       $permisos = $user->getPermisos();
-      $req = $this->request->getCurrentRequest();
+      $req = $this->request;
       $record = [];
-      $record['request']['_username']         = $req->request->get('_username');
+      $record['request']['_username']  = $req->request->get('_username');
       if ($permisos)
         $record['permiso'] = $permisos[0]->getNombre();
 

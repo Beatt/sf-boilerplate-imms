@@ -255,4 +255,19 @@ class Log
             JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
     }
 
+    public function getResumenDisplay() {
+        $res = [];
+        if ( array_key_exists('session_id', $this->extra) )
+            $res["session_id"] = $this->extra['session_id'];
+
+        if ( array_key_exists('solicitud_id', $this->context) )
+            $res["solicitud_id"] = $this->context['solicitud_id'];
+
+        if ( array_key_exists('referencia', $this->context) )
+            $res["referencia"] = $this->context['referencia'];
+
+        return json_encode(
+                    array_filter($res),
+                    JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+    }
 }

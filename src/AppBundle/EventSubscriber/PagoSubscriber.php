@@ -92,7 +92,7 @@ class PagoSubscriber extends AbstractSubscriber implements EventSubscriberInterf
       'pago_id' => $pago->getId(),
       'solicitud_id' => $solicitud->getId(),
       'tipo_pago' => $solicitud->getTipoPago(),
-      'referenciaBancaria' => $pago->getReferenciaBancaria(),
+      'referencia' => $pago->getReferenciaBancaria(),
     ];
 
   }

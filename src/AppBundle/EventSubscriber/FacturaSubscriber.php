@@ -29,6 +29,7 @@ class FacturaSubscriber extends AbstractSubscriber implements EventSubscriberInt
 
     $pago = $factura->getPago();
     $referencia = $pago ? $pago->getReferenciaBancaria() : '';
+    $solicitud_id = $pago ? $pago->getSolicitud()->getId() : '';
 
     $requestFile = $this->request->files->get('pago_factura')['factura']['zipFile'];
 
@@ -48,6 +49,7 @@ class FacturaSubscriber extends AbstractSubscriber implements EventSubscriberInt
       $this->logDB('Ocurrió un error al intentar cargar el comprobante de pago.',
         array_merge( $this->getDataPago($pago),
           ['factura_id' => $factura->getId(),
+            'solicitud_id' => $solicitud_id,
             'monto_factura' => $factura->getMonto(),
             'fecha_facturacion' => $factura->getFechaFacturacion()->format('Y-m-d'),
             'zip' => $factura->getZip(),
@@ -61,6 +63,7 @@ class FacturaSubscriber extends AbstractSubscriber implements EventSubscriberInt
     $this->logDB('Se ha registrado la factura para el pago.',
         [
           'factura_id' => $factura->getId(),
+          'solicitud_id' => $solicitud_id,
           'monto_factura' => $factura->getMonto(),
           'fecha_facturacion' => $factura->getFechaFacturacion()->format('Y-m-d'),
           'referencia_bancaria' => $referencia,

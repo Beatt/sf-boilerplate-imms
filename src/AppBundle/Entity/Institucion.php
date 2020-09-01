@@ -457,4 +457,12 @@ class Institucion
     {
         $this->extension = $extension;
     }
+
+  /**
+   * @return string
+   */
+    public function __toString()
+    {
+      return $this->getNombre();
+    }
 }

@@ -7,10 +7,11 @@ easy_admin:
         fields:
           - id
           - user
+          - user.institucion
           - { property: createdAt, label: 'Fecha' }
           - { property: message, label: 'Mensaje' }
-          - {property: contextDisplay, type: 'raw'}
-          - {property: extraDisplay, type: 'raw'}
+          - {property: contextDisplay, label: 'Contexto', type: 'raw'}
+          - {property: extraDisplay, label: 'Extra', type: 'raw'}
           - {property: levelName, label: 'Tipo'}
         actions:
           - '-edit'
@@ -25,5 +26,7 @@ easy_admin:
         fields:
           - id
           - { property: message, label: 'Mensaje' }
-          - user
-          - { property: createdAt, label: 'Fecha' }
+          - { property: user}
+          - { property: user.institucion, label: 'Institución'}
+          - { property: resumenDisplay, label: 'Contexto', type: 'raw' }
+          - { property: createdAt, label: 'Fecha', format: 'd/m/Y H:i:s' }
