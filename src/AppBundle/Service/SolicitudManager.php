@@ -188,7 +188,7 @@ class SolicitudManager implements SolicitudManagerInterface
         $is_valid ? SolicitudEvent::MONTOS_VALIDADOS
           : SolicitudEvent::MONTOS_INCORRECTOS,
         new SolicitudEvent($solicitud)
-      ) ;
+      );
 
         return [
             'status' => true

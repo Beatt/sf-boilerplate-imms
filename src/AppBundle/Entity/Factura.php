@@ -50,11 +50,9 @@ class Factura
      private $folio;
 
     /**
-     * @var File
-     *
      * @Vich\UploadableField(mapping="facturas", fileNameProperty="zip")
+     * @var File
      */
-
     private $zipFile;
 
     /**

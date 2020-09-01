@@ -9,7 +9,7 @@ use Vich\UploaderBundle\Event\Event;
 use Vich\UploaderBundle\Event\Events;
 
 /**
- * Class SolicitudSubscriber
+ * Class PagoSubscriber
  * @package AppBundle\EventSubscriber
  */
 class PagoSubscriber extends AbstractSubscriber implements EventSubscriberInterface
@@ -20,8 +20,7 @@ class PagoSubscriber extends AbstractSubscriber implements EventSubscriberInterf
     return [
       Events::POST_UPLOAD => 'onComprobanteCargado',
       PagoEvent::PAGO_VALIDADO => 'onPagoValidado',
-      PagoEvent::PAGO_INCORRECTO => 'onPagoIncorrecto',
-      PagoEvent::PAGO_REGISTRO_FACTURA => 'onRegistroFactura'
+      PagoEvent::PAGO_INCORRECTO => 'onPagoIncorrecto'
     ];
   }
 
@@ -54,7 +53,7 @@ class PagoSubscriber extends AbstractSubscriber implements EventSubscriberInterf
       array_merge( $this->getDataPago($pago),
         [
           'monto' => $pago->getMonto(),
-          'fecha_pago' => $pago->getFechaPago()->format('Y-m-d H:i:s'),
+          'fecha_pago' => $pago->getFechaPago()->format('Y-m-d'),
           'comprobante' => $pago->getComprobantePago(),
           'file_name' => $original_filename,
           'type' => $file->getMimeType(),
@@ -69,7 +68,7 @@ class PagoSubscriber extends AbstractSubscriber implements EventSubscriberInterf
     $this->logDB('Se ha registrado que el comprobante de pago NO es válido.',
       array_merge( $this->getDataPago($pago),
         ['monto' => $pago->getMonto(),
-            'fecha_pago' => $pago->getFechaPago()->format('Y-m-d H:i:s'),
+            'fecha_pago' => $pago->getFechaPago()->format('Y-m-d'),
           'observaciones' => $pago->getObservaciones()
         ])
     );
@@ -82,29 +81,7 @@ class PagoSubscriber extends AbstractSubscriber implements EventSubscriberInterf
     $this->logDB('Se ha confirmado que el comprobante de pago es válido.',
       array_merge( $this->getDataPago($pago),
         ['monto' => $pago->getMonto(),
-          'fecha_pago' => $pago->getFechaPago()->format('Y-m-d H:i:s')
-        ])
-    );
-  }
-
-  public function onRegistroFactura(PagoEvent $event)
-  {
-    $pago = $event->getPago();
-    $factura = $pago->getFactura();
-
-    $pagos = "";
-    foreach ($factura->getPagos() as $p) {
-      $pagos .= $p->getId() . ",";
-    }
-    $pagos = mb_substr($pagos, 0, -1);
-
-    $this->logDB('Se ha registrado la factura para el pago.',
-      array_merge( $this->getDataPago($pago),
-        ['monto_factura' => $factura->getMonto(),
-          'fecha_facturacion' => $factura->getFechaFacturacion()->format('Y-m-d H:i:s'),
-          'folio' => $factura->getFolio(),
-          'zip' => $factura->getZip(),
-          'pagos_id' => $pagos
+          'fecha_pago' => $pago->getFechaPago()->format('Y-m-d')
         ])
     );
   }

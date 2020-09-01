@@ -9,9 +9,11 @@ use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
+use AppBundle\Event\PagoEvent;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
 {
@@ -23,16 +25,31 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
 
     private $campoClinicoRepository;
 
-    public function __construct(
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+  /**
+   * ProcesadorValidarPago constructor.
+   * @param EntityManagerInterface $entityManager
+   * @param ComprobantePagoCalculatorInterface $calculator
+   * @param EstatusCampoRepositoryInterface $estatusCampoRepository
+   * @param CampoClinicoRepositoryInterface $campoClinicoRepository
+   * @param EventDispatcherInterface $dispatcher
+   */
+  public function __construct(
         EntityManagerInterface $entityManager,
         ComprobantePagoCalculatorInterface $calculator,
         EstatusCampoRepositoryInterface $estatusCampoRepository,
-        CampoClinicoRepositoryInterface $campoClinicoRepository
+        CampoClinicoRepositoryInterface $campoClinicoRepository,
+        EventDispatcherInterface $dispatcher
     ) {
         $this->entityManager = $entityManager;
         $this->calculator = $calculator;
         $this->estatusCampoRepository = $estatusCampoRepository;
         $this->campoClinicoRepository = $campoClinicoRepository;
+        $this->dispatcher = $dispatcher;
     }
 
     public function procesar(Pago $pago)
@@ -61,8 +78,12 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
         }
 
         if(!$pago->isValidado()) $this->createPago($pago);
-
         $this->entityManager->flush();
+
+        $this->dispatcher->dispatch(
+          $pago->isValidado() ? PagoEvent::PAGO_VALIDADO : PagoEvent::PAGO_INCORRECTO,
+          new PagoEvent($pago)
+        );
     }
 
     /**

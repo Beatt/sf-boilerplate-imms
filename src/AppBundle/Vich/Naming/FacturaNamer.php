@@ -17,8 +17,8 @@ class FacturaNamer implements NamerInterface
     {
         return  sprintf(
             '%s_%s-factura.%s',
-            $object->getReferenciaBancaria(),
-            Carbon::now()->format('dmY:His'),
+            $object->getFolio(),
+            Carbon::now()->format('Y-m-d_H_i_s'),
             $object->getZipFile()->guessExtension()
         );
     }

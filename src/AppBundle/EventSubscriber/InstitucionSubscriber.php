@@ -4,13 +4,12 @@ namespace AppBundle\EventSubscriber;
 
 use AppBundle\Entity\Institucion;
 use AppBundle\Event\InstitucionEvent;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Vich\UploaderBundle\Event\Event;
 use Vich\UploaderBundle\Event\Events;
 
 /**
- * Class SolicitudSubscriber
+ * Class InstitucionSubscriber
  * @package AppBundle\EventSubscriber
  */
 class InstitucionSubscriber extends AbstractSubscriber implements EventSubscriberInterface
