@@ -57,7 +57,7 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
       'Se han registrado los montos de inscripción y colegiatura de la IE',
       [
       'solicitud_id' => $solicitud->getId(),
-      'file_name' => $solicitud->getUrlArchivo(),
+        'oficio' => $solicitud->getUrlArchivo(),
         'estatus' => $solicitud->getEstatus()
     ]);
   }
@@ -85,20 +85,27 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
     $solicitud = $event->getObject();
     $file = $solicitud->getUrlArchivoFile();
 
+    $requestFile = $this->request->files->get('solicitud_validacion_montos')['urlArchivoFile'];
+    $original_filename = $requestFile->getClientOriginalName();
+    $original_filename = strlen($original_filename) > 35 ?
+      substr($original_filename, 0, 30) . "..." : $original_filename;
+
     if (!$file) {
       $this->logDB(
-        'Ocurrió un error al intentar cargar el oficio de montos de inscripción y colegiatura de la IE.',
+        'Ocurrió un error al intentar cargar el oficio de montos de inscripción y colegiatura de la IE',
         [
           'solicitud_id' => $solicitud->getId(),
-          'oficio' => $solicitud->getUrlArchivo()
+          'oficio' => $solicitud->getUrlArchivo(),
+          'file_name' => $original_filename,
         ], 'error'
       );
       return;
     }
 
-    $this->logDB('Archivo cargado. Oficio de montos de inscripción y colegiatura actualizado', [
+    $this->logDB('Archivo cargado: Oficio de montos de inscripción y colegiatura', [
       'solicitud_id' => $solicitud->getId(),
       'oficio' => $solicitud->getUrlArchivo(),
+      'file_name' => $original_filename,
       'type' => $file->getMimeType(),
       'size' => number_format($file->getSize()/1024.0, 2)." Kb"
     ]);
@@ -107,7 +114,7 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
   public function onFormatosGenerados(SolicitudEvent $event)
   {
     $solicitud = $event->getSolicitud();
-    $this->logDB('Se ha seleccionado la modalidad de pago. Formatos de pago generados.', [
+    $this->logDB('Se ha seleccionado la modalidad de pago. Formatos de pago generados', [
       'solicitud_id' => $solicitud->getId(),
       'tipo_pago' => $solicitud->getTipoPago()
     ]);
@@ -117,9 +124,8 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
   {
     $solicitud = $event->getSolicitud();
     $esPagoUnico =$solicitud->getTipoPago() == SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
-    $msg = 'Referencia(s) de pago descargada(s). ';
+    $msg = 'Referencia(s) de pago descargada(s) ';
     if ($esPagoUnico) {
-      var_dump($solicitud->getPago()->getId());
       $this->logDB($msg, [
         'solicitud_id' => $solicitud->getId(),
         'tipo_pago' => $solicitud->getTipoPago(),

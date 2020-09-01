@@ -31,19 +31,26 @@ class InstitucionSubscriber extends AbstractSubscriber implements EventSubscribe
     $institucion = $event->getObject();
     $file = $institucion->getCedulaFile();
 
+    $requestFile = $this->request->files->get('institucion')['cedulaFile'];
+    $original_filename = $requestFile->getClientOriginalName();
+    $original_filename = strlen($original_filename) > 35 ?
+      substr($original_filename, 0, 30) . "..." : $original_filename;
+
     if (!$file) {
-      $this->logDB('Ocurrió un error al intentar cargar la cédula de la IE.',
+      $this->logDB('Ocurrió un error al intentar cargar la cédula de la IE',
         [
         'institucion_id' => $institucion->getId(),
-        'cedula' => $institucion->getCedulaIdentificacion()
+        'cedula' => $institucion->getCedulaIdentificacion(),
+          'file_name' => $original_filename,
       ], 'error'
       );
       return;
     }
 
-    $this->logDB('Archivo cargado. Cédula de identificación actualizada', [
+    $this->logDB('Archivo cargado: Cédula de Identificación Fiscal', [
       'institucion_id' => $institucion->getId(),
       'cedula' => $institucion->getCedulaIdentificacion(),
+      'file_name' => $original_filename,
       'type' => $file->getMimeType(),
       'size' => number_format($file->getSize()/1024.0, 2)." Kb"
     ]);

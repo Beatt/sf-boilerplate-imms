@@ -2,9 +2,9 @@
 
 namespace AppBundle\EventSubscriber;
 
-use AppBundle\Entity\Usuario;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 
 /*
 * Class AbstractSubscriber
@@ -23,6 +23,11 @@ abstract class AbstractSubscriber
   protected $container;
 
   /**
+   * @var Request
+   */
+  protected $request;
+
+  /**
   * AbstractSubscriber constructor.
   * @param ContainerInterface $container
   */
@@ -30,7 +35,7 @@ abstract class AbstractSubscriber
                               RequestStack $request)
   {
     $this->container = $container;
-    $this->request = $request;
+    $this->request = $request->getCurrentRequest();
   }
 
   /**
@@ -38,10 +43,11 @@ abstract class AbstractSubscriber
   * @param array $context
   */
   protected function logDB($action = self::UNKNOWN_ACTION,
-                               array $context, $type='info') {
+                               array $context=[], $type='info') {
     switch ($type) {
       case 'error':
         $this->container->get('monolog.logger.db')->error($action, $context);
+        break;
       case 'info':
       default:
         $this->container->get('monolog.logger.db')->info($action, $context);
