@@ -48,6 +48,7 @@ class CampoClinicoManager implements CampoClinicoManagerInterface
         $serializer = new Serializer($normalizers, $encoders);
         return [
             'status' => true,
+            'message' => 'Campo clínico registrado con éxito',
             'object' => $serializer->normalize($campoClinico, 'json', [
                 'attributes' =>[
                     'id',
