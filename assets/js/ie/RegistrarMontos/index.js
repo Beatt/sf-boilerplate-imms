@@ -18,7 +18,6 @@ const Registrar = (
   let editar = false;
 
   const handleCurrency = (e) => {
-    {console.log(e)}
     if(!isNaN(e.value)){
       e.value = e.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }else{

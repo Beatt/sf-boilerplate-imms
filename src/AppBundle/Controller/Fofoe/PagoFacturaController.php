@@ -64,6 +64,7 @@ class PagoFacturaController extends DIEControllerController
         if ($form->isSubmitted() && $form->isValid()) {
             $pago = $form->getData();
             $factura = $pago->getFactura();
+            $entityManager->persist($factura);
 
             $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 
@@ -71,6 +72,7 @@ class PagoFacturaController extends DIEControllerController
                 $pagoV->setFacturaGenerada(true);
                 $factura->addPago($pagoV);
                 $pagoV->setFactura($factura);
+                $entityManager->persist($pagoV);
             }
 
             $campos = $pago->getCamposPagados();
@@ -79,6 +81,7 @@ class PagoFacturaController extends DIEControllerController
                 $campoRepository->findOneBy(
                   ['nombre' => EstatusCampoInterface::CREDENCIALES_GENERADAS])
               );
+              $entityManager->persist($campoV);
             }
 
             $solicitud = $pago->getSolicitud();
@@ -89,10 +92,11 @@ class PagoFacturaController extends DIEControllerController
                     return $estatus && $estatus->getNombre() !== EstatusCampoInterface::CREDENCIALES_GENERADAS;
               })) === 0 ) ) {
             $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
+            $entityManager->persist($solicitud);
           }
 
           $entityManager->persist($factura);
-            $entityManager->flush();
+          $entityManager->flush();
 
             $this->addFlash('success',
               sprintf('Se ha guardado correctamente la factura con folio %s 
