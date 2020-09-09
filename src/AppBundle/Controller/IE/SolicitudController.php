@@ -7,7 +7,7 @@ use AppBundle\DTO\IE\InicioDTO;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
-use AppBundle\Event\ReferenciaBancariaZipUnloadedEvent;
+use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
@@ -24,7 +24,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -271,9 +270,10 @@ class SolicitudController extends DIEControllerController
                 )
             );
 
-            return $this->redirectToRoute('ie#detalle_de_forma_de_pago', [
-                'id' => $solicitud->getId()
-            ]);
+            if ($solicitud->getTipoPago() == SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE)
+                return $this->redirectToRoute('ie#detalle_de_solicitud', ['id' => $solicitud->getId() ]);
+
+            return $this->redirectToRoute('ie#detalle_de_solicitud_multiple', ['id' => $solicitud->getId()]);
         }
 
         return $this->render('ie/solicitud/seleccionar_forma_pago.html.twig', [
@@ -312,12 +312,10 @@ class SolicitudController extends DIEControllerController
      * @Route("/solicitudes/{id}/descargar-referencias-bancarias", name="ie#descargar_referencias_bancarias")
      * @param $id
      * @param GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
-     * @param EventDispatcherInterface $dispatcher
      */
     public function descargarReferenciasBancarias(
         $id,
-        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP,
-        EventDispatcherInterface $dispatcher
+        GeneradorReferenciaBancariaZIPInterface $generadorReferenciaBancariaZIP
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();

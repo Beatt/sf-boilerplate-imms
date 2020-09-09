@@ -27,11 +27,21 @@ const ListaCampos = ({ solicitud }) => {
         redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
         break
       case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
-        break
+        return handleDownloadReferencias()
     }
 
     window.location.href = redirectRoute
+  }
+
+  function handleDownloadReferencias() {
+    const route = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-referencias-bancarias`;
+    window.open(route);
+    window.location.reload();
+  }
+
+  function showReferenciaBancariaExpediente() {
+    let estatusValidos = [SOLICITUD.CARGANDO_COMPROBANTES, SOLICITUD.CREDENCIALES_GENERADAS, SOLICITUD.EN_VALIDACION_FOFOE]
+    return estatusValidos.includes(solicitud.estatus)
   }
 
   function isComprobantesPagoEmpty() {
@@ -143,12 +153,28 @@ const ListaCampos = ({ solicitud }) => {
                   <td>{solicitud.expediente.formatosFofoe.fecha}</td>
                   <td>
                     <a
-                      href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
-                      target='_blank'
-                      download
+                        href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-formatos-fofoe`}
+                        target='_blank'
+                        download
                     >
                       Descargar
                     </a>
+                  </td>
+                </tr>
+              }
+              { solicitud.expediente.formatosFofoe && showReferenciaBancariaExpediente() &&
+                <tr>
+                  <td>Referencia de pago</td>
+                  <td>Archivo ZIP con el formato con la referencia bancaria para el pago</td>
+                  <td> - </td>
+                  <td>
+                  <a
+                  href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-referencias-bancarias`}
+                  target='_blank'
+                  download
+                  >
+                  Descargar
+                  </a>
                   </td>
                 </tr>
               }

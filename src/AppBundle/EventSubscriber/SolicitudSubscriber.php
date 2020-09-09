@@ -129,6 +129,7 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
       $this->logDB($msg, [
         'solicitud_id' => $solicitud->getId(),
         'tipo_pago' => $solicitud->getTipoPago(),
+        'estatus' => $solicitud->getEstatus(),
         'referencia' => $solicitud->getReferenciaBancaria(),
         'pago_id' => $solicitud->getPago()->getId()
     ]);
