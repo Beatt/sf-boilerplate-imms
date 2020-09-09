@@ -13,6 +13,10 @@ class SecurityController extends Controller
      */
     public function loginAction(AuthenticationUtils $authenticationUtils)
     {
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirectToRoute('homepage');
+        }
+
         $error = $authenticationUtils->getLastAuthenticationError();
 
         $lastUsername = $authenticationUtils->getLastUsername();

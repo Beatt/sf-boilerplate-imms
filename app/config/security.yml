@@ -43,8 +43,8 @@ security:
         - { path: '^/fofoe', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO, ROLE_FOFOE_VALIDAR_PAGO, ROLE_FOFOE_VALIDAR_PAGO_MULTIPLE, ROLE_FOFOE_REGISTRAR_FACTURA, ROLE_FOFOE_DETALLE_INSTITUCION_EDUCATIVA] }
         - { path: '^/pregrado/reporte', roles: [ROLE_SUPER, ROLE_REPORTE_CCS_DET] }
         - { path: '^/enfermeria/reporte_ciclos', roles: [ROLE_SUPER, ROLE_REPORTE_CCS_ENF] }
-        - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/login',  roles: [IS_AUTHENTICATED_ANONYMOUSLY] }
+        - { path: '^/', roles: [IS_AUTHENTICATED_FULLY] }
         - { path: '^/formatos', roles: [IS_AUTHENTICATED_FULLY] }
         - { path: '^/factura', roles: [IS_AUTHENTICATED_FULLY] }
         - { path: '^/pago', roles: [IS_AUTHENTICATED_FULLY] }
