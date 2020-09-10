@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {getSchemeAndHttpHost} from "../../../utils";
+import {SOLICITUD} from "../../../constants";
 const DEFAULT_DOCUMENT_VALUE = '-'
 
 const Expediente = ({ solicitud }) => {
@@ -19,6 +20,11 @@ const Expediente = ({ solicitud }) => {
     }
 
     return result;
+  }
+
+  function showReferenciaBancariaExpediente() {
+    let estatusValidos = [SOLICITUD.CARGANDO_COMPROBANTES, SOLICITUD.CREDENCIALES_GENERADAS, SOLICITUD.EN_VALIDACION_FOFOE]
+    return estatusValidos.includes(solicitud.estatus)
   }
 
   function isPagoDelCampoClinico(comprobante, item) {
@@ -72,6 +78,22 @@ const Expediente = ({ solicitud }) => {
                 </a>
               </td>
             </tr>
+          }
+          { solicitud.expediente.formatosFofoe && showReferenciaBancariaExpediente() &&
+          <tr>
+            <td>Referencia de pago</td>
+            <td>Archivo ZIP con el formato con la referencia bancaria para el pago</td>
+            <td> - </td>
+            <td>
+              <a
+                  href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-referencias-bancarias`}
+                  target='_blank'
+                  download
+              >
+                Descargar
+              </a>
+            </td>
+          </tr>
           }
           {
             getUniqCamposClinicos(solicitud.expediente.comprobantesPago).map((item, index) => (

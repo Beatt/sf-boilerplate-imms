@@ -271,9 +271,9 @@ class SolicitudController extends DIEControllerController
             );
 
             if ($solicitud->getTipoPago() == SolicitudTipoPagoInterface::TIPO_PAGO_MULTIPLE)
-                return $this->redirectToRoute('ie#detalle_de_solicitud', ['id' => $solicitud->getId() ]);
+                return $this->redirectToRoute('ie#detalle_de_solicitud_multiple', ['id' => $solicitud->getId() ]);
 
-            return $this->redirectToRoute('ie#detalle_de_solicitud_multiple', ['id' => $solicitud->getId()]);
+            return $this->redirectToRoute('ie#detalle_de_solicitud', ['id' => $solicitud->getId()]);
         }
 
         return $this->render('ie/solicitud/seleccionar_forma_pago.html.twig', [

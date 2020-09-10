@@ -17,6 +17,12 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
     )
   }
 
+  function handleDownloadReferencias() {
+    const route = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-referencias-bancarias`;
+    window.open(route);
+    window.location.reload();
+  }
+
   function isCampoClinicoAutorizado(lugaresAutorizados) {
     return lugaresAutorizados > 0;
   }
@@ -68,7 +74,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
             <div className="col-md-6">
               <strong>Acción</strong>&nbsp;
               <a
-                href={`${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`}
+                  href="" onClick={() => handleDownloadReferencias()}
                 className='btn btn-default'
               >
                 {getActionNameByInstitucionEducativa(solicitud.estatus, false)}
