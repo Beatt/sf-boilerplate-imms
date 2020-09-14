@@ -74,7 +74,7 @@ const DetalleSolicitudMultiple = ({ solicitud }) => {
             <div className="col-md-6">
               <strong>Acción</strong>&nbsp;
               <a
-                  href="" onClick={() => handleDownloadReferencias()}
+                  href="" onClick={handleDownloadReferencias}
                 className='btn btn-default'
               >
                 {getActionNameByInstitucionEducativa(solicitud.estatus, false)}

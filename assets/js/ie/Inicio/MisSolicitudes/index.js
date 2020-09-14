@@ -93,8 +93,9 @@ const MisSolicitudes = () => {
         redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/seleccionar-forma-de-pago`
         break
       case SOLICITUD.FORMATOS_DE_PAGO_GENERADOS:
-        redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
-        break
+        //redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-forma-de-pago`
+        //break
+        return handleDownloadReferencias(solicitud)
       case SOLICITUD.CARGANDO_COMPROBANTES:
       case SOLICITUD.EN_VALIDACION_FOFOE:
         if(isPagoMultiple(solicitud)) redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple`
@@ -102,6 +103,12 @@ const MisSolicitudes = () => {
     }
 
     window.location.href = redirectRoute
+  }
+
+  function handleDownloadReferencias(solicitud) {
+    const route = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/descargar-referencias-bancarias`;
+    window.open(route);
+    handleNoSolicitud(null, solicitud)
   }
 
   function cleanFilters() {
@@ -113,7 +120,9 @@ const MisSolicitudes = () => {
   }
 
   function handleNoSolicitud(event, solicitud) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
     window.location = isPagoMultiple(solicitud) ?
       `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud.id}/detalle-de-solicitud-multiple` :

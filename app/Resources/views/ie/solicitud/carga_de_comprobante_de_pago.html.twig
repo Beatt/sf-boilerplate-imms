@@ -27,6 +27,7 @@
     <script>
         window.GESTION_PAGO_PROPS = {{ gestionPago|json_encode|raw }}
         window.PAGO_ID_PROPS = {{ id|json_encode|raw }}
+        window.INSTITUCION_PROPS = {{ institucion|json_encode|raw }}
         window.ERRORS_PROPS = {{ errors|json_encode|raw }}
     </script>
     <script src="{{ asset('build/ie.carga.comprobante.pago.js') }}"></script>

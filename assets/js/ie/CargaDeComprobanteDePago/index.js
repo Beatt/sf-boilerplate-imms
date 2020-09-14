@@ -10,6 +10,7 @@ const CargaDeComprobanteDePago = (
     {
       gestionPago,
       pagoId,
+      institucion,
       errors
     }
   ) => {
@@ -17,6 +18,8 @@ const CargaDeComprobanteDePago = (
 
   const [monto, setMonto] = useState(undefined)
   const [hasMontoError, setMontoError] = useState(false)
+  const [requiereFactura, setRequiereFactura] = useState(undefined)
+  const [newCFDI, setNewCFDI] = useState(false)
 
   function handleMonto({ target }) {
     setMonto(target.rawValue)
@@ -59,38 +62,42 @@ const CargaDeComprobanteDePago = (
           }
         </div>
       </div>
-      <div className="col-md-12 mb-20">
-        <table className='table table-condensed'>
-          <thead>
-          <tr>
-            <th>Comprobante registrado</th>
-            <th>Fecha</th>
-            <th>Monto validado</th>
-          </tr>
-          </thead>
-          <tbody>
-          {
-            gestionPago.pagos.length !== 0 ?
-              gestionPago.pagos.map((pago, index) =>
-                <tr key={index}>
-                  <td><a href={`${getSchemeAndHttpHost()}/ie/pagos/${pago.id}/descargar-comprobante-de-pago`}
-                         target='_blank' download >Descargar</a></td>
-                  <td>{pago.fechaPago}</td>
-                  <td>{moneyFormat(pago.monto)}</td>
+      {
+        gestionPago.pagos.length !== 0 ?
+            <div className="col-md-12 mb-20">
+              <table className='table table-condensed'>
+                <thead>
+                <tr>
+                  <th>Comprobante registrado</th>
+                  <th>Fecha</th>
+                  <th>Monto validado</th>
                 </tr>
-              ) :
-              <tr>
-                <td
-                  className='text-center text-info'
-                  colSpan={4}
-                >
-                  Aún no se ha cargado ningún comprobante de pago
-                </td>
-              </tr>
-          }
-          </tbody>
-        </table>
-      </div>
+                </thead>
+                <tbody>
+                {
+                  gestionPago.pagos.length !== 0 ?
+                      gestionPago.pagos.map((pago, index) =>
+                          <tr key={index}>
+                            <td><a href={`${getSchemeAndHttpHost()}/ie/pagos/${pago.id}/descargar-comprobante-de-pago`}
+                                   target='_blank' download >Descargar</a></td>
+                            <td>{pago.fechaPago}</td>
+                            <td>{moneyFormat(pago.monto)}</td>
+                          </tr>
+                      ) :
+                      <tr>
+                        <td
+                            className='text-center text-info'
+                            colSpan={4}
+                        >
+                          Aún no se ha cargado ningún comprobante de pago
+                        </td>
+                      </tr>
+                }
+                </tbody>
+              </table>
+            </div>
+        : null
+      }
       {
         gestionPago.ultimoPago.observaciones &&
         <div className="col-md-12">
@@ -185,6 +192,7 @@ const CargaDeComprobanteDePago = (
                 value={SI_REQUIERE_FACTURA_DEFAULT}
                 id='comprobante_pago_requiereFactura_yes'
                 name='comprobante_pago[requiereFactura]'
+                onClick={()=>setRequiereFactura(SI_REQUIERE_FACTURA_DEFAULT)}
                 required={true}
               />
               &nbsp;&nbsp;&nbsp;&nbsp;
@@ -194,10 +202,45 @@ const CargaDeComprobanteDePago = (
                 value={NO_REQUIERE_FACTURA_DEFAULT}
                 id='comprobante_pago_requiereFactura_no'
                 name='comprobante_pago[requiereFactura]'
+                onClick={()=>setRequiereFactura(NO_REQUIERE_FACTURA_DEFAULT)}
                 required={true}
               />
             </div>
           </div>
+          {
+            requiereFactura ?
+            <div className="form-group">
+              <div className="col-md-8">
+                <label htmlFor="institucion_cedulaFile">
+                  Cargue Cédula de Identificación Fiscal de la institución educativa <br/>
+                  <span className='text-danger text-sm'>Por favor verifique que los datos que aparecen en su archivo sean correctos. <br/>
+            La cédula de identificación fiscal se utilizará para emitir las facturas de sus pagos.</span>
+                </label>
+              </div>
+
+              <div className="col-md-3">
+                <input
+                    type="file"
+                    id='institucion_cedulaFile'
+                    name='institucion[cedulaFile]'
+                    className='form-control'
+                    onChange={() => setNewCFDI(true)}
+                    required={requiereFactura == SI_REQUIERE_FACTURA_DEFAULT && !institucion.cedulaIdentificacion }
+                />
+                <span className="help-block">{errors.cedulaFile ? errores.cedulaFile[0] : ''}</span>
+                {
+                  institucion.cedulaIdentificacion && !newCFDI &&
+                  <a
+                      href={`${getSchemeAndHttpHost()}/ie/descargar-cedula-de-identificacion-fiscal`}
+                      target="_blank"
+                      download
+                  >
+                    Descargar cédula
+                  </a>
+                }
+              </div>
+            </div> : null
+          }
           <div className="row mt-30">
             <div className="col-md-4"/>
             <div className="col-md-2">
@@ -225,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <CargaDeComprobanteDePago
       gestionPago={window.GESTION_PAGO_PROPS}
       pagoId={window.PAGO_ID_PROPS}
+      institucion={window.INSTITUCION_PROPS}
       errors={window.ERRORS_PROPS}
     />,
     document.getElementById('cargar-de-comprobante-de-pago-component')

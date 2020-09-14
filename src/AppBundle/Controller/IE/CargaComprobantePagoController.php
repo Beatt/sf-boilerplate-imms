@@ -85,8 +85,18 @@ final class CargaComprobantePagoController extends DIEControllerController
         return $this->render('ie/solicitud/carga_de_comprobante_de_pago.html.twig', [
             'gestionPago' => $normalizer->normalize($pago->getGestionPago()),
             'id' => $id,
+            'institucion' => $this->getNormalizeInstitucion($institucion),
             'errors' => $this->getFormErrors($form)
         ]);
+    }
+
+    private function getNormalizeInstitucion($institucion)
+    {
+        return $this->get('serializer')->normalize($institucion, 'json',
+            ['attributes' => [
+                'id',
+                'cedulaIdentificacion',
+            ]]);
     }
 
     /**
