@@ -152,10 +152,15 @@ services:
     monolog.db_handler:
         class: AppBundle\Util\MonologDBHandler
         tag:
-        arguments: ['@doctrine.orm.entity_manager', '@Symfony\Component\Security\Core\Security']
+        arguments: [ '@doctrine.orm.entity_manager', '@Symfony\Component\Security\Core\Security' ]
 
     monolog.processor.request:
         class: AppBundle\Util\RequestProcessor
-        arguments: ['@request_stack', '@service_container']
+        arguments: [ '@request_stack', '@service_container' ]
         tags:
             - { name: monolog.processor, method: processRecord, handler: db }
+
+    AppBundle\Twig\CampoClinicoQrExtension:
+        tags: [ twig.extension ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]

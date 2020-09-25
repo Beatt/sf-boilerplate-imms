@@ -45,7 +45,10 @@ class GeneradorCredenciales implements GeneradorCredencialesInterface
             $this->pdf->generateFromHtml(
                 $this->templating->render(
                     'formatos/credenciales.html.twig',
-                    ['campo_clinico' => $campoClinico, 'total' => $campoClinico->getLugaresAutorizados()]
+                    [
+                        'campo_clinico' => $campoClinico,
+                        'total' => $campoClinico->getLugaresAutorizados(),
+                    ]
                 ),
                 $file,
                 ['page-size' => 'Letter','encoding' => 'utf-8'],
@@ -66,6 +69,7 @@ class GeneradorCredenciales implements GeneradorCredencialesInterface
         $response->headers->set('Content-Type', 'application/pdf');
         $response->headers->set('Content-Disposition', 'attachment;filename="' . self::PDF_NAME . '"');
         $response->headers->set('Content-length', filesize($file));
+        unlink($file);
         return $response;
     }
 }
