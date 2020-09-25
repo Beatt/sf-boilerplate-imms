@@ -69,7 +69,6 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
                 }
             }catch (\Exception $ex){}
         }
-
         return $file;
     }
 

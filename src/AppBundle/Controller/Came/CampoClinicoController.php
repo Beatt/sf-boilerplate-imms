@@ -184,7 +184,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
      * @Route("/formato/campo_clinico/{campo_clinico_id}/credenciales/show", methods={"GET"}, name="campo_clinico.credenciales.show")
      * @param $campo_clinico_id
      */
-    public function showCredencialesAction($campo_clinico_id)
+    public function showCredencialesAction(Request $request, $campo_clinico_id)
     {
         $campo_clinico = $this->getDoctrine()
             ->getRepository(CampoClinico::class)
@@ -199,7 +199,11 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }
-        return  $this->render('formatos/credenciales.html.twig', ['campo_clinico' => $campo_clinico, 'total' => $campo_clinico->getLugaresAutorizados()]);
+        return  $this->render('formatos/credenciales.html.twig',
+            [
+                'campo_clinico' => $campo_clinico,
+                'total' => $campo_clinico->getLugaresAutorizados()
+            ]);
     }
 
     /**
@@ -226,5 +230,30 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         $overwrite = $request->query->get('overwrite', false);
         return $generadorCredenciales->responsePdf($this->container->getParameter('credenciales_dir'), $campo_clinico, $overwrite);
 
+    }
+
+    /**
+     * @Route("/consulta/campo_clinico/{query}", methods={"GET"}, name="campo_clinico.consulta")
+     * @param $query
+     */
+    public function consultaAction(Request $request, $query)
+    {
+        $query = base64_decode($query);
+        $data = explode(':', $query);
+        $campo_clinico_id = $data[0];
+        $campo_clinico = $this->getDoctrine()
+            ->getRepository(CampoClinico::class)
+            ->find($campo_clinico_id);
+        if (!$campo_clinico) {
+            throw $this->createNotFoundException(
+                'Not found for id ' . $campo_clinico
+            );
+        }
+        return $this->render('campo_clinico/consulta.html.twig',
+            [
+                'campo_clinico' => $campo_clinico,
+                'total' => $campo_clinico->getLugaresAutorizados(),
+                'index' => $data[1]
+            ]);
     }
 }

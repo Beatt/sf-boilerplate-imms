@@ -100,7 +100,7 @@
             }
 
             .qr {
-                margin-top: 56px;
+                margin-top: 24px;
             }
             h2 {
                 font-size: 16px;
@@ -151,9 +151,11 @@
                 <div class="main-back">
                     <div class="qr">
                         <h2>Folio</h2>
-                        <img class="qr-folio" src="{{ app.request.getSchemeAndHttpHost() ~ qrcode_url(campo_clinico.solicitud.noSolicitud ~ '-' ~ campo_clinico.id ~ '-' ~ i, { extension: 'png' }) }}" alt="Folio"/>
+                        <img class="qr-folio" src="{{ cc_qrencode_uri( app.request.getSchemeAndHttpHost() ~ '/consulta/campo_clinico/', campo_clinico.id, i) }}" alt="Folio"/>
+                        <h3>{{ i }} / {{ total }}</h3>
                     </div>
                     <div class="unidad">
+                        <h2>SEDE</h2>
                         <h2>{{ campo_clinico.unidad.nombre }}</h2>
                         <h3>DELEGACIÓN: {{ campo_clinico.unidad.delegacion.nombre | upper }}</h3>
                     </div>
