@@ -176,6 +176,7 @@ const CargaDeComprobanteDePago = (
                 className='form-control'
                 required={true}
               />
+              <span className="text-danger ">{errors.comprobantePagoFile ? errors.comprobantePagoFile[0] : ''}</span>
             </div>
           </div>
           <div className="form-group">
@@ -185,6 +186,7 @@ const CargaDeComprobanteDePago = (
             >
               ¿Requiere factura?&nbsp;
             </label>
+            <span className="text-danger">{errors.cedulaFile ? errors.cedulaFile[0] : ''}</span>
             <div className="col-md-3">
               <label htmlFor='comprobante_pago_requiereFactura_yes'>Si&nbsp;</label>
               <input
@@ -222,12 +224,11 @@ const CargaDeComprobanteDePago = (
                 <input
                     type="file"
                     id='institucion_cedulaFile'
-                    name='institucion[cedulaFile]'
+                    name='comprobante_pago[cedulaFile]'
                     className='form-control'
                     onChange={() => setNewCFDI(true)}
                     required={requiereFactura == SI_REQUIERE_FACTURA_DEFAULT && !institucion.cedulaIdentificacion }
                 />
-                <span className="help-block">{errors.cedulaFile ? errores.cedulaFile[0] : ''}</span>
                 {
                   institucion.cedulaIdentificacion && !newCFDI &&
                   <a

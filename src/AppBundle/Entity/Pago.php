@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -59,6 +60,11 @@ class Pago implements ComprobantePagoInterface
      * @var File
      *
      * @Vich\UploadableField(mapping="comprobantes_pagos", fileNameProperty="comprobantePago")
+     * @Assert\File(
+     *  maxSize="1000000",
+     *  mimeTypes = {"application/pdf", "application/x-pdf"},
+     *  mimeTypesMessage = "Solo se admiten archivos PDF"
+     * )
      */
     private $comprobantePagoFile;
 

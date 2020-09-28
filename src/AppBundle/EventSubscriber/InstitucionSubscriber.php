@@ -30,8 +30,17 @@ class InstitucionSubscriber extends AbstractSubscriber implements EventSubscribe
     $institucion = $event->getObject();
     $file = $institucion->getCedulaFile();
 
-    $requestFile = $this->request->files->get('institucion')['cedulaFile'];
-    $original_filename = $requestFile->getClientOriginalName();
+    $original_filename = "No Disponible";
+    if ($this->request->files->has('institucion')
+        && $requestFile = $this->request->files->get('institucion')['cedulaFile']) {
+        $requestFile = $this->request->files->get('institucion')['cedulaFile'];
+        $original_filename = $requestFile->getClientOriginalName();
+    } elseif ($requestFile = $this->request->files->has('comprobante_pago')
+        && $requestFile = $this->request->files->get('comprobante_pago')['cedulaFile']) {
+        $requestFile = $this->request->files->get('comprobante_pago')['cedulaFile'];
+        $original_filename = $requestFile->getClientOriginalName();
+    }
+
     $original_filename = strlen($original_filename) > 35 ?
       substr($original_filename, 0, 30) . "..." : $original_filename;
 
