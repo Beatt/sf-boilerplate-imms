@@ -80,7 +80,7 @@ final class CargaComprobantePagoController extends DIEControllerController
 
             if ($pago->isRequiereFactura()
                 && !$institucion->getCedulaIdentificacion()
-                && !$cedula
+                && (!$cedula || !($cedula->getData()) )
             ) {
                 $msgError = 'Para la emisión de la factura es necesaria la Cédula de Identificación Fiscal';
                 $cedula->addError(new FormError($msgError));
@@ -92,10 +92,10 @@ final class CargaComprobantePagoController extends DIEControllerController
                     //$entityManager->flush();
 
                     $institucion->setCedulaFile($file);
-                    //$entityManager->flush();
                 }
 
                 $uploaderComprobantePago->update($pago);
+                $entityManager->flush();
 
                 $this->addFlash(
                     'success',
