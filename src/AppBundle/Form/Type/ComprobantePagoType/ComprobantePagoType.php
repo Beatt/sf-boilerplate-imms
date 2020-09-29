@@ -2,7 +2,9 @@
 
 namespace AppBundle\Form\Type\ComprobantePagoType;
 
+use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
+use AppBundle\Form\Type\CedulaInstitucionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -11,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ComprobantePagoType extends AbstractType
 {
@@ -24,6 +27,18 @@ class ComprobantePagoType extends AbstractType
             ])
             ->add('comprobantePagoFile', FileType::class)
             ->add('requiereFactura', TextType::class)
+            ->add('cedulaFile', FileType::class, [
+                'data_class' => Institucion::class,
+                'property_path' => 'solicitud.institucion.cedulaFile',
+                'constraints' => [
+                    new File([
+                        'mimeTypes' => ["application/pdf", "application/x-pdf",],
+                        'maxSize' => '2M',
+                        'mimeTypesMessage' => 'Solo se admiten archivos PDF de máx 2MB',
+                        'maxSizeMessage' => 'Solo se admiten archivos PDF de máx 2MB',
+                    ]),
+                ],
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -41,6 +56,7 @@ class ComprobantePagoType extends AbstractType
     {
         return $resolver->setDefaults([
             'data_class' => Pago::class,
+            'cascade_validation' => true,
             'csrf_protection' => false
         ]);
     }

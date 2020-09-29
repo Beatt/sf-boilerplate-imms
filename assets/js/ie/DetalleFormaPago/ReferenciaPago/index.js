@@ -1,15 +1,29 @@
 import * as React from 'react'
 import { TIPO_PAGO } from "../../../constants";
+import {getSchemeAndHttpHost} from "../../../utils";
 
 const ReferenciaPago = (
   {
     tipoPagoSelected,
-    descargarReferenciasBancariasPath
+    descargarReferenciasBancariasPath,
+    solicitud_id
   }
   ) => {
 
   const { useState } = React
   const [ isDownload, setIsDownload ] = useState(false)
+
+  function handleClickDownload(e) {
+      e.preventDefault();
+    setIsDownload(true);
+    window.open(descargarReferenciasBancariasPath)
+
+    let redirectRoute = `${getSchemeAndHttpHost()}/ie/solicitudes/${solicitud_id}/detalle-de-solicitud`;
+    redirectRoute = tipoPagoSelected === TIPO_PAGO.MULTIPLE ? redirectRoute +  `-multiple` : redirectRoute;
+    console.log(redirectRoute);
+    window.location.href = redirectRoute;
+
+  }
 
   return(
     <div className='row'>
@@ -54,10 +68,10 @@ const ReferenciaPago = (
             {
               !isDownload ?
                 <a
-                  href={descargarReferenciasBancariasPath}
+                  href="#"
                   className='btn btn-success btn-block'
                   download
-                  onClick={({ target }) => setIsDownload(true)}
+                  onClick={handleClickDownload}
                 >
                   ¡Descargar referencia bancaria!
                 </a> :

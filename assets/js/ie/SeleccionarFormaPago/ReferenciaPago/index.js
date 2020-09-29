@@ -30,11 +30,11 @@ const ReferenciaPago = (
     if(tipoPago === TIPO_PAGO.UNICO) {
       title = haveMoreThanOneAuthorizedCampoClinico() ?
         `Se generará una única referencia por el monto total de los ${getTotalCamposClinicos()} campos clínicos autorizados.` :
-        'Se generará una única referencia por el monto total del campos clínico autorizado.';
+        'Se generará una única referencia por el monto total del campo clínico autorizado.';
     }else if (tipoPago === TIPO_PAGO.MULTIPLE) {
       title = haveMoreThanOneAuthorizedCampoClinico() ?
         `Deberá pagar el monto total de cada campo clínico de manera independiente. En total se le generarán ${getTotalCamposClinicos()} referencias de pago diferentes.` :
-        `Se generará una única referencia por el monto total del campos clínico autorizado.`;
+        `Se generará una única referencia por el monto total del campo clínico autorizado.`;
     }else {
       console.error('El tipo de pago seleccionado no existe.');
     }

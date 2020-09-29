@@ -68,7 +68,7 @@ const ListaCampos = ({ solicitud }) => {
             <button
               className='btn btn-default'
               disabled={isActionDisabledByInstitucionEducativa(solicitud.estatus)}
-              onClick={() => handleStatusAction()}
+              onClick={handleStatusAction}
             >
               {getActionNameByInstitucionEducativa(solicitud.estatus, false)}
             </button>

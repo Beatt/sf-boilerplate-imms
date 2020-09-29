@@ -11,8 +11,11 @@ use AppBundle\Form\Type\ComprobantePagoType\ComprobantePagoType;
 use AppBundle\Repository\CampoClinicoRepository;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Security\Voter\SolicitudVoter;
+use AppBundle\Service\InstitucionManager;
 use AppBundle\Service\UploaderComprobantePagoInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,7 +48,9 @@ final class CargaComprobantePagoController extends DIEControllerController
         Request $request,
         PagoRepositoryInterface $pagoRepository,
         NormalizerInterface $normalizer,
-        UploaderComprobantePagoInterface $uploaderComprobantePago
+        UploaderComprobantePagoInterface $uploaderComprobantePago,
+        InstitucionManager $institucionManager,
+        EntityManagerInterface $entityManager
     ) {
 
         /** @var Pago $pago */
@@ -71,22 +76,52 @@ final class CargaComprobantePagoController extends DIEControllerController
 
             /** @var Pago $pago */
             $pago = $form->getData();
-            $uploaderComprobantePago->update($pago);
+            $cedula = $form->get('cedulaFile');
 
-            $this->addFlash(
-                'success',
-                $this->getSuccessFlashMessage($pago)
-            );
+            if ($pago->isRequiereFactura()
+                && !$institucion->getCedulaIdentificacion()
+                && (!$cedula || !($cedula->getData()) )
+            ) {
+                $msgError = 'Para la emisión de la factura es necesaria la Cédula de Identificación Fiscal';
+                $cedula->addError(new FormError($msgError));
+            } else {
 
-            $solicitud = $pago->getSolicitud();
-            return new RedirectResponse($this->getRedirectRoute($solicitud));
+                if ($pago->isRequiereFactura() && $cedula) {
+                    $file = $cedula->getData();
+                    //$institucion->getCedulaFile(null);
+                    //$entityManager->flush();
+
+                    $institucion->setCedulaFile($file);
+                }
+
+                $uploaderComprobantePago->update($pago);
+                $entityManager->flush();
+
+                $this->addFlash(
+                    'success',
+                    $this->getSuccessFlashMessage($pago)
+                );
+
+                $solicitud = $pago->getSolicitud();
+                return new RedirectResponse($this->getRedirectRoute($solicitud));
+            }
         }
 
         return $this->render('ie/solicitud/carga_de_comprobante_de_pago.html.twig', [
             'gestionPago' => $normalizer->normalize($pago->getGestionPago()),
             'id' => $id,
+            'institucion' => $this->getNormalizeInstitucion($institucion),
             'errors' => $this->getFormErrors($form)
         ]);
+    }
+
+    private function getNormalizeInstitucion($institucion)
+    {
+        return $this->get('serializer')->normalize($institucion, 'json',
+            ['attributes' => [
+                'id',
+                'cedulaIdentificacion',
+            ]]);
     }
 
     /**
