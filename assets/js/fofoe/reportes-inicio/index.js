@@ -19,7 +19,6 @@ const ReportesInicio = () => {
 
   return (
     <div>
-      <div><h1>Reportes</h1></div>
       <div>
         <ul className="nav nav-pills nav-fill">
           <li className={(reporteActivo == 'ingresos') ? 'nav-item active' : 'nav-item'} >

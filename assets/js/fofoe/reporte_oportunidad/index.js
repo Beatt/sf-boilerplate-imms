@@ -99,7 +99,7 @@ const ReporteOportunidad = () => {
             <th rowSpan={2} >Delegación </th>
             <th rowSpan={2}>Campo Clínico</th>
             <th rowSpan={2}>Carrera</th>
-            <th colSpan={2} >Ciclo</th>
+            <th rowSpan={2} >Período</th>
             <th rowSpan={2} >Institución </th>
             <th rowSpan={2}>Alumnos</th>
             <th colSpan={4}>Datos de la aportación</th>
@@ -107,8 +107,6 @@ const ReporteOportunidad = () => {
             <th rowSpan={2} >Dias</th>
           </tr>
           <tr>
-            <th>Inicio</th>
-            <th>Fin</th>
             <th>Importe</th>
             <th>Referencia de Pago</th>
             <th>Fecha de depósito</th>
@@ -122,26 +120,31 @@ const ReporteOportunidad = () => {
                 <th className='text-center' colSpan={14}>Cargando información...</th>
               </tr>
               :  reportePagos.length > 0 ?
-            reportePagos.map( (pago) => (
-              pago.camposPagados.campos.map( ( campo ) => (
+            reportePagos.map( ( campo ) => (
                 <tr key={++indexRow}>
                   <td> {indexRow} </td>
                   <td> {campo.displayDelegacion} </td>
                   <td> {campo.displayCicloAcademico} </td>
                   <td> {campo.displayCarrera} </td>
-                  <td> {campo.fechaInicialFormatted} </td>
-                  <td> {campo.fechaFinalFormatted} </td>
-                  <td> {pago.solicitud.institucion.nombre} </td>
+                  <td>  {campo.fechaInicialFormatted}  / {campo.fechaFinalFormatted} </td>
+                  <td> {campo.solicitud.institucion.nombre} </td>
                   <td> {campo.lugaresAutorizados} </td>
                   <td> { moneyFormat(campo.monto) } </td>
-                  <td> {pago.referenciaBancaria} </td>
-                  <td> {pago.fechaPagoFormatted} </td>
-                  <td>  { pago.factura ? pago.factura.fechaFacturacionFormatted : ''}  </td>
-                  <td> {pago.camposPagados.tiempos[campo.id] >= 14 ? 'CUMPLE' : 'NO CUMPLE'} </td>
-                  <td> {pago.camposPagados.tiempos[campo.id]}</td>
+                  <td> { campo.referenciaBancaria } </td>
+                  <td> { campo.lastPago ? campo.lastPago.fechaPagoFormatted : '' } </td>
+                  <td>  { campo.lastPago ?
+                      (campo.lastPago.requiereFactura ?
+                          (campo.lastPago.factura ? campo.lastPago.factura.fechaFacturacionFormatted : 'PENDIENTE')
+                          : 'FACTURA NO SOLICITADA')
+                      : ''}  </td>
+
+                  <td> { campo.lastPago && campo.tiempoPago > -1000 ?
+                            (campo.tiempoPago >= 14 ? 'CUMPLE' : 'NO CUMPLE')
+                          : 'PENDIENTE DE PAGO'} </td>
+                  <td> { campo.lastPago && campo.tiempoPago > -1000 ? campo.tiempoPago : '-' }</td>
                 </tr>
               ) )
-            )) :
+            :
               <tr>
                 <td colSpan={14} className="text-center"> No hay registros disponibles </td>
               </tr>

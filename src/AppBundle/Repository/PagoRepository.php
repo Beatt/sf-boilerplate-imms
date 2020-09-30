@@ -6,6 +6,7 @@ use AppBundle\Entity\Pago;
 use Carbon\Carbon;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -221,78 +222,6 @@ class PagoRepository extends EntityRepository implements PagoRepositoryInterface
        return $qb->getQuery()->getResult();
      }
 
-    public function getReporteOportunidadPago($filtros) {
-      $qb = $this->createQueryBuilder('pago')
-        ->innerJoin('pago.solicitud', 'solicitud')
-        ->innerJoin('solicitud.camposClinicos', 'campos_clinicos')
-        ->innerJoin('campos_clinicos.convenio', 'convenio');
-
-      $qb->where(
-
-          $qb->expr()->orX(
-            'pago.referenciaBancaria = solicitud.referenciaBancaria',
-            'pago.referenciaBancaria = campos_clinicos.referenciaBancaria'
-          )
-        );
-      $qb->andWhere('pago.validado = TRUE');
-
-      if ( array_key_exists('desde', $filtros)  && $filtros['desde']) {
-        $qb = $qb->andWhere('pago.fechaPago >= :desde')
-          ->setParameter('desde', new \DateTime($filtros['desde']));
-      }
-
-      if ( array_key_exists('hasta', $filtros)  && $filtros['hasta']) {
-        $qb = $qb->andWhere('pago.fechaPago <= :hasta')
-          ->setParameter('hasta', new \DateTime($filtros['hasta']));
-      }
-
-      if ( array_key_exists('search', $filtros) && $filtros['search']) {
-        $qb = $qb->join('convenio.institucion', 'institucion');
-        $qb = $qb
-          ->andWhere(
-            $qb->expr()->orX()->addMultiple(array(
-              "UNACCENT(LOWER(institucion.nombre)) LIKE UNACCENT(LOWER(:search))",
-              "LOWER(solicitud.referenciaBancaria) LIKE LOWER(:search)",
-                ))
-            )
-          ->setParameter('search', '%' . $filtros['search'] . '%');
-      }
-
-      $qb = $qb->getQuery();
-
-      // load doctrine Paginator
-      $paginator = new Paginator($qb);
-
-      // get total items
-      $totalItems = count($paginator);
-
-      $pageSize = array_key_exists('limit', $filtros)
-      && $filtros['limit'] > 0 ?
-        $filtros['limit'] : 10;
-      $page = array_key_exists('limit', $filtros)
-      && $filtros['page'] > 0 ? $filtros['page'] : 1;
-
-      // get total pages
-      $pagesCount = ceil($totalItems / $pageSize);
-
-      $pagos = [];
-      if(array_key_exists('export', $filtros) && $filtros['export']) {
-        $pagos = $paginator
-          ->getQuery()
-          ->getResult();
-      } else {
-        $offset = $pageSize * ($page-1);
-        // now get one page's items:
-        $pagos = $paginator
-          ->getQuery()
-          ->setFirstResult($offset) // set the offset
-          ->setMaxResults($pageSize) // set the limit}
-          ->getResult();
-      }
-
-      return [$pagos, $totalItems, $pagesCount, $pageSize];
-
-    }
 
     /**
      * @param $id

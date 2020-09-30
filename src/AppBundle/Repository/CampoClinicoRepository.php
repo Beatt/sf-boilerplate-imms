@@ -309,4 +309,79 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
 
     return array($paginator, $page, $pageSize, $pagesCount, $totalItems);
   }
+
+    public function getReporteOportunidadPago($filtros) {
+        $qb = $this->createQueryBuilder('campo_clinico');
+        $qb->innerJoin('campo_clinico.solicitud', 'solicitud')
+           ->innerJoin('solicitud.pagos', 'pago',
+/*            $qb->expr()->andX(
+              'pago.solicitud.id = solicitud.id', */
+                $qb->expr()->orX(
+                    'pago.solicitud.referenciaBancaria = solicitud.referenciaBancaria',
+                    'pago.solicitud.referenciaBancaria = campo_clinico.referenciaBancaria'
+                )
+/*            ) */
+           )
+           ->innerJoin('campo_clinico.convenio', 'convenio');
+        $qb->where('pago.validado = TRUE')
+            ->groupBy('pago.id, campo_clinico.id')
+           ->having('pago.id = max(pago.id)');
+
+        if ( array_key_exists('desde', $filtros)  && $filtros['desde']) {
+            $qb = $qb->andWhere('pago.fechaPago >= :desde')
+                ->setParameter('desde', new \DateTime($filtros['desde']));
+        }
+
+        if ( array_key_exists('hasta', $filtros)  && $filtros['hasta']) {
+            $qb = $qb->andWhere('pago.fechaPago <= :hasta')
+                ->setParameter('hasta', new \DateTime($filtros['hasta']));
+        }
+
+        if ( array_key_exists('search', $filtros) && $filtros['search']) {
+            $qb = $qb->join('convenio.institucion', 'institucion');
+            $qb = $qb
+                ->andWhere(
+                    $qb->expr()->orX()->addMultiple(array(
+                        "UNACCENT(LOWER(institucion.nombre)) LIKE UNACCENT(LOWER(:search))",
+                        "LOWER(solicitud.referenciaBancaria) LIKE LOWER(:search)",
+                    ))
+                )
+                ->setParameter('search', '%' . $filtros['search'] . '%');
+        }
+
+        $qb = $qb->getQuery();
+
+        // load doctrine Paginator
+        $paginator = new Paginator($qb);
+
+        // get total items
+        $totalItems = count($paginator);
+
+        $pageSize = array_key_exists('limit', $filtros)
+        && $filtros['limit'] > 0 ?
+            $filtros['limit'] : 10;
+        $page = array_key_exists('limit', $filtros)
+        && $filtros['page'] > 0 ? $filtros['page'] : 1;
+
+        // get total pages
+        $pagesCount = ceil($totalItems / $pageSize);
+
+        $pagos = [];
+        if(array_key_exists('export', $filtros) && $filtros['export']) {
+            $pagos = $paginator
+                ->getQuery()
+                ->getResult();
+        } else {
+            $offset = $pageSize * ($page-1);
+            // now get one page's items:
+            $pagos = $paginator
+                ->getQuery()
+                ->setFirstResult($offset) // set the offset
+                ->setMaxResults($pageSize) // set the limit}
+                ->getResult();
+        }
+
+        return [$pagos, $totalItems, $pagesCount, $pageSize];
+
+    }
 }

@@ -3,6 +3,8 @@
 namespace AppBundle\Controller\Fofoe;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\CampoClinico;
+use AppBundle\Repository\CampoClinicoRepository;
 use AppBundle\Repository\PagoRepositoryInterface;
 use AppBundle\Util\CVSUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,18 +17,21 @@ class ReporteOportunidadPagoController extends DIEControllerController
   /**
    * @Route("/fofoe/reporte_oportunidad_pago", methods={"GET"}, name="fofoe.reporte_oportunidad")
    * @param Request $request
-   * @param PagoRepositoryInterface $reporteRepository
    * @return Response
    */
-  public function indexAction(Request $request, PagoRepositoryInterface $reporteRepository) {
+  public function indexAction(Request $request) {
 
     list($filtros, $isSomeValueSet) = $this->setFilters($request);
 
     if ($isSomeValueSet) {
+        $reporteRepository =  $this->getDoctrine()
+            ->getRepository(CampoClinico::class);
 
-      list($pagos, $totalItems,$pagesCount, $pageSize) =
+      list($campos, $totalItems,$pagesCount, $pageSize) =
         $reporteRepository->getReporteOportunidadPago($filtros);
-      $datos = $this->getNormalizePagos($pagos);
+
+      $datos = $this->getNormalizeCampos($campos);
+        //dump($datos);
 
       if (isset($filtros['export']) && $filtros['export']) {
         $responseCVS = new Response(
@@ -68,23 +73,24 @@ class ReporteOportunidadPagoController extends DIEControllerController
     $totalPend = 0;
     $indexRow = 0;
 
-    foreach($datos as $pago) {
-      foreach ($pago['camposPagados']['campos'] as $campo)
+    foreach($datos as $campo) {
       $cvs[] = CVSUtil::arrayToCsvLine(
         [ ++$indexRow, $campo['displayDelegacion'],
           $campo['displayCicloAcademico'],
           $campo['displayCarrera'],
           $campo['fechaInicialFormatted'],
           $campo['fechaFinalFormatted'],
-          $pago['solicitud']['institucion']['nombre'],
+          $campo['solicitud']['institucion']['nombre'],
           $campo['lugaresAutorizados'],
           $campo['monto'],
-          $pago['referenciaBancaria'],
-          $pago['fechaPagoFormatted'],
-          $pago['factura'] ? $pago['factura']['fechaFacturacionFormatted'] : '',
-          $pago['camposPagados']['tiempos'][$campo['id']] >= 14 ?
-            'CUMPLE' : 'NO CUMPLE',
-          $pago['camposPagados']['tiempos'][$campo['id']],
+          $campo['referenciaBancaria'],
+          $campo['lastPago'] ? $campo['lastPago']['fechaPagoFormatted'] : '',
+          $campo['lastPago'] && $campo['lastPago']['factura'] ?
+            $campo['lastPago']['factura']['fechaFacturacionFormatted'] : '',
+          $campo['tiempoPago'] > -1000 ?
+              ($campo['tiempoPago'] >= 14 ? 'CUMPLE' : 'NO CUMPLE')
+                : 'PENDIENTE',
+          $campo['tiempoPago'] > -1000 ? $campo['tiempoPago'] : '',
         ]
       );
     }
@@ -108,21 +114,13 @@ class ReporteOportunidadPagoController extends DIEControllerController
     return array($filtros, $isSomeValueSet);
   }
 
-  private function getNormalizePagos($datos)
+  private function getNormalizeCampos($datos)
   {
 
     return $this->get('serializer')->normalize($datos,
       'json',
       [
         'attributes' => [
-          'solicitud' => [
-            'institucion' => ['nombre', 'rfc'],
-            'tipoPago'
-          ],
-          'monto',
-          'fechaPagoFormatted',
-          'referenciaBancaria',
-          'camposPagados' => [
             'id',
             'fechaInicialFormatted',
             'fechaFinalFormatted',
@@ -130,10 +128,21 @@ class ReporteOportunidadPagoController extends DIEControllerController
             'lugaresAutorizados',
             'displayCicloAcademico',
             'displayDelegacion',
+            'tiempoPago',
             'monto',
-            'displayCarrera'
-          ],
-          'factura' => ['id', 'folio', 'fechaFacturacionFormatted'],
+            'displayCarrera',
+            'referenciaBancaria',
+            'solicitud' => [
+                'institucion' => ['nombre', 'rfc'],
+                'tipoPago'
+            ],
+            'lastPago' => [
+                'monto',
+                'fechaPagoFormatted',
+                'requiereFactura',
+                'referenciaBancaria',
+                'factura' => [  'id', 'folio', 'fechaFacturacionFormatted' ],
+            ]
         ]
       ]);
   }

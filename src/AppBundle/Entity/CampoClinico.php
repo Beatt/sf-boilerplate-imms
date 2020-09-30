@@ -245,7 +245,8 @@ class CampoClinico implements ReferenciaBancariaInterface
      */
     public function getReferenciaBancaria()
     {
-        return $this->referenciaBancaria;
+        return $this->getSolicitud()->getTipoPago() === Solicitud::TIPO_PAGO_UNICO ?
+            $this->getSolicitud()->getReferenciaBancaria() : $this->referenciaBancaria;
     }
 
     /**
@@ -472,6 +473,25 @@ class CampoClinico implements ReferenciaBancariaInterface
     public function getPago()
     {
         return $this->getPagos()->first();
+    }
+
+    public function  getLastPago()
+    {
+        return  $this->getPagos()->last();
+    }
+
+    public function getTiempoPago() {
+        $lastPago = $this->getLastPago();
+        if (!$lastPago) return -1000;
+        $fechaInicio = $this->getFechaInicial();
+        $inicial = Carbon::instance($fechaInicio);
+        $final = $lastPago->getFechaPago() ?
+            Carbon::instance($lastPago->getFechaPago()) : '';
+
+        return $lastPago->getFechaPago() ?
+            $final->diffInDays($inicial)*(
+                $final->lessThanOrEqualTo($inicial)  ? 1 : -1)
+            : -1000;
     }
 
     public function getPagos()
