@@ -60,6 +60,34 @@ const SolicitudCreate = (props) => {
             && selectedInstitution.telefono;
     }
 
+    const handleDeleteEvent = (campo) => {
+        setIsLoading(true);
+        fetch(`${getSchemeAndHttpHost()}/came/api/campo_clinico/${campo}`, {
+            method: 'delete'
+        }).then(response => {
+            return response.json()
+        }, error => {
+            console.error(error);
+        }).then(json => {
+            if (json.status) {
+                removeCampo(campo);
+            }
+        }).finally(() => {
+            setIsLoading(false);
+        });
+    }
+
+    const removeCampo = (campo) => {
+
+        const nuevos = [];
+        camposClinicos.map(item => {
+            if (item.id.toString() !== campo.toString()) {
+                nuevos.push(item);
+            }
+        })
+        setCamposClinicos(nuevos);
+    }
+
     return (
       <>
           <Loader show={isLoading}/>
@@ -80,7 +108,6 @@ const SolicitudCreate = (props) => {
           <Convenios convenios={convenios? convenios : []}/>
           </div>
           <div style={{display : (isInstitucionComplete()? 'block' : 'none')}}>
-              <CamposClinicos campos={camposClinicos} />
               <CampoClinicoForm
                   unidades={props.unidades}
                   convenios={convenios ? convenios: []}
@@ -88,6 +115,9 @@ const SolicitudCreate = (props) => {
                   callbackIsLoading = {callbackIsLoading}
                   callbackSolicitud = {value => setSolicitud(value)}
               />
+              <CamposClinicos
+                  campos={camposClinicos}
+                  handleDelete={handleDeleteEvent} />
               <form onSubmit={handleSolicitudSubmit} style={{display : (solicitud && camposClinicos.length > 0 ? 'block' : 'none')}}>
                   <div className="row">
                       <div className="col-md-12">

@@ -179,7 +179,7 @@ const CampoClinicoForm = (props) => {
                 message: json.message,
                 type: (json.status ? 'success' : 'danger')
             }));
-            setShowModal(false);
+            setShowModal(!json.status);
         });
 
     }
@@ -202,6 +202,14 @@ const CampoClinicoForm = (props) => {
         return result;
     }
 
+    const openModal = () => {
+        setAlert(Object.assign(alert, {
+            show: false,
+            message: ''
+        }));
+        setShowModal(true);
+    }
+
     return (
         <>
             <div className="col-md-12">
@@ -212,17 +220,18 @@ const CampoClinicoForm = (props) => {
             </div>
 
             <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-3 mt-10 mb-10">
                     <label htmlFor="btn_campo_clinico">&#160;</label>
                     <button id="btn_campo_clinico"
-                            onClick={() => setShowModal(true)}
-                            className={'form-control btn btn-primary'}>Nuevo Campo Clínico
+                            onClick={openModal}
+                            className={'form-control btn btn-primary'}>Agregar Campo Clínico
                     </button>
                 </div>
             </div>
 
             <Modal
                 isOpen={showModal}
+                ariaHideApp={false}
                 contentLabel="Example Modal"
             >
                 <div className="row">
@@ -372,20 +381,20 @@ const CampoClinicoForm = (props) => {
                 </div>
                 <form id="campo-clinico-form" onSubmit={handleSubmit}>
                     <div className="row">
+                        <div className="col-md-3">
+                            <label htmlFor="btn_cancelar_campo">&#160;</label>
+                            <button id="btn_cancelar_campo"
+                                    type={'reset'}
+                                    onClick={() => setShowModal(false)}
+                                    className={'form-control btn btn-default'}>Cancelar
+                            </button>
+                        </div>
                         <div className="col-md-6">
                             <label htmlFor="btn_campo_clinico">&#160;</label>
                             <button id="btn_campo_clinico"
                                     type={'submit'}
                                     className={'form-control btn btn-primary'}>Guardar Campo
                                 clínico
-                            </button>
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="btn_campo_clinico">&#160;</label>
-                            <button id="btn_campo_clinico"
-                                    type={'reset'}
-                                    onClick={() => setShowModal(false)}
-                                    className={'form-control btn btn-danger'}>Cancelar
                             </button>
                         </div>
                     </div>

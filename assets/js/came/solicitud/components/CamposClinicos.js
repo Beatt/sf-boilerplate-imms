@@ -58,7 +58,7 @@ const CamposClinicos = (props) => {
                                         cc={cc}
                                         key={cc.id}
                                         canDelete={props.campos.length > 1}
-                                        handleDelete={campo => {props.handleDelete(campo)}}/>
+                                        handleDelete={props.handleDelete}/>
                                 )
                             })}
                             </tbody>

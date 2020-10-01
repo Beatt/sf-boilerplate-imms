@@ -100,18 +100,16 @@ const SolicitudEdit = (props) => {
             />
             <Convenios convenios={props.solicitud.institucion.convenios}/>
             <div style={{display: (isInstitucionComplete() ? 'block' : 'none')}}>
-                <CamposClinicos
-                    campos={camposClinicos}
-                    handleDelete={campo => {
-                        handleDeleteEvent(campo)
-                    }}
-                />
                 <CampoClinicoForm
                     unidades={props.unidades}
                     solicitud={props.solicitud}
                     convenios={props.solicitud.institucion.convenios}
                     callbackCampoClinico={callbackCampoClinico}
                     callbackIsLoading={callbackIsLoading}
+                />
+                <CamposClinicos
+                    campos={camposClinicos}
+                    handleDelete={handleDeleteEvent}
                 />
                 <form onSubmit={handleSolicitudSubmit}
                       style={{display : (props.solicitud && camposClinicos.length > 0 ? 'block' : 'none')}}>
