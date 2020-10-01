@@ -14,6 +14,8 @@ const Registrar = (
     route
   }) => {
 
+  const [executing, setExecuting] = React.useState(false);
+
   let acceso = false;
   let editar = false;
 
@@ -28,14 +30,13 @@ const Registrar = (
   };
 
   const formSubmit = (e) =>{
-
     try{
       var tag = document.getElementsByClassName('solicitud_validacion_montos_inscripcion');
 
       for (var i = 0; i < tag.length; i++) {
         tag[i].value = tag[i].value.replace(/,/g, '');
       }
-
+      setExecuting(true);
     }catch(error){
       e.preventDefault();
     }
@@ -199,6 +200,7 @@ const Registrar = (
                   <button
                     type="submit"
                     className='btn btn-success btn-block'
+                    disabled={executing}
                   >
                     Guardar
                   </button>
