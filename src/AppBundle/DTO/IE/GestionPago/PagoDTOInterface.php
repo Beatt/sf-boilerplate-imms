@@ -11,4 +11,6 @@ interface PagoDTOInterface
     public function getFechaPago();
 
     public function getMonto();
+
+    public function getObservaciones();
 }

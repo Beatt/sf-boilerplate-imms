@@ -62,6 +62,7 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
                 if(!$pago->isRequiereFactura()) $this->setEstatusCredencialesGeneradasToSolicitud($solicitud);
             } else {
                 $this->updateEstadoCamposClinicosAPagoNoValido($solicitud);
+                $this->setEstatusPagoNoValidoToSolicitud($solicitud);
             }
         }
         else {
@@ -169,6 +170,15 @@ final class ProcesadorValidarPago implements ProcesadorValidarPagoInterface
     private function setEstatusCredencialesGeneradasToSolicitud(Solicitud $solicitud)
     {
         return $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     * @return Solicitud
+     */
+    private function setEstatusPagoNoValidoToSolicitud(Solicitud $solicitud)
+    {
+        return $solicitud->setEstatus(SolicitudInterface::CARGANDO_COMPROBANTES);
     }
 
     /**

@@ -71,6 +71,7 @@ const CargaDeComprobanteDePago = (
                   <th>Comprobante registrado</th>
                   <th>Fecha</th>
                   <th>Monto validado</th>
+                  <th>Observaciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -82,6 +83,7 @@ const CargaDeComprobanteDePago = (
                                    target='_blank' download >Descargar</a></td>
                             <td>{pago.fechaPago}</td>
                             <td>{moneyFormat(pago.monto)}</td>
+                            <td>{pago.observaciones}</td>
                           </tr>
                       ) :
                       <tr>

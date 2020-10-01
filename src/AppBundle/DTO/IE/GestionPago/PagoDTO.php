@@ -32,4 +32,9 @@ class PagoDTO implements PagoDTOInterface
     {
         return $this->pago->getId();
     }
+
+    public function getObservaciones()
+    {
+        return $this->pago->getObservaciones();
+    }
 }
