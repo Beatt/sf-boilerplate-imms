@@ -37,6 +37,7 @@ class AgreementController extends BaseAdminController
     $form = $this->createFormCargaConvenio();
     $data = [];
     $agregados = 0;
+    $yaExistentes = 0;
 
     // Check if we are posting stuff
     if ($request->getMethod('post') == 'POST') {
@@ -50,7 +51,6 @@ class AgreementController extends BaseAdminController
         $dataCSV = $this->processFileCSV($nameFile);
 
         $i = 0;
-        $yaExistentes = 0;
         foreach ($dataCSV as $row) {
             $dataRow = $this->cleanKeys($row);
           $conv = $cm->processDataCSV( $this->cleanKeys($dataRow) );
@@ -106,7 +106,7 @@ class AgreementController extends BaseAdminController
       'headers' => self::HEADERS
     );
 
-    return $this->render('easy_admin/agreement/carga.html.twig',
+    return $this->render('easy_admin/Agreement/carga.html.twig',
       $parameters
     );
 
