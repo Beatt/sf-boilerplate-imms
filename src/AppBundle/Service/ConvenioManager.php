@@ -23,20 +23,13 @@ class ConvenioManager implements ConvenioManagerInterface
 
   public function processDataCSV($data)
   {
-    $keys = array_keys($data);
-    $newData = [];
-    foreach ($keys as $key) {
-      $newKey = trim(mb_strtolower($key));
-      $newKey = str_replace(['á','é','í','ó','ú'],['a','e','i','o','u'], $newKey);
-      $newData[$newKey] = trim(($data[$key]));
-    }
-    $data = $newData;
 
     $institucion_id = 0;
     $vigencia = '';
     $conv = new Convenio();
+    $conv->setNombre("");
     if (array_key_exists('nombre', $data))
-      $conv->setNombre($data['nombre']);
+      $conv->setNombre($data['nombre'] ?: "");
     if (array_key_exists("numero", $data))
       $conv->setNumero($data['numero']);
 

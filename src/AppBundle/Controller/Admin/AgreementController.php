@@ -6,6 +6,7 @@ use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Delegacion;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AdminController as BaseAdminController;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 use Symfony\Component\Serializer\Serializer;
@@ -49,16 +50,36 @@ class AgreementController extends BaseAdminController
         $dataCSV = $this->processFileCSV($nameFile);
 
         $i = 0;
+        $yaExistentes = 0;
         foreach ($dataCSV as $row) {
-          $conv = $cm->processDataCSV($row);
+            $dataRow = $this->cleanKeys($row);
+          $conv = $cm->processDataCSV( $this->cleanKeys($dataRow) );
           $errsConv = $validator->validate($conv);
           $messages = "";
+          $existe = 0;
           if (count($errsConv) > 0) {
             foreach ($errsConv as $violation) {
               $messages .=
-                $violation->getPropertyPath() . ":" .
-                $violation->getMessage() . ";";
+                $violation->getPropertyPath().": "
+                .$violation->getMessage();
+
+                if ($violation->getConstraint() instanceof UniqueEntity
+                    && count($violation->getCause()) > 0
+                    && $violation->getCause()[0] instanceof Convenio) {
+                    $existe = $violation->getCause()[0]->getId();
+                    $yaExistentes++;
+                } elseif (!empty($violation->getRoot())
+                    && !in_array($violation->getPropertyPath(),
+                        ['general'])
+                    && array_key_exists($violation->getPropertyPath(),  $dataRow)
+                    && !empty($dataRow[$violation->getPropertyPath()])
+                ) {
+                    $messages .= "['". $dataRow[$violation->getPropertyPath()] ."' no está en el catálogo]";
+                }
+                $messages .=  ";";
+
             }
+
           } else {
             $em->persist($conv);
             $em->flush();
@@ -69,6 +90,7 @@ class AgreementController extends BaseAdminController
             'conv' => $conv,
             'row' => $row,
             'error' => $messages,
+            'existe' => $existe
           );
         }
       }
@@ -80,6 +102,7 @@ class AgreementController extends BaseAdminController
       'entity' => $entity,
       'data' => $data,
       'agregados' => $agregados,
+      'existentes' => $yaExistentes,
       'headers' => self::HEADERS
     );
 
@@ -121,6 +144,17 @@ class AgreementController extends BaseAdminController
     $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
     $dataCSV = $serializer->decode($dataFile, 'csv');
     return $dataCSV;
+  }
+
+  protected function cleanKeys($data) {
+      $keys = array_keys($data);
+      $newData = [];
+      foreach ($keys as $key) {
+          $newKey = trim(mb_strtolower($key));
+          $newKey = str_replace(['á','é','í','ó','ú'],['a','e','i','o','u'], $newKey);
+          $newData[$newKey] = trim(($data[$key]));
+      }
+      return $newData;
   }
 
 }

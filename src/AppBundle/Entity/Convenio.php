@@ -103,7 +103,9 @@ class Convenio implements GroupSequenceProviderInterface
      * @var Institucion
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Institucion", inversedBy="convenios")
      * @ORM\JoinColumn(name="institucion_id", referencedColumnName="id", nullable=false)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     message="Debe especificar una Institución válida que ya se encuentre registrada en el sistema."
+     * )
      */
     protected $institucion;
 

@@ -1,5 +1,10 @@
 {% extends '@EasyAdmin/default/layout.html.twig' %}
 
+{% block head_stylesheets %}
+  {{ parent() }}
+  <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.css" media="all">
+{% endblock %}
+
 {% block content_title %}
     {% apply spaceless %}
         Carga masiva - Convenios
@@ -123,8 +128,16 @@
         {% endif %}
         </div>
         <div class="panel-body">
-          {% if data is defined and data|length > 0 %}
+          {% if agregados > 0 %}
           <p>Se agregaron {{ agregados }} de {{ data|length }} registros.</p>
+          {% endif %}
+          {% if existentes > 0 %}
+            <p>Se encontraron {{ existentes }} registros ya existentes en la base de datos,
+              de los {{ data|length }} que contenía el archivo.</p>
+          {% endif %}
+          {% if agregados == 0 and data|length > 0  %}
+            <p>No se agregó ninguno de los {{ data|length }} registros que contenía el archivo.
+              Verifique los errores en la columna de Observaciones.</p>
           {% endif %}
           <a href="#" onclick="download_table_as_csv();">Download as CSV</a>
 
@@ -138,7 +151,11 @@
           </thead>
           <tbody>
           {% for d in data %}
-            <tr>
+            <tr class="
+            {% if attribute(d.conv, 'id') is defined and d.conv.id > 0 %} {{ 'bg-success' }}
+            {% elseif d.existe > 0 %} {{ 'bg-primary' }}
+              {% elseif attribute(d, 'error') is defined %} {{ 'bg-danger' }} {% endif %}
+            ">
               <td>{% if attribute(d.conv, 'id') is defined %} {{ d.conv.id }} {% endif %}</td>
               {% for header in headers %}
                 <td>
@@ -160,7 +177,7 @@
                   {% endif %}
                 </td>
               {% endfor %}
-              <td>{{ d.error }}</td>
+              <td>{{ d.error }} {% if d.existe > 0 %} Id Convenio Existente: {{ d.existe  }} {% endif %}</td>
             </tr>
           {% endfor %}
           </tbody>

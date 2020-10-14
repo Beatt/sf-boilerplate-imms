@@ -1,0 +1,16 @@
+INSERT INTO institucion(id, nombre) VALUES(123 , 'Instituto Universitario del Sureste' );
+INSERT INTO institucion(id, nombre) VALUES(124 , 'Universidad de Sotavento' );
+INSERT INTO institucion(id, nombre) VALUES(125 , 'Instituto Cultural Tecnológico Cuincacalli' );
+INSERT INTO institucion(id, nombre) VALUES(126 , 'Universidad Autónoma Metropolitana' );
+INSERT INTO institucion(id, nombre) VALUES(127 , 'Instituto Dr. Carlos Coqui Campus Coahuila' );
+INSERT INTO institucion(id, nombre) VALUES(128 , 'Universidad Justo Sierra' );
+INSERT INTO institucion(id, nombre) VALUES(129 , 'Universidad Popular de la Chontalpa' );
+INSERT INTO institucion(id, nombre) VALUES(130 , 'Universidad Anáhuac Campus Querétaro' );
+INSERT INTO institucion(id, nombre) VALUES(131 , 'Universidad José Martí');
+INSERT INTO institucion(id, nombre) VALUES(132 , 'Escuela de Técnicos en Radiología del Noroeste');
+INSERT INTO institucion(id, nombre) VALUES(133 , 'Universidad Autónoma de Durango Campus Durango');
+INSERT INTO institucion(id, nombre) VALUES(134 , 'Centro de Estudios Superiores en Estomatología y Ciencias de la Salud');
+INSERT INTO institucion(id, nombre) VALUES(135 , 'Universidad de Durango Campus Chihuahua');
+INSERT INTO institucion(id, nombre) VALUES(136 , 'Instituto de Estudios Superiores de Chiapas en Tapachula');
+INSERT INTO institucion(id, nombre) VALUES(137 , 'Universidad Anáhuac Puebla');
+SELECT setval('institucion_id_seq', (SELECT MAX(id) from institucion));
