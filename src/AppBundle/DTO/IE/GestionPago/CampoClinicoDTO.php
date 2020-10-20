@@ -32,7 +32,18 @@ final class CampoClinicoDTO
 
         return $convenio->getCarrera() !== null ?
             $convenio->getCarrera()
-                ->getNombre() :
+                ->getDisplayName():
             'Sin carrera';
+    }
+
+    public function getTipoCampoClinico() {
+        return $this->campoClinico
+                ->getConvenio()
+                ->getCicloAcademico()
+                ->getId();
+    }
+
+    public function getCicloAcademico() {
+        return $this->campoClinico->getDisplayCicloAcademico();
     }
 }

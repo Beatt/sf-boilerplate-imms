@@ -29,6 +29,19 @@ const CargaDeComprobanteDePago = (
     return gestionPago.tipoPago === TIPO_PAGO.MULTIPLE;
   }
 
+  function getNombreTipoCampo(tipo) {
+    var nombre = "Campo clínico";
+    switch (tipo) {
+      case 1:
+        nombre="Ciclo clínico del área de la salud";
+        break;
+      case 2:
+        nombre="Internado Médico";
+        break;
+   }
+    return nombre;
+  }
+
   function handleCargarComprobanteDePago(event) {
     event.preventDefault();
 
@@ -55,7 +68,8 @@ const CargaDeComprobanteDePago = (
           {
             isPagoMultiple() &&
             <div className="col-md-6">
-              <p className='mb-5'><strong>Campo clínico</strong></p>
+              <p className='mb-5'><strong>
+                {getNombreTipoCampo(gestionPago.campoClinico.tipoCampoClinico)}</strong></p>
               <p className='mb-5'>Sede: <strong>{gestionPago.campoClinico.sede}</strong></p>
               <p className='mb-5'>Carrera <strong>{gestionPago.campoClinico.carrera}</strong></p>
             </div>
