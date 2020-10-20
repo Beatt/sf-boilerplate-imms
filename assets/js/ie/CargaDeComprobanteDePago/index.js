@@ -216,9 +216,9 @@ const CargaDeComprobanteDePago = (
             <div className="form-group">
               <div className="col-md-8">
                 <label htmlFor="institucion_cedulaFile">
-                  Cargue Cédula de Identificación Fiscal de la institución educativa <br/>
+                  Adjunte Constancia de Situación Fiscal Actualizada (No mayor a 3 meses) <br/>
                   <span className='text-danger text-sm'>Por favor verifique que los datos que aparecen en su archivo sean correctos. <br/>
-            La cédula de identificación fiscal se utilizará para emitir las facturas de sus pagos.</span>
+            La constancia de situación fiscal se utilizará para emitir las facturas de sus pagos.</span>
                 </label>
               </div>
 
