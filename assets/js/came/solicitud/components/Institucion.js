@@ -46,6 +46,8 @@ const Institucion = (props) => {
                 })
                 .finally(() => {props.callbackIsLoading(false);});
             props.parentCallback(institucion);
+        } else {
+            props.parentCallback({});
         }
         return institucion ? institucion : {};
     }

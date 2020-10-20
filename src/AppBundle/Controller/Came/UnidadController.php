@@ -23,7 +23,7 @@ class UnidadController extends \AppBundle\Controller\DIEControllerController
             ->getAllUnidadesByDelegacion($delegacion);
         return $this->jsonResponse([
             'object' => $this->get('serializer')->normalize($unidades, 'json',
-                ['attributes' => [ 'id', 'nombre']
+                ['attributes' => [ 'id', 'nombre', 'claveUnidad']
             ])]);
     }
 }

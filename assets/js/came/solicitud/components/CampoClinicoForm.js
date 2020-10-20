@@ -197,7 +197,8 @@ const CampoClinicoForm = (props) => {
     const getUnidades = () => {
         const result = [{value: '-', name: 'Seleccionar ...'}];
         props.unidades.map(item => {
-            result.push({value: item.id.toString(), name: item.nombre});
+            result.push({value: item.id.toString(),
+                name: item.claveUnidad + '-' + item.nombre   });
         })
         return result;
     }

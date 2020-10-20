@@ -113,7 +113,7 @@ class SolicitudController extends DIEControllerController
             'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
                 ['attributes' => ['id', 'nombre', 'rfc', 'direccion', 'telefono', 'extension', 'correo', 'sitioWeb', 'fax', 'representante']]),
             'unidades' => $this->get('serializer')->normalize($unidades, 'json',
-                ['attributes' => ['id', 'nombre']])
+                ['attributes' => ['id', 'nombre', 'claveUnidad']])
         ]);
     }
 

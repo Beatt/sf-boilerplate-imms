@@ -113,7 +113,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                         'convenio' => ['cicloAcademico' => ['id', 'nombre'],
                             'id', 'vigencia', 'label', 'carrera' => ['id', 'nombre',
                                 'nivelAcademico' => ['id', 'nombre']], 'numero'],
-                        'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre'],
+                        'lugaresSolicitados', 'lugaresAutorizados', 'horario', 'unidad' => ['id', 'nombre', 'claveUnidad'],
                         'fechaInicial', 'fechaFinal', 'referenciaBancaria', 'fechaInicialFormatted',
                         'fechaFinalFormatted', 'estatus' => ['id', 'nombre']]
                 ]
