@@ -168,7 +168,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         ->setParameter('no_solicitud', '%'.strtoupper($filters['no_solicitud']).'%');
     }
     if($delegacion_id){
-      $queryBuilder->andWhere('convenio.delegacion = :delegacion_id')
+      $queryBuilder->andWhere('unidad.delegacion = :delegacion_id')
         ->setParameter('delegacion_id', $delegacion_id);
     }
     if ($unidad_id) {
