@@ -104,7 +104,7 @@ class SolicitudController extends DIEControllerController
         }
         $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
-            ->findAllPrivate($delegacion);
+            ->findAllPrivate();
         $unidades = $this->getDoctrine()
             ->getRepository(Unidad::class)
             ->getAllUnidadesByDelegacion($delegacion);

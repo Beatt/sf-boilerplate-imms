@@ -670,8 +670,8 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
     {
         $result = null;
         $cc = $this->getCampoClinicos()->first();
-        if($cc){
-            $result = $cc->getConvenio()->getDelegacion();
+        if($cc) {
+            $result = $cc->getUnidad()->getDelegacion();
         }
         return $result;
     }
