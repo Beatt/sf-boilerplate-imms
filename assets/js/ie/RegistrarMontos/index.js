@@ -86,8 +86,11 @@ const Registrar = (
               <div className="col-md-12 mb-10 mt-10">
                 <div className="row">
                   <div className="col-md-8">
-                    <p>Cargue el oficio que contenga los montos de inscripción de todas las carreras que comprenden su
-                      solicitud de campos clínicos </p>
+                    <p>
+                      Adjunte documento oficial que contenga los importes de inscripción y colegiaturas de todas
+                      las carreras que comprenden su solicitud de campos clínicos
+                      y oficio detallado de los importes de beca que aplique.
+                    </p>
                   </div>
                   <div className="col-md-4">
                     <input
@@ -178,17 +181,17 @@ const Registrar = (
 
               <div className='col-md-12 mb-20'>
                 <p>
-                  La institución educativa &nbsp;
-                  <span className='text-bold'>{institucion}</span>, confirma que el oficio adjunto, contiene el monto
-                  correspondiente a los montos de la colegiatura e inscripción por cada una de las carreras mencionadas
-                  anteriormente.&nbsp;&nbsp;
+                  La institución  &nbsp;
+                  <span className='text-bold'>{institucion}</span>
+                  valida  que la información capturada y archivos adjuntos corresponden a su solicitud.
+                  &nbsp;&nbsp;
                   <label htmlFor="solicitud_validacion_montos_confirmacionOficioAdjunto">
                     <input
                       type="checkbox"
                       id='solicitud_validacion_montos_confirmacionOficioAdjunto'
                       name='solicitud_validacion_montos[confirmacionOficioAdjunto]'
                       required={true}
-                    />&nbsp;Confirmo información
+                    />&nbsp;Acepto
                   </label>
                 </p>
               </div>
