@@ -15,6 +15,8 @@ const Registrar = (
   }) => {
 
   const [executing, setExecuting] = React.useState(false);
+  const [inputList, setInputList] = React.useState([{ firstName: "", lastName: "" }]);
+
 
   let acceso = false;
   let editar = false;
@@ -28,6 +30,19 @@ const Registrar = (
       e.value = '';
     }
   };
+
+  // handle click event of the Remove button
+  const handleRemoveClick = index => {
+    const list = [...inputList];
+    list.splice(index, 1);
+    setInputList(list);
+  };
+
+  // handle click event of the Add button
+  const handleAddClick = () => {
+    setInputList([...inputList, { firstName: "", lastName: "" }]);
+  };
+
 
   const formSubmit = (e) =>{
     try{
@@ -168,6 +183,37 @@ const Registrar = (
                                     onBlur={e => handleCurrency(e.target)}
                                   />
                                 </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <button
+                                    onClick={handleAddClick}
+                                >Agregar descuento</button>
+                                {inputList.map((x, i) => {
+                                  return (
+                                      <div className="box">
+                                        <input
+                                            name="firstName"
+                                            placeholder="% descuento Inscripción"
+                                            value={x.firstName}
+                                        />
+                                        <input
+                                            className="ml10"
+                                            name="lastName"
+                                            placeholder="% descuento Colegiatura"
+                                            value={x.lastName}
+                                        />
+                                        <div className="btn-box">
+                                          {inputList.length !== 0 &&
+                                          <button
+                                              className="mr10"
+                                              onClick={() => handleRemoveClick(i)}
+                                          >Eliminar</button>}
+                                        </div>
+                                      </div>
+                                  );
+                                })}
                               </div>
                             </td>
                           </tr>
