@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import camelcaseKeys from 'camelcase-keys'
 import RegistrarDescuentos from "./Descuentos";
 import {getSchemeAndHttpHost} from "../../utils";
+import './styles.scss';
 
 const Registrar = (
   {
@@ -172,7 +173,7 @@ const Registrar = (
                               </div>
                             </td>
                           </tr>
-                          <tr>
+                          <tr className={'desc'}>
                             <td colSpan={5}>
                               <RegistrarDescuentos
                                 carrera={carrera}

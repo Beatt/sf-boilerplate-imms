@@ -1,5 +1,4 @@
 import * as React from 'react'
-import './styles.scss'
 
 const RegistrarDescuentos = (props) => {
 
@@ -22,18 +21,20 @@ const RegistrarDescuentos = (props) => {
     const list = [...inputList];
     list[index][name] = value;
     setInputList(list);
-    console.log(e);
-    console.log(inputList)
   };
 
   return (
-    <div className={'row'}>
+    <div className={'form-inline'}>
       {inputList.map((x, i) => {
         const descId = `${props.carrera.id}-${i}`;
         return (
-          <div className="form-inline mb-5" key={i}>
-            <div className=''>
-              <input
+          <div className="row mb-5" key={i}>
+              <div className={'form-group col-md-3'}>
+                { i==0 ?
+                  <label htmlFor="numAlumns">Número de Alumnos</label>
+                  : null
+                }
+                <input
                 className={'form-control mr-10'}
                 name={`numAlumns`}
                 type="number"
@@ -42,42 +43,56 @@ const RegistrarDescuentos = (props) => {
                 placeholder="# de Alumnos Becados"
                 value={x.numAlumns}
                 onChange={e => handleInputChange(e, i)}
-              />
-            <div className=" input-group mr-10 col-sm-3">
-              <div className="input-group-addon">%</div>
-              <input
-                className='form-control'
-                name={`descIns`}
-                type="number"
-                min={0}
-                step={1}
-                max={100}
-                placeholder="descuento Inscripción"
-                value={x.descIns}
-                onChange={e => handleInputChange(e, i)}
-              />
+              /></div>
+            <div className={'form-group col-md-3'}>
+              {
+                i==0 ?
+                  <label htmlFor="descIns">Porcentaje descuento Inscripción</label>
+                  : null
+              }
+              <div className=" input-group mr-10 col-sm-12">
+                <div className="input-group-addon">%</div>
+                <input
+                  className='form-control'
+                  name={`descIns`}
+                  type="number"
+                  min={0}
+                  step={0.1}
+                  max={100}
+                  placeholder="descuento Inscripción"
+                  value={x.descIns}
+                  onChange={e => handleInputChange(e, i)}
+                />
+              </div>
             </div>
-            <div className="input-group mr-10 col-sm-3">
-              <div className="input-group-addon">%</div>
-              <input
-                className='form-control '
-                name={`descCol`}
-                type="number"
-                min={0}
-                step={1}
-                max={100}
-                placeholder="descuento Colegiatura"
-                value={x.descCol}
-                onChange={e => handleInputChange(e, i)}
-              />
+            <div className="form-group col-md-3">
+              {i == 0 ?
+                <label htmlFor="descCol">Porcentaje descuento Colegiatura</label>
+                : null
+              }
+              <div className="input-group mr-10 col-sm-12">
+                <div className="input-group-addon">%</div>
+                <input
+                  className='form-control '
+                  name={`descCol`}
+                  type="number"
+                  min={0}
+                  step={0.1}
+                  max={100}
+                  placeholder="descuento Colegiatura"
+                  value={x.descCol}
+                  onChange={e => handleInputChange(e, i)}
+                />
+              </div>
             </div>
-            <div className="input-group">
-              {inputList.length !== 0 &&
-              <button
-                className="btn btn-link"
-                onClick={() => handleRemoveClick(i)}
-              >Eliminar</button>}
-            </div>
+            <div className="form-group col-md-3">
+              <div className={ (i== 0 ? 'mt-30 ' : '') + "input-group col-sm-12"}>
+                {inputList.length !== 0 &&
+                <button
+                  className="btn btn-link"
+                  onClick={() => handleRemoveClick(i)}
+                >Eliminar</button>}
+              </div>
             </div>
           </div>
         );
