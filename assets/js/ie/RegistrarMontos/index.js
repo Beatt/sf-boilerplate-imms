@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import ReactDOM from 'react-dom'
 import camelcaseKeys from 'camelcase-keys'
-import { SOLICITUD } from "../../constants";
+import RegistrarDescuentos from "./Descuentos";
 import {getSchemeAndHttpHost} from "../../utils";
 
 const Registrar = (
@@ -15,8 +15,6 @@ const Registrar = (
   }) => {
 
   const [executing, setExecuting] = React.useState(false);
-  const [inputList, setInputList] = React.useState([{ firstName: "", lastName: "" }]);
-
 
   let acceso = false;
   let editar = false;
@@ -30,19 +28,6 @@ const Registrar = (
       e.value = '';
     }
   };
-
-  // handle click event of the Remove button
-  const handleRemoveClick = index => {
-    const list = [...inputList];
-    list.splice(index, 1);
-    setInputList(list);
-  };
-
-  // handle click event of the Add button
-  const handleAddClick = () => {
-    setInputList([...inputList, { firstName: "", lastName: "" }]);
-  };
-
 
   const formSubmit = (e) =>{
     try{
@@ -137,6 +122,7 @@ const Registrar = (
                       <tbody>
                       {
                         carreras.map((carrera, index) =>
+                          <Fragment key={index}>
                           <tr key={index}>
                             <td>{carrera.nivelAcademico}</td>
                             <td>{carrera.nombre}</td>
@@ -185,38 +171,15 @@ const Registrar = (
                                 </div>
                               </div>
                             </td>
-                            <td>
-                              <div>
-                                <button
-                                    onClick={handleAddClick}
-                                >Agregar descuento</button>
-                                {inputList.map((x, i) => {
-                                  return (
-                                      <div className="box">
-                                        <input
-                                            name="firstName"
-                                            placeholder="% descuento Inscripción"
-                                            value={x.firstName}
-                                        />
-                                        <input
-                                            className="ml10"
-                                            name="lastName"
-                                            placeholder="% descuento Colegiatura"
-                                            value={x.lastName}
-                                        />
-                                        <div className="btn-box">
-                                          {inputList.length !== 0 &&
-                                          <button
-                                              className="mr10"
-                                              onClick={() => handleRemoveClick(i)}
-                                          >Eliminar</button>}
-                                        </div>
-                                      </div>
-                                  );
-                                })}
-                              </div>
+                          </tr>
+                          <tr>
+                            <td colSpan={5}>
+                              <RegistrarDescuentos
+                                carrera={carrera}
+                              />
                             </td>
                           </tr>
+                          </Fragment>
                         )
                       }
                       </tbody>
