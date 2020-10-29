@@ -17,6 +17,8 @@ const Registrar = (
 
   const [executing, setExecuting] = React.useState(false);
 
+  console.log(errors);
+
   let acceso = false;
   let editar = false;
 
@@ -176,6 +178,7 @@ const Registrar = (
                           <tr className={'desc'}>
                             <td colSpan={5}>
                               <RegistrarDescuentos
+                                prefixName={`solicitud_validacion_montos[montosCarreras][${index}][descuentos]`}
                                 carrera={carrera}
                               />
                             </td>
@@ -192,7 +195,7 @@ const Registrar = (
               <div className='col-md-12 mb-20'>
                 <p>
                   La institución  &nbsp;
-                  <span className='text-bold'>{institucion}</span>
+                  <span className='text-bold'>{institucion} </span>
                   valida  que la información capturada y archivos adjuntos corresponden a su solicitud.
                   &nbsp;&nbsp;
                   <label htmlFor="solicitud_validacion_montos_confirmacionOficioAdjunto">

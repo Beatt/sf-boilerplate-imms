@@ -13,11 +13,14 @@ const RegistrarDescuentos = (props) => {
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setInputList([...inputList, { numAlumns: "", descIns: "", descCol: "" }]);
+    setInputList([...inputList,
+      { numAlumnos: "",
+        descuentoInscripcion: "",
+        descuentoColegiatura: "" }]);
   };
 
-  const handleInputChange = (e, index) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e, index, name) => {
+    const { nameF, value } = e.target;
     const list = [...inputList];
     list[index][name] = value;
     setInputList(list);
@@ -27,61 +30,62 @@ const RegistrarDescuentos = (props) => {
     <div className={'form-inline'}>
       {inputList.map((x, i) => {
         const descId = `${props.carrera.id}-${i}`;
+        const prefixName = `${props.prefixName}[${i}]`
         return (
           <div className="row mb-5" key={i}>
               <div className={'form-group col-md-3'}>
                 { i==0 ?
-                  <label htmlFor="numAlumns">Número de Alumnos</label>
+                  <label htmlFor="numAlumnos">Número de Alumnos</label>
                   : null
                 }
                 <input
                 className={'form-control mr-10'}
-                name={`numAlumns`}
+                name={`${prefixName}[numAlumnos]`}
                 type="number"
                 min={1}
                 step={1}
                 placeholder="# de Alumnos Becados"
-                value={x.numAlumns}
-                onChange={e => handleInputChange(e, i)}
+                value={x.numAlumnos}
+                onChange={e => handleInputChange(e, i, 'numAlumnos')}
               /></div>
             <div className={'form-group col-md-3'}>
               {
                 i==0 ?
-                  <label htmlFor="descIns">Porcentaje descuento Inscripción</label>
+                  <label htmlFor="descuentoInscripcion">Porcentaje descuento Inscripción</label>
                   : null
               }
               <div className=" input-group mr-10 col-sm-12">
                 <div className="input-group-addon">%</div>
                 <input
                   className='form-control'
-                  name={`descIns`}
+                  name={`${prefixName}[descuentoInscripcion]`}
                   type="number"
                   min={0}
                   step={0.1}
                   max={100}
                   placeholder="descuento Inscripción"
-                  value={x.descIns}
-                  onChange={e => handleInputChange(e, i)}
+                  value={x.descuentoInscripcion}
+                  onChange={e => handleInputChange(e, i, 'descuentoInscripcion')}
                 />
               </div>
             </div>
             <div className="form-group col-md-3">
               {i == 0 ?
-                <label htmlFor="descCol">Porcentaje descuento Colegiatura</label>
+                <label htmlFor="descuentoColegiatura">Porcentaje descuento Colegiatura</label>
                 : null
               }
               <div className="input-group mr-10 col-sm-12">
                 <div className="input-group-addon">%</div>
                 <input
                   className='form-control '
-                  name={`descCol`}
+                  name={`${prefixName}[descuentoColegiatura]`}
                   type="number"
                   min={0}
                   step={0.1}
                   max={100}
                   placeholder="descuento Colegiatura"
-                  value={x.descCol}
-                  onChange={e => handleInputChange(e, i)}
+                  value={x.descuentoColegiatura}
+                  onChange={e => handleInputChange(e, i,'descuentoColegiatura')}
                 />
               </div>
             </div>
