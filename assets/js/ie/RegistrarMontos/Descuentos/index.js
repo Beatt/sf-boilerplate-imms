@@ -2,7 +2,16 @@ import * as React from 'react'
 
 const RegistrarDescuentos = (props) => {
 
-  const [inputList, setInputList] = React.useState([]);
+  const [inputList, setInputList] = React.useState(
+    props.descuentos ?
+      props.descuentos.map((desc, i) => {
+        return {
+          numAlumnos: desc.numAlumnos,
+          descuentoInscripcion: desc.descuentoInscripcion,
+          descuentoColegiatura: desc.descuentoColegiatura
+        }
+      })
+      : []);
 
   // handle click event of the Remove button
   const handleRemoveClick = index => {
@@ -24,6 +33,9 @@ const RegistrarDescuentos = (props) => {
     const list = [...inputList];
     list[index][name] = value;
     setInputList(list);
+    if (props.indexMonto >= 0) {
+      props.onChange(props.indexMonto, list);
+    }
   };
 
   return (

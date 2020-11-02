@@ -378,8 +378,11 @@ class SolicitudController extends DIEControllerController
                     'estatusCameFormatted',
                     'documento', 'urlArchivo',
                     'institucion' => ['id', 'nombre'],
-                    'montosCarreras' => ['id', 'montoInscripcion', 'montoColegiatura',
-                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]]
+                    'montosCarreras' =>
+                        ['id', 'montoInscripcion', 'montoColegiatura',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'descuentos' => ['numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura']
+                        ]
                 ]]
             )
         ]);
