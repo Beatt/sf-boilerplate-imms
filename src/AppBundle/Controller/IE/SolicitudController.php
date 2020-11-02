@@ -192,8 +192,6 @@ class SolicitudController extends DIEControllerController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-            dump($data);
-            die();
             $solicitudManager->registrarMontos($data);
 
             $this->addFlash('success', 'Se han guardado correctamente los montos para la solicitud ' . $solicitud->getNoSolicitud());

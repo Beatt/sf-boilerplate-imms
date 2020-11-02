@@ -143,6 +143,12 @@ class SolicitudManager implements SolicitudManagerInterface
       foreach ($solicitud->getMontosCarreras() as $monto) {
         $this->entityManager->persist($monto);
         $this->entityManager->flush();
+
+        foreach($monto->getDescuentos() as $descuento) {
+            $descuento->setMontoCarrera($monto);
+            $this->entityManager->persist($descuento);
+            $this->entityManager->flush();
+        }
       }
       $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
       $this->entityManager->persist($solicitud);

@@ -58,6 +58,7 @@ class MontoCarrera
 
     /**
      * @var Collection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\DescuentoMonto", mappedBy="montoCarrera", cascade={"persist"})
      */
     private $descuentos;
 
@@ -152,8 +153,8 @@ class MontoCarrera
      */
     public function removeDescuentos(DescuentoMonto $descuento)
     {
-        if($this->montosCarreras->contains($descuento)) {
-            $this->montosCarreras->removeElement($descuento);
+        if($this->descuentos->contains($descuento)) {
+            $this->descuentos->removeElement($descuento);
         }
     }
 
@@ -165,7 +166,7 @@ class MontoCarrera
     {
         if(!$this->descuentos->contains($descuento)) {
             $this->descuentos[] = $descuento;
-            //$descuento->setSolicitud($this);
+            $descuento->setMontoCarrera($this);
         }
 
         return $this;

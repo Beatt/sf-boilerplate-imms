@@ -52,6 +52,14 @@ class DescuentoMonto
     private $descuentoColegiatura;
 
     /**
+     * @var MontoCarrera
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\MontoCarrera", inversedBy="descuentos")
+     * @ORM\JoinColumn(name="monto_carrera_id", referencedColumnName="id")
+     */
+    private  $montoCarrera;
+
+    /**
      * @return int
      */
     public function getId()
@@ -115,6 +123,20 @@ class DescuentoMonto
         $this->descuentoColegiatura = $descuentoColegiatura;
     }
 
+    /**
+     * @return MontoCarrera
+     */
+    public function getMontoCarrera()
+    {
+        return $this->montoCarrera;
+    }
 
+    /**
+     * @param MontoCarrera $montoCarrera
+     */
+    public function setMontoCarrera($montoCarrera)
+    {
+        $this->montoCarrera = $montoCarrera;
+    }
 
 }
