@@ -186,5 +186,10 @@ class MontoCarrera
     public function setDescuentos($descuentos)
     {
         $this->descuentos = $descuentos;
+        foreach ($descuentos as $descuento) {
+            $descuento->setMontoCarrera($this);
+        }
+
+        return $this;
     }
 }

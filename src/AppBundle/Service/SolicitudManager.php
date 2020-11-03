@@ -139,16 +139,9 @@ class SolicitudManager implements SolicitudManagerInterface
         ];
     }
 
-    public function registrarMontos(Solicitud $solicitud)  {
+    public function registrarMontos(Solicitud $solicitud, $originalDescuentos=[])  {
       foreach ($solicitud->getMontosCarreras() as $monto) {
-        $this->entityManager->persist($monto);
-        $this->entityManager->flush();
-
-        foreach($monto->getDescuentos() as $descuento) {
-            $descuento->setMontoCarrera($monto);
-            $this->entityManager->persist($descuento);
-            $this->entityManager->flush();
-        }
+          $this->registrarDescuentos($monto, $originalDescuentos);
       }
       $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
       $this->entityManager->persist($solicitud);
@@ -160,19 +153,14 @@ class SolicitudManager implements SolicitudManagerInterface
       );
     }
 
-    public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null)
+    public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null, $originalDescuentos=[])
     {
         $solicitud->setValidado($is_valid);
         try {
             if ($is_valid) {
                 foreach ($montos as $monto) {
                     if (!is_null($monto->getMontoInscripcion()) && !is_null($monto->getMontoColegiatura())) {
-                        $this->entityManager->persist($monto);
-                        $this->entityManager->flush();
-                        foreach ($monto->getDescuentos() as $descuento) {
-                            $this->entityManager->persist($descuento);
-                            $this->entityManager->flush();
-                        }
+                        $this->registrarDescuentos($monto, $originalDescuentos);
                     } else {
                         throw new \Exception("Montos no puede estar vacío");
                     }
@@ -304,6 +292,21 @@ class SolicitudManager implements SolicitudManagerInterface
         }
         $solicitud->setMonto(round($monto_solicitud, 2));
         $this->entityManager->persist($solicitud);
+        $this->entityManager->flush();
+    }
+
+    private function registrarDescuentos($monto, $originalDescuentos) {
+        $this->entityManager->persist($monto);
+        $descuentosRemover = $originalDescuentos[$monto->getId()];
+        foreach ($monto->getDescuentos() as $descuento) {
+            $descuento->setMontoCarrera($monto);
+            $this->entityManager->persist($descuento);
+            $this->entityManager->flush();
+            unset($descuentosRemover[$descuento->getId()]);
+        }
+        foreach ($descuentosRemover as $descuento) {
+            $this->entityManager->remove($descuento);
+        }
         $this->entityManager->flush();
     }
 }
