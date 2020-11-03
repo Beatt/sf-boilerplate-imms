@@ -210,12 +210,16 @@ class SolicitudController extends DIEControllerController
                 'json',
                 [
                     'attributes' => [
-                        'montosCarrera' => [
+                        'montosCarreras' => [
                             'montoInscripcion',
                             'montoColegiatura',
+                            'descuentos' => [
+                                'numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura'
+                            ],
                             'carrera' => [
                                 'id',
-                                'nombre'
+                                'nombre',
+                                'nivelAcademico' => ['nombre']
                             ]
                         ]
                     ]

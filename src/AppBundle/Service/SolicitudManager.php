@@ -163,13 +163,16 @@ class SolicitudManager implements SolicitudManagerInterface
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null)
     {
         $solicitud->setValidado($is_valid);
-
         try {
             if ($is_valid) {
                 foreach ($montos as $monto) {
                     if (!is_null($monto->getMontoInscripcion()) && !is_null($monto->getMontoColegiatura())) {
                         $this->entityManager->persist($monto);
                         $this->entityManager->flush();
+                        foreach ($monto->getDescuentos() as $descuento) {
+                            $this->entityManager->persist($descuento);
+                            $this->entityManager->flush();
+                        }
                     } else {
                         throw new \Exception("Montos no puede estar vacío");
                     }

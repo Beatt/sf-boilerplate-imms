@@ -4,6 +4,7 @@ import camelcaseKeys from 'camelcase-keys'
 import RegistrarDescuentos from "./Descuentos";
 import {getSchemeAndHttpHost} from "../../utils";
 import './styles.scss';
+import CorregirMontos from "./CorregirMontos";
 
 const Registrar = (
   {
@@ -11,6 +12,7 @@ const Registrar = (
     solicitudId,
     institucion,
     carreras,
+    montos,
     errors,
     route
   }) => {
@@ -70,7 +72,7 @@ const Registrar = (
 
                 <div>
                   <div className="col-md-12 bm-10 tm-10">
-                    <span className="error-message mb-10 mt-10"><strong>Por favor, ingrese la información correcta correspondiente a los montos de inscripción y de colegiaturas</strong></span>
+                    <span className="error-message mb-10 mt-10"><strong>Por favor, ingrese la información correcta correspondiente a los importes de inscripción, colegiaturas y descuentos</strong></span>
                   </div>
 
                   <div className="col-md-12 bm-10 mt-10">
@@ -124,7 +126,13 @@ const Registrar = (
                       </thead>
                       <tbody>
                       {
-                        carreras.map((carrera, index) =>
+                        editar ?
+                          <CorregirMontos
+                            montos={montos.montosCarreras}
+                            handleCurrency={handleCurrency}
+                          />
+                          :
+                          carreras.map((carrera, index) =>
                           <Fragment key={index}>
                           <tr key={index}>
                             <td>{carrera.nivelAcademico}</td>
@@ -180,6 +188,7 @@ const Registrar = (
                               <RegistrarDescuentos
                                 prefixName={`solicitud_validacion_montos[montosCarreras][${index}][descuentos]`}
                                 carrera={carrera}
+                                descuentos={carrera.descuentos}
                               />
                             </td>
                           </tr>
@@ -235,12 +244,12 @@ const Registrar = (
   )
 }
 
-
 ReactDOM.render(
   <Registrar
     autorizados={window.AUTORIZADOS_PROP}
     institucion={window.INSTITUCION_PROP}
     carreras={camelcaseKeys(window.CARRERAS_PROP)}
+    montos={window.MONTOS_PROP}
     solicitudId={window.SOLICITUD_ID_PROP}
     errors={window.ERRORS_PROP}
     route={window.ROUTE_PROP}
