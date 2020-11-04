@@ -39,6 +39,7 @@
     {{ parent() }}
     <script>
         window.CAMPOS_CLINICOS_PROPS = {{ camposClinicos|json_encode|raw }}
+        window.SOLICITUD_PROPS = {{ solicitud|json_encode|raw }}
         window.ACTION = {{ absolute_url(path('ie#seleccionar_forma_de_pago', {
             'id': solicitud.id
         }))|json_encode|raw }}

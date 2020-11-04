@@ -509,10 +509,11 @@ class SolicitudController extends DIEControllerController
                     'noSolicitud',
                     'estatus',
                     'fecha',
-                    'montosCarrera' => [
+                    'montosCarreras' => [
                         'montoInscripcion',
                         'montoColegiatura',
-                        'carrera'
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['nombre']],
+                        'descuentos' => ['numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura']
                     ],
                     'observaciones',
                     'referenciaBancaria',

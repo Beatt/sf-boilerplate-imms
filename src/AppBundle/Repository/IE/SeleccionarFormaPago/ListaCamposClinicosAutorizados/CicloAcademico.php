@@ -4,11 +4,17 @@ namespace AppBundle\Repository\IE\SeleccionarFormaPago\ListaCamposClinicosAutori
 
 final class CicloAcademico
 {
+    private $id;
     private $nombre;
 
-    public function __construct($nombre)
+    public function __construct($id, $nombre)
     {
+        $this->id = (int) $id;
         $this->nombre = $nombre;
+    }
+
+    public function getId() {
+        return $this->id;
     }
 
     /**

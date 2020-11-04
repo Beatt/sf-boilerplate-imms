@@ -25,8 +25,10 @@ final class CamposClinicosUsingSql implements CamposClinicos
                    fecha_inicial,
                    fecha_final,
                    unidad.nombre          AS nombre_unidad,
+                   carrera.id         AS carrera_id,
                    carrera.nombre         AS nombre_carrera,
                    nivel_academico.nombre AS nombre_nivel_academico,
+                   ciclo_academico.id AS ciclo_academico_id,
                    ciclo_academico.nombre AS nombre_ciclo_academico
             FROM campo_clinico
                    JOIN unidad
@@ -48,8 +50,8 @@ final class CamposClinicosUsingSql implements CamposClinicos
 
         return array_map(function (array $record) {
             $nivelAcademico = new NivelAcademico($record['nombre_nivel_academico']);
-            $carrera = new Carrera($record['nombre_carrera'], $nivelAcademico);
-            $cicloAcademico = new CicloAcademico($record['nombre_ciclo_academico']);
+            $carrera = new Carrera($record['carrera_id'], $record['nombre_carrera'], $nivelAcademico);
+            $cicloAcademico = new CicloAcademico($record['ciclo_academico_id'], $record['nombre_ciclo_academico']);
             $convenio = new Convenio(
                 $carrera,
                 $cicloAcademico

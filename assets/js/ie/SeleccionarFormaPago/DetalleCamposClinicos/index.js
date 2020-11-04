@@ -1,7 +1,9 @@
 import * as React from 'react'
 import {getSchemeAndHttpHost, moneyFormat} from "../../../utils";
+import {Fragment} from "react";
+import DetalleMontoPago from "../DetalleMontoPago";
 
-const DetalleCamposClinicos = ({ camposClinicos }) => {
+const DetalleCamposClinicos = ({ camposClinicos, solicitud }) => {
 
   function getTotalBySolicitud() {
     let total = 0;
@@ -11,6 +13,14 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
 
     return moneyFormat(total)
   }
+
+  function getMontoCarrera(id) {
+    let montos = solicitud.montosCarreras.filter(elem => { return elem.carrera.id === id });
+    return montos.length > 0 ? montos[0] : {};
+  }
+
+  console.log(camposClinicos);
+  console.log(solicitud);
 
   return(
     <div className="panel panel-default">
@@ -32,27 +42,38 @@ const DetalleCamposClinicos = ({ camposClinicos }) => {
           <tbody>
           {
             camposClinicos.map((campoClinico, index) =>
-              <tr key={index}>
-                <td>{campoClinico.unidad.nombre}</td>
-                <td>{campoClinico.convenio.cicloAcademico.nombre}</td>
-                <td>{campoClinico.convenio.carrera.nivelAcademico.nombre} {campoClinico.convenio.carrera.nombre}</td>
-                <td>{campoClinico.lugaresSolicitados}</td>
-                <td>{campoClinico.lugaresAutorizados}</td>
-                <td>
-                  {campoClinico.fechaInicial} - {campoClinico.fechaFinal}
-                </td>
-                <td>{campoClinico.numeroSemanas}</td>
-                <td>
-                  <a
-                    href={`${campoClinico.enlaceCalculoCuotas}`}
-                    target='_blank'
-                    download
-                  >
-                    Descargar
-                  </a>
-                </td>
-                <td className='text-right'>{moneyFormat(campoClinico.montoPagar)}</td>
-              </tr>
+              <Fragment key={index}>
+                <tr key={index}>
+                  <td>{campoClinico.unidad.nombre}</td>
+                  <td>{campoClinico.convenio.cicloAcademico.nombre}</td>
+                  <td>{campoClinico.convenio.carrera.nivelAcademico.nombre} {campoClinico.convenio.carrera.nombre}</td>
+                  <td>{campoClinico.lugaresSolicitados}</td>
+                  <td>{campoClinico.lugaresAutorizados}</td>
+                  <td>
+                    {campoClinico.fechaInicial} - {campoClinico.fechaFinal}
+                  </td>
+                  <td>{campoClinico.numeroSemanas}</td>
+                  <td>
+                    <a
+                      href={`${campoClinico.enlaceCalculoCuotas}`}
+                      target='_blank'
+                      download
+                    >
+                      Descargar
+                    </a>
+                  </td>
+                  <td className='text-right'>{moneyFormat(campoClinico.montoPagar)}</td>
+                </tr>
+                <tr>
+                  <td colSpan={9}>
+                    <DetalleMontoPago
+                      monto={getMontoCarrera(campoClinico.convenio.carrera.id)}
+                      campoClinico={campoClinico}
+
+                    />
+                  </td>
+                </tr>
+              </Fragment>
             )
           }
           </tbody>
