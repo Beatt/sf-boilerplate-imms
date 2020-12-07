@@ -292,6 +292,16 @@ class CampoClinico implements ReferenciaBancariaInterface
         $this->convenio->getCicloAcademico()->getNombre() : "";
     }
 
+    /**
+     * @return Carrera|null
+     */
+    public function getCarrera() {
+        return $this->convenio ? $this->convenio->getCarrera() : null;
+    }
+
+    /**
+     * @return string
+     */
     public function getDisplayCarrera() {
       $carrera = $this->convenio ?
         $this->convenio->getCarrera() : null;

@@ -390,6 +390,7 @@ class SolicitudController extends DIEControllerController
                     'estatusCameFormatted',
                     'documento', 'urlArchivo',
                     'institucion' => ['id', 'nombre'],
+                    'camposClinicos' => ['lugaresAutorizados', 'carrera' => ['id']],
                     'montosCarreras' =>
                         ['id', 'montoInscripcion', 'montoColegiatura',
                         'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],

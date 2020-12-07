@@ -12,18 +12,21 @@ const SolicitudValidaMontos = (props) => {
     const [montos, setMontos] = React.useState(props.solicitud.montosCarreras);
     const [alert, setAlert] = React.useState({});
     const [errores, setErrores] = React.useState({});
+    const [descValidos, setDescValidos] = React.useState(true);
 
     const callbackIsLoading = (value) => {
         setIsLoading(value);
     }
 
-    const callbackDescuentos = (i, value) => {
+    const callbackDescuentos = (i, value, validate) => {
         montos[i].descuentos = value;
         setMontos(Object.assign([], montos));
+        setDescValidos(validate);
     }
 
     const handleSolicitudValidaMontos = (event) => {
         event.preventDefault();
+        if(!descValidos) return;
         setIsLoading(true);
         let data = new FormData();
         data.append('solicitud[observaciones]', observaciones);
@@ -145,6 +148,7 @@ const SolicitudValidaMontos = (props) => {
                                         <RegistrarDescuentos
                                           prefixName={`solicitud_validacion_montos[montosCarreras][${i}][descuentos]`}
                                           carrera={monto.carrera}
+                                          campos={props.solicitud.camposClinicos}
                                           descuentos={monto.descuentos}
                                           onChange={callbackDescuentos}
                                           indexMonto={i}
@@ -183,7 +187,8 @@ const SolicitudValidaMontos = (props) => {
                 <div className="col-md-8"/>
                 <div className="col-md-4">
                     <label htmlFor="btn_solicitud">&#160;</label>
-                    <button id="btn_solicitud" className={'form-control btn btn-primary'}>Guardar</button>
+                    <button id="btn_solicitud" className={`form-control btn btn-primary ${descValidos ? ' ' : 'dsabled'}`}
+                            disabled={descValidos ? '' : 'dsabled'}>Guardar</button>
                 </div>
             </form>
         </>

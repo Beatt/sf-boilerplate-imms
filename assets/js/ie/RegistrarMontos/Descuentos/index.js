@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 const RegistrarDescuentos = (props) => {
-
   const [inputList, setInputList] = React.useState(
     props.descuentos ?
       props.descuentos.map((desc, i) => {
@@ -12,6 +11,21 @@ const RegistrarDescuentos = (props) => {
         }
       })
       : []);
+  const [errorDesc, setErrorDesc] = React.useState(false);
+
+  const maxLugaresAutorizados = props.campos.reduce(
+    (acc, elem) => {
+      if (elem.carrera.id === props.carrera.id) {
+        acc = Math.max(acc, elem.lugaresAutorizados);
+      }
+      return acc;
+    }, 0 );
+
+  const validate = () => {
+    const totalAlumDesc = inputList.reduce((acc, elem) => {return acc + parseInt(elem.numAlumnos) }, 0);
+    setErrorDesc(totalAlumDesc >= maxLugaresAutorizados);
+    return totalAlumDesc <= maxLugaresAutorizados;
+  }
 
   // handle click event of the Remove button
   const handleRemoveClick = index => {
@@ -34,19 +48,19 @@ const RegistrarDescuentos = (props) => {
     list[index][name] = value;
     setInputList(list);
     if (props.indexMonto >= 0) {
-      props.onChange(props.indexMonto, list);
+      props.onChange(props.indexMonto, list, validate());
     }
   };
 
   return (
     <div className={'form-inline'}>
       {inputList.map((x, i) => {
-        const descId = `${props.carrera.id}-${i}`;
         const prefixName = `${props.prefixName}[${i}]`
+        const descId = `${props.carrera.id}-${i}`;
         return (
           <div className="row mb-5" key={i}>
               <div className={'form-group col-md-3'}>
-                { i==0 ?
+                { i===0 ?
                   <label htmlFor="numAlumnos">Número de Alumnos</label>
                   : null
                 }
@@ -62,7 +76,7 @@ const RegistrarDescuentos = (props) => {
               /></div>
             <div className={'form-group col-md-3'}>
               {
-                i==0 ?
+                i===0 ?
                   <label htmlFor="descuentoInscripcion">Porcentaje descuento Inscripción</label>
                   : null
               }
@@ -82,7 +96,7 @@ const RegistrarDescuentos = (props) => {
               </div>
             </div>
             <div className="form-group col-md-3">
-              {i == 0 ?
+              {i === 0 ?
                 <label htmlFor="descuentoColegiatura">Porcentaje descuento Colegiatura</label>
                 : null
               }
@@ -102,7 +116,7 @@ const RegistrarDescuentos = (props) => {
               </div>
             </div>
             <div className="form-group col-md-3">
-              <div className={ (i== 0 ? 'mt-30 ' : '') + "input-group col-sm-12"}>
+              <div className={ (i=== 0 ? 'mt-30 ' : '') + "input-group col-sm-12"}>
                 {inputList.length !== 0 &&
                 <button
                   className="btn btn-link"
@@ -110,6 +124,13 @@ const RegistrarDescuentos = (props) => {
                 >Eliminar</button>}
               </div>
             </div>
+            { errorDesc ?
+              <div className='col-md-12'>
+              <span className="help-block">El número total de alumnos con descuento
+              no puede ser mayor que el máximo de lugares autorizados ({maxLugaresAutorizados}) para esta carrera</span>
+              </div>
+              : null
+            }
           </div>
         );
       })}
