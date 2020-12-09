@@ -73,7 +73,13 @@ main {
 }
 
 .descuentos {
+  margin-top: 50px;
+  padding: 16px;
   page-break-before: always; /* wkhtmltopdf uses this one */
+}
+
+.descuentos h2 {
+  padding: 16px;
 }
 
 .desc-descrip {

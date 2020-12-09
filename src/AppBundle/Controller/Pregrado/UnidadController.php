@@ -16,7 +16,7 @@ class UnidadController extends DIEControllerController
   {
     $delegaciones =  $this->getDoctrine()
       ->getRepository(Unidad::class)
-      ->findBy(['delegacion'=> $delegacion_id]);
+      ->getAllUnidadesByDelegacion($delegacion_id);
     return $this->jsonResponse([
       'object' => $this->get('serializer')->normalize($delegaciones, 'json',
         ['attributes' => [ 'id', 'nombre']

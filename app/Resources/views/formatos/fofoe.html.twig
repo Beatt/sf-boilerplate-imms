@@ -113,10 +113,10 @@
 
     {% if (campo_clinico.descuentos is defined) and (campo_clinico.descuentos is not null) %}
     <div class="descuentos">
-        <h2 class="text-center">Detalle de los Descuentos Aplicados</h2>
+        <h2 class="text-center">Detalle de los descuentos aplicados</h2>
         <p>Importe por alumno (sin descuento), por todo el período del campo clínico: ${{ importeAlumno|number_format(2) }} </p>
         <div>
-            <h3>Becas Otorgadas:</h3>
+            <h3>Becas otorgadas:</h3>
             <ul>
                 {% for desc in campo_clinico.descuentos %}
                     <li class="desc-descrip">
