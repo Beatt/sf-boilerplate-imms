@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use AppBundle\Repository\PagoRepository;
 use Carbon\Carbon;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -446,6 +447,22 @@ class CampoClinico implements ReferenciaBancariaInterface
     }
 
     /**
+     * @return Collection|null
+     */
+    public function getDescuentos()
+    {
+        $idCarrera = $this->getCarrera()->getId();
+        $montos = $this->getSolicitud()->getMontosCarreras()->filter(
+            function( MontoCarrera $montoC) use ($idCarrera) {
+                return $montoC->getCarrera()->getId() === $idCarrera;
+        });
+        /** @var MontoCarrera $monto */
+        $monto = $montos->isEmpty() ? null : $montos[0];
+
+        return !is_null($monto) ? $monto->getDescuentos() : null;
+    }
+
+    /**
      * @return float|int
      */
     public function getImporteColegiaturaAnualIntegrada()
@@ -458,7 +475,7 @@ class CampoClinico implements ReferenciaBancariaInterface
      */
     public function getFactorSemanalAutorizado()
     {
-        return .005;
+        return $this->getConvenio()->getCicloAcademico()->getId() == 1 ? .005 : 0.5;
     }
 
     /**

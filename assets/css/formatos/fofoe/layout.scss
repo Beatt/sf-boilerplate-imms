@@ -71,3 +71,17 @@ main {
 #firmas div {
   width: 50%;
 }
+
+.descuentos {
+  page-break-before: always; /* wkhtmltopdf uses this one */
+}
+
+.desc-descrip {
+  margin-top: 30px;
+  display: flex;
+  display: -webkit-box; /* wkhtmltopdf uses this one */
+}
+
+.importe-desc {
+  margin-left: 80px;
+}

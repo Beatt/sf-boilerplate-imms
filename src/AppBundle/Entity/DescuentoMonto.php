@@ -139,4 +139,16 @@ class DescuentoMonto
         $this->montoCarrera = $montoCarrera;
     }
 
+    /**
+     * @return float
+     */
+    public function getImporteCAI() {
+        $montoCarrera = $this->getMontoCarrera();
+        $cai =
+            ($montoCarrera->getMontoInscripcion()*((100-$this->getDescuentoInscripcion())/100.0))
+            + ($montoCarrera->getMontoColegiatura()*((100-$this->getDescuentoColegiatura())/100.0));
+
+        return round($cai, 2);
+    }
+
 }
