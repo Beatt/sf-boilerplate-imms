@@ -1,5 +1,8 @@
 {%extends'formatos/base.html.twig'%}
 
+{% block header %}
+{% endblock %}
+
 {%block body%}
     <div id="cabecera">
         <p><img src="{{ app.request.getSchemeAndHttpHost() ~ asset('build/images/logo_IMSS_verde.png') }}" alt=""></p>
@@ -41,12 +44,15 @@
             <div class="monto_name"><p>IMPORTE COLEGIATURA ANUAL INTEGRADA (CAI)</p></div>
             <div class="monto_value"><p>$ {{ campo_clinico.importeColegiaturaAnualIntegrada | number_format(2) }}</p></div>
         </div>
+        {% set importeAlumno = campo_clinico.importeColegiaturaAnualIntegrada %}
         {% if campo_clinico.convenio.cicloAcademico.id == 1 %}
+            {% set importeAlumno = importeAlumno*campo_clinico.factorSemanalAutorizado %}
         <div class="monto">
             <div class="monto_name"><p>FACTOR SEMANAL AUTORIZADO</p></div>
             <div class="monto_value"><p>{{ campo_clinico.factorSemanalAutorizado }}</p></div>
         </div>
         {% else %}
+            {% set importeAlumno = importeAlumno*0.5 %}
         <div class="monto">
             <div class="monto_name"><p>PORCENTAJE AUTORIZADO</p></div>
             <div class="monto_value"><p>50%</p></div>
@@ -60,16 +66,27 @@
             <div class="monto_name"><p>NÚMERO DE ALUMNOS</p></div>
             <div class="monto_value"><p>{{ campo_clinico.lugaresAutorizados }}</p></div>
         </div>
+        {% set importeAlumno = importeAlumno*campo_clinico.lugaresAutorizados %}
         {% if campo_clinico.convenio.cicloAcademico.id == 1 %}
         <div class="monto">
             <div class="monto_name"><p>SUBTOTAL 1:</p></div>
             <div class="monto_value"><p>$ {{ campo_clinico.subTotal | number_format(2)}}</p></div>
         </div>
+            {% set subtotalGeneral = importeAlumno*campo_clinico.weeks %}
         <div class="monto">
             <div class="monto_name"><p>NÚMERO DE SEMANAS:</p></div>
             <div class="monto_value"><p>{{ campo_clinico.weeks }}</p></div>
         </div>
         {% endif %}
+        <div class="monto">
+            <div class="monto_name"><p>SUBTOTAL GENERAL:</p></div>
+            <div class="monto_value"><p>$ {{ subtotalGeneral | number_format(2)}}</p></div>
+        </div>
+
+        <div class="monto">
+            <div class="monto_name"><p>IMPORTE TOTAL DE BECAS OTORGADAS:</p></div>
+            <div class="monto_value"><p>$ {{ (subtotalGeneral-campo_clinico.monto) | number_format(2)}}</p></div>
+        </div>
         <div class="monto">
             <div class="monto_name"><p>TOTAL DE LA APORTACIÓN A FOFOE:</p></div>
             <div class="monto_value"><p>$ {{ campo_clinico.monto | number_format(2)}}</p></div>

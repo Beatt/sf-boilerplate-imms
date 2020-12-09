@@ -13,9 +13,11 @@
     {% endblock %}
 </head>
 <body>
+{% block header %}
 <header>
     <img width="350px" src="{{ app.request.getSchemeAndHttpHost() ~ asset('build/images/imss-cabecera.jpg') }}" alt="IMSS">
 </header>
+{% endblock %}
 
 <main>
     {% block body %}{% endblock %}

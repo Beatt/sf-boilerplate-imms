@@ -1,4 +1,5 @@
 import React, {Fragment} from 'react'
+import {moneyFormat} from "../../../utils";
 
 const DetalleMontoPago = ({monto, campoClinico}) => {
 
@@ -40,15 +41,15 @@ const DetalleMontoPago = ({monto, campoClinico}) => {
                 : null
               }
               </div>
-              <div className={'col-md-3'}>Importe por Alumno: ${calcularSubtotal(1, elem.descuentoInscripcion, elem.descuentoColegiatura)}</div>
-              <div className={'col-md-3'}>Subtotal Campo Clínico: ${calcularSubtotal(elem.numAlumnos, elem.descuentoInscripcion, elem.descuentoColegiatura)}</div>
+              <div className={'col-md-3'}>Importe por Alumno: {moneyFormat(calcularSubtotal(1, elem.descuentoInscripcion, elem.descuentoColegiatura))}</div>
+              <div className={'col-md-3'}>Subtotal Campo Clínico: {moneyFormat(calcularSubtotal(elem.numAlumnos, elem.descuentoInscripcion, elem.descuentoColegiatura))}</div>
             </div>
           )
       }
       <div className={'col-md-12'}>
         <div className={'col-md-6'}>Num Alumnos: {numAlumnosSinDesc},</div>
-        <div className={'col-md-3'}>Importe por Alumno: ${calcularSubtotal(1, 0, 0)}</div>
-        <div className={'col-md-3'}>Subtotal Campo Clínico: ${calcularSubtotal(numAlumnosSinDesc, 0, 0)}</div>
+        <div className={'col-md-3'}>Importe por Alumno: {moneyFormat(calcularSubtotal(1, 0, 0))}</div>
+        <div className={'col-md-3'}>Subtotal Campo Clínico: {moneyFormat(calcularSubtotal(numAlumnosSinDesc, 0, 0))}</div>
       </div>
     </div>
   );

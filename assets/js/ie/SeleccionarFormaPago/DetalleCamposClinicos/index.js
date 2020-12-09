@@ -6,9 +6,9 @@ import DetalleMontoPago from "../DetalleMontoPago";
 const DetalleCamposClinicos = ({ camposClinicos, solicitud }) => {
 
   function getTotalBySolicitud() {
-    let total = 0;
+    let total = 0.0;
     for(let camposClinico of camposClinicos) {
-      total += parseInt(camposClinico.montoPagar)
+      total += parseFloat(camposClinico.montoPagar)
     }
 
     return moneyFormat(total)

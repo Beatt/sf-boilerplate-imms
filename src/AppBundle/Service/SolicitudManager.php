@@ -4,6 +4,7 @@
 namespace AppBundle\Service;
 
 
+use AppBundle\Calculator\CampoClinicoCalculatorInterface;
 use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Solicitud;
@@ -51,10 +52,16 @@ class SolicitudManager implements SolicitudManagerInterface
    */
     private $dispatcher;
 
+    /**
+     * @var CampoClinicoCalculatorInterface
+     */
+    private $calculator;
+
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
         Swift_Mailer $mailer, \Twig_Environment $templating, EncoderFactoryInterface $encoderFactory,
         EventDispatcherInterface $dispatcher,
-        $sender
+        $sender, CampoClinicoCalculatorInterface $calculator
+
     )
     {
         $this->entityManager = $entityManager;
@@ -64,6 +71,7 @@ class SolicitudManager implements SolicitudManagerInterface
         $this->encoderFactory = $encoderFactory;
         $this->sender = $sender;
         $this->dispatcher = $dispatcher;
+        $this->calculator = $calculator;
     }
 
     public function update(Solicitud $solicitud)
@@ -281,16 +289,14 @@ class SolicitudManager implements SolicitudManagerInterface
         $monto_solicitud = 0;
         foreach ($solicitud->getCampoClinicos() as $campoClinico) {
             $total_campo = 0;
-            if($campoClinico->getConvenio()->getCicloAcademico()->getId() === 1){
-                $total_campo = $campoClinico->getSubTotal() * $campoClinico->getWeeks();
-            }else{
-                $total_campo = $campoClinico->getSubTotal();
-            }
-            $campoClinico->setMonto(round($total_campo,2));
+            $total_campo = $this->calculator->getMontoAPagar($campoClinico, $solicitud);
+            $campoClinico->setMonto(
+                round(  $total_campo,2));
             $monto_solicitud+=$total_campo;
             $this->entityManager->persist($campoClinico);
         }
         $solicitud->setMonto(round($monto_solicitud, 2));
+
         $this->entityManager->persist($solicitud);
         $this->entityManager->flush();
     }
@@ -299,10 +305,18 @@ class SolicitudManager implements SolicitudManagerInterface
         $this->entityManager->persist($monto);
         $descuentosRemover = $originalDescuentos[$monto->getId()];
         foreach ($monto->getDescuentos() as $descuento) {
-            $descuento->setMontoCarrera($monto);
-            $this->entityManager->persist($descuento);
-            $this->entityManager->flush();
-            unset($descuentosRemover[$descuento->getId()]);
+            if (!$descuento->getDescuentoInscripcion()) {
+                $descuento->setDescuentoInscripcion(0);
+            }
+            if (!$descuento->getDescuentoColegiatura()) {
+                $descuento->setDescuentoColegiatura(0);
+            }
+            if (($descuento->getDescuentoInscripcion() + $descuento->getDescuentoColegiatura()) > 0) {
+                $descuento->setMontoCarrera($monto);
+                $this->entityManager->persist($descuento);
+                //$this->entityManager->flush();
+                unset($descuentosRemover[$descuento->getId()]);
+            }
         }
         foreach ($descuentosRemover as $descuento) {
             $this->entityManager->remove($descuento);
