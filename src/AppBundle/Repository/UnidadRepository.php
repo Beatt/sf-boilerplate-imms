@@ -12,7 +12,8 @@ class UnidadRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('unidad')
             ->innerJoin('unidad.delegacion', 'delegacion')
-            //->innerJoin('unidad.tipoUnidad', 'tipo');
+            //->innerJoin('unidad.tipoUnidad', 'tipo')
+        ;
 
         $qb->where('delegacion.id = :delegacion_id')
             ->andWhere($qb->expr()->orX(
@@ -20,7 +21,7 @@ class UnidadRepository extends EntityRepository
             $qb->expr()->like('tipo.nombre', "'HG%'"),
             $qb->expr()->like('tipo.grupoTipo', "'UMAE'") */
                $qb->expr()->isNotNull('unidad.tipoUnidad'),
-                $qb->expr()->eq('unidad.esUmae', true)
+                $qb->expr()->eq('unidad.esUmae', 'true')
         ))
             ->setParameter('delegacion_id', $delegacion_id)
             ->orderBy('unidad.nombre');
