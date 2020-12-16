@@ -150,33 +150,6 @@ const ValidacionDePago = ({ pago }) => {
           </div>
           <div className="form-group">
             <label
-              htmlFor="validacion_pago_monto"
-              className='control-label col-md-4'
-            >
-              Monto del comprobante de nuevo pago:<br/>
-              <span className='text-danger text-sm'>NOTA: El monto debe coincidir con el comprobante registrado</span>
-            </label>
-            <div className="col-md-3">
-              <div className={`input-group`}>
-                <div className="input-group-addon">$</div>
-                <Cleave
-                  options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
-                  className='form-control'
-                  required={true}
-                  value={monto}
-                  onChange={handleMonto}
-                />
-                <input
-                  type="hidden"
-                  id='validacion_pago_monto'
-                  name='validacion_pago[monto]'
-                  value={monto}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="form-group">
-            <label
               htmlFor='validacion_pago_requiere_factura'
               className="control-label col-md-4 text-right"
             >
@@ -202,6 +175,32 @@ const ValidacionDePago = ({ pago }) => {
                 required={true}
                 onChange={handlePagoValidado}
               />
+            </div>
+          </div>
+          <div className="form-group">
+            <label
+              htmlFor="validacion_pago_monto"
+              className='control-label col-md-4'
+            >
+              Monto del comprobante de nuevo pago:<br/>
+              <span className='text-danger text-sm'>NOTA: El monto debe coincidir con el comprobante registrado</span>
+            </label>
+            <div className="col-md-3">
+              <div className={`input-group`}>
+                <div className="input-group-addon">$</div>
+                <Cleave
+                  options={{numeral: true, numeralThousandsGroupStyle: 'thousand'}}
+                  className='form-control'
+                  required={true}
+                  onChange={handleMonto}
+                />
+                <input
+                  type="hidden"
+                  id='validacion_pago_monto'
+                  name='validacion_pago[monto]'
+                  value={monto}
+                />
+              </div>
             </div>
           </div>
           {

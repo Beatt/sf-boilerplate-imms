@@ -135,6 +135,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
+
         $came = $this->getDoctrine()
           ->getRepository(Usuario::class)
           ->getCamebyDelegacion(

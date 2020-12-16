@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <DetalleCamposClinicos
       camposClinicos={window.CAMPOS_CLINICOS_PROPS}
+      solicitud={window.SOLICITUD_PROPS}
     />,
     document.getElementById('detalle_campos_clinicos-component')
   )

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -53,6 +55,17 @@ class MontoCarrera
      * @ORM\JoinColumn(name="carrera_id", referencedColumnName="id")
      */
     private $carrera;
+
+    /**
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\DescuentoMonto", mappedBy="montoCarrera", cascade={"persist"})
+     */
+    private $descuentos;
+
+    public function __construct()
+    {
+        $this->descuentos = new ArrayCollection();
+    }
 
     /**
      * @return integer
@@ -133,5 +146,50 @@ class MontoCarrera
     public function getCarrera()
     {
         return $this->carrera;
+    }
+
+    /**
+     * @param DescuentoMonto $descuento
+     */
+    public function removeDescuentos(DescuentoMonto $descuento)
+    {
+        if($this->descuentos->contains($descuento)) {
+            $this->descuentos->removeElement($descuento);
+        }
+    }
+
+    /**
+     * @param DescuentoMonto $descuento
+     * @return MontoCarrera
+     */
+    public function addDescuentos(DescuentoMonto $descuento)
+    {
+        if(!$this->descuentos->contains($descuento)) {
+            $this->descuentos[] = $descuento;
+            $descuento->setMontoCarrera($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getDescuentos()
+    {
+        return $this->descuentos;
+    }
+
+    /**
+     * @param Collection $descuentos
+     */
+    public function setDescuentos($descuentos)
+    {
+        $this->descuentos = $descuentos;
+        foreach ($descuentos as $descuento) {
+            $descuento->setMontoCarrera($this);
+        }
+
+        return $this;
     }
 }

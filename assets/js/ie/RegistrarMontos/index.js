@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import ReactDOM from 'react-dom'
 import camelcaseKeys from 'camelcase-keys'
-import { SOLICITUD } from "../../constants";
+import RegistrarDescuentos from "./Descuentos";
 import {getSchemeAndHttpHost} from "../../utils";
+import './styles.scss';
+import CorregirMontos from "./CorregirMontos";
 
 const Registrar = (
   {
@@ -10,11 +12,14 @@ const Registrar = (
     solicitudId,
     institucion,
     carreras,
+    montos,
     errors,
     route
   }) => {
 
   const [executing, setExecuting] = React.useState(false);
+
+  console.log(errors);
 
   let acceso = false;
   let editar = false;
@@ -67,7 +72,7 @@ const Registrar = (
 
                 <div>
                   <div className="col-md-12 bm-10 tm-10">
-                    <span className="error-message mb-10 mt-10"><strong>Por favor, ingrese la información correcta correspondiente a los montos de inscripción y de colegiaturas</strong></span>
+                    <span className="error-message mb-10 mt-10"><strong>Por favor, ingrese la información correcta correspondiente a los importes de inscripción, colegiaturas y descuentos</strong></span>
                   </div>
 
                   <div className="col-md-12 bm-10 mt-10">
@@ -86,8 +91,11 @@ const Registrar = (
               <div className="col-md-12 mb-10 mt-10">
                 <div className="row">
                   <div className="col-md-8">
-                    <p>Cargue el oficio que contenga los montos de inscripción de todas las carreras que comprenden su
-                      solicitud de campos clínicos </p>
+                    <p>
+                      Adjunte documento oficial que contenga los importes de inscripción y colegiaturas de todas
+                      las carreras que comprenden su solicitud de campos clínicos
+                      y oficio detallado de los importes de beca que aplique.
+                    </p>
                   </div>
                   <div className="col-md-4">
                     <input
@@ -118,7 +126,14 @@ const Registrar = (
                       </thead>
                       <tbody>
                       {
-                        carreras.map((carrera, index) =>
+                        editar ?
+                          <CorregirMontos
+                            montos={montos.montosCarreras}
+                            handleCurrency={handleCurrency}
+                          />
+                          :
+                          carreras.map((carrera, index) =>
+                          <Fragment key={index}>
                           <tr key={index}>
                             <td>{carrera.nivelAcademico}</td>
                             <td>{carrera.nombre}</td>
@@ -168,6 +183,16 @@ const Registrar = (
                               </div>
                             </td>
                           </tr>
+                          <tr className={'desc'}>
+                            <td colSpan={5}>
+                              <RegistrarDescuentos
+                                prefixName={`solicitud_validacion_montos[montosCarreras][${index}][descuentos]`}
+                                carrera={carrera}
+                                descuentos={carrera.descuentos}
+                              />
+                            </td>
+                          </tr>
+                          </Fragment>
                         )
                       }
                       </tbody>
@@ -178,17 +203,17 @@ const Registrar = (
 
               <div className='col-md-12 mb-20'>
                 <p>
-                  La institución educativa &nbsp;
-                  <span className='text-bold'>{institucion}</span>, confirma que el oficio adjunto, contiene el monto
-                  correspondiente a los montos de la colegiatura e inscripción por cada una de las carreras mencionadas
-                  anteriormente.&nbsp;&nbsp;
+                  La institución  &nbsp;
+                  <span className='text-bold'>{institucion} </span>
+                  valida  que la información capturada y archivos adjuntos corresponden a su solicitud.
+                  &nbsp;&nbsp;
                   <label htmlFor="solicitud_validacion_montos_confirmacionOficioAdjunto">
                     <input
                       type="checkbox"
                       id='solicitud_validacion_montos_confirmacionOficioAdjunto'
                       name='solicitud_validacion_montos[confirmacionOficioAdjunto]'
                       required={true}
-                    />&nbsp;Confirmo información
+                    />&nbsp;Acepto
                   </label>
                 </p>
               </div>
@@ -219,12 +244,12 @@ const Registrar = (
   )
 }
 
-
 ReactDOM.render(
   <Registrar
     autorizados={window.AUTORIZADOS_PROP}
     institucion={window.INSTITUCION_PROP}
     carreras={camelcaseKeys(window.CARRERAS_PROP)}
+    montos={window.MONTOS_PROP}
     solicitudId={window.SOLICITUD_ID_PROP}
     errors={window.ERRORS_PROP}
     route={window.ROUTE_PROP}

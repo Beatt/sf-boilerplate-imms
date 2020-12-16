@@ -376,6 +376,9 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         return count($this->getCampoClinicos());
     }
 
+    /**
+     * @return int
+     */
     public function getCamposClinicosAutorizados()
     {
         $acc = 0;

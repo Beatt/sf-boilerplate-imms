@@ -181,6 +181,15 @@ class SolicitudController extends DIEControllerController
         $autorizados = $campoClinicoRepository->getAutorizadosBySolicitud($id);
         $carreras = $campoClinicoRepository->getDistinctCarrerasBySolicitud($id);
 
+        $originalDescuentos = array();
+        foreach ($solicitud->getMontosCarreras() as $monto) {
+            $originalDescuentos[$monto->getId()] = array();
+            foreach ($monto->getDescuentos() as $descuento) {
+                if ($descuento->getId())
+                    $originalDescuentos[$monto->getId()][$descuento->getId()] = $descuento;
+            }
+        }
+
         $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
             'action' => $this->generateUrl("ie#registrar_montos", [
                 'id' => $id,
@@ -192,7 +201,8 @@ class SolicitudController extends DIEControllerController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-            $solicitudManager->registrarMontos($data);
+
+            $solicitudManager->registrarMontos($data, $originalDescuentos);
 
             $this->addFlash('success', 'Se han guardado correctamente los montos para la solicitud ' . $solicitud->getNoSolicitud());
 
@@ -210,12 +220,16 @@ class SolicitudController extends DIEControllerController
                 'json',
                 [
                     'attributes' => [
-                        'montosCarrera' => [
+                        'montosCarreras' => [
                             'montoInscripcion',
                             'montoColegiatura',
+                            'descuentos' => [
+                                'numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura'
+                            ],
                             'carrera' => [
                                 'id',
-                                'nombre'
+                                'nombre',
+                                'nivelAcademico' => ['nombre']
                             ]
                         ]
                     ]
@@ -495,10 +509,11 @@ class SolicitudController extends DIEControllerController
                     'noSolicitud',
                     'estatus',
                     'fecha',
-                    'montosCarrera' => [
+                    'montosCarreras' => [
                         'montoInscripcion',
                         'montoColegiatura',
-                        'carrera'
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['nombre']],
+                        'descuentos' => ['numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura']
                     ],
                     'observaciones',
                     'referenciaBancaria',

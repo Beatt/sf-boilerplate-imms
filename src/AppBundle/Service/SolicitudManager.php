@@ -4,6 +4,7 @@
 namespace AppBundle\Service;
 
 
+use AppBundle\Calculator\CampoClinicoCalculatorInterface;
 use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Solicitud;
@@ -51,10 +52,16 @@ class SolicitudManager implements SolicitudManagerInterface
    */
     private $dispatcher;
 
+    /**
+     * @var CampoClinicoCalculatorInterface
+     */
+    private $calculator;
+
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger,
         Swift_Mailer $mailer, \Twig_Environment $templating, EncoderFactoryInterface $encoderFactory,
         EventDispatcherInterface $dispatcher,
-        $sender
+        $sender, CampoClinicoCalculatorInterface $calculator
+
     )
     {
         $this->entityManager = $entityManager;
@@ -64,6 +71,7 @@ class SolicitudManager implements SolicitudManagerInterface
         $this->encoderFactory = $encoderFactory;
         $this->sender = $sender;
         $this->dispatcher = $dispatcher;
+        $this->calculator = $calculator;
     }
 
     public function update(Solicitud $solicitud)
@@ -139,10 +147,9 @@ class SolicitudManager implements SolicitudManagerInterface
         ];
     }
 
-    public function registrarMontos(Solicitud $solicitud)  {
+    public function registrarMontos(Solicitud $solicitud, $originalDescuentos=[])  {
       foreach ($solicitud->getMontosCarreras() as $monto) {
-        $this->entityManager->persist($monto);
-        $this->entityManager->flush();
+          $this->registrarDescuentos($monto, $originalDescuentos);
       }
       $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
       $this->entityManager->persist($solicitud);
@@ -154,16 +161,14 @@ class SolicitudManager implements SolicitudManagerInterface
       );
     }
 
-    public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null)
+    public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null, $originalDescuentos=[])
     {
         $solicitud->setValidado($is_valid);
-
         try {
             if ($is_valid) {
                 foreach ($montos as $monto) {
                     if (!is_null($monto->getMontoInscripcion()) && !is_null($monto->getMontoColegiatura())) {
-                        $this->entityManager->persist($monto);
-                        $this->entityManager->flush();
+                        $this->registrarDescuentos($monto, $originalDescuentos);
                     } else {
                         throw new \Exception("Montos no puede estar vacío");
                     }
@@ -284,17 +289,38 @@ class SolicitudManager implements SolicitudManagerInterface
         $monto_solicitud = 0;
         foreach ($solicitud->getCampoClinicos() as $campoClinico) {
             $total_campo = 0;
-            if($campoClinico->getConvenio()->getCicloAcademico()->getId() === 1){
-                $total_campo = $campoClinico->getSubTotal() * $campoClinico->getWeeks();
-            }else{
-                $total_campo = $campoClinico->getSubTotal();
-            }
-            $campoClinico->setMonto(round($total_campo,2));
+            $total_campo = $this->calculator->getMontoAPagar($campoClinico, $solicitud);
+            $campoClinico->setMonto(
+                round(  $total_campo,2));
             $monto_solicitud+=$total_campo;
             $this->entityManager->persist($campoClinico);
         }
         $solicitud->setMonto(round($monto_solicitud, 2));
+
         $this->entityManager->persist($solicitud);
+        $this->entityManager->flush();
+    }
+
+    private function registrarDescuentos($monto, $originalDescuentos) {
+        $this->entityManager->persist($monto);
+        $descuentosRemover = $originalDescuentos[$monto->getId()];
+        foreach ($monto->getDescuentos() as $descuento) {
+            if (!$descuento->getDescuentoInscripcion()) {
+                $descuento->setDescuentoInscripcion(0);
+            }
+            if (!$descuento->getDescuentoColegiatura()) {
+                $descuento->setDescuentoColegiatura(0);
+            }
+            if (($descuento->getDescuentoInscripcion() + $descuento->getDescuentoColegiatura()) > 0) {
+                $descuento->setMontoCarrera($monto);
+                $this->entityManager->persist($descuento);
+                //$this->entityManager->flush();
+                unset($descuentosRemover[$descuento->getId()]);
+            }
+        }
+        foreach ($descuentosRemover as $descuento) {
+            $this->entityManager->remove($descuento);
+        }
         $this->entityManager->flush();
     }
 }

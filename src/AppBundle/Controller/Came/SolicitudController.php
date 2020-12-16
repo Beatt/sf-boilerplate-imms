@@ -330,9 +330,21 @@ class SolicitudController extends DIEControllerController
         $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
         $form->handleRequest($request);
 
+        $originalDescuentos = array();
+        foreach ($solicitud->getMontosCarreras() as $monto) {
+            $originalDescuentos[$monto->getId()] = array();
+            foreach ($monto->getDescuentos() as $descuento) {
+                if ($descuento->getId())
+                    $originalDescuentos[$monto->getId()][$descuento->getId()] = $descuento;
+            }
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $solicitudManager->validarMontos($form->getData(),
-                $form->get('montos_pagos')->getData(), isset($request->request->get('solicitud')['validado']), $this->getUser());
+                $form->get('montos_pagos')->getData(),
+                isset($request->request->get('solicitud')['validado']),
+                $this->getUser(), $originalDescuentos
+            );
             if ($result['status']) {
                 $this->addFlash('success', "Se ha procesado la validación de montos de la solicitud {$solicitud->getNoSolicitud()} con éxito");
             }
@@ -378,8 +390,12 @@ class SolicitudController extends DIEControllerController
                     'estatusCameFormatted',
                     'documento', 'urlArchivo',
                     'institucion' => ['id', 'nombre'],
-                    'montosCarreras' => ['id', 'montoInscripcion', 'montoColegiatura',
-                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']]]
+                    'camposClinicos' => ['lugaresAutorizados', 'carrera' => ['id']],
+                    'montosCarreras' =>
+                        ['id', 'montoInscripcion', 'montoColegiatura',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'descuentos' => ['numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura']
+                        ]
                 ]]
             )
         ]);

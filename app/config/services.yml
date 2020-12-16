@@ -118,6 +118,7 @@ services:
             - '@Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface'
             - '@event_dispatcher'
             - '%mailer_sender%'
+            - '@AppBundle\Calculator\CampoClinicoCalculatorInterface'
 
     app.bank_references_downloaded.event:
         class: AppBundle\EventListener\ReferenciaBancariaDownloadedListener
@@ -138,6 +139,10 @@ services:
 
     AppBundle\Calculator\ComprobantePagoCalculatorInterface:
         class: AppBundle\Calculator\ComprobantePagoCalculator
+        public: true
+
+    AppBundle\Calculator\CampoClinicoCalculatorInterface:
+        class: AppBundle\Calculator\CampoClinicoCalculator
         public: true
 
     AppBundle\Service\GeneradorFormatosFofoeZIPInterface:

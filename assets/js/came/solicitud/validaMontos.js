@@ -1,6 +1,8 @@
 import * as React from 'react'
 import Loader from "../../components/Loader/Loader";
 import {getSchemeAndHttpHost} from "../../utils";
+import RegistrarDescuentos from "../../ie/RegistrarMontos/Descuentos";
+import {Fragment} from "react";
 
 const SolicitudValidaMontos = (props) => {
 
@@ -10,20 +12,35 @@ const SolicitudValidaMontos = (props) => {
     const [montos, setMontos] = React.useState(props.solicitud.montosCarreras);
     const [alert, setAlert] = React.useState({});
     const [errores, setErrores] = React.useState({});
+    const [descValidos, setDescValidos] = React.useState(true);
 
     const callbackIsLoading = (value) => {
         setIsLoading(value);
     }
 
+    const callbackDescuentos = (i, value, validate) => {
+        montos[i].descuentos = value;
+        setMontos(Object.assign([], montos));
+        setDescValidos(validate);
+    }
+
     const handleSolicitudValidaMontos = (event) => {
         event.preventDefault();
+        if(!descValidos) return;
         setIsLoading(true);
         let data = new FormData();
         data.append('solicitud[observaciones]', observaciones);
         montos.map((monto, i) => {
            data.append(`solicitud[montos_pagos][${i}][montoInscripcion]`, monto.montoInscripcion);
-            data.append(`solicitud[montos_pagos][${i}][montoColegiatura]`, monto.montoColegiatura);
+           data.append(`solicitud[montos_pagos][${i}][montoColegiatura]`, monto.montoColegiatura);
+
+           monto.descuentos.map((desc, iDesc) => {
+                 data.append(`solicitud[montos_pagos][${i}][descuentos][${iDesc}][numAlumnos]`, desc.numAlumnos);
+                 data.append(`solicitud[montos_pagos][${i}][descuentos][${iDesc}][descuentoInscripcion]`, desc.descuentoInscripcion);
+                 data.append(`solicitud[montos_pagos][${i}][descuentos][${iDesc}][descuentoColegiatura]`, desc.descuentoColegiatura);
+           });
         });
+
         if(validos.toString() === (1).toString()){
             data.append('solicitud[validado]', validos);
         }
@@ -78,17 +95,13 @@ const SolicitudValidaMontos = (props) => {
                 <p><strong>Insitución Educativa:</strong> {props.solicitud.institucion.nombre}</p>
             </div>
             <div className="col-md-12">
-                <p><strong>Por favor valide los montos que se muestran a continuación coincidan con los reportados en el oficio</strong></p>
-            </div>
-            <div className="col-md-12">
                 <p>Oficio: <a href={`${getSchemeAndHttpHost()}/came/solicitud/${props.solicitud.id}/oficio`} target={'_blank'}>{props.solicitud.urlArchivo}</a></p>
             </div>
             <div className="col-md-12">
-                <p>Valide los montos correspondientes a cada carrera de su solicitud</p>
+                <p><strong>Por favor valide los montos que se muestran a continuación, deben coincidir con los reportados en el oficio</strong></p>
             </div>
             <form onSubmit={handleSolicitudValidaMontos}>
-                <div className="col-md-3"/>
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <table className="table">
                         <thead>
                         <tr>
@@ -101,11 +114,12 @@ const SolicitudValidaMontos = (props) => {
                         <tbody>
                         {montos.map((monto, i) =>{
                             return (
+                              <Fragment key={monto.id}>
                                 <tr key={monto.id}>
                                     <td>{monto.carrera.nivelAcademico.nombre}</td>
                                     <td>{monto.carrera.nombre}</td>
                                     <td>
-                                        <div className="input-group">
+                                        <div className="input-group col-md-8">
                                             <span className="input-group-addon">$</span>
                                             <input className="form-control"
                                                    type="number" value={montos[i].montoInscripcion}
@@ -117,7 +131,7 @@ const SolicitudValidaMontos = (props) => {
                                         </div>
                                     </td>
                                     <td>
-                                        <div className="input-group">
+                                        <div className="input-group col-md-8">
                                             <span className="input-group-addon">$</span>
                                             <input className="form-control"
                                                    type="number" value={montos[i].montoColegiatura}
@@ -129,12 +143,24 @@ const SolicitudValidaMontos = (props) => {
                                         </div>
                                     </td>
                                 </tr>
+                                <tr className={'desc'}>
+                                    <td colSpan={5}>
+                                        <RegistrarDescuentos
+                                          prefixName={`solicitud_validacion_montos[montosCarreras][${i}][descuentos]`}
+                                          carrera={monto.carrera}
+                                          campos={props.solicitud.camposClinicos}
+                                          descuentos={monto.descuentos}
+                                          onChange={callbackDescuentos}
+                                          indexMonto={i}
+                                        />
+                                    </td>
+                                </tr>
+                                </Fragment>
                             )
                         })}
                         </tbody>
                     </table>
                 </div>
-                <div className="col-md-3"/>
                 <div className="col-md-12"/>
                 <div className="col-md-3">
                     <div className={`form-group ${errores.validado ? 'has-error has-feedback' : ''}`}>
@@ -161,7 +187,8 @@ const SolicitudValidaMontos = (props) => {
                 <div className="col-md-8"/>
                 <div className="col-md-4">
                     <label htmlFor="btn_solicitud">&#160;</label>
-                    <button id="btn_solicitud" className={'form-control btn btn-primary'}>Guardar</button>
+                    <button id="btn_solicitud" className={`form-control btn btn-primary ${descValidos ? ' ' : 'dsabled'}`}
+                            disabled={descValidos ? '' : 'dsabled'}>Guardar</button>
                 </div>
             </form>
         </>
