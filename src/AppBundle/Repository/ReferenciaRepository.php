@@ -54,7 +54,8 @@ class ReferenciaRepository
         $sql = "select distinct " .
             "pago.id id," .
             "delegacion.nombre delegacion," .
-            "institucion.nombre institucion," .
+            "institucion.id institucion_id," .
+            "institucion.nombre institucion_nombre," .
             "solicitud.no_solicitud," .
             "(CASE  when solicitud.tipo_pago = 'Único' then solicitud.monto else campo_clinico.monto end) monto," .
             "pago.referencia_bancaria," .
