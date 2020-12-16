@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    {% if (campo_clinico.descuentos is defined) and (campo_clinico.descuentos is not null) %}
+    {% if (campo_clinico.descuentos is defined) and (campo_clinico.descuentos|length > 0) %}
     <div class="descuentos">
         <h2 class="text-center">Detalle de los descuentos aplicados</h2>
         <p>Importe por alumno (sin descuento), por todo el período del campo clínico: ${{ importeAlumno|number_format(2) }} </p>
