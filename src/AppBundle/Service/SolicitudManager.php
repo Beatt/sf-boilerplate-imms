@@ -303,7 +303,7 @@ class SolicitudManager implements SolicitudManagerInterface
 
     private function registrarDescuentos($monto, $originalDescuentos) {
         $this->entityManager->persist($monto);
-        $descuentosRemover = $originalDescuentos[$monto->getId()];
+        $descuentosRemover = $monto->getId() ? $originalDescuentos[$monto->getId()] : [];
         foreach ($monto->getDescuentos() as $descuento) {
             if (!$descuento->getDescuentoInscripcion()) {
                 $descuento->setDescuentoInscripcion(0);

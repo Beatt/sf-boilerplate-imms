@@ -18,6 +18,7 @@ const Registrar = (
   }) => {
 
   const [executing, setExecuting] = React.useState(false);
+  const [descValidos, setDescValidos] = React.useState(true);
 
   console.log(errors);
 
@@ -34,7 +35,15 @@ const Registrar = (
     }
   };
 
+  const callbackDescuentos = (i, value, validate) => {
+    setDescValidos(validate);
+  }
+
   const formSubmit = (e) =>{
+    if (!descValidos) {
+      e.preventDefault();
+      return;
+    }
     try{
       var tag = document.getElementsByClassName('solicitud_validacion_montos_inscripcion');
 
@@ -188,7 +197,10 @@ const Registrar = (
                               <RegistrarDescuentos
                                 prefixName={`solicitud_validacion_montos[montosCarreras][${index}][descuentos]`}
                                 carrera={carrera}
+                                campos={solicitudId.camposClinicos}
                                 descuentos={carrera.descuentos}
+                                onChange={callbackDescuentos}
+                                indexMonto={index}
                               />
                             </td>
                           </tr>
@@ -224,8 +236,8 @@ const Registrar = (
                 <div className="col-md-2">
                   <button
                     type="submit"
-                    className='btn btn-success btn-block'
-                    disabled={executing}
+                    className={`btn btn-success btn-block ${descValidos ? ' ' : 'dsabled'}`}
+                    disabled={executing || !descValidos}
                   >
                     Guardar
                   </button>

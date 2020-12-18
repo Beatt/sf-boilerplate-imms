@@ -13,17 +13,17 @@ const RegistrarDescuentos = (props) => {
       : []);
   const [errorDesc, setErrorDesc] = React.useState(false);
 
-  const maxLugaresAutorizados = props.campos.reduce(
+  const maxLugaresAutorizados = props.campos ? props.campos.reduce(
     (acc, elem) => {
       if (elem.carrera.id === props.carrera.id) {
         acc = Math.max(acc, elem.lugaresAutorizados);
       }
       return acc;
-    }, 0 );
+    }, 0 ) : 0;
 
   const validate = () => {
     const totalAlumDesc = inputList.reduce((acc, elem) => {return acc + parseInt(elem.numAlumnos) }, 0);
-    setErrorDesc(totalAlumDesc >= maxLugaresAutorizados);
+    setErrorDesc(totalAlumDesc > maxLugaresAutorizados);
     return totalAlumDesc <= maxLugaresAutorizados;
   }
 

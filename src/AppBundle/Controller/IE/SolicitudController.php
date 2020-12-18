@@ -509,6 +509,7 @@ class SolicitudController extends DIEControllerController
                     'noSolicitud',
                     'estatus',
                     'fecha',
+                    'camposClinicos' => ['id', 'lugaresAutorizados', 'carrera' => ['id']],
                     'montosCarreras' => [
                         'montoInscripcion',
                         'montoColegiatura',
