@@ -127,13 +127,13 @@
                 </div>
                 <div class="delegacion">
                     <h3>
-                        {% if delegacion_came %} CAME {% endif %}{%
+                        {% if delegacion_came or not unidad_came %} CAME {% endif %}{%
                             if delegacion_came and unidad_came %} / {% endif %}{%
                             if unidad_came %} JDES {% endif %}
                     </h3>
                     <form action="{{ absolute_url(path('came.usuario.delegacion_unidad')) }}" method="post">
                         <label for="delegacion_unidad_came">
-                            {% if delegacion_came %}Delegación{% endif %}{%
+                            {% if delegacion_came or not unidad_came %}Delegación{% endif %}{%
                                 if delegacion_came and unidad_came %} / {% endif %}{%
                                 if unidad_came %}Unidad{% endif %}:
                         </label>
