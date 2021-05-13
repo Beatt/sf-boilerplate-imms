@@ -33,7 +33,7 @@ security:
         - { path: '^/consulta', roles:  [IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: '^/admin', roles: ROLE_SUPER }
         - { path: '^/ie', roles: [ROLE_SUPER, ROLE_IE] }
-        - { path: '^/came', roles: [ROLE_SUPER, ROLE_CAME] }
+        - { path: '^/came', roles: [ROLE_SUPER, ROLE_CAME, ROLE_JDES] }
         - { path: '^/fofoe/inicio', roles: [ROLE_SUPER, ROLE_FOFOE_INICIO] }
         - { path: '^/fofoe/validar-pago', roles: [ROLE_SUPER, ROLE_FOFOE_VALIDAR_PAGO] }
         - { path: '^/fofoe/validar-pago-multiple', roles: [ROLE_SUPER, ROLE_FOFOE_VALIDAR_PAGO_MULTIPLE] }
