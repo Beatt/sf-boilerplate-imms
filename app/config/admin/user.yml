@@ -13,7 +13,7 @@ easy_admin:
           - { property: fullName, label: 'Nombre', type: text }
           - { property: correo, label: 'Correo electrónico' }
           - { property: permisos, label: 'Rol / Permisos', type: array }
-          - { property: delegaciones, label: 'Delegaciones', type: array }
+          - { property: delegacionesUnidades, label: 'Delegaciones/Unidades', type: array }
       form:
         fields:
           - { property: matricula, label: 'Matrícula' }
@@ -30,3 +30,4 @@ easy_admin:
           - { property: rol, label: 'Rol', type: entity, type_options: { class: AppBundle\Entity\Rol, choice_label: nombre, expanded: true, multiple: false } }
           - { property: departamento, label: 'Departamento', type: easyadmin_autocomplete, type_options: { class: AppBundle\Entity\Departamento } }
           - { property: delegaciones, label: 'Delegaciones', type: entity, type_options: { class: AppBundle\Entity\Delegacion, choice_label: nombre, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllDelegations, expanded: false, multiple: true } }
+          - { property: unidades, label: 'Unidades', type: entity, type_options: { class: AppBundle\Entity\Unidad, choice_label: nombreDelegacionUnidad, query_builder: AppBundle\Repository\Admin\AdminRepository::getAllUnidadesUMAE, expanded: false, multiple: true } }

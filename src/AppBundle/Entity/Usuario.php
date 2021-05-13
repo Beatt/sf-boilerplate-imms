@@ -547,6 +547,14 @@ class Usuario implements UserInterface, \Serializable
         return $this->delegaciones;
     }
 
+    /**
+     * @return array
+     */
+    public function getDelegacionesUnidades()
+    {
+      return array_merge($this->delegaciones->toArray(), $this->unidades->toArray());
+    }
+
   /**
    * @param Unidad $unidad
    * @return Usuario

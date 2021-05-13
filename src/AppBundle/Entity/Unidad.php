@@ -389,8 +389,13 @@ class Unidad
         return $this->tipoUnidad;
     }
 
+    public function getNombreDelegacionUnidad()
+    {
+      return $this->getDelegacion()->getNombre().' - '.$this->getNombre();
+    }
+
     public function __toString()
     {
-        return $this->getNombre();
+        return $this->getClaveUnidad().'-'.$this->getNombre();
     }
 }
