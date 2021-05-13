@@ -23,6 +23,7 @@ class Version20210513211529 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_9F433269D01464C ON usuario_unidad (unidad_id)');
         $this->addSql('ALTER TABLE usuario_unidad ADD CONSTRAINT FK_9F43326DB38439E FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE usuario_unidad ADD CONSTRAINT FK_9F433269D01464C FOREIGN KEY (unidad_id) REFERENCES unidad (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->executeSql(__DIR__ . '/../../../db/seeds/202105_rolJDES.sql');
     }
 
     /**
@@ -35,4 +36,16 @@ class Version20210513211529 extends AbstractMigration
 
         $this->addSql('DROP TABLE usuario_unidad');
     }
+
+  /**
+   * @param string $sqlFile
+   */
+  private function executeSql($sqlFile)
+  {
+    foreach (explode(';', file_get_contents($sqlFile)) as $sql) {
+      if (strlen(trim($sql)) > 0) {
+        $this->addSql($sql);
+      }
+    }
+  }
 }

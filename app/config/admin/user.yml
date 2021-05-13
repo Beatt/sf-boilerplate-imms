@@ -20,7 +20,7 @@ easy_admin:
           - { property: nombre, label: 'Nombre' }
           - { property: apellidoPaterno, label: 'Apellido paterno' }
           - { property: apellidoMaterno, label: 'Apellido materno' }
-          - { property: regims, label: 'Regims' }
+          - { property: regims, label: 'Regims', type_options: {required: false}}
           - { property: correo, label: 'Correo electrónico' }
           - { property: curp, label: 'CURP', type_options: {required: false} }
           - { property: rfc, label: 'RFC', type_options: {required: false} }
