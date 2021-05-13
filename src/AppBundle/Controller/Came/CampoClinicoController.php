@@ -30,7 +30,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if(!$this->validarSolicitudDelegacion($solicitud)){
+        if(!$this->isGrantedUserAccessToSolicitud($solicitud)){
             return $this->httpErrorResponse();
         }
         if(!in_array($solicitud->getEstatus(), [Solicitud::CREADA])){
@@ -58,7 +58,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         if(!$campoClinico){
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if(!$this->validarSolicitudDelegacion($campoClinico->getSolicitud())){
+        if(!$this->isGrantedUserAccessToSolicitud($campoClinico->getSolicitud())){
             return $this->httpErrorResponse();
         }
         if(!in_array($campoClinico->getSolicitud()->getEstatus(), [Solicitud::CREADA])){
@@ -96,7 +96,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if(!$this->validarSolicitudDelegacion($solicitud)){
+        if(!$this->isGrantedUserAccessToSolicitud($solicitud)){
             return $this->httpErrorResponse('No puedes ver una solicitud de otra delegación');
         }
         $perPage = $request->query->get('perPage', 10);
@@ -196,7 +196,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
-        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+        if(!$this->isGrantedUserAccessToSolicitud($campo_clinico->getSolicitud())){
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }
@@ -224,7 +224,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
-        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+        if(!$this->isGrantedUserAccessToSolicitud($campo_clinico->getSolicitud())){
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }

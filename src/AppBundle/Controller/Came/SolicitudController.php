@@ -177,9 +177,7 @@ class SolicitudController extends DIEControllerController
             $this->addFlash('danger', 'No existe la solicitud indicada');
             return $this->redirectToRoute('came.solicitud.index');
         }
-        if (!
-        ($delegacion && $this->validarSolicitudDelegacion($solicitud)
-        || $unidad && $this->validarSolicitudUnidad($solicitud) )) {
+        if (!$this->isGrantedUserAccessToSolicitud($solicitud)) {
             $this->addFlash('danger', 'No puedes modificar una solicitud de otra '
               .($unidad ? 'unidad':'delegación')
             );
@@ -244,8 +242,7 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!($this->validarSolicitudDelegacion($solicitud)
-        || $this->validarSolicitudUnidad($solicitud) )) {
+        if (!$this->isGrantedUserAccessToSolicitud($solicitud)) {
             return $this->httpErrorResponse();
         }
         if (!in_array($solicitud->getEstatus(), [Solicitud::CREADA])) {
@@ -274,9 +271,7 @@ class SolicitudController extends DIEControllerController
             return $this->redirectToRoute('came.solicitud.index');
         }
 
-        if (!($this->validarSolicitudDelegacion($solicitud)
-          || $this->validarSolicitudUnidad($solicitud)
-        )) {
+        if (!$this->isGrantedUserAccessToSolicitud($solicitud)) {
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }
@@ -322,9 +317,7 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!($this->validarSolicitudDelegacion($solicitud)
-            || $this->validarSolicitudUnidad($solicitud))
-        ) {
+        if (!$this->isGrantedUserAccessToSolicitud($solicitud)) {
             return $this->httpErrorResponse();
         }
         $entityManager = $this->getDoctrine()->getManager();
@@ -348,8 +341,7 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!($this->validarSolicitudDelegacion($solicitud)
-          || $this->validarSolicitudUnidad($solicitud) )) {
+        if (!$this->isGrantedUserAccessToSolicitud($solicitud)) {
             return $this->httpErrorResponse();
         }
         if (!in_array($solicitud->getEstatus(), [Solicitud::CREADA])) {
@@ -375,8 +367,7 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!($this->validarSolicitudDelegacion($solicitud)
-        || $this->validarSolicitudUnidad($solicitud))) {
+        if (!$this->isGrantedUserAccessToSolicitud($solicitud)) {
             return $this->httpErrorResponse();
         }
         if (!in_array($solicitud->getEstatus(), [Solicitud::EN_VALIDACION_DE_MONTOS_CAME])) {
@@ -425,8 +416,7 @@ class SolicitudController extends DIEControllerController
             return $this->redirectToRoute('came.solicitud.index');
         }
 
-        if (!($this->validarSolicitudDelegacion($solicitud)
-              || $this->validarSolicitudUnidad($solicitud))) {
+        if (!$this->isGrantedUserAccessToSolicitud($solicitud)) {
             $this->addFlash('danger', 'No puedes modificar una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }

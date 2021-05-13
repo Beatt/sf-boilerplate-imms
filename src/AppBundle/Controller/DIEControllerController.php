@@ -157,21 +157,27 @@ abstract class DIEControllerController extends Controller
         return $result;
     }
 
-  protected function validarSolicitudUnidad(Solicitud $solicitud)
-  {
-    $result = false;
-    $unidad = $solicitud->getUnidad();
-    $user = $this->getUser();
-    if($unidad && $user->getUnidades()){
-      $unidad_came = $this->container->get('session')->get('user_unidad');
-      if($unidad_came){
-        $result = $unidad_came == $unidad->getId();
-      }else{
-        $result = $user->getUnidades()->first()->getId() === $unidad->getId();
+    protected function validarSolicitudUnidad(Solicitud $solicitud)
+    {
+      $result = false;
+      $unidad = $solicitud->getUnidad();
+      $user = $this->getUser();
+      if($unidad && $user->getUnidades()){
+        $unidad_came = $this->container->get('session')->get('user_unidad');
+        if($unidad_came){
+          $result = $unidad_came == $unidad->getId();
+        }else{
+          $result = $user->getUnidades()->first()->getId() === $unidad->getId();
+        }
       }
+      return $result;
     }
-    return $result;
-  }
+
+    protected function isGrantedUserAccessToSolicitud(Solicitud $solicitud)
+    {
+      return $this->validarSolicitudDelegacion($solicitud)
+        || $this->validarSolicitudUnidad($solicitud);
+    }
 
     protected function createNotFindUserRelationWithInstitucionException()
     {

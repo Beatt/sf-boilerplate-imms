@@ -257,7 +257,7 @@ class DummyController extends \AppBundle\Controller\DIEControllerController
                 'Not found for id ' . $campo_clinico
             );
         }
-        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+        if(!$this->isGrantedUserAccessToSolicitud($campo_clinico->getSolicitud())){
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }
