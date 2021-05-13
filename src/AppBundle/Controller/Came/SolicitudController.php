@@ -31,7 +31,13 @@ class SolicitudController extends DIEControllerController
         if (is_null($delegacion) && is_null($unidad)) {
             throw $this->createAccessDeniedException();
         }
-        $solicitudes =  $this->getDoctrine()
+        $solicitudes =
+        $unidad ?
+          $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->getAllSolicitudesByUnidad($unidad, $perPage, $page, $request->query->all())
+          : // $delegacion
+          $this->getDoctrine()
             ->getRepository(Solicitud::class)
             ->getAllSolicitudesByDelegacion($delegacion, $perPage, $page, $request->query->all());
         return $this->render('came/solicitud/index.html.twig', [

@@ -72,38 +72,32 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
 
     public function getAllSolicitudesByDelegacion($delegacion_id = null, $perPage = 10, $offset = 1, $filters = [])
     {
-
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
             ->join('campos_clinicos.convenio', 'convenio')
             ->join('convenio.institucion', 'institucion');
-        if(isset($filters['no_solicitud']) && $filters['no_solicitud']){
-            $queryBuilder->where('solicitud.noSolicitud like :no_solicitud')
-                ->setParameter('no_solicitud', '%'.strtoupper($filters['no_solicitud']).'%');
-        }
-        if($delegacion_id){
-            $queryBuilder->andWhere('convenio.delegacion = :delegacion_id')
-                ->setParameter('delegacion_id', $delegacion_id)
-            ;
-        }
-
-        if(isset($filters['institucion']) && $filters['institucion']){
-            $queryBuilder->andWhere('upper(unaccent(institucion.nombre)) like UPPER(unaccent(:institucion))')
-                ->setParameter('institucion', '%'.$filters['institucion'].'%');
-        }
-
-        if(isset($filters['fecha']) && $filters['fecha']){
-            $queryBuilder->andWhere('solicitud.fecha = :fecha')
-                ->setParameter('fecha', $filters['fecha']);
-        }
-
+        $this->setFilters($queryBuilder, $delegacion_id, $filters);
         $qb2 = clone $queryBuilder;
-
         return ['data' => $queryBuilder->distinct()->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
             ->getResult(),
             'total' => $qb2->select('COUNT(distinct solicitud.id)')->getQuery()->getSingleScalarResult()
         ];
+    }
+
+    public function getAllSolicitudesByUnidad($unidad_id = null, $perPage = 10, $offset = 1, $filters = [])
+    {
+      $queryBuilder = $this->createQueryBuilder('solicitud')
+        ->join('solicitud.camposClinicos', 'campos_clinicos')
+        ->join('campos_clinicos.convenio', 'convenio')
+        ->join('convenio.institucion', 'institucion');
+      $this->setFilters($queryBuilder, null, $filters, $unidad_id);
+      $qb2 = clone $queryBuilder;
+      return ['data' => $queryBuilder->distinct()->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
+        ->setFirstResult(($offset-1) * $perPage)->getQuery()
+        ->getResult(),
+        'total' => $qb2->select('COUNT(distinct solicitud.id)')->getQuery()->getSingleScalarResult()
+      ];
     }
 
     public function getSolicitudesPagadas($perPage = 10, $offset = 1, $filters = [])
@@ -164,4 +158,27 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
             ->getQuery()
             ->getResult();
     }
+
+  private function setFilters(&$queryBuilder, $delegacion_id, $filters, $unidad_id=null) {
+    if(isset($filters['no_solicitud']) && $filters['no_solicitud']){
+      $queryBuilder->where('solicitud.noSolicitud like :no_solicitud')
+        ->setParameter('no_solicitud', '%'.strtoupper($filters['no_solicitud']).'%');
+    }
+    if($delegacion_id){
+      $queryBuilder->andWhere('convenio.delegacion = :delegacion_id')
+        ->setParameter('delegacion_id', $delegacion_id);
+    }
+    if ($unidad_id) {
+      $queryBuilder->andWhere('campos_clinicos.unidad = :unidad_id')
+        ->setParameter('unidad_id', $unidad_id);
+    }
+    if(isset($filters['institucion']) && $filters['institucion']){
+      $queryBuilder->andWhere('upper(unaccent(institucion.nombre)) like UPPER(unaccent(:institucion))')
+        ->setParameter('institucion', '%'.$filters['institucion'].'%');
+    }
+    if(isset($filters['fecha']) && $filters['fecha']){
+      $queryBuilder->andWhere('solicitud.fecha = :fecha')
+        ->setParameter('fecha', $filters['fecha']);
+    }
+  }
 }
