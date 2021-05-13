@@ -70,10 +70,16 @@ class SolicitudController extends DIEControllerController
         $perPage = $request->query->get('perPage', self::DEFAULT_PERPAGE);
         $page = $request->query->get('page', 1);
         $delegacion = $this->getUserDelegacionId();
-        if (is_null($delegacion)) {
+        $unidad = $this->getUserUnidadId();
+        if (is_null($delegacion) && is_null($unidad)) {
             throw $this->createAccessDeniedException();
         }
-        $solicitudes = $this->getDoctrine()
+        $solicitudes =
+        $unidad ?
+          $this->getDoctrine()
+            ->getRepository(Solicitud::class)
+            ->getAllSolicitudesByUnidad($unidad, $perPage, $page, $request->query->all())
+        :  $this->getDoctrine()
             ->getRepository(Solicitud::class)
             ->getAllSolicitudesByDelegacion($delegacion, $perPage, $page, $request->query->all());
         return $this->jsonResponse([
@@ -106,15 +112,31 @@ class SolicitudController extends DIEControllerController
         $form = $this->createForm(SolicitudType::class);
         $this->getUser();
         $delegacion = $this->getUserDelegacionId();
-        if (is_null($delegacion)) {
+        $unidad = $this->getUserUnidadId();
+        if (is_null($delegacion) && is_null($unidad)) {
             throw $this->createAccessDeniedException();
         }
-        $instituciones = $this->getDoctrine()
+        $instituciones = null;
+        $unidades = null;
+        if ($unidad) {
+          $unidadE = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->findOneBy(['id' => $unidad]);
+          $unidades = [$unidadE];
+          $instituciones = $unidadE ?
+            $this->getDoctrine()
+              ->getRepository(Institucion::class)
+              ->findAllPrivate($unidadE->getDelegacion()->getId())
+          : null;
+
+        } else { // $delegacion
+          $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
             ->findAllPrivate($delegacion);
-        $unidades = $this->getDoctrine()
+          $unidades = $this->getDoctrine()
             ->getRepository(Unidad::class)
             ->getAllUnidadesByDelegacion($delegacion);
+        }
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
             'instituciones' => $this->get('serializer')->normalize($instituciones, 'json',
@@ -143,7 +165,8 @@ class SolicitudController extends DIEControllerController
     public function editAction(Request $request, $id)
     {
         $delegacion = $this->getUserDelegacionId();
-        if (is_null($delegacion)) {
+        $unidad = $this->getUserUnidadId();
+        if (is_null($delegacion) && is_null($unidad)) {
             throw $this->createAccessDeniedException();
         }
         $solicitud = $this->getDoctrine()
@@ -154,20 +177,39 @@ class SolicitudController extends DIEControllerController
             $this->addFlash('danger', 'No existe la solicitud indicada');
             return $this->redirectToRoute('came.solicitud.index');
         }
-        if (!$this->validarSolicitudDelegacion($solicitud)) {
-            $this->addFlash('danger', 'No puedes modificar una solicitud de otra delegación');
+        if (!
+        ($delegacion && $this->validarSolicitudDelegacion($solicitud)
+        || $unidad && $this->validarSolicitudUnidad($solicitud) )) {
+            $this->addFlash('danger', 'No puedes modificar una solicitud de otra '
+              .($unidad ? 'unidad':'delegación')
+            );
             return $this->redirectToRoute('came.solicitud.index');
         }
         if (!in_array($solicitud->getEstatus(), [Solicitud::CREADA])) {
             $this->addFlash('danger', 'No puedes modificar la solicitud ' . $solicitud->getNoSolicitud());
             return $this->redirectToRoute('came.solicitud.index');
         }
-        $instituciones = $this->getDoctrine()
+        $instituciones = null;
+        $unidades = null;
+        if ($unidad) {
+          $unidadE = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->findOneBy(['id' => $unidad]);
+          $unidades = [$unidadE];
+          $instituciones = $unidadE ?
+            $this->getDoctrine()
+              ->getRepository(Institucion::class)
+              ->findAllPrivate($unidadE->getDelegacion()->getId())
+            : null;
+
+        } else { // $delegacion
+          $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
             ->findAllPrivate($delegacion);
-        $unidades = $this->getDoctrine()
+          $unidades = $this->getDoctrine()
             ->getRepository(Unidad::class)
             ->getAllUnidadesByDelegacion($delegacion);
+        }
         $form = $this->createForm(SolicitudType::class);
         return $this->render('came/solicitud/edit.html.twig', [
             'form' => $form->createView(),
@@ -202,7 +244,8 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!$this->validarSolicitudDelegacion($solicitud)) {
+        if (!($this->validarSolicitudDelegacion($solicitud)
+        || $this->validarSolicitudUnidad($solicitud) )) {
             return $this->httpErrorResponse();
         }
         if (!in_array($solicitud->getEstatus(), [Solicitud::CREADA])) {
@@ -231,7 +274,9 @@ class SolicitudController extends DIEControllerController
             return $this->redirectToRoute('came.solicitud.index');
         }
 
-        if (!$this->validarSolicitudDelegacion($solicitud)) {
+        if (!($this->validarSolicitudDelegacion($solicitud)
+          || $this->validarSolicitudUnidad($solicitud)
+        )) {
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }
@@ -277,7 +322,9 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!$this->validarSolicitudDelegacion($solicitud)) {
+        if (!($this->validarSolicitudDelegacion($solicitud)
+            || $this->validarSolicitudUnidad($solicitud))
+        ) {
             return $this->httpErrorResponse();
         }
         $entityManager = $this->getDoctrine()->getManager();
@@ -301,7 +348,8 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!$this->validarSolicitudDelegacion($solicitud)) {
+        if (!($this->validarSolicitudDelegacion($solicitud)
+          || $this->validarSolicitudUnidad($solicitud) )) {
             return $this->httpErrorResponse();
         }
         if (!in_array($solicitud->getEstatus(), [Solicitud::CREADA])) {
@@ -327,7 +375,8 @@ class SolicitudController extends DIEControllerController
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if (!$this->validarSolicitudDelegacion($solicitud)) {
+        if (!($this->validarSolicitudDelegacion($solicitud)
+        || $this->validarSolicitudUnidad($solicitud))) {
             return $this->httpErrorResponse();
         }
         if (!in_array($solicitud->getEstatus(), [Solicitud::EN_VALIDACION_DE_MONTOS_CAME])) {
@@ -376,7 +425,8 @@ class SolicitudController extends DIEControllerController
             return $this->redirectToRoute('came.solicitud.index');
         }
 
-        if (!$this->validarSolicitudDelegacion($solicitud)) {
+        if (!($this->validarSolicitudDelegacion($solicitud)
+              || $this->validarSolicitudUnidad($solicitud))) {
             $this->addFlash('danger', 'No puedes modificar una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }

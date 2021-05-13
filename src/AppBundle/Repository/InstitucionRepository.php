@@ -12,7 +12,7 @@ class InstitucionRepository extends EntityRepository implements InstitucionRepos
      * @return array|int|string
      * @author Christian Garcia
      */
-    public function findAllPrivate($delegacion_id = null)
+    public function findAllPrivate($delegacion_id = null, $unidad_id=null)
     {
         $querybuilder = $this->createQueryBuilder('institucion')
             ->innerJoin('institucion.convenios', 'convenio')
