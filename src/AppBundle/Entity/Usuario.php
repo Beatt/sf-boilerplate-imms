@@ -91,6 +91,12 @@ class Usuario implements UserInterface, \Serializable
      */
     private $delegaciones;
 
+  /**
+   * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Unidad")
+   * @ORM\JoinColumn(name="unidad_id", referencedColumnName="id")
+   */
+  private $unidades;
+
     /**
      * @var string
      * @ORM\Column(type="string", length=18)
@@ -154,6 +160,7 @@ class Usuario implements UserInterface, \Serializable
     public function __construct()
     {
         $this->delegaciones = new ArrayCollection();
+        $this->unidades = new ArrayCollection();
         $this->fechaIngreso = new \DateTime();
         $this->curp = '';
         $this->rfc = '';
@@ -539,6 +546,39 @@ class Usuario implements UserInterface, \Serializable
     {
         return $this->delegaciones;
     }
+
+  /**
+   * @param Unidad $unidad
+   * @return Usuario
+   */
+  public function addUnidad(Unidad $unidad)
+  {
+    if(!$this->unidades->contains($unidad)) {
+      $this->unidades[] = $unidad;
+      //$unidad->addUsuario($this);
+    }
+
+    return $this;
+  }
+
+  /**
+   * @param Unidad $unidad
+   */
+  public function removeUnidad(Unidad $unidad)
+  {
+    if($this->unidades->contains($unidad)) {
+      $this->unidades->removeElement($unidad);
+      //$unidad->removeUsuario($this);
+    }
+  }
+
+  /**
+   * @return Collection
+   */
+  public function getUnidades()
+  {
+    return $this->unidades;
+  }
 
     /**
      * @return Institucion

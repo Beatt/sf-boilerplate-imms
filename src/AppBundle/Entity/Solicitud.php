@@ -679,6 +679,20 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         return $result;
     }
 
+    /**
+     * @return Unidad|null
+     */
+    public function getUnidad()
+    {
+      $result = null;
+      /** @var CampoClinico $cc */
+      $cc = $this->getCampoClinicos()->first();
+      if($cc && $cc->getUnidad() && $cc->getUnidad()->getEsUmae()){
+        $result = $cc->getUnidad();
+      }
+      return $result;
+    }
+
     public function getCampoClinicoByReferenciaBancaria($referenciaBancaria)
     {
         $criteria = CampoClinicoRepository::getCampoClinicoByReferenciaBancaria($referenciaBancaria);

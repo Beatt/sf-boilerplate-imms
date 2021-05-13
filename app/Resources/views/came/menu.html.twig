@@ -126,12 +126,23 @@
                     <p>Matricula: {{ usuario.matricula }}</p>
                 </div>
                 <div class="delegacion">
-                    <h3>CAME</h3>
-                    <form action="{{ absolute_url(path('came.usuario.delegacion')) }}" method="post">
-                        <label for="delegacion_came">Delegación: </label>
-                        <select name="delegacion_came" id="delegacion_came" onchange="this.form.submit()">
+                    <h3>
+                        {% if delegacion_came %} CAME {% endif %}{%
+                            if delegacion_came and unidad_came %} / {% endif %}{%
+                            if unidad_came %} JDES {% endif %}
+                    </h3>
+                    <form action="{{ absolute_url(path('came.usuario.delegacion_unidad')) }}" method="post">
+                        <label for="delegacion_unidad_came">
+                            {% if delegacion_came %}Delegación{% endif %}{%
+                                if delegacion_came and unidad_came %} / {% endif %}{%
+                                if unidad_came %}Unidad{% endif %}:
+                        </label>
+                        <select name="delegacion_unidad_came" id="delegacion_came" onchange="this.form.submit()">
                             {% for delegacion in usuario.delegaciones %}
-                                <option value="{{ delegacion.id }}" {% if delegacion_came and delegacion_came == delegacion.id %} selected {% endif %}>{{ delegacion.nombre }}</option>
+                                <option value="D_{{ delegacion.id }}" {% if delegacion_came and delegacion_came == delegacion.id %} selected {% endif %}>{{ delegacion.nombre }}</option>
+                            {% endfor %}
+                            {% for unidad in usuario.unidades %}
+                                <option value="U_{{ unidad.id }}" {% if unidad_came and unidad_came == unidad.id %} selected {% endif %}>{{ unidad.nombre }}</option>
                             {% endfor %}
                         </select>
                     </form>

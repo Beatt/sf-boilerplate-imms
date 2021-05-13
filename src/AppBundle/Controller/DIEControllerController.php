@@ -120,6 +120,27 @@ abstract class DIEControllerController extends Controller
         return $result;
     }
 
+  protected function getUserUnidadId()
+  {
+    $query_unidad = $this->container->get('session')->get('user_unidad');
+    $result = null;
+    /** @var Usuario $user */
+    $user = $this->getUser();
+    if($user && $user->getUnidades()){
+      if(!$query_unidad){
+        $del_object = $user->getUnidades()->first();
+        $result = $del_object ? $del_object->getId() : $result;
+      }else{
+        if($user->getUnidades()->exists(function($key, $value)  use ($query_unidad){
+          return $value->getId() == $query_unidad;
+        })){
+          $result = $query_unidad;
+        };
+      }
+    }
+    return $result;
+  }
+
     protected function validarSolicitudDelegacion(Solicitud $solicitud)
     {
         $result = true;

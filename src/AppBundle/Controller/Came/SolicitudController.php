@@ -27,10 +27,11 @@ class SolicitudController extends DIEControllerController
         $perPage = $request->query->get('perPage', self::DEFAULT_PERPAGE);
         $page = $request->query->get('page', 1);
         $delegacion = $this->getUserDelegacionId();
-        if (is_null($delegacion)) {
+        $unidad = $this->getUserUnidadId();
+        if (is_null($delegacion) && is_null($unidad)) {
             throw $this->createAccessDeniedException();
         }
-        $solicitudes = $this->getDoctrine()
+        $solicitudes =  $this->getDoctrine()
             ->getRepository(Solicitud::class)
             ->getAllSolicitudesByDelegacion($delegacion, $perPage, $page, $request->query->all());
         return $this->render('came/solicitud/index.html.twig', [

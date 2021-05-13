@@ -22,6 +22,7 @@ class DefaultController extends Controller
         switch($roles[0]) {
           case 'ROLE_SUPER':
             return $this->redirectToRoute('admin');
+          case 'ROLE_JDES':
           case 'ROLE_CAME':
             return $this->redirectToRoute('came.solicitud.index');
           case 'ROLE_IE':
