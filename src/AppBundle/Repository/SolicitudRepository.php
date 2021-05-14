@@ -91,7 +91,7 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         ->join('solicitud.camposClinicos', 'campos_clinicos')
         ->join('campos_clinicos.convenio', 'convenio')
         ->join('convenio.institucion', 'institucion');
-      $this->setFilters($queryBuilder, null, $filters, $unidad_id);
+      $queryBuilder = $this->setFilters($queryBuilder, null, $filters, $unidad_id);
       $qb2 = clone $queryBuilder;
       return ['data' => $queryBuilder->distinct()->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
         ->setFirstResult(($offset-1) * $perPage)->getQuery()
@@ -180,5 +180,6 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
       $queryBuilder->andWhere('solicitud.fecha = :fecha')
         ->setParameter('fecha', $filters['fecha']);
     }
+    return $queryBuilder;
   }
 }

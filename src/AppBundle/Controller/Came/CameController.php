@@ -39,16 +39,17 @@ class CameController extends Controller
 
         /** @var Session $session */
         $session = $this->container->get('session');
+        $delegacion_id = null;
+        $unidad_id = null;
         if ($splitDelUnid[0] == "D") {
           $delegacion_id = $splitDelUnid[1];
-          $session->set('user_delegacion', $delegacion_id);
           $session->remove('user_unidad');
+          $session->set('user_delegacion', $delegacion_id);
         } else { // $splitDelUnid[1] == 'U'
           $unidad_id = $splitDelUnid[1];
-          $session->set('user_unidad', $unidad_id);
           $session->remove('user_delegacion');
+          $session->set('user_unidad', $unidad_id);
         }
-
         return $this->redirectToRoute('came.solicitud.index');
     }
 }

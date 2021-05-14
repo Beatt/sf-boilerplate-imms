@@ -227,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         )
     }
     if (createDom) {
+        console.log(window.UNIDADES);
         ReactDOM.render(
             <SolicitudCreate
                 instituciones={window.INSTITUCIONES}

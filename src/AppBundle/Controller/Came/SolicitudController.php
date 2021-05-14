@@ -32,14 +32,14 @@ class SolicitudController extends DIEControllerController
             throw $this->createAccessDeniedException();
         }
         $solicitudes =
-        $unidad ?
+          $delegacion && $this->isUserDelegacionActivated() ?
+            $this->getDoctrine()
+              ->getRepository(Solicitud::class)
+              ->getAllSolicitudesByDelegacion($delegacion, $perPage, $page, $request->query->all())
+            : // $unidad
           $this->getDoctrine()
             ->getRepository(Solicitud::class)
-            ->getAllSolicitudesByUnidad($unidad, $perPage, $page, $request->query->all())
-          : // $delegacion
-          $this->getDoctrine()
-            ->getRepository(Solicitud::class)
-            ->getAllSolicitudesByDelegacion($delegacion, $perPage, $page, $request->query->all());
+            ->getAllSolicitudesByUnidad($unidad, $perPage, $page, $request->query->all());
         return $this->render('came/solicitud/index.html.twig', [
             'solicitudes' => $this->get('serializer')->normalize(
                 $solicitudes['data'],
@@ -75,13 +75,13 @@ class SolicitudController extends DIEControllerController
             throw $this->createAccessDeniedException();
         }
         $solicitudes =
-        $unidad ?
+        $delegacion && $this->isUserDelegacionActivated() ?
           $this->getDoctrine()
             ->getRepository(Solicitud::class)
-            ->getAllSolicitudesByUnidad($unidad, $perPage, $page, $request->query->all())
+            ->getAllSolicitudesByDelegacion($delegacion, $perPage, $page, $request->query->all())
         :  $this->getDoctrine()
-            ->getRepository(Solicitud::class)
-            ->getAllSolicitudesByDelegacion($delegacion, $perPage, $page, $request->query->all());
+          ->getRepository(Solicitud::class)
+          ->getAllSolicitudesByUnidad($unidad, $perPage, $page, $request->query->all());
         return $this->jsonResponse([
             'object' => $this->get('serializer')->normalize(
                 $solicitudes['data'],
@@ -118,24 +118,23 @@ class SolicitudController extends DIEControllerController
         }
         $instituciones = null;
         $unidades = null;
-        if ($unidad) {
-          $unidadE = $this->getDoctrine()
-            ->getRepository(Unidad::class)
-            ->findOneBy(['id' => $unidad]);
-          $unidades = [$unidadE];
-          $instituciones = $unidadE ?
-            $this->getDoctrine()
-              ->getRepository(Institucion::class)
-              ->findAllPrivate($unidadE->getDelegacion()->getId())
-          : null;
-
-        } else { // $delegacion
+        if ($delegacion && $this->isUserDelegacionActivated()) { // $delegacion
           $instituciones = $this->getDoctrine()
             ->getRepository(Institucion::class)
             ->findAllPrivate($delegacion);
           $unidades = $this->getDoctrine()
             ->getRepository(Unidad::class)
             ->getAllUnidadesByDelegacion($delegacion);
+        } else { // $unidad
+          $unidadE = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->findOneBy(['id' => $unidad]);
+          $unidades = [ $unidadE ];
+          $instituciones = $unidadE ?
+            $this->getDoctrine()
+              ->getRepository(Institucion::class)
+              ->findAllPrivate($unidadE->getDelegacion()->getId())
+            : null;
         }
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
@@ -189,7 +188,14 @@ class SolicitudController extends DIEControllerController
         }
         $instituciones = null;
         $unidades = null;
-        if ($unidad) {
+        if ($delegacion && $this->isUserDelegacionActivated()) { // $delegacion
+          $instituciones = $this->getDoctrine()
+            ->getRepository(Institucion::class)
+            ->findAllPrivate($delegacion);
+          $unidades = $this->getDoctrine()
+            ->getRepository(Unidad::class)
+            ->getAllUnidadesByDelegacion($delegacion);
+        } else {  // $unidad
           $unidadE = $this->getDoctrine()
             ->getRepository(Unidad::class)
             ->findOneBy(['id' => $unidad]);
@@ -199,14 +205,6 @@ class SolicitudController extends DIEControllerController
               ->getRepository(Institucion::class)
               ->findAllPrivate($unidadE->getDelegacion()->getId())
             : null;
-
-        } else { // $delegacion
-          $instituciones = $this->getDoctrine()
-            ->getRepository(Institucion::class)
-            ->findAllPrivate($delegacion);
-          $unidades = $this->getDoctrine()
-            ->getRepository(Unidad::class)
-            ->getAllUnidadesByDelegacion($delegacion);
         }
         $form = $this->createForm(SolicitudType::class);
         return $this->render('came/solicitud/edit.html.twig', [
