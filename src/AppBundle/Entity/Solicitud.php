@@ -424,6 +424,26 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         return $result;
     }
 
+  public function getEstatusIEFormatted()
+  {
+    $result = '';
+    switch ($this->getEstatus()) {
+      case self::EN_VALIDACION_DE_MONTOS_CAME:
+        $result = 'En validación de montos';
+        break;
+      case self::MONTOS_INCORRECTOS_CAME:
+        $result = 'Montos incorrectos';
+        break;
+      case self::MONTOS_VALIDADOS_CAME:
+        $result = 'Montos validados';
+        break;
+      default:
+        $result = $this->getEstatus();
+        break;
+    }
+    return $result;
+  }
+
     /**
      * @return string
      */

@@ -313,7 +313,7 @@ const MisSolicitudes = () => {
                         <th>{solicitud.noCamposAutorizados}</th>
                         <th>{solicitud.fecha}</th>
                         <th>{solicitud.tipoPago}</th>
-                        <th>{solicitud.estatus}</th>
+                        <th>{solicitud.estatusIEFormatted}</th>
                         <th>
                           <button
                             className='btn btn-default'
