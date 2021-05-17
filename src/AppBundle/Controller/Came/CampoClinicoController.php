@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Unidad;
 use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\CampoClinicoType;
 use AppBundle\Service\CampoClinicoManagerInterface;
@@ -136,13 +137,25 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             );
         }
 
-        $came = $this->getDoctrine()
+        $came = $this->getCAMEorJDES($campo_clinico);
+
+        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico, 'came' => $came]);
+    }
+
+    private function getCAMEorJDES($campo_clinico) {
+      /** @var Unidad $unidad */
+      $unidad = $campo_clinico->getUnidad();
+
+      return
+        $unidad && $unidad->getEsUmae() ?
+          $this->getDoctrine()
+            ->getRepository(Usuario::class)
+            ->getJDESbyUnidad($unidad->getId())
+          :  $this->getDoctrine()
           ->getRepository(Usuario::class)
           ->getCamebyDelegacion(
-            $campo_clinico->getSolicitud()
-              ->getDelegacion()
+            $unidad->getDelegacion()
               ->getId());
-        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico, 'came' => $came]);
     }
 
     /**

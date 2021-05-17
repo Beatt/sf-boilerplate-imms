@@ -32,7 +32,26 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
             ->andWhere('permiso.clave = :clave')
             ->setParameter('delegacion', $delegacion_id)
             ->setParameter('clave', 'CAME')
+            ->orderBy('usuario.id', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+  public function getJDESByUnidad($unidad_id)
+  {
+      $qb = $this->createQueryBuilder('usuario')
+        ->innerJoin('usuario.unidades', 'unidades')
+        ->innerJoin('usuario.permisos', 'permiso')
+        ->where('unidades.id = :unidad')
+        ->andWhere('usuario.activo = true');
+        $qb->andWhere(
+          $qb->expr()->in('permiso.clave', ['CAME', 'JDES']) )
+        ->setParameter('unidad', $unidad_id)
+        ->orderBy('usuario.id', 'DESC')
+        ->setMaxResults(1);
+
+      return $qb->getQuery()
+        ->getOneOrNullResult();
+  }
 }
