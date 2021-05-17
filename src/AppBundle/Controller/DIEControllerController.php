@@ -101,7 +101,10 @@ abstract class DIEControllerController extends Controller
     }
 
     protected function isUserDelegacionActivated() {
-      return !empty($this->container->get('session')->get('user_delegacion'));
+      $session = $this->container->get('session');
+      return
+        !empty($session->get('user_delegacion'))
+        || empty($session->get('user_unidad'));
     }
 
     protected function getUserDelegacionId()

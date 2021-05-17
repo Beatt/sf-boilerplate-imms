@@ -20,10 +20,10 @@ class UnidadController extends \AppBundle\Controller\DIEControllerController
             throw $this->createAccessDeniedException();
         }
         $unidades =
-          $delegacion
+          $delegacion && $this->isUserDelegacionActivated()
             ? $this->getDoctrine()
               ->getRepository(Unidad::class)
-              ->getAllUnidadesByDelegacion($delegacion)
+              ->getAllUnidadesByDelegacion($delegacion, false)
             : [$unidad];
         return $this->jsonResponse([
             'object' => $this->get('serializer')->normalize($unidades, 'json',

@@ -124,7 +124,7 @@ class SolicitudController extends DIEControllerController
             ->findAllPrivate($delegacion);
           $unidades = $this->getDoctrine()
             ->getRepository(Unidad::class)
-            ->getAllUnidadesByDelegacion($delegacion);
+            ->getAllUnidadesByDelegacion($delegacion, false);
         } else { // $unidad
           $unidadE = $this->getDoctrine()
             ->getRepository(Unidad::class)
@@ -194,7 +194,7 @@ class SolicitudController extends DIEControllerController
             ->findAllPrivate($delegacion);
           $unidades = $this->getDoctrine()
             ->getRepository(Unidad::class)
-            ->getAllUnidadesByDelegacion($delegacion);
+            ->getAllUnidadesByDelegacion($delegacion, false);
         } else {  // $unidad
           $unidadE = $this->getDoctrine()
             ->getRepository(Unidad::class)
