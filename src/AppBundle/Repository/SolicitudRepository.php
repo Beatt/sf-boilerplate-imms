@@ -75,8 +75,11 @@ class SolicitudRepository extends EntityRepository implements SolicitudRepositor
         $queryBuilder = $this->createQueryBuilder('solicitud')
             ->join('solicitud.camposClinicos', 'campos_clinicos')
             ->join('campos_clinicos.convenio', 'convenio')
-            ->join('convenio.institucion', 'institucion');
+            ->join('convenio.institucion', 'institucion')
+            ->join('campos_clinicos.unidad', 'unidad');
         $this->setFilters($queryBuilder, $delegacion_id, $filters);
+        $queryBuilder
+          ->andWhere('unidad.esUmae = false');
         $qb2 = clone $queryBuilder;
         return ['data' => $queryBuilder->distinct()->orderBy('solicitud.id', 'DESC')->setMaxResults($perPage)
             ->setFirstResult(($offset-1) * $perPage)->getQuery()
