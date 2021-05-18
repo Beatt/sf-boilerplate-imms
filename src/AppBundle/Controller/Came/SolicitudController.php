@@ -116,12 +116,11 @@ class SolicitudController extends DIEControllerController
         if (is_null($delegacion) && is_null($unidad)) {
             throw $this->createAccessDeniedException();
         }
-        $instituciones = null;
+        $instituciones = $this->getDoctrine()
+          ->getRepository(Institucion::class)
+          ->findAllPrivate();
         $unidades = null;
         if ($delegacion && $this->isUserDelegacionActivated()) { // $delegacion
-          $instituciones = $this->getDoctrine()
-            ->getRepository(Institucion::class)
-            ->findAllPrivate($delegacion);
           $unidades = $this->getDoctrine()
             ->getRepository(Unidad::class)
             ->getAllUnidadesByDelegacion($delegacion, false);
@@ -130,11 +129,6 @@ class SolicitudController extends DIEControllerController
             ->getRepository(Unidad::class)
             ->findOneBy(['id' => $unidad]);
           $unidades = [ $unidadE ];
-          $instituciones = $unidadE ?
-            $this->getDoctrine()
-              ->getRepository(Institucion::class)
-              ->findAllPrivate($unidadE->getDelegacion()->getId())
-            : null;
         }
         return $this->render('came/solicitud/create.html.twig', [
             'form' => $form->createView(),
