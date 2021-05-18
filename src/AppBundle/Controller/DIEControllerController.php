@@ -158,7 +158,9 @@ abstract class DIEControllerController extends Controller
                 $result = $delegacion_came == $delegacion->getId();
             }else{
                 $user = $this->getUser();
-                $result = $user->getDelegaciones()->first()->getId() === $delegacion->getId();
+                $delegaciones = $user->getDelegaciones();
+                $result = count($delegaciones) > 0 &&
+                  $delegaciones->first()->getId() === $delegacion->getId();
             }
         }
         return $result;
@@ -174,7 +176,8 @@ abstract class DIEControllerController extends Controller
         if($unidad_came){
           $result = $unidad_came == $unidad->getId();
         }else{
-          $result = $user->getUnidades()->first()->getId() === $unidad->getId();
+          $unidades = $user->getUnidades();
+          $result = count($unidades) > 0 && $unidades->first()->getId() === $unidad->getId();
         }
       }
       return $result;
