@@ -94,6 +94,7 @@ class SolicitudController extends DIEControllerController
                     'attributes' => [
                         'id',
                         'estatus',
+                        'estatusIEFormatted',
                         'fecha',
                         'noCamposAutorizados',
                         'noCamposSolicitados',

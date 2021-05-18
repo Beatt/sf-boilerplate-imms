@@ -100,6 +100,13 @@ abstract class DIEControllerController extends Controller
         ], $http_code);
     }
 
+    protected function isUserDelegacionActivated() {
+      $session = $this->container->get('session');
+      return
+        !empty($session->get('user_delegacion'))
+        || empty($session->get('user_unidad'));
+    }
+
     protected function getUserDelegacionId()
     {
         $query_delegacion = $this->container->get('session')->get('user_delegacion');
@@ -120,6 +127,27 @@ abstract class DIEControllerController extends Controller
         return $result;
     }
 
+  protected function getUserUnidadId()
+  {
+    $query_unidad = $this->container->get('session')->get('user_unidad');
+    $result = null;
+    /** @var Usuario $user */
+    $user = $this->getUser();
+    if($user && $user->getUnidades()){
+      if(!$query_unidad){
+        $del_object = $user->getUnidades()->first();
+        $result = $del_object ? $del_object->getId() : $result;
+      }else{
+        if($user->getUnidades()->exists(function($key, $value)  use ($query_unidad){
+          return $value->getId() == $query_unidad;
+        })){
+          $result = $query_unidad;
+        };
+      }
+    }
+    return $result;
+  }
+
     protected function validarSolicitudDelegacion(Solicitud $solicitud)
     {
         $result = true;
@@ -134,6 +162,28 @@ abstract class DIEControllerController extends Controller
             }
         }
         return $result;
+    }
+
+    protected function validarSolicitudUnidad(Solicitud $solicitud)
+    {
+      $result = false;
+      $unidad = $solicitud->getUnidad();
+      $user = $this->getUser();
+      if($unidad && $user->getUnidades()){
+        $unidad_came = $this->container->get('session')->get('user_unidad');
+        if($unidad_came){
+          $result = $unidad_came == $unidad->getId();
+        }else{
+          $result = $user->getUnidades()->first()->getId() === $unidad->getId();
+        }
+      }
+      return $result;
+    }
+
+    protected function isGrantedUserAccessToSolicitud(Solicitud $solicitud)
+    {
+      return $this->validarSolicitudDelegacion($solicitud)
+        || $this->validarSolicitudUnidad($solicitud);
     }
 
     protected function createNotFindUserRelationWithInstitucionException()

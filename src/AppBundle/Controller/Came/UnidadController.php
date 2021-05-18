@@ -15,12 +15,16 @@ class UnidadController extends \AppBundle\Controller\DIEControllerController
     public function indexAction(Request $request)
     {
         $delegacion = $this->getUserDelegacionId();
-        if(is_null($delegacion)){
+        $unidad = $this->getUserUnidadId();
+        if(is_null($delegacion) && is_null($unidad)){
             throw $this->createAccessDeniedException();
         }
-        $unidades =  $this->getDoctrine()
-            ->getRepository(Unidad::class)
-            ->getAllUnidadesByDelegacion($delegacion);
+        $unidades =
+          $delegacion && $this->isUserDelegacionActivated()
+            ? $this->getDoctrine()
+              ->getRepository(Unidad::class)
+              ->getAllUnidadesByDelegacion($delegacion, false)
+            : [$unidad];
         return $this->jsonResponse([
             'object' => $this->get('serializer')->normalize($unidades, 'json',
                 ['attributes' => [ 'id', 'nombre', 'claveUnidad']

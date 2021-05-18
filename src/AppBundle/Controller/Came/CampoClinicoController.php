@@ -4,6 +4,7 @@ namespace AppBundle\Controller\Came;
 
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Solicitud;
+use AppBundle\Entity\Unidad;
 use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\CampoClinicoType;
 use AppBundle\Service\CampoClinicoManagerInterface;
@@ -30,7 +31,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if(!$this->validarSolicitudDelegacion($solicitud)){
+        if(!$this->isGrantedUserAccessToSolicitud($solicitud)){
             return $this->httpErrorResponse();
         }
         if(!in_array($solicitud->getEstatus(), [Solicitud::CREADA])){
@@ -58,7 +59,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         if(!$campoClinico){
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if(!$this->validarSolicitudDelegacion($campoClinico->getSolicitud())){
+        if(!$this->isGrantedUserAccessToSolicitud($campoClinico->getSolicitud())){
             return $this->httpErrorResponse();
         }
         if(!in_array($campoClinico->getSolicitud()->getEstatus(), [Solicitud::CREADA])){
@@ -96,7 +97,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
         if (!$solicitud) {
             return $this->httpErrorResponse('Not Found', Response::HTTP_NOT_FOUND);
         }
-        if(!$this->validarSolicitudDelegacion($solicitud)){
+        if(!$this->isGrantedUserAccessToSolicitud($solicitud)){
             return $this->httpErrorResponse('No puedes ver una solicitud de otra delegación');
         }
         $perPage = $request->query->get('perPage', 10);
@@ -136,13 +137,25 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
             );
         }
 
-        $came = $this->getDoctrine()
+        $came = $this->getCAMEorJDES($campo_clinico);
+
+        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico, 'came' => $came]);
+    }
+
+    private function getCAMEorJDES($campo_clinico) {
+      /** @var Unidad $unidad */
+      $unidad = $campo_clinico->getUnidad();
+
+      return
+        $unidad && $unidad->getEsUmae() ?
+          $this->getDoctrine()
+            ->getRepository(Usuario::class)
+            ->getJDESbyUnidad($unidad->getId())
+          :  $this->getDoctrine()
           ->getRepository(Usuario::class)
           ->getCamebyDelegacion(
-            $campo_clinico->getSolicitud()
-              ->getDelegacion()
+            $unidad->getDelegacion()
               ->getId());
-        return  $this->render('formatos/fofoe.html.twig', ['campo_clinico' => $campo_clinico, 'came' => $came]);
     }
 
     /**
@@ -196,7 +209,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
-        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+        if(!$this->isGrantedUserAccessToSolicitud($campo_clinico->getSolicitud())){
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }
@@ -224,7 +237,7 @@ class CampoClinicoController extends \AppBundle\Controller\DIEControllerControll
                 'Not found for id ' . $campo_clinico
             );
         }
-        if(!$this->validarSolicitudDelegacion($campo_clinico->getSolicitud())){
+        if(!$this->isGrantedUserAccessToSolicitud($campo_clinico->getSolicitud())){
             $this->addFlash('danger', 'No puedes ver una solicitud de otra delegación');
             return $this->redirectToRoute('came.solicitud.index');
         }

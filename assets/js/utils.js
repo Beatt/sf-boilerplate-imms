@@ -8,7 +8,7 @@ export const getActionNameByInstitucionEducativa = (estatus, tipoPago) => {
     case SOLICITUD.CONFIRMADA:
       return 'Registrar montos'
     case SOLICITUD.EN_VALIDACION_DE_MONTOS_CAME:
-      return 'En validación por CAME'
+      return 'En validación'
     case SOLICITUD.MONTOS_INCORRECTOS_CAME:
       return 'Corregir montos'
     case SOLICITUD.MONTOS_VALIDADOS_CAME:

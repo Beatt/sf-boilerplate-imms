@@ -39,7 +39,7 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
 
     public function responsePdf($path, CampoClinico $campoClinico, $overwrite = false)
     {
-        $came = $this->entityManager->getRepository(Usuario::class)->getCamebyDelegacion($campoClinico->getSolicitud()->getDelegacion()->getId());
+        $came = $this->getCAMEorJDES($campoClinico);
         $file = "$path/{$campoClinico->getSolicitud()->getNoSolicitud()}/cc_{$campoClinico->getId()}/".$this->getFileName($campoClinico);
         if (!file_exists($file) || $overwrite) {
             $this->pdf->generateFromHtml(
@@ -78,5 +78,18 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
         $type = $campoClinico->getConvenio()->getCicloAcademico()->getId()  === 1? 'CCS' : 'INT';
 
         return "{$campoClinico->getSolicitud()->getNoSolicitud()}-{$type}_{$campoClinico->getId()}_FormatoFOFOE.pdf";
+    }
+
+    private function getCAMEorJDES(CampoClinico $campoClinico)
+    {
+      $unidad = $campoClinico->getUnidad();
+
+      return $unidad && $unidad->getEsUmae() ?
+          $this->entityManager->getRepository(Usuario::class)
+            ->getJDESByUnidad($unidad->getId())
+        :  $this->entityManager->getRepository(Usuario::class)
+              ->getCamebyDelegacion($campoClinico
+                                      ->getSolicitud()
+                                      ->getDelegacion()->getId());
     }
 }
