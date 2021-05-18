@@ -123,7 +123,9 @@
                 />
                 <div class="menu__content">
                     <p class="text-bold">{{ usuario.fullname }}</p>
-                    <p>Matricula: {{ usuario.matricula }}</p>
+                    {% if usuario.matricula %}
+                        <p>Matricula: {{ usuario.matricula }}</p>
+                    {% endif %}
                 </div>
                 <div class="delegacion">
                     <h3>

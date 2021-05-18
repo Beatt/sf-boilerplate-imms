@@ -4,13 +4,14 @@
 namespace AppBundle\Controller\Came;
 
 
+use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\Usuario;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CameController extends Controller
+class CameController extends DIEControllerController
 {
 
     public function menuAction()
@@ -18,7 +19,7 @@ class CameController extends Controller
         /** @var Usuario $user */
         $user = $this->getUser();
         $delegacion_came = $this->container->get('session')->get('user_delegacion');
-        $unidad_came = $this->container->get('session')->get('user_unidad');
+        $unidad_came = $this->getUserUnidadId();
         return $this->render('came/menu.html.twig', [
             'usuario' => $user,
             'delegacion_came' => $delegacion_came,
