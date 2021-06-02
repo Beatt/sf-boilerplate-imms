@@ -19,13 +19,11 @@
             .credencial-frente{
                 border: solid 1px black;
                 margin: 16px;
-                height: 350px;
             }
 
             .credencial-detras{
                 border: solid 1px black;
                 margin: 16px;
-                height: 350px;
             }
 
             .credencial-frente .main {
@@ -33,14 +31,14 @@
                 display: -webkit-box; /* wkhtmltopdf uses this one */
             }
 
-            .main .main-left {
-                margin: 24px 10%;
-                width: 20%;
+            .main-left {
+                margin: 10% 5% ;
+                width: 30%;
             }
 
-            .main .main-right {
-                margin: 24px;
-                width: 60%;
+            .main-right {
+                margin: 10% 2%;
+                width: 55%;
             }
 
             .credencial-detras .main-back{
@@ -63,7 +61,11 @@
             .area-logos{
                 text-align: center;
                 background: rgb(55,123,112);
+                /*
                 background: linear-gradient(90deg, rgba(55,123,112,1) 0%, rgba(55,123,112,1) 16%, rgba(0,49,39,1) 100%);
+                background: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(55,123,112,1)), to(rgba(0,49,39,1)));
+                background: -webkit-repeating-linear-gradient(90deg, rgba(55,123,112,1) 0%, rgba(55,123,112,1) 16%, rgba(0,49,39,1) 100%);
+                */
             }
 
             .text-green{
@@ -77,18 +79,23 @@
                 border-left: 1px solid white;
                 margin: 15px;
             }
+
             .golden{
                 background: rgb(255,255,255);
+                /*
                 background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(212,175,55,0.43879558659401263) 87%, rgba(212,175,55,1) 100%);
+                background: -webkit-repeating-linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(212,175,55,0.43879558659401263) 87%, rgba(212,175,55,1) 100%);
+                 */
                 height: 10px;
             }
 
             .main-left img {
-                width: 150px;
+                width: 90%;
+                margin: 5%;
             }
 
             body{
-                font-size: 8px;
+                font-size: 10px;
             }
 
             .qr-folio{
@@ -102,16 +109,20 @@
             .qr {
                 margin-top: 24px;
             }
+
             h2 {
-                font-size: 16px;
+                font-size: 18px;
             }
+
             h3 {
                 font-size: 14px;
+                margin-right: 10px;
             }
 
             .logos img {
                 width: 200px;
             }
+
         </style>
     {% endblock %}
 </head>
@@ -121,9 +132,9 @@
             <div class="credencial-frente">
                 <div class="header">
                     <div class="area-logos">
-                        <a class="logos" href="https://www.gob.mx/" target="_blank">
+                        <div class="logos">
                             <img src="{{ app.request.getSchemeAndHttpHost() ~ asset('build/images/logo_gobierno_imss.png')  }}" alt="Gobierno de México">
-                        </a>
+                        </div>
                     </div>
                     <div class="golden"></div>
                 </div>
@@ -136,7 +147,7 @@
                         <p>{{ campo_clinico.convenio.institucion.nombre }}</p>
                         <p>Campo clínico: {{ campo_clinico.convenio.cicloAcademico.nombre }}</p>
                         <p>Carrera: {{ campo_clinico.convenio.carrera.nombre }}</p>
-                        <p>Periodo: {{ campo_clinico.fechaInicialFormatted }} al {{ campo_clinico.fechaFinalFormatted }}</p>
+                        <p>Período: {{ campo_clinico.fechaInicialFormatted }} al {{ campo_clinico.fechaFinalFormatted }}</p>
                         {%  if (campo_clinico.horario) %}
                             Horario: {{ campo_clinico.horario }}
                         {% endif%}
@@ -156,7 +167,7 @@
                     </div>
                     <div class="unidad">
                         <h2>SEDE</h2>
-                        <h2>{{ campo_clinico.unidad.nombre }}</h2>
+                        <h3>{{ campo_clinico.unidad.nombre }}</h3>
                         <h3>DELEGACIÓN: {{ campo_clinico.unidad.delegacion.nombre | upper }}</h3>
                     </div>
                 </div>
