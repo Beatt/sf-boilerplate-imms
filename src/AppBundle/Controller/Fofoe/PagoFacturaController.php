@@ -64,10 +64,11 @@ class PagoFacturaController extends DIEControllerController
         if ($form->isSubmitted() && $form->isValid()) {
             $pago = $form->getData();
             $factura = $pago->getFactura();
-            $file = $factura->getZipFile();
-            $factura->setZipFile(null);
-            $entityManager->flush();
-            $factura->setZipFile($file);
+            //$file = $factura->getZipFile();
+            //$factura->setZipFile(null);
+            $entityManager->persist($factura);
+            //$entityManager->flush();
+            //$factura->setZipFile($file);
 
             $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 

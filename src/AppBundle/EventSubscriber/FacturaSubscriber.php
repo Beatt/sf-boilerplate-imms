@@ -46,7 +46,7 @@ class FacturaSubscriber extends AbstractSubscriber implements EventSubscriberInt
     $pagosId = strlen($pagosId) > 3 ? mb_substr($pagosId, 0, -3) : $pagosId;
 
     if (!$file) {
-      $this->logDB('Ocurrió un error al intentar cargar el comprobante de pago.',
+      $this->logDB('Ocurrió un error al intentar cargar una factura.',
         array_merge( $this->getDataPago($pago),
           ['factura_id' => $factura->getId(),
             'solicitud_id' => $solicitud_id,
@@ -60,7 +60,7 @@ class FacturaSubscriber extends AbstractSubscriber implements EventSubscriberInt
       return;
     }
 
-    $this->logDB('Se ha registrado la factura para el pago.',
+    $this->logDB('Archivo Cargado. Factura de un pago',
         [
           'factura_id' => $factura->getId(),
           'solicitud_id' => $solicitud_id,
