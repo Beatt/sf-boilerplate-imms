@@ -1,6 +1,6 @@
 body{
   margin: 16px;
-  //font-size: 10px;
+  font-size: 12px;
 }
 
 header {
@@ -45,13 +45,14 @@ main {
 .monto {
   display: flex;
   display: -webkit-box; /* wkhtmltopdf uses this one */
+  height: 26px;
 }
 
 .monto_name {
   width: 60%;
 }
 
-.monto_value{
+.monto_value {
   width: 40%;
   text-align: right;
   border: solid 1px;
@@ -59,10 +60,11 @@ main {
 
 .monto_value p {
   margin-right: 16px;
+  padding-top: 3px;
 }
 
 #firmas {
-  margin-top: 120px;
+  margin-top: 100px;
   display: flex;
   display: -webkit-box; /* wkhtmltopdf uses this one */
   text-align: center;
