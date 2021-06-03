@@ -45,7 +45,7 @@ Encore
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
     .enableSourceMaps(!Encore.isProduction())
-    .enableVersioning(Encore.isProduction())
+    .enableVersioning()
     .enableReactPreset()
     .enableSassLoader()
 ;
