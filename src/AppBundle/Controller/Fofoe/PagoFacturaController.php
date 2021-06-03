@@ -6,6 +6,7 @@ use AppBundle\Controller\DIEControllerController;
 use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\EstatusCampoInterface;
 use AppBundle\Entity\Factura;
+use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudFacturaType as ComprobantePagoTypeSolicitudFacturaType;
@@ -62,17 +63,23 @@ class PagoFacturaController extends DIEControllerController
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Pago $pago */
             $pago = $form->getData();
+            /** @var Factura $factura */
             $factura = $pago->getFactura();
-            $entityManager->persist($factura);
+            $factura->addPago($pago);
+            $pago->setFacturaGenerada(true);
+            $pago->setFactura($factura);
 
             $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
 
             foreach($pagos as $pagoV) {
+              if ($pago->getId() == $pagoV->getId()) continue;
                 $pagoV->setFacturaGenerada(true);
                 $factura->addPago($pagoV);
                 $pagoV->setFactura($factura);
             }
+            $entityManager->persist($factura);
 
             $campos = $pago->getCamposPagados();
             foreach($campos['campos'] as $campoV) {
