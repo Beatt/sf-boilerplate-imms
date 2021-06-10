@@ -26,12 +26,6 @@ monolog:
             type: console
             process_psr_3_messages: false
 
-knp_snappy:
-    pdf:
-        enabled:    true
-        binary:     '/usr/bin/wkhtmltopdf'
-        options:    []
-
 swiftmailer:
     spool: { type: memory }
 

@@ -121,6 +121,7 @@ vich_uploader:
             directory_namer: app.directory_namer.institucion
 
 knp_snappy:
+#    temporary_folder: '%kernel.root_dir%/../uploads/'
     pdf:
         enabled:    true
         binary:     '%wkhtmltopdf_path%'
