@@ -65,29 +65,27 @@ class PagoFacturaController extends DIEControllerController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Pago $pago */
             $pago = $form->getData();
+            // TODO: Hacer un refactor para genear un service con esta logica:
+            $entityManager->beginTransaction();
             /** @var Factura $factura */
             $factura = $pago->getFactura();
             $factura->addPago($pago);
             $pago->setFacturaGenerada(true);
             $pago->setFactura($factura);
+            $file = $factura->getZipFile();
+            $factura->setZipFile(null);
 
             $pagos = $pagoRepository->getComprobantesPagoValidadosByReferenciaBancaria($pago->getReferenciaBancaria());
-
             foreach($pagos as $pagoV) {
               if ($pago->getId() == $pagoV->getId()) continue;
                 $pagoV->setFacturaGenerada(true);
                 $factura->addPago($pagoV);
-                $pagoV->setFactura($factura);
             }
-            $entityManager->persist($factura);
 
             $campos = $pago->getCamposPagados();
+            $statusCredGen = $campoRepository->findOneBy(['nombre' => EstatusCampoInterface::CREDENCIALES_GENERADAS]);
             foreach($campos['campos'] as $campoV) {
-              $campoV->setEstatus(
-                $campoRepository->findOneBy(
-                  ['nombre' => EstatusCampoInterface::CREDENCIALES_GENERADAS])
-              );
-              $entityManager->persist($campoV);
+              $campoV->setEstatus( $statusCredGen);
             }
 
             $solicitud = $pago->getSolicitud();
@@ -98,11 +96,14 @@ class PagoFacturaController extends DIEControllerController
                     return $estatus && $estatus->getNombre() !== EstatusCampoInterface::CREDENCIALES_GENERADAS;
               })) === 0 ) ) {
             $solicitud->setEstatus(SolicitudInterface::CREDENCIALES_GENERADAS);
-            $entityManager->persist($solicitud);
           }
 
+          $entityManager->persist($pago);
+          $entityManager->flush();
+          $factura->setZipFile($file);
           $entityManager->persist($factura);
           $entityManager->flush();
+          $entityManager->commit();
 
             $this->addFlash('success',
               sprintf('Se ha guardado correctamente la factura con folio %s 

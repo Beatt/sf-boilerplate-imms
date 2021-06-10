@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Carbon\Carbon;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -183,7 +184,7 @@ class Factura
     public function setZipFile($zipFile = null)
     {
         $this->zipFile = $zipFile;
-
+        $this->setFechaFacturacion(Carbon::now());
     }
 
     /**
@@ -215,7 +216,7 @@ class Factura
     }
 
     /**
-     * @return Colecction
+     * @return Collecction
      */
     public function getPagos()
     {
@@ -224,11 +225,14 @@ class Factura
 
     /**
      * @param Pago $pago
-     * @return Solicitud
+     * @return Factura
      */
     public function addPago(Pago $pago)
     {
-      $this->pagos[] = $pago;
+      if(!$this->pagos->contains($pago)) {
+        $this->pagos[] = $pago;
+        $pago->setFactura($this);
+      }
 
       return $this;
     }
