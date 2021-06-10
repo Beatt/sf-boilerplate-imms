@@ -10,12 +10,15 @@ use AppBundle\Entity\Usuario;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Snappy\Pdf;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Environment;
 
 class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
 {
     const PDF_NAME = 'fofoe.pdf';
+
 
     private $pdf;
 
@@ -42,6 +45,7 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
         $came = $this->getCAMEorJDES($campoClinico);
         $file = "$path/{$campoClinico->getSolicitud()->getNoSolicitud()}/cc_{$campoClinico->getId()}/".$this->getFileName($campoClinico);
         if (!file_exists($file) || $overwrite) {
+          try{
             $this->pdf->generateFromHtml(
                 $this->templating->render(
                     'formatos/fofoe.html.twig',
@@ -54,7 +58,6 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
                 ['page-size' => 'Letter','encoding' => 'utf-8'],
                 $overwrite
             );
-            try{
                 $user = $this->tokenStorage->getToken()->getUser();
                 $permiso_came = $this->entityManager->getRepository(Permiso::class)->findOneBy(['clave' => 'CAME']);
                 if($user && !$user->getPermisos()->contains($permiso_came)){
@@ -92,4 +95,5 @@ class GeneradorFormatoFofoe implements GeneradorFormatoFofoeInterface
                                       ->getSolicitud()
                                       ->getDelegacion()->getId());
     }
+
 }
