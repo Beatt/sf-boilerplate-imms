@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class FacturaController extends Controller
 {
     /**
-     * @Route("/factura/{factura_id}/download", methods={"GET"}, name="factura.download")
+     * @Route("/factura/{factura_id}/download", methods={"GET"}, name="came.factura.download")
      * @param $factura_id
      * @return mixed
      */
@@ -25,6 +25,13 @@ class FacturaController extends Controller
                 'Not found for id ' . $factura_id
             );
         }
+
+        if (!$this->isGranted('ROLE_CAME') &&
+          !$this->isGranted('ROLE_JDES'))
+        {
+          throw $this->createAccessDeniedException();
+        }
+
         $downloadHandler = $this->get('vich_uploader.download_handler');
         return $downloadHandler->downloadObject($factura, 'zipFile');
     }
