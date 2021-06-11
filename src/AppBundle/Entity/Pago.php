@@ -98,7 +98,7 @@ class Pago implements ComprobantePagoInterface
 
     /**
      * @var Factura
-     *
+     * @Assert\Valid
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Factura", inversedBy="pagos", cascade={"persist"})
      * @ORM\JoinColumn(name="factura_id", referencedColumnName="id")
      */

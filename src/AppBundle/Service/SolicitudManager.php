@@ -5,6 +5,7 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Calculator\CampoClinicoCalculatorInterface;
+use AppBundle\Entity\DescuentoMonto;
 use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Permiso;
 use AppBundle\Entity\Solicitud;
@@ -304,17 +305,22 @@ class SolicitudManager implements SolicitudManagerInterface
     private function registrarDescuentos($monto, $originalDescuentos) {
         $this->entityManager->persist($monto);
         $descuentosRemover = $monto->getId() ? $originalDescuentos[$monto->getId()] : [];
-        foreach ($monto->getDescuentos() as $descuento) {
+        /** @var DescuentoMonto $descuento */
+      foreach ($monto->getDescuentos() as $descuento) {
             if (!$descuento->getDescuentoInscripcion()) {
                 $descuento->setDescuentoInscripcion(0);
             }
             if (!$descuento->getDescuentoColegiatura()) {
                 $descuento->setDescuentoColegiatura(0);
             }
-            if (($descuento->getDescuentoInscripcion() + $descuento->getDescuentoColegiatura()) > 0) {
+            if (!$descuento->getNumAlumnos()) {
+              $descuento->setNumAlumnos(0);
+            }
+            if ( ($descuento->getDescuentoInscripcion() + $descuento->getDescuentoColegiatura()) > 0
+              && ($descuento->getNumAlumnos() > 0)
+               ) {
                 $descuento->setMontoCarrera($monto);
                 $this->entityManager->persist($descuento);
-                //$this->entityManager->flush();
                 unset($descuentosRemover[$descuento->getId()]);
             }
         }

@@ -20,14 +20,12 @@ const Registrar = (
   const [executing, setExecuting] = React.useState(false);
   const [descValidos, setDescValidos] = React.useState(true);
 
-  console.log(errors);
-
   let acceso = false;
   let editar = false;
 
   const handleCurrency = (e) => {
     let valPrev = e.value.toString().replace(",", "");
-    if( valPrev != '' && !isNaN(valPrev)){
+    if( valPrev !== '' && !isNaN(valPrev)){
       valPrev= parseFloat(valPrev).toFixed(2);
       e.value = valPrev.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }else{
@@ -58,7 +56,7 @@ const Registrar = (
 
 
   if (autorizados[0].autorizados !== 0) acceso = true;
-  if (route == "ie#corregir_montos") editar = true;
+  if (route === "ie#corregir_montos") editar = true;
   return (
     <>
       {
@@ -236,7 +234,7 @@ const Registrar = (
                 <div className="col-md-2">
                   <button
                     type="submit"
-                    className={`btn btn-success btn-block ${descValidos ? ' ' : 'dsabled'}`}
+                    className={`btn btn-success btn-block ${descValidos ? ' ' : 'disabled'}`}
                     disabled={executing || !descValidos}
                   >
                     Guardar

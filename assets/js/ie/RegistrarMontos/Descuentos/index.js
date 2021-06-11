@@ -35,7 +35,8 @@ const RegistrarDescuentos = (props) => {
   };
 
   // handle click event of the Add button
-  const handleAddClick = () => {
+  const handleAddClick = (e) => {
+    e.preventDefault();
     setInputList([...inputList,
       { numAlumnos: "",
         descuentoInscripcion: "",
@@ -68,6 +69,7 @@ const RegistrarDescuentos = (props) => {
                 className={'form-control mr-10'}
                 name={`${prefixName}[numAlumnos]`}
                 type="number"
+                required
                 min={1}
                 step={1}
                 placeholder="# de Alumnos Becados"
@@ -86,6 +88,7 @@ const RegistrarDescuentos = (props) => {
                   className='form-control'
                   name={`${prefixName}[descuentoInscripcion]`}
                   type="number"
+                  required
                   min={0}
                   step={0.1}
                   max={100}
@@ -106,6 +109,7 @@ const RegistrarDescuentos = (props) => {
                   className='form-control '
                   name={`${prefixName}[descuentoColegiatura]`}
                   type="number"
+                  required
                   min={0}
                   step={0.1}
                   max={100}
