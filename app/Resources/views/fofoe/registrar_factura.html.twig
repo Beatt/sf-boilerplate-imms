@@ -10,7 +10,7 @@
     <div class="section-md">
         <div class='container-fluid'>
             <div class='container'>
-                <h1 class="text-bold text-center">Registrar factura(s) de la solicitud</h1>
+                <h1 class="text-bold text-center">Registrar - factura(s) de la solicitud</h1>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="registrar-factura-component"></div>
@@ -28,6 +28,7 @@
       window.INSTITUCION_PROP = {{ institucion |json_encode|raw }}
       window.SOLICITUD_PROP = {{ solicitud|json_encode|raw }}
       window.PAGOS_PROP = {{ pagos|json_encode|raw }}
+      window.ERRORS_PROPS = {{ errors|json_encode|raw }}
     </script>
     <script src="{{ asset('build/fofoe.registrar.factura.js') }}"></script>
 {% endblock %}

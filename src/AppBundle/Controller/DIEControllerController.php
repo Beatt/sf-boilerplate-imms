@@ -15,12 +15,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class DIEControllerController extends Controller
 {
-    protected function getFormErrors(FormInterface $form)
+    protected function getFormErrors(FormInterface $form, $deep = false)
     {
         $errors = array();
 
         // Global
-        foreach ($form->getErrors() as $error) {
+        foreach ($form->getErrors($deep) as $error) {
             $errors[$form->getName()][] = $error->getMessage();
         }
 

@@ -9,20 +9,14 @@ use AppBundle\Entity\Factura;
 use AppBundle\Entity\Pago;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\SolicitudInterface;
-use AppBundle\Form\Type\ComprobantePagoType\SolicitudFacturaType as ComprobantePagoTypeSolicitudFacturaType;
 use AppBundle\Form\Type\FacturaType\PagoFacturaType;
-use AppBundle\Form\Type\FacturaType\SolicitudFacturaType;
-use AppBundle\Form\Type\PagoType;
-use AppBundle\Repository\EstatusCampoRepository;
 use AppBundle\Repository\EstatusCampoRepositoryInterface;
-use ClassesWithParents\F;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @Route("/fofoe")
@@ -115,10 +109,16 @@ class PagoFacturaController extends DIEControllerController
             return $this->redirectToRoute('fofoe/inicio');
         }
 
+        if ($this->getFormErrors($form, true)) {
+          $this->addFlash('danger', 'Ocurrió un error al procesar el registro. 
+          Verifique los datos e intente de nuevo');
+        }
+
         return $this->render('fofoe/registrar_factura.html.twig', [
             'institucion' => $this->getNormalizeInstitucion($institucion),
             'solicitud' => $this->getNormalizeSolicitud($solicitud),
-            'pagos' => $this->getNormalizePago($pagos)
+            'pagos' => $this->getNormalizePago($pagos),
+            'errors' => $this->getFormErrors($form, true)
         ]);
     }
 
@@ -190,6 +190,7 @@ class PagoFacturaController extends DIEControllerController
                     'validado',
                     'referenciaBancaria',
                     'factura' => [
+                        'id',
                         'fechaFacturacion',
                         'folio',
                         'zip',

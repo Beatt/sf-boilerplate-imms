@@ -8,7 +8,8 @@ const Registrar = (
   {
     institucion,
     solicitud,
-    pagos
+    pagos,
+    errors
   }) => {
 
 
@@ -17,7 +18,7 @@ const Registrar = (
   let factura = false;
 
   pagos.forEach(element => {
-    if(element.facturaGenerada != true)
+    if(element.facturaGenerada !== true || !element.factura.id)
       monto += parseFloat(element.monto);
 
     if(element.factura)
@@ -131,7 +132,7 @@ const Registrar = (
                 {
                   pagos.map((item, index) =>
                     //(item.facturaGenerada != true && item.validado == true) ?
-                    (item.facturaGenerada != true) ?
+                    (item.facturaGenerada !== true || !item.factura.id ) ?
                       <tr key={index}>
                         <td>
                           <input
@@ -161,9 +162,11 @@ const Registrar = (
               <p className="mb-10">Subir factura</p>
               <input
                 type="file"
+                accept=".zip"
                 name={`pago_factura[factura][zipFile]`}
                 required={true}
               />
+              <span className="text-danger ">{errors.pago_factura ? errors.pago_factura[0] : ''}</span>
             </div>
           </div>
         </div>
@@ -175,6 +178,7 @@ const Registrar = (
                 <input
                   className='form-control'
                   type="text"
+                  required
                   name={`pago_factura[factura][folio]`}
                 />
             </div>
@@ -189,7 +193,6 @@ const Registrar = (
                 required={true}
                 name={`pago_factura[factura][fechaFacturacion]`}
                 />
-                
             </div>
           </div>
         </div>
@@ -212,10 +215,10 @@ const Registrar = (
                   factura ? 
 
                     pagos.map((item, index) =>
-                    (item.factura) ?
+                    (item.factura) && (item.factura.id > 0) ?
                         <tr key={index}>
-                          <td>{dateFormat(item.factura.fechaFacturacion)}</td>
-                          <td>{item.factura.monto}</td>
+                          <td> {dateFormat(item.factura.fechaFacturacion)}</td>
+                          <td> {item.factura.monto}</td>
                           <td>{item.comprobantePago && <a href={`${getSchemeAndHttpHost()}/fofoe/pagos/${item.id}/descargar-comprobante-de-pago`} download>{item.comprobantePago}</a>}</td>
                           <td>{item.factura.zip && <a href={item.factura.zip} download>{item.factura.zip}</a>}</td>
                           <td>{item.factura.folio}</td>
@@ -254,6 +257,7 @@ ReactDOM.render(
     institucion={window.INSTITUCION_PROP}
     solicitud={window.SOLICITUD_PROP}
     pagos={window.PAGOS_PROP}
+    errors={window.ERRORS_PROPS}
   />,
   document.getElementById('registrar-factura-component')
 );

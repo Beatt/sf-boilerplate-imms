@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -52,6 +53,11 @@ class Factura
 
     /**
      * @Vich\UploadableField(mapping="facturas", fileNameProperty="zip")
+     * @Assert\File(
+     *  maxSize="2M",
+     *  mimeTypes = {"application/zip"},
+     *  mimeTypesMessage = "Solo se admiten archivos ZIP"
+     * )
      * @var File
      */
     private $zipFile;
