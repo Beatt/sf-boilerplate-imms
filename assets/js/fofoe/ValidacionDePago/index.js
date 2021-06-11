@@ -182,7 +182,7 @@ const ValidacionDePago = ({ pago }) => {
               htmlFor="validacion_pago_monto"
               className='control-label col-md-4'
             >
-              Monto del comprobante de nuevo pago:<br/>
+              Monto del comprobante a registrar:<br/>
               <span className='text-danger text-sm'>NOTA: El monto debe coincidir con el comprobante registrado</span>
             </label>
             <div className="col-md-3">

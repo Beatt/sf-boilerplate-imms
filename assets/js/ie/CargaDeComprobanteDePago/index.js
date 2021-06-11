@@ -45,7 +45,7 @@ const CargaDeComprobanteDePago = (
   function handleCargarComprobanteDePago(event) {
     event.preventDefault();
 
-    if(parseInt(monto) >= parseInt(gestionPago.montoTotalPorPagar)) {
+    if(parseFloat(monto) >= parseFloat(gestionPago.montoTotalPorPagar)) {
       setMontoError(false);
       event.target.submit()
       return;
