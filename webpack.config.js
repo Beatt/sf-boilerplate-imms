@@ -1,14 +1,17 @@
 var Encore = require('@symfony/webpack-encore');
 const SUBFOLDER_NAME = 'fofoe';
 
-if(Encore.isProduction()) {
+/*if(Encore.isProduction()) {
   Encore
     .setPublicPath(`/${SUBFOLDER_NAME}/build`)
     .setManifestKeyPrefix('build')
 } else {
   Encore
     .setPublicPath('/build')
-}
+}*/
+
+Encore
+  .setPublicPath('/build')
 
 Encore
     // directory where compiled assets will be stored
