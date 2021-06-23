@@ -22,6 +22,7 @@ security:
 
         main:
             anonymous: ~
+            user_checker: app.user_checker
             form_login:
                 login_path: login
                 check_path: login
@@ -45,6 +46,7 @@ security:
         - { path: '^/pregrado/reporte', roles: [ROLE_SUPER, ROLE_REPORTE_CCS_DET] }
         - { path: '^/enfermeria/reporte_ciclos', roles: [ROLE_SUPER, ROLE_REPORTE_CCS_ENF] }
         - { path: '^/login',  roles: [IS_AUTHENTICATED_ANONYMOUSLY] }
+        - { path: '^/generarCaptcha',  roles: [IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: '^/', roles: [IS_AUTHENTICATED_FULLY] }
         - { path: '^/formatos', roles: [IS_AUTHENTICATED_FULLY] }
         - { path: '^/factura', roles: [IS_AUTHENTICATED_FULLY] }
