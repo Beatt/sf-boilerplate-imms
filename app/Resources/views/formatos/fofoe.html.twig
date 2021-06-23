@@ -20,7 +20,7 @@
     </div>
 
     <div>
-        <p>DELEGACIÓN IMSS : {{ campo_clinico.convenio.delegacion.nombre |upper }}</p>
+        <p>DELEGACIÓN IMSS : {{ campo_clinico.unidad.delegacion.nombre | upper }}</p>
         <p>SEDE: {{ campo_clinico.unidad.nombre | upper }}</p>
         <p>ESCUELA O FACULTAD: {{ campo_clinico.convenio.institucion.nombre | upper }}</p>
         <p>NOMBRE DE LA CARRERA: {{ campo_clinico.convenio.carrera.nombre | upper }}</p>
@@ -99,13 +99,13 @@
         <div>
             <p>ELABORÓ</p>
             <p> {{ came.fullname | upper }}</p>
-            <p> {{ campo_clinico.convenio.delegacion.nombre | upper }}</p>
+            <p> {{ campo_clinico.unidad.delegacion.nombre | upper }}</p>
             <hr>
         </div>
         <div>
             <p>ACEPTÓ</p>
             <p> {{ campo_clinico.convenio.institucion.representante | upper }}</p>
-            <p>REPRESENTANTE LEGAL</p>
+            <p>REPRESENTANTE</p>
             <hr>
         </div>
     </div>
