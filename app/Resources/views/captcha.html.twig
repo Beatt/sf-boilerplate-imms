@@ -1,0 +1,12 @@
+<div class="captcha-container">
+    <div class="form-group">
+        <label for="_captcha">Introduce el código aquí</label>
+        <input type="text" name="captcha" id="_captcha" class="form-control">
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <img src="{{ captcha }}" alt="Captcha" class="img-responsive" style="display: inline-block">
+            <a href="{{ path('login') }}">¡Generar nuevo código!</a>
+        </div>
+    </div>
+</div>

@@ -169,3 +169,6 @@ services:
         tags: [ twig.extension ]
         calls:
             - [ setContainer, [ '@service_container' ] ]
+
+    app.user_checker:
+        class: AppBundle\Security\UserCaptchaChecker
