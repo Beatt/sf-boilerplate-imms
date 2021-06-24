@@ -3,6 +3,7 @@
 namespace AppBundle\Controller\IE;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Factura;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
@@ -109,6 +110,53 @@ final class DocumentController extends DIEControllerController
         $this->denyAccessUnlessGranted(SolicitudVoter::DESCARGAR_FORMATOS_FOFOE, $solicitud);
 
         return $generadorFormatosFofoeZIP->generarZipResponse($solicitud);
+    }
+
+    /**
+     * @Route("/formato/referencia_pago/{referencia}/show", methods={"GET"}, name="ie.refencia_pago.show")
+     * @param $referencia
+     */
+    public function showFormatoFofoeAction($referencia)
+    {
+      /** @var Institucion $institucion */
+      $institucion = $this->getUser()->getInstitucion();
+      if(!$institucion) $this->createNotFindUserRelationWithInstitucionException();
+
+      /** @var Solicitud $solicitud */
+      $solicitud = $this->getDoctrine()
+        ->getRepository(Solicitud::class)
+        ->findOneBy(['referenciaBancaria' => $referencia]);
+      $campos = [];
+      if ($solicitud) {
+        $campos = $solicitud->getCamposClinicos();
+      } else {
+        /** @var CampoClinico $campo */
+        $campo = $this->getDoctrine()
+          ->getRepository(CampoClinico::class)
+          ->findBy(['referenciaBancaria' => $referencia]);
+        $solicitud = $campo->getSolicitud();
+        $campos = [$campo];
+
+      }
+
+      if (!$solicitud) {
+        throw $this->createNotFoundException(
+          'Not found for reference ' . $referencia
+        );
+      }
+      if($institucion->getId() != $solicitud->getInstitucion()->getId()) throw $this->createAccessDeniedException();
+
+      $institucion = $solicitud->getInstitucion();
+      $esPagoUnico = $solicitud->getTipoPago() == Solicitud::TIPO_PAGO_UNICO;
+
+      return  $this->render(
+        'ie/formato/solicitud/referencia_pago.html.twig',
+        ['institucion' => $institucion,
+          'solicitud' => $solicitud,
+          'campos' => $campos,
+          'esPagoUnico' => $esPagoUnico,
+          'referencia' => $referencia]
+      );
     }
 
     private function pdfResponse($fileName, $contentDisposition = 'attachment')
