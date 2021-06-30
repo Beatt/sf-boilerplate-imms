@@ -3,25 +3,33 @@ import Loader from "../../components/Loader/Loader";
 import {getSchemeAndHttpHost} from "../../utils";
 import RegistrarDescuentos from "../../ie/RegistrarMontos/Descuentos";
 import {Fragment} from "react";
+import './styles/tables.scss';
 
 const SolicitudValidaMontos = (props) => {
 
     const [isLoading, setIsLoading] = React.useState(false);
     const [validos, setValidos] = React.useState(false);
-    const [observaciones, setObservaciones] = React.useState('');
-    const [montos, setMontos] = React.useState(props.solicitud.montosCarreras);
+    const [camposClinicos, setCamposClinicos] = React.useState(props.solicitud.camposClinicos);
     const [alert, setAlert] = React.useState({});
     const [errores, setErrores] = React.useState({});
     const [descValidos, setDescValidos] = React.useState(true);
+    const [descValidosCC, setDescValidosCC] = React.useState(
+      props.solicitud.camposClinicos.reduce((acc, elem) => { acc.push({id: elem.id, validate: true}); return acc; },
+        [])
+    );
 
     const callbackIsLoading = (value) => {
         setIsLoading(value);
     }
 
-    const callbackDescuentos = (i, value, validate) => {
-        montos[i].descuentos = value;
-        setMontos(Object.assign([], montos));
-        setDescValidos(validate);
+    const callbackDescuentos = (i, value, idCampo, val) => {
+      const indexCC = descValidosCC.findIndex(item => {return item.id === idCampo});
+      descValidosCC[indexCC] = {id: idCampo, validate: val};
+      setDescValidosCC(descValidosCC);
+      setDescValidos(descValidosCC.reduce((acc, elem) => {return acc && elem.validate}, true));
+
+      camposClinicos[i].montoCarrera.descuentos = value;
+      setCamposClinicos(Object.assign([], camposClinicos));
     }
 
     const handleSolicitudValidaMontos = (event) => {
@@ -29,26 +37,29 @@ const SolicitudValidaMontos = (props) => {
         if(!descValidos) return;
         setIsLoading(true);
         let data = new FormData();
-        data.append('solicitud[observaciones]', observaciones);
-        montos.map((monto, i) => {
-           data.append(`solicitud[montos_pagos][${i}][montoInscripcion]`, monto.montoInscripcion);
-           data.append(`solicitud[montos_pagos][${i}][montoColegiatura]`, monto.montoColegiatura);
+        console.log(camposClinicos);
+        camposClinicos.map((campo, i) => {
+           data.append(`solicitud[campo_${campo.id}][observaciones]`, campo.new_observaciones ? campo.new_observaciones : '' );
+           data.append(`solicitud[campo_${campo.id}][montoCarrera][montoInscripcion]`, campo.montoCarrera.montoInscripcion);
+           data.append(`solicitud[campo_${campo.id}][montoCarrera][montoColegiatura]`, campo.montoCarrera.montoColegiatura);
 
-           monto.descuentos.map((desc, iDesc) => {
-                 data.append(`solicitud[montos_pagos][${i}][descuentos][${iDesc}][numAlumnos]`, desc.numAlumnos);
-                 data.append(`solicitud[montos_pagos][${i}][descuentos][${iDesc}][descuentoInscripcion]`, desc.descuentoInscripcion);
-                 data.append(`solicitud[montos_pagos][${i}][descuentos][${iDesc}][descuentoColegiatura]`, desc.descuentoColegiatura);
+            campo.montoCarrera.descuentos.map((desc, iDesc) => {
+                 data.append(`solicitud[campo_${campo.id}][montoCarrera][descuentos][${iDesc}][numAlumnos]`, desc.numAlumnos);
+                 data.append(`solicitud[campo_${campo.id}][montoCarrera][descuentos][${iDesc}][descuentoInscripcion]`, desc.descuentoInscripcion);
+                 data.append(`solicitud[campo_${campo.id}][montoCarrera][descuentos][${iDesc}][descuentoColegiatura]`, desc.descuentoColegiatura);
            });
         });
 
         if(validos.toString() === (1).toString()){
             data.append('solicitud[validado]', validos);
         }
+        console.log(`${getSchemeAndHttpHost()}/came/api/solicitud/validar_montos/${props.solicitud.id}`);
 
         fetch(`${getSchemeAndHttpHost()}/came/api/solicitud/validar_montos/${props.solicitud.id}` , {
             method: 'post',
             body: data
         }).then(response => {
+          console.log(response);
             return response.json()
         }, error => {console.error(error)
         }).then(json => {
@@ -105,28 +116,35 @@ const SolicitudValidaMontos = (props) => {
                     <table className="table">
                         <thead>
                         <tr>
-                            <th>Nivel</th>
                             <th>Carrera</th>
+                            <th>Período</th>
+                            <th>Sede</th>
                             <th>Inscripción</th>
                             <th>Colegiatura</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {montos.map((monto, i) =>{
+                        {camposClinicos.map((campo, i) =>{
                             return (
-                              <Fragment key={monto.id}>
-                                <tr key={monto.id}>
-                                    <td>{monto.carrera.nivelAcademico.nombre}</td>
-                                    <td>{monto.carrera.nombre}</td>
+                              <Fragment key={campo.montoCarrera.id}>
+                                <tr key={campo.montoCarrera.id}>
+                                    <td>{campo.montoCarrera.carrera.nivelAcademico.nombre} - {campo.montoCarrera.carrera.nombre}</td>
+                                    <td>
+                                        <div>{campo.displayFechaInicial}-{campo.displayFechaFinal}
+                                            <br />
+                                            {campo.lugaresAutorizados} lugares autorizados
+                                        </div>
+                                    </td>
+                                    <td>{campo.unidad.nombre}</td>
                                     <td>
                                         <div className="input-group col-md-8">
                                             <span className="input-group-addon">$</span>
                                             <input className="form-control"
-                                                   type="number" value={montos[i].montoInscripcion}
+                                                   type="number" value={camposClinicos[i].montoCarrera.montoInscripcion}
                                                    min={0}
                                                    step="0.01"
                                                    required={true}
-                                                   onChange={e => {montos[i].montoInscripcion = e.target.value; setMontos(Object.assign([], montos))}}
+                                                   onChange={e => { camposClinicos[i].montoCarrera.montoInscripcion = e.target.value; setCamposClinicos(Object.assign([], camposClinicos))}}
                                                    />
                                         </div>
                                     </td>
@@ -134,26 +152,51 @@ const SolicitudValidaMontos = (props) => {
                                         <div className="input-group col-md-8">
                                             <span className="input-group-addon">$</span>
                                             <input className="form-control"
-                                                   type="number" value={montos[i].montoColegiatura}
+                                                   type="number" value={camposClinicos[i].montoCarrera.montoColegiatura}
                                                    min={0}
                                                    step="0.01"
                                                    required={true}
-                                                   onChange={e => {montos[i].montoColegiatura = e.target.value; setMontos(Object.assign([], montos))}}
+                                                   onChange={e => {camposClinicos[i].montoCarrera.montoColegiatura = e.target.value; setCamposClinicos(Object.assign([], camposClinicos))}}
                                         />
                                         </div>
                                     </td>
                                 </tr>
+                                { campo.observaciones ?
                                 <tr className={'desc'}>
+                                  <td colSpan={5}>
+                                    Revisión anterior:
+                                    <p className='background' > {campo.observaciones} </p>
+                                  </td>
+                                </tr> :
+                                  null
+                                }
+                                <tr className={'without-border-top'}>
                                     <td colSpan={5}>
                                         <RegistrarDescuentos
                                           prefixName={`solicitud_validacion_montos[montosCarreras][${i}][descuentos]`}
-                                          carrera={monto.carrera}
+                                          campo={campo}
+                                          carrera={campo.montoCarrera.carrera}
                                           campos={props.solicitud.camposClinicos}
-                                          descuentos={monto.descuentos}
+                                          descuentos={campo.montoCarrera.descuentos}
                                           onChange={callbackDescuentos}
                                           indexMonto={i}
                                         />
                                     </td>
+                                </tr>
+                                <tr className={'without-border-top'}>
+                                  <td colSpan={5}>
+                                    <div className="col-md-10">
+                                      <div className={`form-group ${errores.observaciones ? 'has-error has-feedback' : ''}`}>
+                                        <label htmlFor="observaciones_solicitud">Observaciones</label>
+                                        <textarea
+                                                  className={'form-control'}
+                                                  placeholder={'Observaciones'}
+                                                  onChange={e => { camposClinicos[i].new_observaciones = e.target.value; setCamposClinicos(Object.assign([], camposClinicos))}}
+                                        />
+                                        <span className="help-block">{errores.observaciones ? errores.observaciones[0] : ''}</span>
+                                      </div>
+                                    </div>
+                                  </td>
                                 </tr>
                                 </Fragment>
                             )
@@ -172,16 +215,6 @@ const SolicitudValidaMontos = (props) => {
                             <option value={0}>No</option>
                         </select>
                         <span className="help-block">{errores.validado ? errores.validado[0] : ''}</span>
-                    </div>
-                </div>
-                <div className="col-md-12">
-                    <div className={`form-group ${errores.observaciones ? 'has-error has-feedback' : ''}`}>
-                        <label htmlFor="observaciones_solicitud">Observaciones</label>
-                        <textarea className={'form-control'}
-                                  placeholder={'Observaciones'}
-                                  onChange={e => setObservaciones(e.target.value)}
-                        />
-                        <span className="help-block">{errores.observaciones ? errores.observaciones[0] : ''}</span>
                     </div>
                 </div>
                 <div className="col-md-8"/>

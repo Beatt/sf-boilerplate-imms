@@ -82,6 +82,16 @@ class CampoClinico implements ReferenciaBancariaInterface
     private $solicitud;
 
     /**
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="campoClinico", cascade="persist")
+     */
+    private $montoCarrera;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $observaciones;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\EstatusCampo", cascade={"persist"})
      * @ORM\JoinColumn(name="estatus_campo_id", referencedColumnName="id")
      */
@@ -542,5 +552,37 @@ class CampoClinico implements ReferenciaBancariaInterface
           ->getNombre()
         : '';
     }
+
+  /**
+   * @return mixed
+   */
+  public function getMontoCarrera()
+  {
+    return $this->montoCarrera;
+  }
+
+  /**
+   * @param mixed $montoCarrera
+   */
+  public function setMontoCarrera($montoCarrera)
+  {
+    $this->montoCarrera = $montoCarrera;
+  }
+
+  /**
+   * @return mixed
+   */
+  public function getObservaciones()
+  {
+    return $this->observaciones;
+  }
+
+  /**
+   * @param mixed $observaciones
+   */
+  public function setObservaciones($observaciones)
+  {
+    $this->observaciones = $observaciones;
+  }
 
 }

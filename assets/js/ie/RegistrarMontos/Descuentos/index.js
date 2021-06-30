@@ -13,16 +13,11 @@ const RegistrarDescuentos = (props) => {
       : []);
   const [errorDesc, setErrorDesc] = React.useState(false);
 
-  const maxLugaresAutorizados = props.campos ? props.campos.reduce(
-    (acc, elem) => {
-      if (elem.carrera.id === props.carrera.id) {
-        acc = Math.max(acc, elem.lugaresAutorizados);
-      }
-      return acc;
-    }, 0 ) : 0;
+  const maxLugaresAutorizados = props.campo.lugaresAutorizados;
 
-  const validate = () => {
-    const totalAlumDesc = inputList.reduce((acc, elem) => {return acc + parseInt(elem.numAlumnos) }, 0);
+  const validate = (list) => {
+    const totalAlumDesc = list.reduce((acc, elem) =>
+        {return acc + (elem.numAlumnos ? parseInt(elem.numAlumnos) : 0) }, 0);
     setErrorDesc(totalAlumDesc > maxLugaresAutorizados);
     return totalAlumDesc <= maxLugaresAutorizados;
   }
@@ -32,6 +27,7 @@ const RegistrarDescuentos = (props) => {
     const list = [...inputList];
     list.splice(index, 1);
     setInputList(list);
+    props.onChange(props.indexMonto, list, props.campo.id, validate(list));
   };
 
   // handle click event of the Add button
@@ -44,12 +40,13 @@ const RegistrarDescuentos = (props) => {
   };
 
   const handleInputChange = (e, index, name) => {
+    e.preventDefault();
     const { nameF, value } = e.target;
     const list = [...inputList];
     list[index][name] = value;
     setInputList(list);
     if (props.indexMonto >= 0) {
-      props.onChange(props.indexMonto, list, validate());
+      props.onChange(props.indexMonto, list, props.campo.id, validate(list));
     }
   };
 
@@ -124,12 +121,12 @@ const RegistrarDescuentos = (props) => {
                 {inputList.length !== 0 &&
                 <button
                   className="btn btn-link"
-                  onClick={() => handleRemoveClick(i)}
+                  onClick={(e) => {e.preventDefault(); handleRemoveClick(i)}}
                 >Eliminar</button>}
               </div>
             </div>
             { errorDesc ?
-              <div className='col-md-12'>
+              <div className='col-md-10'>
               <span className="help-block">El número total de alumnos con descuento
               no puede ser mayor que el máximo de lugares autorizados ({maxLugaresAutorizados}) para esta carrera</span>
               </div>
@@ -141,6 +138,7 @@ const RegistrarDescuentos = (props) => {
       <button
         onClick={handleAddClick}
         className={'btn btn-light'}
+        disabled={errorDesc}
       >Agregar descuento</button>
     </div>
   );

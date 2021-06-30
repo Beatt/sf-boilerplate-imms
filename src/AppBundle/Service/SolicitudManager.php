@@ -5,6 +5,7 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Calculator\CampoClinicoCalculatorInterface;
+use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\DescuentoMonto;
 use AppBundle\Entity\MontoCarrera;
 use AppBundle\Entity\Permiso;
@@ -149,8 +150,12 @@ class SolicitudManager implements SolicitudManagerInterface
     }
 
     public function registrarMontos(Solicitud $solicitud, $originalDescuentos=[])  {
-      foreach ($solicitud->getMontosCarreras() as $monto) {
+      /** @var CampoClinico $cc */
+      foreach ($solicitud->getCamposClinicos() as $cc) {
+          $monto = $cc->getMontoCarrera();
           $this->registrarDescuentos($monto, $originalDescuentos);
+          /** @var MontoCarrera $monto */
+          $monto->setCampoClinico($cc);
       }
       $solicitud->setEstatus(SolicitudInterface::EN_VALIDACION_DE_MONTOS_CAME);
       $this->entityManager->persist($solicitud);
@@ -165,15 +170,18 @@ class SolicitudManager implements SolicitudManagerInterface
     public function validarMontos(Solicitud $solicitud, $montos = [], $is_valid = false, Usuario $came_usuario = null, $originalDescuentos=[])
     {
         $solicitud->setValidado($is_valid);
+        $this->actualizarDatosMontosValidados($solicitud, $montos);
         try {
+          foreach ($solicitud->getCamposClinicos() as $campo) {
+            /** @var CampoClinico $campo */
+            $monto=$campo->getMontoCarrera();
+            if (!is_null($monto->getMontoInscripcion()) && !is_null($monto->getMontoColegiatura())) {
+              $this->registrarDescuentos($monto, $originalDescuentos);
+            } else {
+              throw new \Exception("Montos no puede estar vacío");
+            }
+          }
             if ($is_valid) {
-                foreach ($montos as $monto) {
-                    if (!is_null($monto->getMontoInscripcion()) && !is_null($monto->getMontoColegiatura())) {
-                        $this->registrarDescuentos($monto, $originalDescuentos);
-                    } else {
-                        throw new \Exception("Montos no puede estar vacío");
-                    }
-                }
                 $solicitud->setEstatus(Solicitud::MONTOS_VALIDADOS_CAME);
                 $this->processMontos($solicitud);
             }else {
@@ -304,14 +312,22 @@ class SolicitudManager implements SolicitudManagerInterface
 
     private function registrarDescuentos($monto, $originalDescuentos) {
         $this->entityManager->persist($monto);
-        $descuentosRemover = $monto->getId() ? $originalDescuentos[$monto->getId()] : [];
+        $descuentosRemover = $monto->getId()
+          && array_key_exists($monto->getId(), $originalDescuentos)
+          ? $originalDescuentos[$monto->getId()] : [];
         /** @var DescuentoMonto $descuento */
       foreach ($monto->getDescuentos() as $descuento) {
             if (!$descuento->getDescuentoInscripcion()) {
                 $descuento->setDescuentoInscripcion(0);
             }
+            if ($descuento->getDescuentoInscripcion() > 100) {
+              $descuento->setDescuentoInscripcion(100);
+            }
             if (!$descuento->getDescuentoColegiatura()) {
                 $descuento->setDescuentoColegiatura(0);
+            }
+            if ($descuento->getDescuentoColegiatura() > 100) {
+              $descuento->setDescuentoColegiatura(100);
             }
             if (!$descuento->getNumAlumnos()) {
               $descuento->setNumAlumnos(0);
@@ -328,5 +344,21 @@ class SolicitudManager implements SolicitudManagerInterface
             $this->entityManager->remove($descuento);
         }
         $this->entityManager->flush();
+    }
+
+  /**
+   * @param Solicitud $solicitud
+   * @param $montos
+   */
+    private function actualizarDatosMontosValidados($solicitud, $montos) {
+
+      /** @var CampoClinico $campo */
+      foreach ($solicitud->getCamposClinicos() as $campo) {
+        /** @var MontoCarrera $monto */
+        $monto = $campo->getMontoCarrera();
+        if (! array_key_exists($campo->getId(), $montos)) {
+          throw new \Exception("Se debe registrar montos para todos los campos clínicos");
+        }
+      }
     }
 }

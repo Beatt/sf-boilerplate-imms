@@ -16,9 +16,6 @@ class SolicitudValidacionMontosType extends AbstractType
         $builder
             ->add('montosCarreras', CollectionType::class, [
                 'entry_type' => MontoCarreraValidacionMontosType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
             ])
             ->add('urlArchivoFile', FileType::class)
             ->add('confirmacionOficioAdjunto')

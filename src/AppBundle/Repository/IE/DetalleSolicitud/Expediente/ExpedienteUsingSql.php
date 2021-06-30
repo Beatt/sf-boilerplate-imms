@@ -54,10 +54,17 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                    carrera.nombre AS nombre_carrera,
                    monto_inscripcion,
                    monto_colegiatura,
+                   campo_clinico.fecha_inicial,
+                   campo_clinico.fecha_final,
+                   unidad.nombre AS nombre_unidad,
                    monto_carrera.id as monto_carrera_id
             FROM solicitud
+            JOIN campo_clinico
+              ON solicitud.id = campo_clinico.solicitud_id
+            JOIN unidad
+              ON campo_clinico.unidad_id = unidad.id
             JOIN monto_carrera
-              ON solicitud.id = monto_carrera.solicitud_id
+              ON campo_clinico.id = monto_carrera.campo_clinico_id
             JOIN carrera
               ON monto_carrera.carrera_id = carrera.id
             JOIN nivel_academico
@@ -82,16 +89,19 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
     {
         $items = array_map(function (array $record) {
             return sprintf(
-                "%s %s: Inscripción $%s, Colegiatura: $%s\n%s",
+                "%s %s: Inscripción $%s, Colegiatura: $%s\n%s, %s \nDescuentos: \n%s",
                 $record['nombre_nivel_academico'],
                 $record['nombre_carrera'],
                 $record['monto_inscripcion'],
                 $record['monto_colegiatura'],
+                date_format( date_create($record['fecha_inicial']), 'd/m/Y')
+                .'-'.date_format( date_create($record['fecha_final']), 'd/m/Y'),
+                $record['nombre_unidad'],
                 $this->getDescuentos($record['monto_carrera_id'])
             );
         }, $montosCarreraRecord);
 
-        return implode('. ', $items);
+        return implode("\n --------- \n", $items);
     }
 
     private function getDescuentos($monto_carrera_id) {
@@ -112,14 +122,14 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
             $descCol = $record['descuento_colegiatura'];
             $descCol = is_numeric($descCol) && $descCol != '0' ? (float)$descCol : 0;
             return sprintf(
-                " %s alumno(s) con descuento de %s \n",
+                " %s alumno(s) con descuento de %s\n",
                 $record['num_alumnos'],
-                ($descInsc > 0 ? $descInsc.'% inscripción,' : '')
+                ($descInsc > 0 ? $descInsc.'% inscripción, ' : '')
                 .($descCol > 0 ? $descCol.'% colegiatura' : '')
             );
         }, $descuentosRecord);
 
-        return implode('; ', $itemsDesc);
+        return implode(' ', $itemsDesc);
     }
 
     private function getComprobantesPago(SolicitudId $solicitudId)

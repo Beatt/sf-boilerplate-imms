@@ -10,7 +10,8 @@ use AppBundle\Entity\SolicitudInterface;
 use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
-use AppBundle\Form\Type\ValidacionMontos\SolicitudValidacionMontosType;
+use AppBundle\Form\Type\RegistoMontos\SolicitudRegistroMontosType;
+use AppBundle\Form\Type\RegistoMontos\SolicitudValidacionMontosType;
 use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitud;
@@ -57,7 +58,7 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+        if(!$institucion) $this->createNotFindUserRelationWithInstitucionException();
 
         list($isOffsetSet, $isSearchSet, $isTipoPagoSet, $isPerPageSet, $isOrderBySet, $isEstatusSet) = $this->setFilters($request);
         list($offset, $search, $tipoPago, $perPage, $orderBy, $estatus) = $this->initializeFiltersWithDefaultValues($request);
@@ -124,11 +125,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+        if(!$institucion) $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+        if(!$solicitud) $this->createNotFindSolicitudException($id);
 
         $this->denyAccessUnlessGranted(SolicitudVoter::DETALLE_DE_SOLICITUD, $solicitud);
 
@@ -191,7 +192,7 @@ class SolicitudController extends DIEControllerController
             }
         }
 
-        $form = $this->createForm(SolicitudValidacionMontosType::class, $solicitud, [
+        $form = $this->createForm(SolicitudRegistroMontosType::class, $solicitud, [
             'action' => $this->generateUrl("ie#registrar_montos", [
                 'id' => $id,
             ]),
@@ -510,7 +511,20 @@ class SolicitudController extends DIEControllerController
                     'noSolicitud',
                     'estatus',
                     'fecha',
-                    'camposClinicos' => ['id', 'lugaresAutorizados', 'carrera' => ['id']],
+                    'camposClinicos' => ['id',
+                      'lugaresAutorizados',
+                      'displayFechaInicial',
+                      'displayFechaFinal',
+                      'unidad' => ['nombre'],
+                      'carrera' => ['id'],
+                      'observaciones',
+                      'montoCarrera' => [
+                        'montoInscripcion',
+                        'montoColegiatura',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['nombre']],
+                        'descuentos' => ['numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura']
+                      ]
+                    ],
                     'montosCarreras' => [
                         'montoInscripcion',
                         'montoColegiatura',

@@ -85,7 +85,7 @@ class SolicitudSubscriber extends AbstractSubscriber implements EventSubscriberI
     $solicitud = $event->getObject();
     $file = $solicitud->getUrlArchivoFile();
 
-    $requestFile = $this->request->files->get('solicitud_validacion_montos')['urlArchivoFile'];
+    $requestFile = $this->request->files->get('solicitud_registro_montos')['urlArchivoFile'];
     $original_filename = $requestFile->getClientOriginalName();
     $original_filename = strlen($original_filename) > 35 ?
       substr($original_filename, 0, 30) . "..." : $original_filename;
