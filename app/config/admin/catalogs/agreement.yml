@@ -4,6 +4,9 @@ easy_admin:
       class: AppBundle\Entity\Convenio
       controller: AppBundle\Controller\Admin\AgreementController
       label: 'Convenio'
+      search:
+        fields: [ 'sector', 'tipo', 'institucion.nombre', 'delegacion.nombre', 'cicloAcademico.nombre',
+                  'carrera.nombre', 'carrera.nivelAcademico.nombre', 'vigencia' ]
       list:
         title: 'Convenio'
         actions:
@@ -12,7 +15,7 @@ easy_admin:
           - id
           - sector
           - tipo
-          - { property: delegacion.nombre, label: 'Delegación' }
+          - { property: delegacion.nombre, label: 'OOAD' }
           - { property: cicloAcademico.nombre, label: 'Ciclo académico' }
           - { property: carrera.displayName, label: 'Carrera' }
           - { property: institucion.nombre, label: 'Institución' }

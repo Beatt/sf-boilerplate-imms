@@ -2,12 +2,12 @@ easy_admin:
   entities:
     Delegation:
       class: AppBundle\Entity\Delegacion
-      label: 'Delegación'
+      label: 'OOAD'
       list:
-        title: 'Delegación'
+        title: 'OOAD'
         actions:
           - '-delete'
-          - { name: 'new', label: 'Crear delegación' }
+          - { name: 'new', label: 'Crear OOAD' }
         fields:
           - id
           - nombre

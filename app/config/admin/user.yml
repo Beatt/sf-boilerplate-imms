@@ -4,6 +4,9 @@ easy_admin:
       class: AppBundle\Entity\Usuario
       controller: AppBundle\Controller\Admin\UserController
       label: Usuarios
+      search:
+        fields: [ 'matricula', 'delegaciones.nombre', 'unidades.nombre',
+            'permisos.nombre', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'correo', 'curp']
       list:
         title: Usuarios
         actions:
