@@ -119,7 +119,7 @@ const PagoIndex = (props) => {
                             <thead>
                             <tr>
                                 <th>
-                                    Delegación <br/>
+                                    OOAD <br/>
                                 </th>
                                 <th>
                                     Institución Educativa
