@@ -2,7 +2,6 @@ import React, {Fragment} from 'react'
 import RegistrarDescuentos from "../Descuentos";
 
 const CorregirMontos = (props) => {
-  console.log(props);
   return (
     props.montos.map((monto, index) =>
       <Fragment key={index}>

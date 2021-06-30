@@ -1,10 +1,13 @@
 import React, {Fragment} from 'react'
 import {moneyFormat} from "../../../utils";
 
-const DetalleMontoPago = ({monto, campoClinico}) => {
+const DetalleMontoPago = ({campoClinico}) => {
+  const monto = campoClinico.montoCarrera;
 
-  function calcularSubtotalCAI(descuento, descIns, descCol) {
-    return descuento ?
+  console.log(campoClinico);
+
+  function calcularSubtotalCAI(descIns, descCol) {
+    return descIns > 0 || descCol > 0  ?
 
       monto.montoInscripcion
       *((100-descIns)/100.0)
@@ -15,14 +18,17 @@ const DetalleMontoPago = ({monto, campoClinico}) => {
   }
 
   function calcularSubtotal(numAlumnos, descIns, descCol) {
-    let subtotal1 = calcularSubtotalCAI(numAlumnos, descIns, descCol);
+    let subtotal1 = calcularSubtotalCAI(descIns, descCol);
+    console.log(subtotal1);
     let subtotal2 = subtotal1*(campoClinico.convenio.cicloAcademico.id === 1 ? 0.005 : .50);
-    let numSemanas = (campoClinico.convenio.cicloAcademico.id === 1 ? campoClinico.numeroSemanas : 1);
+    console.log(subtotal2);
+    let numSemanas = (campoClinico.convenio.cicloAcademico.id === 1 ? campoClinico.weeks : 1);
+    console.log(numSemanas);
     return numAlumnos*subtotal2*numSemanas;
   }
 
-  let numAlumnosSinDesc = campoClinico.lugaresAutorizados
-    - monto.descuentos.reduce((acc, elem) => acc+elem.numAlumnos , 0);
+  let numAlumnosSinDesc = Math.max(0,
+      campoClinico.lugaresAutorizados - monto.descuentos.reduce((acc, elem) => acc+elem.numAlumnos , 0));
 
   return (
     <div>
@@ -46,11 +52,15 @@ const DetalleMontoPago = ({monto, campoClinico}) => {
             </div>
           )
       }
-      <div className={'col-md-12'}>
-        <div className={'col-md-6'}>Num Alumnos: {numAlumnosSinDesc},</div>
-        <div className={'col-md-3'}>Importe por Alumno: {moneyFormat(calcularSubtotal(1, 0, 0))}</div>
-        <div className={'col-md-3'}>Subtotal Campo Clínico: {moneyFormat(calcularSubtotal(numAlumnosSinDesc, 0, 0))}</div>
-      </div>
+      {
+        numAlumnosSinDesc > 0 ?
+          <div className={'col-md-12'}>
+            <div className={'col-md-6'}>Num Alumnos: {numAlumnosSinDesc},</div>
+            <div className={'col-md-3'}>Importe por Alumno: {moneyFormat(calcularSubtotal(1, 0, 0))}</div>
+            <div className={'col-md-3'}>Subtotal Campo Clínico: {moneyFormat(calcularSubtotal(numAlumnosSinDesc, 0, 0))}</div>
+          </div>
+          : null
+      }
     </div>
   );
 }

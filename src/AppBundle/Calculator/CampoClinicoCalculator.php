@@ -11,22 +11,21 @@ class CampoClinicoCalculator implements CampoClinicoCalculatorInterface {
 
     public function getMontoAPagar(CampoClinico $campo, Solicitud $solicitud)
     {
-        $idCarrera = $campo->getConvenio()->getCarrera()->getId();
-        $montos = $solicitud->getMontosCarreras()->filter(function( MontoCarrera $montoC) use ($idCarrera) {
-            return $montoC->getCarrera()->getId() === $idCarrera;
-        });
-        $monto = $montos[0];
+        /** @var MontoCarrera $monto */
+        $monto = $campo->getMontoCarrera();
 
         $descuentos = $monto->getDescuentos();
-        $totalAlumnosCobrados = 0;
 
         $idCicloAcademico = $campo->getConvenio()->getCicloAcademico()->getId();
+        // Si son CCS se cobra considenrando el numero de semanas, en otro caso
+        // (INT) no se toman en cuenta el num de semanas
         $numSemanas = $idCicloAcademico === 1 ? $campo->getWeeks() : 1;
 
+        $totalAlumnosCobrados = 0;
         $montoTotal = 0.0;
         /** @var DescuentoMonto $descuento */
         foreach ($descuentos as $descuento) {
-            $alumnosDescuento =min($campo->getLugaresAutorizados()-$totalAlumnosCobrados,
+            $alumnosDescuento = min($campo->getLugaresAutorizados()-$totalAlumnosCobrados,
                 $descuento->getNumAlumnos());
 
             $subTotal1 = $this->getSubtotalCAI($monto, $descuento);
@@ -34,12 +33,11 @@ class CampoClinicoCalculator implements CampoClinicoCalculatorInterface {
             $montoTotal += $alumnosDescuento*$subTotal2*$numSemanas;
 
             $totalAlumnosCobrados += $alumnosDescuento;
-
         }
+
         $alumnosSinDescuento = max($campo->getLugaresAutorizados()-$totalAlumnosCobrados, 0);
         $subTotal1 = $this->getSubtotalCAI($monto);
         $subTotal2 = $subTotal1*( $idCicloAcademico === 1 ? 0.005 : .50);
-
         $montoTotal += $alumnosSinDescuento*$subTotal2*$numSemanas;
 
         return $montoTotal;

@@ -14,13 +14,10 @@ const DetalleCamposClinicos = ({ camposClinicos, solicitud }) => {
     return moneyFormat(total)
   }
 
-  function getMontoCarrera(id) {
-    let montos = solicitud.montosCarreras.filter(elem => { return elem.carrera.id === id });
-    return montos.length > 0 ? montos[0] : {};
+  function getCampoClinicoFromSolicitud(idCampo) {
+    const camposSol = solicitud.camposClinicos.filter(campo => campo.id === idCampo);
+    return camposSol.length === 1 ? camposSol[0] : null;
   }
-
-  console.log(camposClinicos);
-  console.log(solicitud);
 
   return(
     <div className="panel panel-default">
@@ -67,9 +64,7 @@ const DetalleCamposClinicos = ({ camposClinicos, solicitud }) => {
                 <tr>
                   <td colSpan={9}>
                     <DetalleMontoPago
-                      monto={getMontoCarrera(campoClinico.convenio.carrera.id)}
-                      campoClinico={campoClinico}
-
+                      campoClinico={getCampoClinicoFromSolicitud(campoClinico.id)}
                     />
                   </td>
                 </tr>
