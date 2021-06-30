@@ -119,7 +119,7 @@ const PagoIndex = (props) => {
                             <thead>
                             <tr>
                                 <th>
-                                    OOAD <br/>
+                                    OOAD <br /> / UMAE
                                 </th>
                                 <th>
                                     Institución Educativa

@@ -27,7 +27,8 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
         $referencias = $repository->paginate($perPage, $page, $request->query->all());
         $years = $repository->getYears();
         return $this->render('fofoe/referencia/index.html.twig', [
-            'referencias' => $referencias['data'], 'years' => $years,
+            'referencias' => $referencias['data'],
+            'years' => $years,
             'meta' => ['total' => $referencias['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
     }
