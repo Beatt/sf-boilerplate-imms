@@ -92,7 +92,7 @@ const DetalleSolicitudDetallado = (props) => {
                         <th>Carrera <br/> <input type="text" placeholder={'Carrera'}
                                    onChange={e => {setQuery(Object.assign(query, {carrera: e.target.value})); handleSearchEvent()}}/></th>
                         <th>No. de lugares</th>
-                        <th>Fechas</th>
+                        <th>Período</th>
                         <th> </th>
                     </tr>
                     </thead>

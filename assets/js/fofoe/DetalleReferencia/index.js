@@ -6,6 +6,7 @@ import {
   moneyFormat
 } from "../../utils";
 import {TIPO_PAGO} from "../../constants";
+import ExpedienteSolicitud from "./ExpedienteSolicitud";
 
   const AccionFofoe = ({pago}) => {
   if (!pago || !pago.comprobantePago) return null;
@@ -30,6 +31,8 @@ import {TIPO_PAGO} from "../../constants";
 }
 
 const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
+
+  console.log(solicitud);
 
   function isPagoMultiple() {
     return solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
@@ -59,15 +62,16 @@ const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
           <p className='mb-5'>Tipo de pago: <strong>{solicitud.tipoPago}</strong></p>
           <p className='mb-20'>{getMontoTotalTitle()} <strong>{moneyFormat(montoTotal)}</strong></p>
         </div>
-        {
-          isPagoMultiple() &&
-          campos.map((item, key) => <DatosCampo campo={item} key={item.id} />)
-        }
         <div className="col-md-4">
           <p className='mb-5'><strong>Institución</strong></p>
           <p className='mb-5'>Nombre: <strong><a href={`${getSchemeAndHttpHost()}/fofoe/detalle-ie/${solicitud.institucion.id}`}>{solicitud.institucion.nombre}</a></strong></p>
           <p className='mb-5'>RFC: <strong>{solicitud.institucion.rfc}</strong></p>
-          <p className='mb-5'>Delegación: <strong>{solicitud.delegacion.nombre}</strong></p>
+          <p className='mb-5'>OOAD: <strong>{solicitud.delegacion.nombre}</strong></p>
+          {
+            solicitud.unidad && solicitud.unidad.esUmae ?
+              <p className='mb-5'>UMAE: <strong>{solicitud.unidad.nombre}</strong></p>
+              : null
+          }
         </div>
       </div>
       <div className="row">
@@ -215,6 +219,12 @@ const DetalleReferencia = ({ pagos, solicitud, campos }) => {
 
       <HistorialFacturas
         facturas={getFacturas()}
+      />
+
+      <ExpedienteSolicitud
+          solicitud={solicitud}
+          campos={campos}
+          pago={getLastPago()}
       />
     </div>
   )
