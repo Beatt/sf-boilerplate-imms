@@ -3,13 +3,17 @@
 namespace AppBundle\Controller\Came;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Convenio;
 use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Solicitud;
 use AppBundle\Entity\Unidad;
 use AppBundle\Form\Type\SolicitudType;
+use AppBundle\Form\Type\ValidaMontoCampoClinicoType;
 use AppBundle\Form\Type\ValidaSolicitudType;
 use AppBundle\Service\SolicitudManagerInterface;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -365,8 +369,8 @@ class SolicitudController extends DIEControllerController
         if (!in_array($solicitud->getEstatus(), [Solicitud::EN_VALIDACION_DE_MONTOS_CAME])) {
             return $this->httpErrorResponse('Solicitud can be finished only if has status "EN_VALIDACION_DE_MONTOS_CAME"');
         }
-        $form = $this->createForm(ValidaSolicitudType::class, $solicitud);
-        $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
+
+        $form = $this->createFormValidaMontos($solicitud);
         $form->handleRequest($request);
 
         $originalDescuentos = array();
@@ -380,7 +384,7 @@ class SolicitudController extends DIEControllerController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $result = $solicitudManager->validarMontos($form->getData(),
-                $form->get('montos_pagos')->getData(),
+                $this->getDataMontosForm($form, $solicitud),
                 isset($request->request->get('solicitud')['validado']),
                 $this->getUser(), $originalDescuentos
             );
@@ -418,8 +422,7 @@ class SolicitudController extends DIEControllerController
             return $this->redirectToRoute('came.solicitud.index');
         }
 
-        $form = $this->createForm(ValidaSolicitudType::class);
-        $form->get('montos_pagos')->setData($solicitud->getMontosCarreras());
+        $form = $this->createFormValidaMontos($solicitud);
 
         return $this->render('came/solicitud/valida_montos.html.twig', [
             'form' => $form->createView(),
@@ -429,7 +432,20 @@ class SolicitudController extends DIEControllerController
                     'estatusCameFormatted',
                     'documento', 'urlArchivo',
                     'institucion' => ['id', 'nombre'],
-                    'camposClinicos' => ['lugaresAutorizados', 'carrera' => ['id']],
+                    'camposClinicos' => [
+                      'id',
+                      'lugaresAutorizados',
+                      'observaciones',
+                      'displayFechaInicial',
+                      'displayFechaFinal',
+                      'unidad' => ['nombre'],
+                      'carrera' => ['id'],
+                      'montoCarrera' => [
+                        'id', 'montoInscripcion', 'montoColegiatura',
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
+                        'descuentos' => ['numAlumnos', 'descuentoInscripcion', 'descuentoColegiatura']
+                        ],
+                    ],
                     'montosCarreras' =>
                         ['id', 'montoInscripcion', 'montoColegiatura',
                         'carrera' => ['id', 'nombre', 'nivelAcademico' => ['id', 'nombre']],
@@ -498,5 +514,33 @@ class SolicitudController extends DIEControllerController
             );
         }
         return $this->render('emails/came/institucion_bienvenida.html.twig', ['solicitud' => $solicitud, 'password' => '', 'came' => $this->getUser()]);
+    }
+
+    /**
+     * @param Solicitud $solicitud
+     */
+    private function createFormValidaMontos($solicitud) {
+      $form = $this->createForm(ValidaSolicitudType::class, $solicitud);
+      /** @var CampoClinico $campo */
+      foreach ($solicitud->getCamposClinicos() as $campo) {
+        $form->add('campo_'.$campo->getId(), ValidaMontoCampoClinicoType::class,
+          ['mapped' => false]
+        );
+        $form->get('campo_'.$campo->getId())->setData($campo);
+      }
+      return $form;
+    }
+
+  /**
+   * @param FormInterface  $form
+   * @param Solicitud $solicitud
+   */
+    private function getDataMontosForm($form, $solicitud) {
+      $montos = [];
+      /** @var CampoClinico $campo */
+      foreach ($solicitud->getCamposClinicos() as $campo) {
+        $montos[$campo->getId()] = $form->get('campo_'.$campo->getId());
+      }
+      return $montos;
     }
 }

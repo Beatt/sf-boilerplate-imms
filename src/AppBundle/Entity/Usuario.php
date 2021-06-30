@@ -56,7 +56,7 @@ class Usuario implements UserInterface, \Serializable
 
     /**
      * @var integer
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="bigint", nullable=true)
      */
     private $regims;
 

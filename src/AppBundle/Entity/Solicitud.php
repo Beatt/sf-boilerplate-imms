@@ -60,9 +60,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
      */
     protected $camposClinicos;
 
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MontoCarrera", mappedBy="solicitud", cascade={"persist"})
-     */
     protected $montosCarreras;
 
     /**
@@ -580,28 +577,6 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
         return $this->pagos;
     }
 
-    /**
-     * @return string
-     */
-    public function getExpedienteDescripcion()
-    {
-        $items = [];
-
-        /** @var MontoCarrera $monto */
-        foreach($this->montosCarreras as $monto) {
-            $carrera = $monto->getCarrera();
-            $items[] = sprintf(
-                "%s %s: Inscripción $%s, Colegiatura: $%s",
-                $carrera->getNivelAcademico()->getNombre(),
-                $carrera->getNombre(),
-                $monto->getMontoInscripcion(),
-                $monto->getMontoColegiatura()
-            );
-        }
-
-        return implode('. ', $items);
-    }
-
     public function isPagoUnico()
     {
         return $this->getTipoPago() === SolicitudTipoPagoInterface::TIPO_PAGO_UNICO;
@@ -634,10 +609,10 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
     /**
      * @return Collection
      */
-    public function getMontosCarreras()
+/*    public function getMontosCarreras()
     {
         return $this->montosCarreras;
-    }
+    } */
 
     /**
      * @return File
@@ -723,6 +698,16 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
     {
         $criteria = PagoRepository::getPagosCargadosByReferenciaBancaria($referenciaBancaria);
         return $this->getPagos()->matching($criteria);
+    }
+
+    public function getMontosCarreras() {
+      $this->montosCarreras = new ArrayCollection();
+      foreach ($this->camposClinicos as $campo ) {
+        if ($campo->getMontoCarrera()) {
+          $this->montosCarreras->add($campo->getMontoCarrera());
+        }
+      }
+      return $this->montosCarreras;
     }
 
 }

@@ -128,7 +128,9 @@ const ListaCampos = ({ solicitud }) => {
               <tbody>
               <tr>
                 <td>{solicitud.expediente.oficioMontos.nombre}</td>
-                <td>{solicitud.expediente.oficioMontos.descripcion || DEFAULT_DOCUMENT}</td>
+                <td>{solicitud.expediente.oficioMontos.descripcion ?
+                  solicitud.expediente.oficioMontos.descripcion.split('\n').map(str=><p>{str}</p>) :
+                DEFAULT_DOCUMENT}</td>
                 <td>{solicitud.expediente.oficioMontos.descripcion ? solicitud.expediente.oficioMontos.fecha : DEFAULT_DOCUMENT_VALUE}</td>
                 <td>
                   {

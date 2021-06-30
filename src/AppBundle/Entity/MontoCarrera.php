@@ -40,13 +40,15 @@ class MontoCarrera
      */
     private $montoColegiatura;
 
-    /**
-     * @var Solicitud
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Solicitud", inversedBy="montosCarreras")
-     * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
-     */
     private $solicitud;
+
+  /**
+   * @var CampoClinico
+   *
+   * @ORM\OneToOne(targetEntity="AppBundle\Entity\CampoClinico", inversedBy="montoCarrera")
+   * @ORM\JoinColumn(name="campo_clinico_id", referencedColumnName="id")
+   */
+  private $campoClinico;
 
     /**
      * @var Carrera
@@ -114,15 +116,23 @@ class MontoCarrera
         return $this->montoInscripcion;
     }
 
-
     /**
-     * @param Solicitud $solicitud
+     * @param CampoClinico $campoClinico
      * @return MontoCarrera
      */
-    public function setSolicitud($solicitud)
+    public function setCampoClinico($campoClinico)
     {
-        $this->solicitud = $solicitud;
-        return $this;
+      $this->campoClinico = $campoClinico;
+
+      return $this;
+    }
+
+    /**
+     * @return CampoClinico
+     */
+    public function getCampoClinico()
+    {
+      return $this->campoClinico;
     }
 
     /**
@@ -130,7 +140,7 @@ class MontoCarrera
      */
     public function getSolicitud()
     {
-        return $this->solicitud;
+        return $this->campoClinico->getSolicitud();
     }
 
     public function setCarrera(Carrera $carrera = null)

@@ -2,6 +2,7 @@ import React, {Fragment} from 'react'
 import RegistrarDescuentos from "../Descuentos";
 
 const CorregirMontos = (props) => {
+  console.log(props);
   return (
     props.montos.map((monto, index) =>
       <Fragment key={index}>
@@ -52,6 +53,11 @@ const CorregirMontos = (props) => {
                 />
               </div>
             </div>
+          </td>
+        </tr>
+        <tr className={'desc'}>
+          <td colSpan={5}>
+            <p className='background' > {props.observaciones} </p>
           </td>
         </tr>
         <tr className={'desc'}>

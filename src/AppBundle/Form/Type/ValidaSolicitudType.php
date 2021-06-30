@@ -15,12 +15,12 @@ class ValidaSolicitudType extends AbstractType
     {
         $builder
             ->add('validado')
-            ->add('observaciones')
-            ->add('montos_pagos', CollectionType::class, [
-                'entry_type' => ValidaMontoCarreraType::class,
+            /*->add('camposClinicos', CollectionType::class, [
+                'entry_type' => ValidaMontoCampoClinicoType::class,
                 'required'   => true,
-                'mapped' => false
-            ])
+                'by_reference' => true,
+                'mapped' => true
+            ])*/
         ;
     }
 

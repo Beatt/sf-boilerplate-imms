@@ -5,8 +5,10 @@ namespace AppBundle\Form\Type;
 
 use AppBundle\Entity\MontoCarrera;
 use AppBundle\Form\Type\ValidacionMontos\DescuentoMontoType;
+use Symfony\Component\DomCrawler\Field\TextareaFormField;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

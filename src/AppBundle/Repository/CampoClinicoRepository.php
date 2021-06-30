@@ -92,7 +92,9 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
                 FROM (
                          SELECT DISTINCT carrera.id             AS id,
                                          carrera.nombre         AS nombre,
-                                         nivel_academico.nombre as nivel_academico
+                                         nivel_academico.nombre as nivel_academico,
+                                         campo_clinico.id       AS campo_clinico_id,
+                                         campo_clinico.observaciones       AS observaciones
                          FROM campo_clinico
                                   JOIN convenio on campo_clinico.convenio_id = convenio.id
                                   JOIN carrera on convenio.carrera_id = carrera.id
@@ -101,7 +103,8 @@ class CampoClinicoRepository extends EntityRepository implements CampoClinicoRep
                          WHERE campo_clinico.lugares_autorizados <> 0 AND campo_clinico.solicitud_id = :id
                      ) as carreras_unicas
                          LEFT JOIN monto_carrera on carreras_unicas.id = monto_carrera.carrera_id
-                         AND monto_carrera.solicitud_id = :id
+                         AND monto_carrera.campo_clinico_id = carreras_unicas.campo_clinico_id
+                      ORDER BY campo_clinico_id ASC
             ');
 
             $stmt->bindParam('id', $id);

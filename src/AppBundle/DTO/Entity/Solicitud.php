@@ -3,6 +3,7 @@
 namespace AppBundle\DTO\Entity;
 
 use AppBundle\Entity\Solicitud as SolicitudBase;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class Solicitud extends SolicitudBase
 {
@@ -17,7 +18,7 @@ class Solicitud extends SolicitudBase
         $this->referenciaBancaria = $solicitud->referenciaBancaria;
         $this->monto = $solicitud->monto;
         $this->camposClinicos = $solicitud->camposClinicos;
-        $this->montosCarreras = $solicitud->montosCarreras;
+        $this->montosCarreras = $solicitud->getMontosCarreras();
         $this->tipoPago = $solicitud->tipoPago;
         $this->documento = $solicitud->documento;
         $this->urlArchivo = $solicitud->urlArchivo;
