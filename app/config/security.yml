@@ -26,6 +26,7 @@ security:
             form_login:
                 login_path: login
                 check_path: login
+                always_use_default_target_path: true
             logout:
                 path:   /logout
                 target: /
