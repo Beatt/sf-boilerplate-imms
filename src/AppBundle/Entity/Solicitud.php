@@ -688,6 +688,11 @@ class Solicitud implements SolicitudInterface, SolicitudTipoPagoInterface, Refer
       return $result;
     }
 
+    public function getEsUMAE() {
+      $unidad = $this->getUnidad();
+      return $unidad && $unidad->getEsUmae();
+    }
+
     public function getCampoClinicoByReferenciaBancaria($referenciaBancaria)
     {
         $criteria = CampoClinicoRepository::getCampoClinicoByReferenciaBancaria($referenciaBancaria);

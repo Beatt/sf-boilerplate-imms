@@ -150,6 +150,7 @@ class PagoFacturaController extends DIEControllerController
                     'fecha',
                     'referenciaBancaria',
                     'monto',
+                    'unidad' => ['nombre', 'esUmae'],
                     'delegacion' => ['nombre'],
                     'pagos' => [
                         'id',

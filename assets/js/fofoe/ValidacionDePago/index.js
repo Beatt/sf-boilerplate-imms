@@ -72,7 +72,12 @@ const ValidacionDePago = ({ pago }) => {
             <p className='mb-5'><strong>Institución</strong></p>
             <p className='mb-5'>Nombre: <strong><a href={`${getSchemeAndHttpHost()}/fofoe/detalle-ie/${pago.institucion.id}`}>{pago.institucion.nombre}</a></strong></p>
             <p className='mb-5'>RFC: <strong>{pago.institucion.rfc}</strong></p>
-            <p className='mb-5'>Delegación: <strong>{pago.institucion.delegacion}</strong></p>
+            <p className='mb-5'>OOAD: <strong>{pago.institucion.delegacion}</strong></p>
+            {
+              pago.solicitud.esUMAE ?
+                <p className='mb-5'>UMAE: <strong>{pago.solicitud.nombreUnidad}</strong></p>
+                : null
+            }
           </div>
         </div>
       </div>

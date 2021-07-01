@@ -121,7 +121,7 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
             'carrera' => ['nombre', 'nivelAcademico' => ['nombre']]
           ],
           'lugaresAutorizados',
-          'unidad' => ['nombre'],
+          'unidad' => ['nombre', 'esUmae'],
           'displayFechaInicial',
           'fechaInicialFormatted',
           'fechaInicialFormatted',
@@ -145,7 +145,6 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
           'estatus',
           'referenciaBancaria',
           'monto',
-          'unidad',
           'fechaComprobanteFormatted',
           'delegacion' => ['nombre'],
           'institucion' => ['id', 'nombre', 'rfc']

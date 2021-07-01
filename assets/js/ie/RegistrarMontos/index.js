@@ -4,7 +4,6 @@ import camelcaseKeys from 'camelcase-keys'
 import RegistrarDescuentos from "./Descuentos";
 import {getSchemeAndHttpHost} from "../../utils";
 import './styles.scss';
-import CorregirMontos from "./CorregirMontos";
 
 const Registrar = (
   {
@@ -129,7 +128,7 @@ const Registrar = (
                           solicitudId.camposClinicos.map((campo, index) =>
                           <Fragment key={index}>
                           <tr key={index}>
-                            <td>{campo.montoCarrera.carrera.nivelAcademico.nombre} - {campo.montoCarrera.carrera.nombre}</td>
+                            <td>{campo.convenio.carrera.nivelAcademico.nombre} - {campo.convenio.carrera.nombre}</td>
                             <td>
                               <div>{campo.displayFechaInicial}-{campo.displayFechaFinal}
                                 <br />
@@ -143,7 +142,7 @@ const Registrar = (
                                 type="number"
                                 min={1}
                                 step={0.01}
-                                defaultValue={campo.montoCarrera.carrera.id}
+                                defaultValue={campo.convenio.carrera.id}
                                 name={`solicitud_registro_montos[camposClinicos][${index}][montoCarrera][carrera]`}
                               />
                             </td>
@@ -158,7 +157,7 @@ const Registrar = (
                                     step={0.01}
                                     name={`solicitud_registro_montos[camposClinicos][${index}][montoCarrera][montoInscripcion]`}
                                     className="form-control solicitud_validacion_montos_inscripcion"
-                                    defaultValue={formatNumeroDinero(campo.montoCarrera.montoInscripcion)}
+                                    defaultValue={campo.montoCarrera ? formatNumeroDinero(campo.montoCarrera.montoInscripcion) : ''}
                                     required={true}
                                     onBlur={e => handleCurrency(e.target)}
                                   />
@@ -175,7 +174,7 @@ const Registrar = (
                                     name={`solicitud_registro_montos[camposClinicos][${index}][montoCarrera][montoColegiatura]`}
                                     id="solicitud_registro_montos_inscripcion"
                                     className="form-control solicitud_validacion_montos_inscripcion"
-                                    defaultValue={formatNumeroDinero(campo.montoCarrera.montoColegiatura)}
+                                    defaultValue={campo.montoCarrera ? formatNumeroDinero(campo.montoCarrera.montoColegiatura) : ''}
                                     required={true}
                                     onBlur={e => handleCurrency(e.target)}
                                   />
@@ -197,7 +196,7 @@ const Registrar = (
                                 prefixName={`solicitud_registro_montos[camposClinicos][${index}][montoCarrera][descuentos]`}
                                 carrera={campo.carrera}
                                 campo={campo}
-                                descuentos={campo.montoCarrera.descuentos}
+                                descuentos={campo.montoCarrera ? campo.montoCarrera.descuentos : []}
                                 onChange={callbackValidateDescCC}
                                 indexMonto={index}
                               />

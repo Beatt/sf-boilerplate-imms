@@ -32,7 +32,7 @@ import ExpedienteSolicitud from "./ExpedienteSolicitud";
 
 const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
 
-  console.log(solicitud);
+    console.log(campos[0]);
 
   function isPagoMultiple() {
     return solicitud.tipoPago === TIPO_PAGO.MULTIPLE;
@@ -68,8 +68,8 @@ const DatosSolicitud = ({solicitud, montoTotal, campos, pago}) => {
           <p className='mb-5'>RFC: <strong>{solicitud.institucion.rfc}</strong></p>
           <p className='mb-5'>OOAD: <strong>{solicitud.delegacion.nombre}</strong></p>
           {
-            solicitud.unidad && solicitud.unidad.esUmae ?
-              <p className='mb-5'>UMAE: <strong>{solicitud.unidad.nombre}</strong></p>
+            campos.length > 0 && campos[0].unidad.esUmae ?
+              <p className='mb-5'>UMAE: <strong>{campos[0].unidad.nombre}</strong></p>
               : null
           }
         </div>

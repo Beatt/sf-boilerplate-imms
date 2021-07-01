@@ -27,7 +27,7 @@ final class DetallePagoUsingDoctrine implements DetallePago
         $pago = $this->pagoRepository->find($pagoId->asInt());
         $solicitud = $pago->getSolicitud();
         $montoTotal = $this->getMontoTotal($solicitud, $pago);
-
+        $unidad = $solicitud->getUnidad();
         $sede = null;
         $carrera = null;
         if(!$solicitud->isPagoUnico()) {
@@ -52,7 +52,9 @@ final class DetallePagoUsingDoctrine implements DetallePago
                 new CampoClinico(
                     $sede,
                     $carrera
-                )
+                ),
+              $unidad && $unidad->getEsUmae(),
+              $unidad && $unidad->getEsUmae() ? $unidad->getNombre() : ''
             ),
             $montoTotal,
             $pago->getMonto(),

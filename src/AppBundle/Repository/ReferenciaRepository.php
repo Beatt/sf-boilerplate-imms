@@ -53,7 +53,7 @@ class ReferenciaRepository
     {
         $sql = "select distinct " .
             "pago.id id," .
-            "(CASE WHEN unidad.es_umae THEN unidad.nombre ELSE delegacion.nombre END)  delegacion," .
+            "delegacion.nombre || (CASE WHEN unidad.es_umae THEN ' / ' || unidad.nombre  ELSE '' END ) AS  delegacion ," .
             "institucion.id institucion_id," .
             "institucion.nombre institucion_nombre," .
             "solicitud.no_solicitud," .
@@ -124,7 +124,11 @@ class ReferenciaRepository
         }
 
         if(isset($filters['delegacion']) && $filters['delegacion']){
-            $sql.=(' AND upper(unaccent(delegacion)) like UPPER(unaccent(:delegacion))');
+            $sql.=(' AND ('.
+            'upper(unaccent( delegacion.nombre )) like UPPER(unaccent( :delegacion )) '.
+            ' OR ( unidad.es_umae AND upper(unaccent( unidad.nombre )) like UPPER(unaccent( :delegacion )) ) '.
+              ')'
+            );
         }
 
         if(isset($filters['referencia']) && $filters['referencia']){
