@@ -458,6 +458,19 @@ class Institucion
         $this->extension = $extension;
     }
 
+    public function getDelegacionesToString() {
+      $dels = [];
+      /** @var Convenio $convenio */
+      foreach ($this->convenios as $convenio) {
+        $del = $convenio->getDelegacion();
+        if (! in_array($del->getNombre(), $dels)) {
+          $dels[] = $del->getNombre();
+        }
+      }
+
+      return implode(' , ', $dels );
+    }
+
   /**
    * @return string
    */

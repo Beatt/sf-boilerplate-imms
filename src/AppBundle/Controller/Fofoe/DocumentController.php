@@ -3,12 +3,17 @@
 namespace AppBundle\Controller\Fofoe;
 
 use AppBundle\Controller\DIEControllerController;
+use AppBundle\Entity\CampoClinico;
 use AppBundle\Entity\Factura;
+use AppBundle\Entity\Institucion;
 use AppBundle\Entity\Pago;
+use AppBundle\Entity\Solicitud;
 use AppBundle\Exception\CouldNotFoundCedulaIdentificacionFiscal;
 use AppBundle\Repository\InstitucionRepositoryInterface;
 use AppBundle\Repository\PagoRepositoryInterface;
+use AppBundle\Service\GeneradorFormatoFofoeInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,7 +37,7 @@ final class DocumentController extends DIEControllerController
     ) {
         /** @var Pago $pago */
         $pago = $pagoRepository->find($id);
-        if(!$pago) throw $this->createNotFindPagoException($id);
+        if(!$pago) $this->createNotFindPagoException($id);
 
       $downloadHandler = $this->get('vich_uploader.download_handler');
       return $downloadHandler->downloadObject($pago, 'comprobantePagoFile');
@@ -85,6 +90,64 @@ final class DocumentController extends DIEControllerController
     $downloadHandler = $this->get('vich_uploader.download_handler');
     return $downloadHandler->downloadObject($factura, 'zipFile');
   }
+
+    /**
+     * @Route("/solicitud/{solicitud_id}/oficio", methods={"GET"}, name="fofoe.solicitud.oficio_montos", requirements={"id"="\d+"})
+     * @param $solicitud_id
+     * @return mixed
+     */
+    public function downloadOficioMontosAction($solicitud_id)
+    {
+      $solicitud = $this->getDoctrine()
+        ->getRepository(Solicitud::class)
+        ->find($solicitud_id);
+
+
+      if (!$solicitud) {
+        throw $this->createNotFoundException(
+          'Not found for id ' . $solicitud_id
+        );
+      }
+
+      $downloadHandler = $this->get('vich_uploader.download_handler');
+      return $downloadHandler->downloadObject($solicitud, 'urlArchivoFile');
+    }
+
+    /**
+     * @Route("/campo_clinico/{campo_clinico_id}/formato_fofoe/download", methods={"GET"}, name="fofoe.campo_clinico.formato_fofoe.download", requirements={"id"="\d+"})
+     * @param Request $request
+     * @param GeneradorFormatoFofoeInterface $generadorFormatoFofoe
+     * @param $campo_clinico_id
+     */
+    public function downloadFormatoFofoeAction(Request $request, GeneradorFormatoFofoeInterface $generadorFormatoFofoe, $campo_clinico_id)
+    {
+      $campo_clinico = $this->getDoctrine()
+        ->getRepository(CampoClinico::class)
+        ->find($campo_clinico_id);
+
+      if (!$campo_clinico) {
+        throw $this->createNotFoundException(
+          'Not found for id ' . $campo_clinico
+        );
+      }
+
+      $overwrite = $request->query->get('overwrite', false);
+      $formatoFofoeFile = $generadorFormatoFofoe->responsePdf(
+        $this->container->getParameter('formato_fofoe_dir'),
+        $campo_clinico,
+        $overwrite
+      );
+
+      $filesize = filesize($formatoFofoeFile);
+      $fileContent = file_get_contents($formatoFofoeFile);
+      unlink($formatoFofoeFile);
+
+      $response = new Response($fileContent);
+      $response->headers->set('Content-Type', 'application/pdf');
+      $response->headers->set('Content-Disposition', 'attachment;filename="' . $generadorFormatoFofoe->getFileName($campo_clinico).'"');
+      $response->headers->set('Content-length', $filesize);
+      return $response;
+    }
 
     private function pdfResponse($fileName, $contentDisposition = 'attachment')
     {

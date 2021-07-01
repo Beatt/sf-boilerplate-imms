@@ -53,7 +53,7 @@ class ReferenciaRepository
     {
         $sql = "select distinct " .
             "pago.id id," .
-            "delegacion.nombre delegacion," .
+            "delegacion.nombre || (CASE WHEN unidad.es_umae THEN ' / ' || unidad.nombre  ELSE '' END ) AS  delegacion ," .
             "institucion.id institucion_id," .
             "institucion.nombre institucion_nombre," .
             "solicitud.no_solicitud," .
@@ -124,7 +124,11 @@ class ReferenciaRepository
         }
 
         if(isset($filters['delegacion']) && $filters['delegacion']){
-            $sql.=(' AND upper(unaccent(delegacion.nombre)) like UPPER(unaccent(:delegacion))');
+            $sql.=(' AND ('.
+            'upper(unaccent( delegacion.nombre )) like UPPER(unaccent( :delegacion )) '.
+            ' OR ( unidad.es_umae AND upper(unaccent( unidad.nombre )) like UPPER(unaccent( :delegacion )) ) '.
+              ')'
+            );
         }
 
         if(isset($filters['referencia']) && $filters['referencia']){
@@ -184,8 +188,9 @@ class ReferenciaRepository
             "inner join campo_clinico  on solicitud.id = campo_clinico.solicitud_id " .
                 "AND (solicitud.tipo_pago = 'Único' ".
                     "OR campo_clinico.referencia_bancaria = pago.referencia_bancaria) ".
+            "inner join unidad on campo_clinico.unidad_id = unidad.id " .
             "inner join convenio on campo_clinico.convenio_id = convenio.id " .
-            "inner join delegacion on convenio.delegacion_id = delegacion.id " .
+            "inner join delegacion on unidad.delegacion_id = delegacion.id " .
             "inner join institucion on convenio.institucion_id = institucion.id " .
             "left join factura on pago.factura_id = factura.id ";
     }

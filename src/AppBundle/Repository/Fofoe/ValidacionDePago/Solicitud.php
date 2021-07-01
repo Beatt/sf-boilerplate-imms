@@ -10,11 +10,23 @@ final class Solicitud
 
     private $campoClinico;
 
-    public function __construct($noSolicitud, $tipoPago, CampoClinico $campoClinico)
+    private $esUMAE;
+
+    private $nombreUnidad;
+
+    public function __construct(
+      $noSolicitud,
+      $tipoPago,
+      CampoClinico $campoClinico,
+      $esUMAE,
+      $nombreUnidad
+      )
     {
         $this->noSolicitud = $noSolicitud;
         $this->tipoPago = $tipoPago;
         $this->campoClinico = $campoClinico;
+        $this->esUMAE = $esUMAE;
+        $this->nombreUnidad = $nombreUnidad;
     }
 
     /**
@@ -39,5 +51,14 @@ final class Solicitud
     public function getCampoClinico()
     {
         return $this->campoClinico;
+    }
+
+    public function getNombreUnidad()
+    {
+      return $this->nombreUnidad;
+    }
+
+    public function getEsUMAE() {
+      return $this->esUMAE;
     }
 }

@@ -12,9 +12,7 @@ const Registrar = (
     errors
   }) => {
 
-
   let monto = 0;
-
   let factura = false;
 
   pagos.forEach(element => {
@@ -55,7 +53,12 @@ const Registrar = (
                   Descargar cédula
                 </a>
             }</p>
-            <p className="mt-10 mb-10">Delegación: {solicitud.delegacion.nombre}</p>
+            <p className="mt-10 mb-10">OOAD: {solicitud.delegacion.nombre}</p>
+            {
+              solicitud.unidad.esUmae ?
+                <p className='mb-5'>UMAE: <strong>{solicitud.unidad.nombre}</strong></p>
+                : null
+            }
             <p className="mt-10 mb-10">Referencia de pago: {pagos[0].referenciaBancaria}</p>
             <div className="form-inline mt-10 mb-10">
               <div className="form-group">

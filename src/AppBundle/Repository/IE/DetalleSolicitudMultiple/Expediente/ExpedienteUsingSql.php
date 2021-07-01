@@ -60,8 +60,10 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
                    monto_colegiatura,
                    monto_carrera.id as monto_carrera_id
             FROM solicitud
+            JOIN main.public.campo_clinico 
+              ON solicitud.id = campo_clinico.solicitud_id
             JOIN monto_carrera
-              ON solicitud.id = monto_carrera.solicitud_id
+              ON campo_clinico.id = monto_carrera.campo_clinico_id
             JOIN carrera
               ON monto_carrera.carrera_id = carrera.id
             JOIN nivel_academico
@@ -95,7 +97,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
             );
         }, $montosCarreraRecord);
 
-        return implode('. ', $items);
+        return implode("\n --------- \n", $items);
     }
 
 
@@ -124,7 +126,7 @@ final class ExpedienteUsingSql extends AbstractExpediente implements Expediente
             );
         }, $descuentosRecord);
 
-        return implode('; ', $itemsDesc);
+        return implode(' ', $itemsDesc);
     }
 
     private function getComprobantesPago(SolicitudId $solicitudId)

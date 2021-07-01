@@ -37,7 +37,6 @@ const SolicitudValidaMontos = (props) => {
         if(!descValidos) return;
         setIsLoading(true);
         let data = new FormData();
-        console.log(camposClinicos);
         camposClinicos.map((campo, i) => {
            data.append(`solicitud[campo_${campo.id}][observaciones]`, campo.new_observaciones ? campo.new_observaciones : '' );
            data.append(`solicitud[campo_${campo.id}][montoCarrera][montoInscripcion]`, campo.montoCarrera.montoInscripcion);
@@ -53,13 +52,11 @@ const SolicitudValidaMontos = (props) => {
         if(validos.toString() === (1).toString()){
             data.append('solicitud[validado]', validos);
         }
-        console.log(`${getSchemeAndHttpHost()}/came/api/solicitud/validar_montos/${props.solicitud.id}`);
 
         fetch(`${getSchemeAndHttpHost()}/came/api/solicitud/validar_montos/${props.solicitud.id}` , {
             method: 'post',
             body: data
         }).then(response => {
-          console.log(response);
             return response.json()
         }, error => {console.error(error)
         }).then(json => {

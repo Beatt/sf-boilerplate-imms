@@ -428,13 +428,8 @@ class CampoClinico implements ReferenciaBancariaInterface
     public function getMontoInscripcion()
     {
         $result = null;
-        $montos = $this->getSolicitud()->getMontosCarreras();
-        if($montos){
-            foreach ($montos as $monto){
-                if($monto->getCarrera()->getId() === $this->getConvenio()->getCarrera()->getId()){
-                    $result = $monto->getMontoInscripcion();
-                }
-            }
+        if ($this->getMontoCarrera()) {
+          $result =$this->getMontoCarrera()->getMontoInscripcion();
         }
         return $result;
     }
@@ -445,13 +440,8 @@ class CampoClinico implements ReferenciaBancariaInterface
     public function getMontoColegiatura()
     {
         $result = null;
-        $montos = $this->getSolicitud()->getMontosCarreras();
-        if($montos){
-            foreach ($montos as $monto){
-                if($monto->getCarrera()->getId() === $this->getConvenio()->getCarrera()->getId()){
-                    $result = $monto->getMontoColegiatura();
-                }
-            }
+        if ($this->getMontoCarrera()) {
+          $result =$this->getMontoCarrera()->getMontoColegiatura();
         }
         return $result;
     }
@@ -461,19 +451,12 @@ class CampoClinico implements ReferenciaBancariaInterface
      */
     public function getDescuentos()
     {
-        $idCarrera = $this->getCarrera()->getId();
-        $montos = $this->getSolicitud()->getMontosCarreras()->filter(
-            function( MontoCarrera $montoC) use ($idCarrera) {
-                return $montoC->getCarrera()->getId() === $idCarrera;
-        });
-        /** @var MontoCarrera $monto */
-        $monto = $montos->isEmpty() ? null : $montos[0];
-
-        return !is_null($monto) ? $monto->getDescuentos() : null;
+        return $this->getMontoCarrera() ?
+          $this->getMontoCarrera()->getDescuentos() : null;
     }
 
     /**
-     * @return float|int
+     * @return float
      */
     public function getImporteColegiaturaAnualIntegrada()
     {
@@ -489,14 +472,11 @@ class CampoClinico implements ReferenciaBancariaInterface
     }
 
     /**
-     * @return float|int
+     * @return float
      */
     public function getImporteAlumno()
     {
-        if($this->getConvenio()->getCicloAcademico()->getId() === 1){
-            return round($this->getImporteColegiaturaAnualIntegrada() * $this->getFactorSemanalAutorizado(), 2);
-        }
-        return round($this->getImporteColegiaturaAnualIntegrada() * .50, 2);
+      return round($this->getImporteColegiaturaAnualIntegrada() * $this->getFactorSemanalAutorizado(), 2);
     }
 
     /**
@@ -554,7 +534,7 @@ class CampoClinico implements ReferenciaBancariaInterface
     }
 
   /**
-   * @return mixed
+   * @return MontoCarrera
    */
   public function getMontoCarrera()
   {

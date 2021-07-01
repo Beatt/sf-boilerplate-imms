@@ -27,7 +27,8 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
         $referencias = $repository->paginate($perPage, $page, $request->query->all());
         $years = $repository->getYears();
         return $this->render('fofoe/referencia/index.html.twig', [
-            'referencias' => $referencias['data'], 'years' => $years,
+            'referencias' => $referencias['data'],
+            'years' => $years,
             'meta' => ['total' => $referencias['total'], 'perPage' => $perPage, 'page' => $page]
         ]);
     }
@@ -115,8 +116,15 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
           'monto',
           'estatus' => ['nombre'],
           'displayCarrera',
-          'unidad' => ['nombre'],
+          'convenio' => [
+            'cicloAcademico' => ['nombre'],
+            'carrera' => ['nombre', 'nivelAcademico' => ['nombre']]
+          ],
+          'lugaresAutorizados',
+          'unidad' => ['nombre', 'esUmae'],
           'displayFechaInicial',
+          'fechaInicialFormatted',
+          'fechaInicialFormatted',
           'displayFechaFinal'
           ]
       ]
@@ -137,6 +145,7 @@ class ReferenciaController extends \AppBundle\Controller\DIEControllerController
           'estatus',
           'referenciaBancaria',
           'monto',
+          'fechaComprobanteFormatted',
           'delegacion' => ['nombre'],
           'institucion' => ['id', 'nombre', 'rfc']
         ]

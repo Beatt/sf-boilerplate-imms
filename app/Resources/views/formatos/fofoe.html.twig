@@ -1,5 +1,33 @@
 {%extends'formatos/base.html.twig'%}
 
+{% block stylesheets %}
+      {{ parent() }}
+    <style>
+        .table-descuentos {
+            border: 1px solid black;
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 5px;|
+        }
+        .table-descuentos th {
+            font-size: 12px;
+            padding: 3px;
+        }
+        .table-descuentos td, th {
+            font-size: 14px;
+            border: 1px solid black;
+            padding: 6px;
+        }
+        .text-right {
+            text-align: right ;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
 
 {% block header %}
 {% endblock %}
@@ -20,7 +48,7 @@
     </div>
 
     <div>
-        <p>DELEGACIÓN IMSS : {{ campo_clinico.unidad.delegacion.nombre | upper }}</p>
+        <p>OOAD : {{ campo_clinico.unidad.delegacion.nombre | upper }}</p>
         <p>SEDE: {{ campo_clinico.unidad.nombre | upper }}</p>
         <p>ESCUELA O FACULTAD: {{ campo_clinico.convenio.institucion.nombre | upper }}</p>
         <p>NOMBRE DE LA CARRERA: {{ campo_clinico.convenio.carrera.nombre | upper }}</p>
@@ -116,7 +144,7 @@
         <p>Importe por alumno (sin descuento), por todo el período, del campo clínico: ${{ importeAlumno|number_format(2) }} </p>
         <div>
             <h3>Becas otorgadas:</h3>
-            <table class="table table-bordered table-sm text-center">
+            <table class="table table-bordered table-sm text-center table-descuentos">
                 <thead>
                     <tr>
                         <th class="text-center">% desc. Inscripción</th>
@@ -134,17 +162,17 @@
                     {% for desc in campo_clinico.descuentos %}
                         {% set importeAlumnoDesc = desc.importeCAI*campo_clinico.factorSemanalAutorizado %}
                         <tr>
-                            <td>{{ desc.descuentoInscripcion }}</td>
-                            <td>{{ (campo_clinico.montoInscripcion*(100.0- desc.descuentoInscripcion)/100.0)|number_format(2) }}</td>
-                            <td>{{ desc.descuentoColegiatura }}</td>
-                            <td>{{ (campo_clinico.montoColegiatura*(100.0- desc.descuentoColegiatura)/100.0)|number_format(2) }}</td>
-                            <td>{{ desc.importeCAI|number_format(2) }}</td>
-                            <td>{{ importeAlumnoDesc|number_format(2) }}</td>
+                            <td>{{ desc.descuentoInscripcion }}%</td>
+                            <td>${{ (campo_clinico.montoInscripcion*(100.0- desc.descuentoInscripcion)/100.0)|number_format(2) }}</td>
+                            <td>{{ desc.descuentoColegiatura }}%</td>
+                            <td>${{ (campo_clinico.montoColegiatura*(100.0- desc.descuentoColegiatura)/100.0)|number_format(2) }}</td>
+                            <td>${{ desc.importeCAI|number_format(2) }}</td>
+                            <td>${{ importeAlumnoDesc|number_format(2) }}</td>
                             <td>{{ desc.numAlumnos }}</td>
                             {% set weeks = campo_clinico.convenio.cicloAcademico.id == 1 ? campo_clinico.weeks : 1 %}
                             {% set subTotalDesc = importeAlumnoDesc*desc.numAlumnos*weeks %}
-                            <td>{{ subTotalDesc|number_format(2) }}</td>
-                            <td>{{ ((importeAlumno|round(2) - (importeAlumnoDesc*weeks)|number_format(2))*desc.numAlumnos)|number_format(2) }}</td>
+                            <td>${{ subTotalDesc|number_format(2) }}</td>
+                            <td>${{ ((importeAlumno|round(2) - (importeAlumnoDesc*weeks)|number_format(2))*desc.numAlumnos)|number_format(2) }}</td>
                         </tr>
                     {% endfor %}
                 <tr>

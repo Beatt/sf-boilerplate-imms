@@ -11,7 +11,6 @@ use AppBundle\Entity\SolicitudTipoPagoInterface;
 use AppBundle\Form\Type\ComprobantePagoType\SolicitudComprobantePagoType;
 use AppBundle\Form\Type\FormaPagoType;
 use AppBundle\Form\Type\RegistoMontos\SolicitudRegistroMontosType;
-use AppBundle\Form\Type\RegistoMontos\SolicitudValidacionMontosType;
 use AppBundle\ObjectValues\SolicitudId;
 use AppBundle\Repository\CampoClinicoRepositoryInterface;
 use AppBundle\Repository\IE\DetalleSolicitud\DetalleSolicitud;
@@ -157,11 +156,11 @@ class SolicitudController extends DIEControllerController
     ) {
         /** @var Institucion $institucion */
         $institucion = $this->getUser()->getInstitucion();
-        if(!$institucion) throw $this->createNotFindUserRelationWithInstitucionException();
+        if(!$institucion) $this->createNotFindUserRelationWithInstitucionException();
 
         /** @var Solicitud $solicitud */
         $solicitud = $this->solicitudRepository->find($id);
-        if(!$solicitud) throw $this->createNotFindSolicitudException($id);
+        if(!$solicitud) $this->createNotFindSolicitudException($id);
 
         $routeName = $request->attributes->get('_route');
         $this->denyAccessUnlessGranted(
@@ -513,10 +512,17 @@ class SolicitudController extends DIEControllerController
                     'fecha',
                     'camposClinicos' => ['id',
                       'lugaresAutorizados',
+                      'lugaresSolicitados',
+                      'weeks',
                       'displayFechaInicial',
                       'displayFechaFinal',
+                      'monto',
                       'unidad' => ['nombre'],
                       'carrera' => ['id'],
+                      'convenio' => [
+                        'cicloAcademico' => ['id', 'nombre'],
+                        'carrera' => ['id', 'nombre', 'nivelAcademico' => ['nombre']],
+                      ],
                       'observaciones',
                       'montoCarrera' => [
                         'montoInscripcion',
