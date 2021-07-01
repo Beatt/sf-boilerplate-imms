@@ -22,6 +22,7 @@ class CameController extends DIEControllerController
         $unidad_came = $this->getUserUnidadId();
         return $this->render('came/menu.html.twig', [
             'usuario' => $user,
+             'isUserDelegacionActivated' => $this->isUserDelegacionActivated(),
             'delegacion_came' => $delegacion_came,
             'unidad_came' => $unidad_came,
         ]);

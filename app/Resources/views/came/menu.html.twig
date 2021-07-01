@@ -144,7 +144,7 @@
                                 <option value="D_{{ delegacion.id }}" {% if delegacion_came and delegacion_came == delegacion.id %} selected {% endif %}>{{ delegacion.nombre }}</option>
                             {% endfor %}
                             {% for unidad in usuario.unidades %}
-                                <option value="U_{{ unidad.id }}" {% if unidad_came and unidad_came == unidad.id %} selected {% endif %}>{{ unidad }}</option>
+                                <option value="U_{{ unidad.id }}" {% if (not isUserDelegacionActivated) and unidad_came and unidad_came == unidad.id %} selected {% endif %}>{{ unidad }}</option>
                             {% endfor %}
                         </select>
                     </form>
