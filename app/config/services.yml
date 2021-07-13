@@ -29,6 +29,11 @@ services:
         # if you need to do this, you can override this setting on individual services
         public: false
 
+        bind:
+            # pass this value to any $siedURL argument for any service
+            # that's defined in this file (including controller arguments)
+            $siedURL: '%sied_url%'
+
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     AppBundle\:
